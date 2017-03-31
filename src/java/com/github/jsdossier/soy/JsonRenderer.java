@@ -38,17 +38,19 @@ import javax.inject.Inject;
  */
 public final class JsonRenderer {
 
+  private final JsonEncoder encoder;
+
   @Inject
-  JsonRenderer() {}
+  JsonRenderer(JsonEncoder encoder) {
+    this.encoder = encoder;
+  }
 
   public void render(Path output, Message message) throws IOException {
-    JsonElement json = new JsonMessageTransformer().transform(message);
-    render(output, json);
+    render(output, encoder.encode(message));
   }
 
   public void render(Writer writer, Message message) throws IOException {
-    JsonElement json = new JsonMessageTransformer().transform(message);
-    render(writer, json);
+    render(writer, encoder.encode(message));
   }
 
   public void render(Path output, Iterable<? extends Message> messages) throws IOException {
@@ -59,11 +61,10 @@ public final class JsonRenderer {
     render(writer, toArray(messages));
   }
 
-  private static JsonArray toArray(Iterable<? extends Message> messages) {
+  private JsonArray toArray(Iterable<? extends Message> messages) {
     JsonArray array = new JsonArray();
-    JsonMessageTransformer xform = new JsonMessageTransformer();
     for (Message message : messages) {
-      array.add(xform.transform(message));
+      array.add(encoder.encode(message));
     }
     return array;
   }

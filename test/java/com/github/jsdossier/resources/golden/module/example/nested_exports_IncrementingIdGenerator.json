@@ -1,124 +1,222 @@
-{
-  "2": {
-    "1": [
-      {
-        "1": "IncrementingIdGenerator",
-        "5": {
-          "2": 78,
-          "4": {
-            "3": "../../source/example/nested.js.src.html"
-          }
-        },
-        "7": {
-          "1": [
-            {
-              "2": "\u003cp\u003eAn \u003ca href\u003d\"nested_exports_IdGenerator.html\"\u003e\u003ccode\u003eIdGenerator\u003c/code\u003e\u003c/a\u003e that generates incrementing IDs.\u003c/p\u003e\n"
-            }
+[
+  null,
+  [
+    [
+      [
+        "IncrementingIdGenerator",
+        null,
+        null,
+        null,
+        [
+          null,
+          78,
+          null,
+          [
+            null,
+            null,
+            "../../source/example/nested.js.src.html"
           ]
-        },
-        "8": {},
-        "14": {
-          "1": {
-            "1": "IncrementingIdGenerator",
-            "2": {
-              "2": 78,
-              "4": {
-                "3": "../../source/example/nested.js.src.html"
-              }
-            },
-            "3": {
-              "1": [
-                {
-                  "2": "\u003cp\u003eAn \u003ca href\u003d\"nested_exports_IdGenerator.html\"\u003e\u003ccode\u003eIdGenerator\u003c/code\u003e\u003c/a\u003e that generates incrementing IDs.\u003c/p\u003e\n"
-                }
+        ],
+        null,
+        [
+          [
+            [
+              null,
+              "\u003cp\u003eAn \u003ca href\u003d\"nested_exports_IdGenerator.html\"\u003e\u003ccode\u003eIdGenerator\u003c/code\u003e\u003c/a\u003e that generates incrementing IDs.\u003c/p\u003e\n"
+            ]
+          ]
+        ],
+        [],
+        null,
+        [],
+        null,
+        [],
+        [],
+        [
+          [
+            "IncrementingIdGenerator",
+            [
+              null,
+              78,
+              null,
+              [
+                null,
+                null,
+                "../../source/example/nested.js.src.html"
               ]
-            }
-          },
-          "3": true
-        },
-        "15": [
-          {
-            "1": {
-              "1": "getNext",
-              "2": {
-                "2": 85,
-                "4": {
-                  "3": "../../source/example/nested.js.src.html"
-                }
-              },
-              "3": {},
-              "9": [
-                {
-                  "1": "IdGenerator",
-                  "2": "example/nested.IdGenerator",
-                  "3": {
-                    "3": {
-                      "3": "nested_exports_IdGenerator.html#getNext"
-                    }
-                  }
-                },
-                {
-                  "1": "IncreasingIdGenerator",
-                  "2": "example/nested.IncreasingIdGenerator",
-                  "3": {
-                    "3": {
-                      "3": "nested_exports_IncreasingIdGenerator.html#getNext"
-                    }
-                  }
-                }
-              ]
-            },
-            "5": {
-              "2": {
-                "4": {
-                  "1": "string",
-                  "4": true
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eA new ID.\u003c/p\u003e\n"
-                  }
+            ],
+            [
+              [
+                [
+                  null,
+                  "\u003cp\u003eAn \u003ca href\u003d\"nested_exports_IdGenerator.html\"\u003e\u003ccode\u003eIdGenerator\u003c/code\u003e\u003c/a\u003e that generates incrementing IDs.\u003c/p\u003e\n"
                 ]
-              }
-            }
-          }
+              ]
+            ],
+            null,
+            null,
+            null,
+            null,
+            null,
+            [],
+            []
+          ],
+          [],
+          1,
+          [],
+          null,
+          []
         ],
-        "19": [
-          {
-            "1": "IdGenerator",
-            "2": "example/nested.IdGenerator",
-            "3": {
-              "3": {
-                "3": "nested_exports_IdGenerator.html"
-              }
-            }
-          },
-          {
-            "1": "IncreasingIdGenerator",
-            "2": "example/nested.IncreasingIdGenerator",
-            "3": {
-              "3": {
-                "3": "nested_exports_IncreasingIdGenerator.html"
-              }
-            }
-          }
+        [
+          [
+            [
+              "getNext",
+              [
+                null,
+                85,
+                null,
+                [
+                  null,
+                  null,
+                  "../../source/example/nested.js.src.html"
+                ]
+              ],
+              [
+                []
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [
+                [
+                  "IdGenerator",
+                  "example/nested.IdGenerator",
+                  [
+                    null,
+                    null,
+                    [
+                      null,
+                      null,
+                      "nested_exports_IdGenerator.html#getNext"
+                    ]
+                  ],
+                  null,
+                  []
+                ],
+                [
+                  "IncreasingIdGenerator",
+                  "example/nested.IncreasingIdGenerator",
+                  [
+                    null,
+                    null,
+                    [
+                      null,
+                      null,
+                      "nested_exports_IncreasingIdGenerator.html#getNext"
+                    ]
+                  ],
+                  null,
+                  []
+                ]
+              ],
+              []
+            ],
+            [],
+            null,
+            [],
+            [
+              null,
+              [
+                null,
+                null,
+                null,
+                [
+                  "string",
+                  null,
+                  null,
+                  1,
+                  []
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eA new ID.\u003c/p\u003e\n"
+                  ]
+                ]
+              ]
+            ],
+            []
+          ]
         ],
-        "21": {
-          "1": {
-            "1": "example/nested",
-            "3": {
-              "3": {
-                "3": "nested.html"
-              }
-            }
-          },
-          "5": true
-        },
-        "23": "nested_exports_IncrementingIdGenerator.html",
-        "24": "example/nested.IncrementingIdGenerator"
-      }
+        [],
+        null,
+        [],
+        [
+          [
+            "IdGenerator",
+            "example/nested.IdGenerator",
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "nested_exports_IdGenerator.html"
+              ]
+            ],
+            null,
+            []
+          ],
+          [
+            "IncreasingIdGenerator",
+            "example/nested.IncreasingIdGenerator",
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "nested_exports_IncreasingIdGenerator.html"
+              ]
+            ],
+            null,
+            []
+          ]
+        ],
+        [],
+        [
+          [
+            "example/nested",
+            null,
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "nested.html"
+              ]
+            ],
+            null,
+            []
+          ],
+          null,
+          null,
+          null,
+          1
+        ],
+        null,
+        "nested_exports_IncrementingIdGenerator.html",
+        "example/nested.IncrementingIdGenerator",
+        [],
+        [],
+        [],
+        []
+      ]
     ]
-  }
-}
+  ]
+]

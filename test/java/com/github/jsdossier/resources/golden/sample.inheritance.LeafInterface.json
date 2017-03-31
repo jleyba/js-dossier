@@ -1,112 +1,222 @@
-{
-  "2": {
-    "1": [
-      {
-        "1": "sample.inheritance.LeafInterface",
-        "5": {
-          "2": 35,
-          "4": {
-            "3": "source/inheritance.js.src.html"
-          }
-        },
-        "7": {},
-        "8": {
-          "5": true
-        },
-        "14": {
-          "1": {
-            "1": "LeafInterface",
-            "2": {
-              "2": 35,
-              "4": {
-                "3": "source/inheritance.js.src.html"
-              }
-            },
-            "3": {}
-          }
-        },
-        "19": [
-          {
-            "1": "sample.inheritance.BaseInterface",
-            "3": {
-              "3": {
-                "3": "sample.inheritance.BaseInterface.html"
-              }
-            }
-          },
-          {
-            "1": "sample.inheritance.OtherInterface",
-            "3": {
-              "3": {
-                "3": "sample.inheritance.OtherInterface.html"
-              }
-            },
-            "5": [
-              {
-                "4": {
-                  "1": "number",
-                  "4": true
-                }
-              }
+[
+  null,
+  [
+    [
+      [
+        "sample.inheritance.LeafInterface",
+        null,
+        null,
+        null,
+        [
+          null,
+          35,
+          null,
+          [
+            null,
+            null,
+            "source/inheritance.js.src.html"
+          ]
+        ],
+        null,
+        [
+          []
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          1
+        ],
+        null,
+        [],
+        null,
+        [],
+        [],
+        [
+          [
+            "LeafInterface",
+            [
+              null,
+              35,
+              null,
+              [
+                null,
+                null,
+                "source/inheritance.js.src.html"
+              ]
+            ],
+            [
+              []
+            ],
+            null,
+            null,
+            null,
+            null,
+            null,
+            [],
+            []
+          ],
+          [],
+          null,
+          [],
+          null,
+          []
+        ],
+        [],
+        [],
+        null,
+        [],
+        [
+          [
+            "sample.inheritance.BaseInterface",
+            null,
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "sample.inheritance.BaseInterface.html"
+              ]
+            ],
+            null,
+            []
+          ],
+          [
+            "sample.inheritance.OtherInterface",
+            null,
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "sample.inheritance.OtherInterface.html"
+              ]
+            ],
+            null,
+            [
+              [
+                null,
+                null,
+                null,
+                [
+                  "number",
+                  null,
+                  null,
+                  1,
+                  []
+                ]
+              ]
             ]
-          },
-          {
-            "1": "sample.inheritance.SecondInterface",
-            "3": {
-              "3": {
-                "3": "sample.inheritance.SecondInterface.html"
-              }
-            }
-          }
+          ],
+          [
+            "sample.inheritance.SecondInterface",
+            null,
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "sample.inheritance.SecondInterface.html"
+              ]
+            ],
+            null,
+            []
+          ]
         ],
-        "27": [
-          {
-            "1": "sample.inheritance.DeprecatedFinalClass",
-            "3": {
-              "3": {
-                "3": "sample.inheritance.DeprecatedFinalClass.html"
-              }
-            }
-          },
-          {
-            "1": "sample.inheritance.FinalClass",
-            "3": {
-              "3": {
-                "3": "sample.inheritance.FinalClass.html"
-              }
-            }
-          },
-          {
-            "1": "sample.inheritance.SecondClass",
-            "3": {
-              "3": {
-                "3": "sample.inheritance.SecondClass.html"
-              }
-            }
-          },
-          {
-            "1": "sample.inheritance.ThirdClass",
-            "3": {
-              "3": {
-                "3": "sample.inheritance.ThirdClass.html"
-              }
-            }
-          }
+        [],
+        [
+          [
+            "sample.inheritance",
+            null,
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "sample.inheritance.html"
+              ]
+            ],
+            null,
+            []
+          ],
+          null,
+          null,
+          1
         ],
-        "21": {
-          "1": {
-            "1": "sample.inheritance",
-            "3": {
-              "3": {
-                "3": "sample.inheritance.html"
-              }
-            }
-          },
-          "4": true
-        },
-        "23": "sample.inheritance.LeafInterface.html",
-        "24": "sample.inheritance.LeafInterface"
-      }
+        null,
+        "sample.inheritance.LeafInterface.html",
+        "sample.inheritance.LeafInterface",
+        [],
+        [],
+        [
+          [
+            "sample.inheritance.DeprecatedFinalClass",
+            null,
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "sample.inheritance.DeprecatedFinalClass.html"
+              ]
+            ],
+            null,
+            []
+          ],
+          [
+            "sample.inheritance.FinalClass",
+            null,
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "sample.inheritance.FinalClass.html"
+              ]
+            ],
+            null,
+            []
+          ],
+          [
+            "sample.inheritance.SecondClass",
+            null,
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "sample.inheritance.SecondClass.html"
+              ]
+            ],
+            null,
+            []
+          ],
+          [
+            "sample.inheritance.ThirdClass",
+            null,
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "sample.inheritance.ThirdClass.html"
+              ]
+            ],
+            null,
+            []
+          ]
+        ],
+        []
+      ]
     ]
-  }
-}
+  ]
+]

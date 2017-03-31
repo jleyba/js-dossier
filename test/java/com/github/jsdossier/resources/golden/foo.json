@@ -1,75 +1,143 @@
-{
-  "2": {
-    "1": [
-      {
-        "1": "foo",
-        "5": {
-          "2": 5,
-          "4": {
-            "3": "source/filter.js.src.html"
-          }
-        },
-        "6": {
-          "1": [
-            {
-              "1": "One",
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eThis link to \u003ccode\u003efoo.bar.Two\u003c/code\u003e should not resolve since foo.bar is\nfiltered out of generated documentation.\u003c/p\u003e\n"
-                  }
-                ]
-              },
-              "5": {
-                "3": "foo.One.html"
-              }
-            }
+[
+  null,
+  [
+    [
+      [
+        "foo",
+        null,
+        null,
+        null,
+        [
+          null,
+          5,
+          null,
+          [
+            null,
+            null,
+            "source/filter.js.src.html"
           ]
-        },
-        "7": {},
-        "8": {},
-        "12": [
-          {
-            "1": {
-              "1": "newFilteredClass",
-              "2": {
-                "2": 22,
-                "4": {
-                  "3": "source/filter.js.src.html"
-                }
-              },
-              "3": {}
-            },
-            "5": {
-              "2": {
-                "4": {
-                  "1": "foo.FilteredClass"
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eA new filtered class.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            }
-          }
         ],
-        "21": {
-          "1": {
-            "1": "foo",
-            "3": {
-              "3": {
-                "3": "foo.html"
-              }
-            }
-          },
-          "4": true
-        },
-        "23": "foo.html",
-        "24": "foo"
-      }
+        [
+          [
+            [
+              "One",
+              null,
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eThis link to \u003ccode\u003efoo.bar.Two\u003c/code\u003e should not resolve since foo.bar is\nfiltered out of generated documentation.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              [
+                null,
+                null,
+                "foo.One.html"
+              ]
+            ]
+          ],
+          [],
+          []
+        ],
+        [
+          []
+        ],
+        [],
+        null,
+        [],
+        null,
+        [
+          [
+            [
+              "newFilteredClass",
+              [
+                null,
+                22,
+                null,
+                [
+                  null,
+                  null,
+                  "source/filter.js.src.html"
+                ]
+              ],
+              [
+                []
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [],
+              []
+            ],
+            [],
+            null,
+            [],
+            [
+              null,
+              [
+                null,
+                null,
+                null,
+                [
+                  "foo.FilteredClass",
+                  null,
+                  null,
+                  null,
+                  []
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eA new filtered class.\u003c/p\u003e\n"
+                  ]
+                ]
+              ]
+            ],
+            []
+          ]
+        ],
+        [],
+        null,
+        [],
+        [],
+        null,
+        [],
+        [],
+        [],
+        [
+          [
+            "foo",
+            null,
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "foo.html"
+              ]
+            ],
+            null,
+            []
+          ],
+          null,
+          null,
+          1
+        ],
+        null,
+        "foo.html",
+        "foo",
+        [],
+        [],
+        [],
+        []
+      ]
     ]
-  }
-}
+  ]
+]

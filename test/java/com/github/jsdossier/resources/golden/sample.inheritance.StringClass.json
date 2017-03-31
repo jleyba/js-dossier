@@ -1,407 +1,710 @@
-{
-  "2": {
-    "1": [
-      {
-        "1": "sample.inheritance.StringClass",
-        "5": {
-          "2": 181,
-          "4": {
-            "3": "source/inheritance.js.src.html"
-          }
-        },
-        "7": {
-          "1": [
-            {
-              "2": "\u003cp\u003eThis class extends another using Closure\u0026#39;s goog.defineClass. This comment\nshould be used for the class description, but be merged with the constructor\ndocumentation below.\u003c/p\u003e\n"
-            }
+[
+  null,
+  [
+    [
+      [
+        "sample.inheritance.StringClass",
+        null,
+        null,
+        null,
+        [
+          null,
+          181,
+          null,
+          [
+            null,
+            null,
+            "source/inheritance.js.src.html"
           ]
-        },
-        "8": {},
-        "12": [
-          {
-            "1": {
-              "1": "StringClass.isString",
-              "2": {
-                "2": 195,
-                "4": {
-                  "3": "source/inheritance.js.src.html"
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eTests if a value is a string.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            },
-            "4": [
-              {
-                "1": "value",
-                "2": {
-                  "7": true
-                },
-                "3": {
-                  "1": [
-                    {
-                      "2": "\u003cp\u003eThe value to test.\u003c/p\u003e\n"
-                    }
-                  ]
-                }
-              }
-            ],
-            "5": {
-              "2": {
-                "4": {
-                  "1": "boolean",
-                  "4": true
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eWhether the value is a string.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            }
-          }
         ],
-        "14": {
-          "1": {
-            "1": "StringClass",
-            "2": {
-              "2": 181,
-              "4": {
-                "3": "source/inheritance.js.src.html"
-              }
-            },
-            "3": {
-              "1": [
-                {
-                  "2": "\u003cp\u003eThis class extends another using Closure\u0026#39;s goog.defineClass. This comment\nshould be used for the class description, but be merged with the constructor\ndocumentation below.\u003c/p\u003e\n"
-                }
-              ]
-            }
-          },
-          "3": true,
-          "4": [
-            {
-              "1": "value",
-              "2": {
-                "4": {
-                  "1": "string",
-                  "4": true
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eThe initial value.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            }
+        null,
+        [
+          [
+            [
+              null,
+              "\u003cp\u003eThis class extends another using Closure\u0026#39;s goog.defineClass. This comment\nshould be used for the class description, but be merged with the constructor\ndocumentation below.\u003c/p\u003e\n"
+            ]
           ]
-        },
-        "15": [
-          {
-            "1": {
-              "1": "add",
-              "2": {
-                "2": 118,
-                "4": {
-                  "3": "source/inheritance.js.src.html"
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eAdds a value to this instance\u0026#39;s \u003ca href\u003d\"sample.inheritance.StringClass.html#getValue\"\u003e\u003ccode\u003evalue\u003c/code\u003e\u003c/a\u003e.\u003c/p\u003e\n"
-                  }
+        ],
+        [],
+        null,
+        [],
+        null,
+        [
+          [
+            [
+              "StringClass.isString",
+              [
+                null,
+                195,
+                null,
+                [
+                  null,
+                  null,
+                  "source/inheritance.js.src.html"
                 ]
-              },
-              "7": {
-                "1": "sample.inheritance.TemplateClass",
-                "3": {
-                  "3": {
-                    "3": "sample.inheritance.TemplateClass.html#add"
-                  }
-                }
-              }
-            },
-            "4": [
-              {
-                "1": "value",
-                "2": {
-                  "6": {
-                    "1": [
-                      {
-                        "4": {
-                          "1": "T"
-                        }
-                      },
-                      {
-                        "10": true
-                      }
-                    ]
-                  }
-                },
-                "3": {
-                  "1": [
-                    {
-                      "2": "\u003cp\u003eThe value to add.\u003c/p\u003e\n"
-                    }
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eTests if a value is a string.\u003c/p\u003e\n"
                   ]
-                }
-              }
-            ]
-          },
-          {
-            "1": {
-              "1": "getValue",
-              "2": {
-                "2": 109,
-                "4": {
-                  "3": "source/inheritance.js.src.html"
-                }
-              },
-              "3": {},
-              "7": {
-                "1": "sample.inheritance.TemplateClass",
-                "3": {
-                  "3": {
-                    "3": "sample.inheritance.TemplateClass.html#getValue"
-                  }
-                }
-              }
-            },
-            "5": {
-              "2": {
-                "4": {
-                  "1": "string",
-                  "4": true
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003e.\u003c/p\u003e\n"
-                  }
                 ]
-              }
-            }
-          },
-          {
-            "1": {
-              "1": "run",
-              "2": {
-                "2": 201,
-                "4": {
-                  "3": "source/inheritance.js.src.html"
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eRun this instance.\u003c/p\u003e\n"
-                  }
-                ]
-              },
-              "9": [
-                {
-                  "1": "sample.inheritance.Runnable",
-                  "3": {
-                    "3": {
-                      "3": "sample.inheritance.Runnable.html#run"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "1": {
-              "1": "substring",
-              "2": {
-                "2": 210,
-                "4": {
-                  "3": "source/inheritance.js.src.html"
-                }
-              },
-              "3": {},
-              "10": [
-                {
-                  "1": [
-                    {
-                      "1": "#getValue()",
-                      "3": {
-                        "3": {
-                          "3": "sample.inheritance.StringClass.html#getValue"
-                        }
-                      }
-                    }
-                  ]
-                }
-              ]
-            },
-            "4": [
-              {
-                "1": "fromIndex",
-                "2": {
-                  "4": {
-                    "1": "number",
-                    "4": true
-                  }
-                },
-                "3": {
-                  "1": [
-                    {
-                      "2": "\u003cp\u003eThe starting index.\u003c/p\u003e\n"
-                    }
-                  ]
-                }
-              },
-              {
-                "1": "opt_toIndex",
-                "2": {
-                  "1": true,
-                  "6": {
-                    "1": [
-                      {
-                        "4": {
-                          "1": "number",
-                          "4": true
-                        }
-                      },
-                      {
-                        "9": true
-                      }
-                    ]
-                  }
-                },
-                "3": {
-                  "1": [
-                    {
-                      "2": "\u003cp\u003eThe ending index.\u003c/p\u003e\n"
-                    }
-                  ]
-                }
-              }
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [],
+              []
             ],
-            "5": {
-              "2": {
-                "4": {
-                  "1": "string",
-                  "4": true
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eA substring of this instance\u0026#39;s current value.\u003c/p\u003e\n"
-                  }
+            [],
+            null,
+            [
+              [
+                "value",
+                [
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  1
+                ],
+                [
+                  [
+                    [
+                      null,
+                      "\u003cp\u003eThe value to test.\u003c/p\u003e\n"
+                    ]
+                  ]
                 ]
-              }
-            }
-          }
+              ]
+            ],
+            [
+              null,
+              [
+                null,
+                null,
+                null,
+                [
+                  "boolean",
+                  null,
+                  null,
+                  1,
+                  []
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eWhether the value is a string.\u003c/p\u003e\n"
+                  ]
+                ]
+              ]
+            ],
+            []
+          ]
         ],
-        "16": [
-          {
-            "1": {
-              "1": "name",
-              "2": {
-                "2": 104,
-                "4": {
-                  "3": "source/inheritance.js.src.html"
-                }
-              },
-              "3": {},
-              "7": {
-                "1": "sample.inheritance.TemplateClass",
-                "3": {
-                  "3": {
-                    "3": "sample.inheritance.TemplateClass.html#name"
-                  }
-                }
-              }
-            },
-            "2": {
-              "4": {
-                "1": "string",
-                "4": true
-              }
-            }
-          },
-          {
-            "1": {
-              "1": "value",
-              "2": {
-                "2": 119,
-                "4": {
-                  "3": "source/inheritance.js.src.html"
-                }
-              },
-              "3": {},
-              "7": {
-                "1": "sample.inheritance.TemplateClass",
-                "3": {
-                  "3": {
-                    "3": "sample.inheritance.TemplateClass.html#value"
-                  }
-                }
-              }
-            },
-            "2": {
-              "4": {
-                "1": "string",
-                "4": true
-              }
-            }
-          }
-        ],
-        "18": [
-          {
-            "1": "sample.inheritance.TemplateClass",
-            "3": {
-              "3": {
-                "3": "sample.inheritance.TemplateClass.html"
-              }
-            },
-            "5": [
-              {
-                "4": {
-                  "1": "string",
-                  "4": true
-                }
-              }
+        [],
+        [
+          [
+            "StringClass",
+            [
+              null,
+              181,
+              null,
+              [
+                null,
+                null,
+                "source/inheritance.js.src.html"
+              ]
+            ],
+            [
+              [
+                [
+                  null,
+                  "\u003cp\u003eThis class extends another using Closure\u0026#39;s goog.defineClass. This comment\nshould be used for the class description, but be merged with the constructor\ndocumentation below.\u003c/p\u003e\n"
+                ]
+              ]
+            ],
+            null,
+            null,
+            null,
+            null,
+            null,
+            [],
+            []
+          ],
+          [],
+          1,
+          [
+            [
+              "value",
+              [
+                null,
+                null,
+                null,
+                [
+                  "string",
+                  null,
+                  null,
+                  1,
+                  []
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eThe initial value.\u003c/p\u003e\n"
+                  ]
+                ]
+              ]
             ]
-          }
+          ],
+          null,
+          []
         ],
-        "19": [
-          {
-            "1": "sample.inheritance.Runnable",
-            "3": {
-              "3": {
-                "3": "sample.inheritance.Runnable.html"
-              }
-            }
-          }
+        [
+          [
+            [
+              "add",
+              [
+                null,
+                118,
+                null,
+                [
+                  null,
+                  null,
+                  "source/inheritance.js.src.html"
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eAdds a value to this instance\u0026#39;s \u003ca href\u003d\"sample.inheritance.StringClass.html#getValue\"\u003e\u003ccode\u003evalue\u003c/code\u003e\u003c/a\u003e.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              null,
+              null,
+              [
+                "sample.inheritance.TemplateClass",
+                null,
+                [
+                  null,
+                  null,
+                  [
+                    null,
+                    null,
+                    "sample.inheritance.TemplateClass.html#add"
+                  ]
+                ],
+                null,
+                []
+              ],
+              null,
+              [],
+              []
+            ],
+            [],
+            null,
+            [
+              [
+                "value",
+                [
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  [
+                    [
+                      [
+                        null,
+                        null,
+                        null,
+                        [
+                          "T",
+                          null,
+                          null,
+                          null,
+                          []
+                        ]
+                      ],
+                      [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        1
+                      ]
+                    ]
+                  ]
+                ],
+                [
+                  [
+                    [
+                      null,
+                      "\u003cp\u003eThe value to add.\u003c/p\u003e\n"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            null,
+            []
+          ],
+          [
+            [
+              "getValue",
+              [
+                null,
+                109,
+                null,
+                [
+                  null,
+                  null,
+                  "source/inheritance.js.src.html"
+                ]
+              ],
+              [
+                []
+              ],
+              null,
+              null,
+              null,
+              [
+                "sample.inheritance.TemplateClass",
+                null,
+                [
+                  null,
+                  null,
+                  [
+                    null,
+                    null,
+                    "sample.inheritance.TemplateClass.html#getValue"
+                  ]
+                ],
+                null,
+                []
+              ],
+              null,
+              [],
+              []
+            ],
+            [],
+            null,
+            [],
+            [
+              null,
+              [
+                null,
+                null,
+                null,
+                [
+                  "string",
+                  null,
+                  null,
+                  1,
+                  []
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003e.\u003c/p\u003e\n"
+                  ]
+                ]
+              ]
+            ],
+            []
+          ],
+          [
+            [
+              "run",
+              [
+                null,
+                201,
+                null,
+                [
+                  null,
+                  null,
+                  "source/inheritance.js.src.html"
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eRun this instance.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [
+                [
+                  "sample.inheritance.Runnable",
+                  null,
+                  [
+                    null,
+                    null,
+                    [
+                      null,
+                      null,
+                      "sample.inheritance.Runnable.html#run"
+                    ]
+                  ],
+                  null,
+                  []
+                ]
+              ],
+              []
+            ],
+            [],
+            null,
+            [],
+            null,
+            []
+          ],
+          [
+            [
+              "substring",
+              [
+                null,
+                210,
+                null,
+                [
+                  null,
+                  null,
+                  "source/inheritance.js.src.html"
+                ]
+              ],
+              [
+                []
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [],
+              [
+                [
+                  [
+                    [
+                      "#getValue()",
+                      null,
+                      [
+                        null,
+                        null,
+                        [
+                          null,
+                          null,
+                          "sample.inheritance.StringClass.html#getValue"
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [],
+            null,
+            [
+              [
+                "fromIndex",
+                [
+                  null,
+                  null,
+                  null,
+                  [
+                    "number",
+                    null,
+                    null,
+                    1,
+                    []
+                  ]
+                ],
+                [
+                  [
+                    [
+                      null,
+                      "\u003cp\u003eThe starting index.\u003c/p\u003e\n"
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "opt_toIndex",
+                [
+                  1,
+                  null,
+                  null,
+                  null,
+                  null,
+                  [
+                    [
+                      [
+                        null,
+                        null,
+                        null,
+                        [
+                          "number",
+                          null,
+                          null,
+                          1,
+                          []
+                        ]
+                      ],
+                      [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        1
+                      ]
+                    ]
+                  ]
+                ],
+                [
+                  [
+                    [
+                      null,
+                      "\u003cp\u003eThe ending index.\u003c/p\u003e\n"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              null,
+              [
+                null,
+                null,
+                null,
+                [
+                  "string",
+                  null,
+                  null,
+                  1,
+                  []
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eA substring of this instance\u0026#39;s current value.\u003c/p\u003e\n"
+                  ]
+                ]
+              ]
+            ],
+            []
+          ]
         ],
-        "21": {
-          "1": {
-            "1": "sample.inheritance",
-            "3": {
-              "3": {
-                "3": "sample.inheritance.html"
-              }
-            }
-          },
-          "4": true
-        },
-        "23": "sample.inheritance.StringClass.html",
-        "24": "sample.inheritance.StringClass"
-      }
+        [
+          [
+            [
+              "name",
+              [
+                null,
+                104,
+                null,
+                [
+                  null,
+                  null,
+                  "source/inheritance.js.src.html"
+                ]
+              ],
+              [
+                []
+              ],
+              null,
+              null,
+              null,
+              [
+                "sample.inheritance.TemplateClass",
+                null,
+                [
+                  null,
+                  null,
+                  [
+                    null,
+                    null,
+                    "sample.inheritance.TemplateClass.html#name"
+                  ]
+                ],
+                null,
+                []
+              ],
+              null,
+              [],
+              []
+            ],
+            [
+              null,
+              null,
+              null,
+              [
+                "string",
+                null,
+                null,
+                1,
+                []
+              ]
+            ]
+          ],
+          [
+            [
+              "value",
+              [
+                null,
+                119,
+                null,
+                [
+                  null,
+                  null,
+                  "source/inheritance.js.src.html"
+                ]
+              ],
+              [
+                []
+              ],
+              null,
+              null,
+              null,
+              [
+                "sample.inheritance.TemplateClass",
+                null,
+                [
+                  null,
+                  null,
+                  [
+                    null,
+                    null,
+                    "sample.inheritance.TemplateClass.html#value"
+                  ]
+                ],
+                null,
+                []
+              ],
+              null,
+              [],
+              []
+            ],
+            [
+              null,
+              null,
+              null,
+              [
+                "string",
+                null,
+                null,
+                1,
+                []
+              ]
+            ]
+          ]
+        ],
+        null,
+        [
+          [
+            "sample.inheritance.TemplateClass",
+            null,
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "sample.inheritance.TemplateClass.html"
+              ]
+            ],
+            null,
+            [
+              [
+                null,
+                null,
+                null,
+                [
+                  "string",
+                  null,
+                  null,
+                  1,
+                  []
+                ]
+              ]
+            ]
+          ]
+        ],
+        [
+          [
+            "sample.inheritance.Runnable",
+            null,
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "sample.inheritance.Runnable.html"
+              ]
+            ],
+            null,
+            []
+          ]
+        ],
+        [],
+        [
+          [
+            "sample.inheritance",
+            null,
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "sample.inheritance.html"
+              ]
+            ],
+            null,
+            []
+          ],
+          null,
+          null,
+          1
+        ],
+        null,
+        "sample.inheritance.StringClass.html",
+        "sample.inheritance.StringClass",
+        [],
+        [],
+        [],
+        []
+      ]
     ]
-  }
-}
+  ]
+]

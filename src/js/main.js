@@ -46,7 +46,7 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.error('ServiceWorker registration failed: ' + err));
 }
 
-const typeIndex = new Index(/** @type {!Object} */(goog.global['TYPES']));
+const typeIndex = new Index(/** @type {!Array} */(goog.global['TYPES']));
 app.run(
     typeIndex,
     search.createSearchBox(typeIndex),

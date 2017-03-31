@@ -1,984 +1,1639 @@
-{
-  "1": [
-    {
-      "1": {
-        "1": "example",
-        "3": {
-          "2": "data/module/example/index.json",
-          "3": {
-            "3": "module/example/index.html"
-          }
-        }
-      },
-      "3": true,
-      "4": [
+[
+  [
+    [
+      [
+        "example",
+        null,
+        [
+          null,
+          "data/module/example/index.json",
+          [
+            null,
+            null,
+            "module/example/index.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      1,
+      [
         "max",
         "min"
       ],
-      "6": [
-        {
-          "1": {
-            "1": "GlobalCtor",
-            "2": "example.GlobalCtor",
-            "3": {
-              "2": "data/module/example/index_exports_GlobalCtor.json",
-              "3": {
-                "3": "module/example/index_exports_GlobalCtor.html"
-              }
-            }
-          },
-          "5": [
+      [],
+      [
+        [
+          [
+            "GlobalCtor",
+            "example.GlobalCtor",
+            [
+              null,
+              "data/module/example/index_exports_GlobalCtor.json",
+              [
+                null,
+                null,
+                "module/example/index_exports_GlobalCtor.html"
+              ]
+            ],
+            null,
+            []
+          ],
+          null,
+          null,
+          [],
+          [
             "deprecatedMethod",
             "deprecatedMethod2",
             "instanceMethod",
             "protoMethod"
-          ]
-        },
-        {
-          "1": {
-            "1": "Greeter",
-            "2": "example.Greeter",
-            "3": {
-              "2": "data/module/example/index_exports_Greeter.json",
-              "3": {
-                "3": "module/example/index_exports_Greeter.html"
-              }
-            }
-          }
-        }
+          ],
+          []
+        ],
+        [
+          [
+            "Greeter",
+            "example.Greeter",
+            [
+              null,
+              "data/module/example/index_exports_Greeter.json",
+              [
+                null,
+                null,
+                "module/example/index_exports_Greeter.html"
+              ]
+            ],
+            null,
+            []
+          ],
+          null,
+          null,
+          [],
+          [],
+          []
+        ]
       ]
-    },
-    {
-      "1": {
-        "1": "example/empty",
-        "3": {
-          "2": "data/module/example/empty.json",
-          "3": {
-            "3": "module/example/empty.html"
-          }
-        }
-      },
-      "3": true
-    },
-    {
-      "1": {
-        "1": "example/nested",
-        "3": {
-          "2": "data/module/example/nested.json",
-          "3": {
-            "3": "module/example/nested.html"
-          }
-        }
-      },
-      "3": true,
-      "6": [
-        {
-          "1": {
-            "1": "Greeter",
-            "2": "example/nested.Greeter",
-            "3": {
-              "2": "data/module/example/nested_exports_Greeter.json",
-              "3": {
-                "3": "module/example/nested_exports_Greeter.html"
-              }
-            }
-          },
-          "5": [
+    ],
+    [
+      [
+        "example/empty",
+        null,
+        [
+          null,
+          "data/module/example/empty.json",
+          [
+            null,
+            null,
+            "module/example/empty.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      1,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "example/nested",
+        null,
+        [
+          null,
+          "data/module/example/nested.json",
+          [
+            null,
+            null,
+            "module/example/nested.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      1,
+      [],
+      [],
+      [
+        [
+          [
+            "Greeter",
+            "example/nested.Greeter",
+            [
+              null,
+              "data/module/example/nested_exports_Greeter.json",
+              [
+                null,
+                null,
+                "module/example/nested_exports_Greeter.html"
+              ]
+            ],
+            null,
+            []
+          ],
+          null,
+          null,
+          [],
+          [
             "greet"
-          ]
-        },
-        {
-          "1": {
-            "1": "IdGenerator",
-            "2": "example/nested.IdGenerator",
-            "3": {
-              "2": "data/module/example/nested_exports_IdGenerator.json",
-              "3": {
-                "3": "module/example/nested_exports_IdGenerator.html"
-              }
-            }
-          },
-          "2": true,
-          "5": [
+          ],
+          []
+        ],
+        [
+          [
+            "IdGenerator",
+            "example/nested.IdGenerator",
+            [
+              null,
+              "data/module/example/nested_exports_IdGenerator.json",
+              [
+                null,
+                null,
+                "module/example/nested_exports_IdGenerator.html"
+              ]
+            ],
+            null,
+            []
+          ],
+          1,
+          null,
+          [],
+          [
             "getNext"
-          ]
-        },
-        {
-          "1": {
-            "1": "IncreasingIdGenerator",
-            "2": "example/nested.IncreasingIdGenerator",
-            "3": {
-              "2": "data/module/example/nested_exports_IncreasingIdGenerator.json",
-              "3": {
-                "3": "module/example/nested_exports_IncreasingIdGenerator.html"
-              }
-            }
-          },
-          "2": true,
-          "5": [
+          ],
+          []
+        ],
+        [
+          [
+            "IncreasingIdGenerator",
+            "example/nested.IncreasingIdGenerator",
+            [
+              null,
+              "data/module/example/nested_exports_IncreasingIdGenerator.json",
+              [
+                null,
+                null,
+                "module/example/nested_exports_IncreasingIdGenerator.html"
+              ]
+            ],
+            null,
+            []
+          ],
+          1,
+          null,
+          [],
+          [
             "getNext"
-          ]
-        },
-        {
-          "1": {
-            "1": "IncrementingIdGenerator",
-            "2": "example/nested.IncrementingIdGenerator",
-            "3": {
-              "2": "data/module/example/nested_exports_IncrementingIdGenerator.json",
-              "3": {
-                "3": "module/example/nested_exports_IncrementingIdGenerator.html"
-              }
-            }
-          },
-          "5": [
+          ],
+          []
+        ],
+        [
+          [
+            "IncrementingIdGenerator",
+            "example/nested.IncrementingIdGenerator",
+            [
+              null,
+              "data/module/example/nested_exports_IncrementingIdGenerator.json",
+              [
+                null,
+                null,
+                "module/example/nested_exports_IncrementingIdGenerator.html"
+              ]
+            ],
+            null,
+            []
+          ],
+          null,
+          null,
+          [],
+          [
             "getNext"
-          ]
-        },
-        {
-          "1": {
-            "1": "Person",
-            "2": "example/nested.Person",
-            "3": {
-              "2": "data/module/example/nested_exports_Person.json",
-              "3": {
-                "3": "module/example/nested_exports_Person.html"
-              }
-            }
-          },
-          "5": [
+          ],
+          []
+        ],
+        [
+          [
+            "Person",
+            "example/nested.Person",
+            [
+              null,
+              "data/module/example/nested_exports_Person.json",
+              [
+                null,
+                null,
+                "module/example/nested_exports_Person.html"
+              ]
+            ],
+            null,
+            []
+          ],
+          null,
+          null,
+          [],
+          [
             "age",
             "name"
-          ]
-        }
+          ],
+          []
+        ]
       ]
-    },
-    {
-      "1": {
-        "1": "example/net",
-        "3": {
-          "2": "data/module/example/net.json",
-          "3": {
-            "3": "module/example/net.html"
-          }
-        }
-      },
-      "3": true,
-      "4": [
+    ],
+    [
+      [
+        "example/net",
+        null,
+        [
+          null,
+          "data/module/example/net.json",
+          [
+            null,
+            null,
+            "module/example/net.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      1,
+      [
         "fetchJson",
         "get"
       ],
-      "6": [
-        {
-          "1": {
-            "1": "HttpClient",
-            "2": "example/net.HttpClient",
-            "3": {
-              "2": "data/module/example/net_exports_HttpClient.json",
-              "3": {
-                "3": "module/example/net_exports_HttpClient.html"
-              }
-            }
-          },
-          "5": [
+      [],
+      [
+        [
+          [
+            "HttpClient",
+            "example/net.HttpClient",
+            [
+              null,
+              "data/module/example/net_exports_HttpClient.json",
+              [
+                null,
+                null,
+                "module/example/net_exports_HttpClient.html"
+              ]
+            ],
+            null,
+            []
+          ],
+          null,
+          null,
+          [],
+          [
             "fetchJson",
             "get"
-          ]
-        }
+          ],
+          []
+        ]
       ]
-    },
-    {
-      "1": {
-        "1": "example/worker",
-        "3": {
-          "2": "data/module/example/worker.json",
-          "3": {
-            "3": "module/example/worker.html"
-          }
-        }
-      },
-      "3": true
-    }
+    ],
+    [
+      [
+        "example/worker",
+        null,
+        [
+          null,
+          "data/module/example/worker.json",
+          [
+            null,
+            null,
+            "module/example/worker.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      1,
+      [],
+      [],
+      []
+    ]
   ],
-  "2": [
-    {
-      "1": {
-        "1": "Calculator",
-        "3": {
-          "2": "data/Calculator.json",
-          "3": {
-            "3": "Calculator.html"
-          }
-        }
-      },
-      "4": [
+  [
+    [
+      [
+        "Calculator",
+        null,
+        [
+          null,
+          "data/Calculator.json",
+          [
+            null,
+            null,
+            "Calculator.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [
         "Calculator.base2",
         "Calculator.decimal",
         "Calculator.fibonacci"
       ],
-      "5": [
+      [
         "add",
         "radix"
-      ]
-    },
-    {
-      "1": {
-        "1": "Color",
-        "3": {
-          "2": "data/Color.json",
-          "3": {
-            "3": "Color.html"
-          }
-        }
-      }
-    },
-    {
-      "1": {
-        "1": "DeprecatedFoo",
-        "3": {
-          "2": "data/DeprecatedFoo.json",
-          "3": {
-            "3": "DeprecatedFoo.html"
-          }
-        }
-      }
-    },
-    {
-      "1": {
-        "1": "EmptyEnum",
-        "3": {
-          "2": "data/EmptyEnum.json",
-          "3": {
-            "3": "EmptyEnum.html"
-          }
-        }
-      }
-    },
-    {
-      "1": {
-        "1": "Formatter",
-        "3": {
-          "2": "data/Formatter.json",
-          "3": {
-            "3": "Formatter.html"
-          }
-        }
-      },
-      "5": [
+      ],
+      []
+    ],
+    [
+      [
+        "Color",
+        null,
+        [
+          null,
+          "data/Color.json",
+          [
+            null,
+            null,
+            "Color.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "DeprecatedFoo",
+        null,
+        [
+          null,
+          "data/DeprecatedFoo.json",
+          [
+            null,
+            null,
+            "DeprecatedFoo.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "EmptyEnum",
+        null,
+        [
+          null,
+          "data/EmptyEnum.json",
+          [
+            null,
+            null,
+            "EmptyEnum.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "Formatter",
+        null,
+        [
+          null,
+          "data/Formatter.json",
+          [
+            null,
+            null,
+            "Formatter.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [
         "format",
         "oldFormat"
-      ]
-    },
-    {
-      "1": {
-        "1": "GlobalCtor",
-        "3": {
-          "2": "data/GlobalCtor.json",
-          "3": {
-            "3": "GlobalCtor.html"
-          }
-        }
-      },
-      "4": [
+      ],
+      []
+    ],
+    [
+      [
+        "GlobalCtor",
+        null,
+        [
+          null,
+          "data/GlobalCtor.json",
+          [
+            null,
+            null,
+            "GlobalCtor.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [
         "GlobalCtor.dateCtor",
         "GlobalCtor.staticFunc",
         "GlobalCtor.staticProp"
       ],
-      "5": [
+      [
         "deprecatedMethod",
         "deprecatedMethod2",
         "instanceMethod",
         "protoMethod"
-      ]
-    },
-    {
-      "1": {
-        "1": "GlobalCtor.Other",
-        "3": {
-          "2": "data/GlobalCtor.Other.json",
-          "3": {
-            "3": "GlobalCtor.Other.html"
-          }
-        }
-      }
-    },
-    {
-      "1": {
-        "1": "GlobalEnum",
-        "3": {
-          "2": "data/GlobalEnum.json",
-          "3": {
-            "3": "GlobalEnum.html"
-          }
-        }
-      },
-      "4": [
+      ],
+      []
+    ],
+    [
+      [
+        "GlobalCtor.Other",
+        null,
+        [
+          null,
+          "data/GlobalCtor.Other.json",
+          [
+            null,
+            null,
+            "GlobalCtor.Other.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "GlobalEnum",
+        null,
+        [
+          null,
+          "data/GlobalEnum.json",
+          [
+            null,
+            null,
+            "GlobalEnum.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [
         "GlobalEnum.doSomething"
-      ]
-    },
-    {
-      "1": {
-        "1": "GlobalPrivateCtor",
-        "3": {
-          "2": "data/GlobalPrivateCtor.json",
-          "3": {
-            "3": "GlobalPrivateCtor.html"
-          }
-        }
-      }
-    },
-    {
-      "1": {
-        "1": "Person",
-        "3": {
-          "2": "data/Person.json",
-          "3": {
-            "3": "Person.html"
-          }
-        }
-      },
-      "2": true,
-      "5": [
+      ],
+      [],
+      []
+    ],
+    [
+      [
+        "GlobalPrivateCtor",
+        null,
+        [
+          null,
+          "data/GlobalPrivateCtor.json",
+          [
+            null,
+            null,
+            "GlobalPrivateCtor.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "Person",
+        null,
+        [
+          null,
+          "data/Person.json",
+          [
+            null,
+            null,
+            "Person.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      1,
+      null,
+      [],
+      [
         "age",
         "name"
-      ]
-    },
-    {
-      "1": {
-        "1": "PrivateColor_",
-        "3": {
-          "2": "data/PrivateColor_.json",
-          "3": {
-            "3": "PrivateColor_.html"
-          }
-        }
-      }
-    },
-    {
-      "1": {
-        "1": "SomeCtor",
-        "3": {
-          "2": "data/SomeCtor.json",
-          "3": {
-            "3": "SomeCtor.html"
-          }
-        }
-      }
-    },
-    {
-      "1": {
-        "1": "UndefinedEnum",
-        "3": {
-          "2": "data/UndefinedEnum.json",
-          "3": {
-            "3": "UndefinedEnum.html"
-          }
-        }
-      }
-    },
-    {
-      "1": {
-        "1": "closure.module",
-        "3": {
-          "2": "data/closure.module.json",
-          "3": {
-            "3": "closure.module.html"
-          }
-        }
-      },
-      "3": true,
-      "4": [
+      ],
+      []
+    ],
+    [
+      [
+        "PrivateColor_",
+        null,
+        [
+          null,
+          "data/PrivateColor_.json",
+          [
+            null,
+            null,
+            "PrivateColor_.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "SomeCtor",
+        null,
+        [
+          null,
+          "data/SomeCtor.json",
+          [
+            null,
+            null,
+            "SomeCtor.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "UndefinedEnum",
+        null,
+        [
+          null,
+          "data/UndefinedEnum.json",
+          [
+            null,
+            null,
+            "UndefinedEnum.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "closure.module",
+        null,
+        [
+          null,
+          "data/closure.module.json",
+          [
+            null,
+            null,
+            "closure.module.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      1,
+      [
         "publicMethod"
-      ]
-    },
-    {
-      "1": {
-        "1": "Clazz",
-        "2": "closure.module.Clazz",
-        "3": {
-          "2": "data/closure.module.Clazz.json",
-          "3": {
-            "3": "closure.module.Clazz.html"
-          }
-        }
-      },
-      "5": [
+      ],
+      [],
+      []
+    ],
+    [
+      [
+        "Clazz",
+        "closure.module.Clazz",
+        [
+          null,
+          "data/closure.module.Clazz.json",
+          [
+            null,
+            null,
+            "closure.module.Clazz.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [
         "method"
-      ]
-    },
-    {
-      "1": {
-        "1": "HardWorker",
-        "2": "closure.module.HardWorker",
-        "3": {
-          "2": "data/closure.module.HardWorker.json",
-          "3": {
-            "3": "closure.module.HardWorker.html"
-          }
-        }
-      },
-      "5": [
+      ],
+      []
+    ],
+    [
+      [
+        "HardWorker",
+        "closure.module.HardWorker",
+        [
+          null,
+          "data/closure.module.HardWorker.json",
+          [
+            null,
+            null,
+            "closure.module.HardWorker.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [
         "taskId"
-      ]
-    },
-    {
-      "1": {
-        "1": "PubClass",
-        "2": "closure.module.PubClass",
-        "3": {
-          "2": "data/closure.module.PubClass.json",
-          "3": {
-            "3": "closure.module.PubClass.html"
-          }
-        }
-      },
-      "5": [
+      ],
+      []
+    ],
+    [
+      [
+        "PubClass",
+        "closure.module.PubClass",
+        [
+          null,
+          "data/closure.module.PubClass.json",
+          [
+            null,
+            null,
+            "closure.module.PubClass.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [
         "aMethod"
-      ]
-    },
-    {
-      "1": {
-        "1": "Worker",
-        "2": "closure.module.Worker",
-        "3": {
-          "2": "data/closure.module.Worker.json",
-          "3": {
-            "3": "closure.module.Worker.html"
-          }
-        }
-      },
-      "5": [
+      ],
+      []
+    ],
+    [
+      [
+        "Worker",
+        "closure.module.Worker",
+        [
+          null,
+          "data/closure.module.Worker.json",
+          [
+            null,
+            null,
+            "closure.module.Worker.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [
         "taskId",
         "taskName"
-      ]
-    },
-    {
-      "1": {
-        "1": "foo",
-        "3": {
-          "2": "data/foo.json",
-          "3": {
-            "3": "foo.html"
-          }
-        }
-      },
-      "3": true,
-      "4": [
+      ],
+      []
+    ],
+    [
+      [
+        "foo",
+        null,
+        [
+          null,
+          "data/foo.json",
+          [
+            null,
+            null,
+            "foo.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      1,
+      [
         "newFilteredClass"
-      ]
-    },
-    {
-      "1": {
-        "1": "foo.One",
-        "3": {
-          "2": "data/foo.One.json",
-          "3": {
-            "3": "foo.One.html"
-          }
-        }
-      }
-    },
-    {
-      "1": {
-        "1": "foo.quot",
-        "3": {
-          "2": "data/foo.quot.json",
-          "3": {
-            "3": "foo.quot.html"
-          }
-        }
-      },
-      "3": true
-    },
-    {
-      "1": {
-        "1": "foo.quot.OneBarAlias",
-        "3": {
-          "2": "data/foo.quot.OneBarAlias.json",
-          "3": {
-            "3": "foo.quot.OneBarAlias.html"
-          }
-        }
-      },
-      "5": [
+      ],
+      [],
+      []
+    ],
+    [
+      [
+        "foo.One",
+        null,
+        [
+          null,
+          "data/foo.One.json",
+          [
+            null,
+            null,
+            "foo.One.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "foo.quot",
+        null,
+        [
+          null,
+          "data/foo.quot.json",
+          [
+            null,
+            null,
+            "foo.quot.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      1,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "foo.quot.OneBarAlias",
+        null,
+        [
+          null,
+          "data/foo.quot.OneBarAlias.json",
+          [
+            null,
+            null,
+            "foo.quot.OneBarAlias.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [
         "equals",
         "run"
-      ]
-    },
-    {
-      "1": {
-        "1": "namespace",
-        "3": {
-          "2": "data/namespace.json",
-          "3": {
-            "3": "namespace.html"
-          }
-        }
-      },
-      "3": true
-    },
-    {
-      "1": {
-        "1": "namespace.Widget",
-        "3": {
-          "2": "data/namespace.Widget.json",
-          "3": {
-            "3": "namespace.Widget.html"
-          }
-        }
-      }
-    },
-    {
-      "1": {
-        "1": "namespace.nested.internal",
-        "3": {
-          "2": "data/namespace.nested.internal.json",
-          "3": {
-            "3": "namespace.nested.internal.html"
-          }
-        }
-      },
-      "3": true
-    },
-    {
-      "1": {
-        "1": "namespace.nested.internal.Component",
-        "3": {
-          "2": "data/namespace.nested.internal.Component.json",
-          "3": {
-            "3": "namespace.nested.internal.Component.html"
-          }
-        }
-      }
-    },
-    {
-      "1": {
-        "1": "namespace.nested.internal.implicit.Foo",
-        "3": {
-          "2": "data/namespace.nested.internal.implicit.Foo.json",
-          "3": {
-            "3": "namespace.nested.internal.implicit.Foo.html"
-          }
-        }
-      }
-    },
-    {
-      "1": {
-        "1": "namespace.nested.logging",
-        "3": {
-          "2": "data/namespace.nested.logging.json",
-          "3": {
-            "3": "namespace.nested.logging.html"
-          }
-        }
-      },
-      "3": true,
-      "4": [
+      ],
+      []
+    ],
+    [
+      [
+        "namespace",
+        null,
+        [
+          null,
+          "data/namespace.json",
+          [
+            null,
+            null,
+            "namespace.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      1,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "namespace.Widget",
+        null,
+        [
+          null,
+          "data/namespace.Widget.json",
+          [
+            null,
+            null,
+            "namespace.Widget.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "namespace.nested.internal",
+        null,
+        [
+          null,
+          "data/namespace.nested.internal.json",
+          [
+            null,
+            null,
+            "namespace.nested.internal.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      1,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "namespace.nested.internal.Component",
+        null,
+        [
+          null,
+          "data/namespace.nested.internal.Component.json",
+          [
+            null,
+            null,
+            "namespace.nested.internal.Component.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "namespace.nested.internal.implicit.Foo",
+        null,
+        [
+          null,
+          "data/namespace.nested.internal.implicit.Foo.json",
+          [
+            null,
+            null,
+            "namespace.nested.internal.implicit.Foo.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "namespace.nested.logging",
+        null,
+        [
+          null,
+          "data/namespace.nested.logging.json",
+          [
+            null,
+            null,
+            "namespace.nested.logging.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      1,
+      [
         "log"
-      ]
-    },
-    {
-      "1": {
-        "1": "namespace.nested.logging.Console",
-        "3": {
-          "2": "data/namespace.nested.logging.Console.json",
-          "3": {
-            "3": "namespace.nested.logging.Console.html"
-          }
-        }
-      }
-    },
-    {
-      "1": {
-        "1": "sample.inheritance",
-        "3": {
-          "2": "data/sample.inheritance.json",
-          "3": {
-            "3": "sample.inheritance.html"
-          }
-        }
-      },
-      "3": true
-    },
-    {
-      "1": {
-        "1": "sample.inheritance.BaseClass",
-        "3": {
-          "2": "data/sample.inheritance.BaseClass.json",
-          "3": {
-            "3": "sample.inheritance.BaseClass.html"
-          }
-        }
-      },
-      "5": [
+      ],
+      [],
+      []
+    ],
+    [
+      [
+        "namespace.nested.logging.Console",
+        null,
+        [
+          null,
+          "data/namespace.nested.logging.Console.json",
+          [
+            null,
+            null,
+            "namespace.nested.logging.Console.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "sample.inheritance",
+        null,
+        [
+          null,
+          "data/sample.inheritance.json",
+          [
+            null,
+            null,
+            "sample.inheritance.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      1,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "sample.inheritance.BaseClass",
+        null,
+        [
+          null,
+          "data/sample.inheritance.BaseClass.json",
+          [
+            null,
+            null,
+            "sample.inheritance.BaseClass.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [
         "run"
-      ]
-    },
-    {
-      "1": {
-        "1": "sample.inheritance.BaseInterface",
-        "3": {
-          "2": "data/sample.inheritance.BaseInterface.json",
-          "3": {
-            "3": "sample.inheritance.BaseInterface.html"
-          }
-        }
-      },
-      "2": true
-    },
-    {
-      "1": {
-        "1": "sample.inheritance.DeprecatedFinalClass",
-        "3": {
-          "2": "data/sample.inheritance.DeprecatedFinalClass.json",
-          "3": {
-            "3": "sample.inheritance.DeprecatedFinalClass.html"
-          }
-        }
-      },
-      "5": [
+      ],
+      []
+    ],
+    [
+      [
+        "sample.inheritance.BaseInterface",
+        null,
+        [
+          null,
+          "data/sample.inheritance.BaseInterface.json",
+          [
+            null,
+            null,
+            "sample.inheritance.BaseInterface.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      1,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "sample.inheritance.DeprecatedFinalClass",
+        null,
+        [
+          null,
+          "data/sample.inheritance.DeprecatedFinalClass.json",
+          [
+            null,
+            null,
+            "sample.inheritance.DeprecatedFinalClass.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [
         "run"
-      ]
-    },
-    {
-      "1": {
-        "1": "sample.inheritance.FinalClass",
-        "3": {
-          "2": "data/sample.inheritance.FinalClass.json",
-          "3": {
-            "3": "sample.inheritance.FinalClass.html"
-          }
-        }
-      },
-      "5": [
+      ],
+      []
+    ],
+    [
+      [
+        "sample.inheritance.FinalClass",
+        null,
+        [
+          null,
+          "data/sample.inheritance.FinalClass.json",
+          [
+            null,
+            null,
+            "sample.inheritance.FinalClass.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [
         "run"
-      ]
-    },
-    {
-      "1": {
-        "1": "sample.inheritance.LeafInterface",
-        "3": {
-          "2": "data/sample.inheritance.LeafInterface.json",
-          "3": {
-            "3": "sample.inheritance.LeafInterface.html"
-          }
-        }
-      },
-      "2": true
-    },
-    {
-      "1": {
-        "1": "sample.inheritance.NumberClass",
-        "3": {
-          "2": "data/sample.inheritance.NumberClass.json",
-          "3": {
-            "3": "sample.inheritance.NumberClass.html"
-          }
-        }
-      },
-      "4": [
+      ],
+      []
+    ],
+    [
+      [
+        "sample.inheritance.LeafInterface",
+        null,
+        [
+          null,
+          "data/sample.inheritance.LeafInterface.json",
+          [
+            null,
+            null,
+            "sample.inheritance.LeafInterface.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      1,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "sample.inheritance.NumberClass",
+        null,
+        [
+          null,
+          "data/sample.inheritance.NumberClass.json",
+          [
+            null,
+            null,
+            "sample.inheritance.NumberClass.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [
         "NumberClass.Result"
       ],
-      "5": [
+      [
         "addMany"
-      ]
-    },
-    {
-      "1": {
-        "1": "sample.inheritance.OtherInterface",
-        "3": {
-          "2": "data/sample.inheritance.OtherInterface.json",
-          "3": {
-            "3": "sample.inheritance.OtherInterface.html"
-          }
-        }
-      },
-      "2": true
-    },
-    {
-      "1": {
-        "1": "sample.inheritance.Runnable",
-        "3": {
-          "2": "data/sample.inheritance.Runnable.json",
-          "3": {
-            "3": "sample.inheritance.Runnable.html"
-          }
-        }
-      },
-      "2": true,
-      "5": [
+      ],
+      []
+    ],
+    [
+      [
+        "sample.inheritance.OtherInterface",
+        null,
+        [
+          null,
+          "data/sample.inheritance.OtherInterface.json",
+          [
+            null,
+            null,
+            "sample.inheritance.OtherInterface.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      1,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "sample.inheritance.Runnable",
+        null,
+        [
+          null,
+          "data/sample.inheritance.Runnable.json",
+          [
+            null,
+            null,
+            "sample.inheritance.Runnable.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      1,
+      null,
+      [],
+      [
         "run"
-      ]
-    },
-    {
-      "1": {
-        "1": "sample.inheritance.RunnableError",
-        "3": {
-          "2": "data/sample.inheritance.RunnableError.json",
-          "3": {
-            "3": "sample.inheritance.RunnableError.html"
-          }
-        }
-      },
-      "5": [
+      ],
+      []
+    ],
+    [
+      [
+        "sample.inheritance.RunnableError",
+        null,
+        [
+          null,
+          "data/sample.inheritance.RunnableError.json",
+          [
+            null,
+            null,
+            "sample.inheritance.RunnableError.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [
         "run"
-      ]
-    },
-    {
-      "1": {
-        "1": "sample.inheritance.SecondClass",
-        "3": {
-          "2": "data/sample.inheritance.SecondClass.json",
-          "3": {
-            "3": "sample.inheritance.SecondClass.html"
-          }
-        }
-      },
-      "5": [
+      ],
+      []
+    ],
+    [
+      [
+        "sample.inheritance.SecondClass",
+        null,
+        [
+          null,
+          "data/sample.inheritance.SecondClass.json",
+          [
+            null,
+            null,
+            "sample.inheritance.SecondClass.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [
         "run"
-      ]
-    },
-    {
-      "1": {
-        "1": "sample.inheritance.SecondInterface",
-        "3": {
-          "2": "data/sample.inheritance.SecondInterface.json",
-          "3": {
-            "3": "sample.inheritance.SecondInterface.html"
-          }
-        }
-      },
-      "2": true
-    },
-    {
-      "1": {
-        "1": "sample.inheritance.StringClass",
-        "3": {
-          "2": "data/sample.inheritance.StringClass.json",
-          "3": {
-            "3": "sample.inheritance.StringClass.html"
-          }
-        }
-      },
-      "4": [
+      ],
+      []
+    ],
+    [
+      [
+        "sample.inheritance.SecondInterface",
+        null,
+        [
+          null,
+          "data/sample.inheritance.SecondInterface.json",
+          [
+            null,
+            null,
+            "sample.inheritance.SecondInterface.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      1,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "sample.inheritance.StringClass",
+        null,
+        [
+          null,
+          "data/sample.inheritance.StringClass.json",
+          [
+            null,
+            null,
+            "sample.inheritance.StringClass.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [
         "StringClass.isString"
       ],
-      "5": [
+      [
         "run",
         "substring"
-      ]
-    },
-    {
-      "1": {
-        "1": "sample.inheritance.TemplateClass",
-        "3": {
-          "2": "data/sample.inheritance.TemplateClass.json",
-          "3": {
-            "3": "sample.inheritance.TemplateClass.html"
-          }
-        }
-      },
-      "5": [
+      ],
+      []
+    ],
+    [
+      [
+        "sample.inheritance.TemplateClass",
+        null,
+        [
+          null,
+          "data/sample.inheritance.TemplateClass.json",
+          [
+            null,
+            null,
+            "sample.inheritance.TemplateClass.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [
         "add",
         "getValue",
         "name",
         "value"
-      ]
-    },
-    {
-      "1": {
-        "1": "sample.inheritance.ThirdClass",
-        "3": {
-          "2": "data/sample.inheritance.ThirdClass.json",
-          "3": {
-            "3": "sample.inheritance.ThirdClass.html"
-          }
-        }
-      }
-    },
-    {
-      "1": {
-        "1": "sample.json",
-        "3": {
-          "2": "data/sample.json.json",
-          "3": {
-            "3": "sample.json.html"
-          }
-        }
-      },
-      "3": true,
-      "4": [
+      ],
+      []
+    ],
+    [
+      [
+        "sample.inheritance.ThirdClass",
+        null,
+        [
+          null,
+          "data/sample.inheritance.ThirdClass.json",
+          [
+            null,
+            null,
+            "sample.inheritance.ThirdClass.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "sample.json",
+        null,
+        [
+          null,
+          "data/sample.json.json",
+          [
+            null,
+            null,
+            "sample.json.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      1,
+      [
         "parse",
         "sample.json.DEBUG",
         "stringify"
-      ]
-    },
-    {
-      "1": {
-        "1": "test",
-        "3": {
-          "2": "data/test.json",
-          "3": {
-            "3": "test.html"
-          }
-        }
-      },
-      "3": true
-    },
-    {
-      "1": {
-        "1": "test.Registry",
-        "3": {
-          "2": "data/test.Registry.json",
-          "3": {
-            "3": "test.Registry.html"
-          }
-        }
-      }
-    },
-    {
-      "1": {
-        "1": "test.registry",
-        "3": {
-          "2": "data/test.registry.json",
-          "3": {
-            "3": "test.registry.html"
-          }
-        }
-      },
-      "3": true,
-      "4": [
+      ],
+      [],
+      []
+    ],
+    [
+      [
+        "test",
+        null,
+        [
+          null,
+          "data/test.json",
+          [
+            null,
+            null,
+            "test.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      1,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "test.Registry",
+        null,
+        [
+          null,
+          "data/test.Registry.json",
+          [
+            null,
+            null,
+            "test.Registry.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "test.registry",
+        null,
+        [
+          null,
+          "data/test.registry.json",
+          [
+            null,
+            null,
+            "test.registry.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      1,
+      [
         "register"
-      ]
-    },
-    {
-      "1": {
-        "1": "vis",
-        "3": {
-          "2": "data/vis.json",
-          "3": {
-            "3": "vis.html"
-          }
-        }
-      },
-      "3": true,
-      "4": [
+      ],
+      [],
+      []
+    ],
+    [
+      [
+        "vis",
+        null,
+        [
+          null,
+          "data/vis.json",
+          [
+            null,
+            null,
+            "vis.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      1,
+      [
         "DeprecatedTypeDef",
         "DeprecatedTypeDef2",
         "PrivateTypeDef_",
         "deprecated",
         "one",
         "public"
-      ]
-    },
-    {
-      "1": {
-        "1": "vis.InheritsVis",
-        "3": {
-          "2": "data/vis.InheritsVis.json",
-          "3": {
-            "3": "vis.InheritsVis.html"
-          }
-        }
-      }
-    },
-    {
-      "1": {
-        "1": "vis.Private",
-        "3": {
-          "2": "data/vis.Private.json",
-          "3": {
-            "3": "vis.Private.html"
-          }
-        }
-      }
-    },
-    {
-      "1": {
-        "1": "vis.Public",
-        "3": {
-          "2": "data/vis.Public.json",
-          "3": {
-            "3": "vis.Public.html"
-          }
-        }
-      }
-    }
+      ],
+      [],
+      []
+    ],
+    [
+      [
+        "vis.InheritsVis",
+        null,
+        [
+          null,
+          "data/vis.InheritsVis.json",
+          [
+            null,
+            null,
+            "vis.InheritsVis.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "vis.Private",
+        null,
+        [
+          null,
+          "data/vis.Private.json",
+          [
+            null,
+            null,
+            "vis.Private.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "vis.Public",
+        null,
+        [
+          null,
+          "data/vis.Public.json",
+          [
+            null,
+            null,
+            "vis.Public.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [],
+      []
+    ]
   ],
-  "3": [
-    {
-      "1": "Custom Page",
-      "2": "page/Custom_Page.html",
-      "3": "data/page/Custom_Page.json"
-    }
+  [
+    [
+      "Custom Page",
+      "page/Custom_Page.html",
+      "data/page/Custom_Page.json"
+    ]
   ],
-  "4": [
-    {
-      "2": "index.html",
-      "3": "data/index.json"
-    },
-    {
-      "2": "source/closure_module.js.src.html",
-      "3": "data/source/closure_module.js.src.json"
-    },
-    {
-      "2": "source/es2015.js.src.html",
-      "3": "data/source/es2015.js.src.json"
-    },
-    {
-      "2": "source/example/empty.js.src.html",
-      "3": "data/source/example/empty.js.src.json"
-    },
-    {
-      "2": "source/example/filter.js.src.html",
-      "3": "data/source/example/filter.js.src.json"
-    },
-    {
-      "2": "source/example/index.js.src.html",
-      "3": "data/source/example/index.js.src.json"
-    },
-    {
-      "2": "source/example/nested.js.src.html",
-      "3": "data/source/example/nested.js.src.json"
-    },
-    {
-      "2": "source/example/net.js.src.html",
-      "3": "data/source/example/net.js.src.json"
-    },
-    {
-      "2": "source/example/worker.js.src.html",
-      "3": "data/source/example/worker.js.src.json"
-    },
-    {
-      "2": "source/filter.js.src.html",
-      "3": "data/source/filter.js.src.json"
-    },
-    {
-      "2": "source/globals.js.src.html",
-      "3": "data/source/globals.js.src.json"
-    },
-    {
-      "2": "source/inheritance.js.src.html",
-      "3": "data/source/inheritance.js.src.json"
-    },
-    {
-      "2": "source/json.js.src.html",
-      "3": "data/source/json.js.src.json"
-    },
-    {
-      "2": "source/namespace.js.src.html",
-      "3": "data/source/namespace.js.src.json"
-    },
-    {
-      "2": "source/registry.js.src.html",
-      "3": "data/source/registry.js.src.json"
-    },
-    {
-      "2": "source/subdir/emptyenum.js.src.html",
-      "3": "data/source/subdir/emptyenum.js.src.json"
-    },
-    {
-      "2": "source/visibility.js.src.html",
-      "3": "data/source/visibility.js.src.json"
-    }
+  [
+    [
+      null,
+      "index.html",
+      "data/index.json"
+    ],
+    [
+      null,
+      "source/closure_module.js.src.html",
+      "data/source/closure_module.js.src.json"
+    ],
+    [
+      null,
+      "source/es2015.js.src.html",
+      "data/source/es2015.js.src.json"
+    ],
+    [
+      null,
+      "source/example/empty.js.src.html",
+      "data/source/example/empty.js.src.json"
+    ],
+    [
+      null,
+      "source/example/filter.js.src.html",
+      "data/source/example/filter.js.src.json"
+    ],
+    [
+      null,
+      "source/example/index.js.src.html",
+      "data/source/example/index.js.src.json"
+    ],
+    [
+      null,
+      "source/example/nested.js.src.html",
+      "data/source/example/nested.js.src.json"
+    ],
+    [
+      null,
+      "source/example/net.js.src.html",
+      "data/source/example/net.js.src.json"
+    ],
+    [
+      null,
+      "source/example/worker.js.src.html",
+      "data/source/example/worker.js.src.json"
+    ],
+    [
+      null,
+      "source/filter.js.src.html",
+      "data/source/filter.js.src.json"
+    ],
+    [
+      null,
+      "source/globals.js.src.html",
+      "data/source/globals.js.src.json"
+    ],
+    [
+      null,
+      "source/inheritance.js.src.html",
+      "data/source/inheritance.js.src.json"
+    ],
+    [
+      null,
+      "source/json.js.src.html",
+      "data/source/json.js.src.json"
+    ],
+    [
+      null,
+      "source/namespace.js.src.html",
+      "data/source/namespace.js.src.json"
+    ],
+    [
+      null,
+      "source/registry.js.src.html",
+      "data/source/registry.js.src.json"
+    ],
+    [
+      null,
+      "source/subdir/emptyenum.js.src.html",
+      "data/source/subdir/emptyenum.js.src.json"
+    ],
+    [
+      null,
+      "source/visibility.js.src.html",
+      "data/source/visibility.js.src.json"
+    ]
   ]
-}
+]

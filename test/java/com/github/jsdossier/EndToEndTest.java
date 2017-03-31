@@ -416,7 +416,7 @@ public class EndToEndTest {
           .setPrettyPrinting()
           .create();
 
-      JsonObject json = gson.fromJson(actualContent, JsonObject.class);
+      JsonArray json = gson.fromJson(actualContent, JsonArray.class);
       actualContent = gson.toJson(json).trim();
 
       updateGoldenFile(goldenPath, actualContent);
@@ -524,7 +524,7 @@ public class EndToEndTest {
       Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
       String data = element.attributes().dataset().get("page-data");
-      JsonObject json = gson.fromJson(data, JsonObject.class);
+      JsonArray json = gson.fromJson(data, JsonArray.class);
       return gson.toJson(json).trim();
     }
 

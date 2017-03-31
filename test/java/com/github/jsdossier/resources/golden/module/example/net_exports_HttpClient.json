@@ -1,169 +1,291 @@
-{
-  "2": {
-    "1": [
-      {
-        "1": "HttpClient",
-        "5": {
-          "2": 61,
-          "4": {
-            "3": "../../source/example/net.js.src.html"
-          }
-        },
-        "7": {
-          "1": [
-            {
-              "2": "\u003cp\u003eA simple HTTP client.\u003c/p\u003e\n"
-            }
+[
+  null,
+  [
+    [
+      [
+        "HttpClient",
+        null,
+        null,
+        null,
+        [
+          null,
+          61,
+          null,
+          [
+            null,
+            null,
+            "../../source/example/net.js.src.html"
           ]
-        },
-        "8": {},
-        "14": {
-          "1": {
-            "1": "HttpClient",
-            "2": {
-              "2": 61,
-              "4": {
-                "3": "../../source/example/net.js.src.html"
-              }
-            },
-            "3": {}
-          },
-          "3": true
-        },
-        "15": [
-          {
-            "1": {
-              "1": "fetchJson",
-              "2": {
-                "2": 71,
-                "4": {
-                  "3": "../../source/example/net.js.src.html"
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eRetrieves a \u003ca href\u003d\"net.html#fetchJson\"\u003eJSON resource\u003c/a\u003e.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            },
-            "4": [
-              {
-                "1": "url",
-                "2": {
-                  "4": {
-                    "1": "string",
-                    "4": true
-                  }
-                },
-                "3": {
-                  "1": [
-                    {
-                      "2": "\u003cp\u003eThe URL To fetch the resource from.\u003c/p\u003e\n"
-                    }
-                  ]
-                }
-              }
-            ],
-            "5": {
-              "2": {
-                "4": {
-                  "1": "Promise",
-                  "4": true,
-                  "5": [
-                    {
-                      "4": {
-                        "1": "Object",
-                        "4": true
-                      }
-                    }
-                  ]
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eA promise that will be fulfilled with the parsed\nJSON response.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            }
-          },
-          {
-            "1": {
-              "1": "get",
-              "2": {
-                "2": 82,
-                "4": {
-                  "3": "../../source/example/net.js.src.html"
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eExecutes a basic \u003ca href\u003d\"net.html#get\"\u003eHTTP get request\u003c/a\u003e.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            },
-            "4": [
-              {
-                "1": "resource",
-                "2": {
-                  "4": {
-                    "1": "string",
-                    "4": true
-                  }
-                },
-                "3": {
-                  "1": [
-                    {
-                      "2": "\u003cp\u003eThe resource to retrieve.\u003c/p\u003e\n"
-                    }
-                  ]
-                }
-              }
-            ],
-            "5": {
-              "2": {
-                "4": {
-                  "1": "Promise",
-                  "4": true,
-                  "5": [
-                    {
-                      "4": {
-                        "1": "string",
-                        "4": true
-                      }
-                    }
-                  ]
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eA promise that will be fulfilled with the server\u0026#39;s\nresponse.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            }
-          }
         ],
-        "21": {
-          "1": {
-            "1": "example/net",
-            "3": {
-              "3": {
-                "3": "net.html"
-              }
-            }
-          },
-          "5": true
-        },
-        "23": "net_exports_HttpClient.html",
-        "24": "example/net.HttpClient"
-      }
+        null,
+        [
+          [
+            [
+              null,
+              "\u003cp\u003eA simple HTTP client.\u003c/p\u003e\n"
+            ]
+          ]
+        ],
+        [],
+        null,
+        [],
+        null,
+        [],
+        [],
+        [
+          [
+            "HttpClient",
+            [
+              null,
+              61,
+              null,
+              [
+                null,
+                null,
+                "../../source/example/net.js.src.html"
+              ]
+            ],
+            [
+              []
+            ],
+            null,
+            null,
+            null,
+            null,
+            null,
+            [],
+            []
+          ],
+          [],
+          1,
+          [],
+          null,
+          []
+        ],
+        [
+          [
+            [
+              "fetchJson",
+              [
+                null,
+                71,
+                null,
+                [
+                  null,
+                  null,
+                  "../../source/example/net.js.src.html"
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eRetrieves a \u003ca href\u003d\"net.html#fetchJson\"\u003eJSON resource\u003c/a\u003e.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [],
+              []
+            ],
+            [],
+            null,
+            [
+              [
+                "url",
+                [
+                  null,
+                  null,
+                  null,
+                  [
+                    "string",
+                    null,
+                    null,
+                    1,
+                    []
+                  ]
+                ],
+                [
+                  [
+                    [
+                      null,
+                      "\u003cp\u003eThe URL To fetch the resource from.\u003c/p\u003e\n"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              null,
+              [
+                null,
+                null,
+                null,
+                [
+                  "Promise",
+                  null,
+                  null,
+                  1,
+                  [
+                    [
+                      null,
+                      null,
+                      null,
+                      [
+                        "Object",
+                        null,
+                        null,
+                        1,
+                        []
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eA promise that will be fulfilled with the parsed\nJSON response.\u003c/p\u003e\n"
+                  ]
+                ]
+              ]
+            ],
+            []
+          ],
+          [
+            [
+              "get",
+              [
+                null,
+                82,
+                null,
+                [
+                  null,
+                  null,
+                  "../../source/example/net.js.src.html"
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eExecutes a basic \u003ca href\u003d\"net.html#get\"\u003eHTTP get request\u003c/a\u003e.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [],
+              []
+            ],
+            [],
+            null,
+            [
+              [
+                "resource",
+                [
+                  null,
+                  null,
+                  null,
+                  [
+                    "string",
+                    null,
+                    null,
+                    1,
+                    []
+                  ]
+                ],
+                [
+                  [
+                    [
+                      null,
+                      "\u003cp\u003eThe resource to retrieve.\u003c/p\u003e\n"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              null,
+              [
+                null,
+                null,
+                null,
+                [
+                  "Promise",
+                  null,
+                  null,
+                  1,
+                  [
+                    [
+                      null,
+                      null,
+                      null,
+                      [
+                        "string",
+                        null,
+                        null,
+                        1,
+                        []
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eA promise that will be fulfilled with the server\u0026#39;s\nresponse.\u003c/p\u003e\n"
+                  ]
+                ]
+              ]
+            ],
+            []
+          ]
+        ],
+        [],
+        null,
+        [],
+        [],
+        [],
+        [
+          [
+            "example/net",
+            null,
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "net.html"
+              ]
+            ],
+            null,
+            []
+          ],
+          null,
+          null,
+          null,
+          1
+        ],
+        null,
+        "net_exports_HttpClient.html",
+        "example/net.HttpClient",
+        [],
+        [],
+        [],
+        []
+      ]
     ]
-  }
-}
+  ]
+]

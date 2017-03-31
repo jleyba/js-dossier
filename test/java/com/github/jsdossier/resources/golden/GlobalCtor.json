@@ -1,275 +1,464 @@
-{
-  "2": {
-    "1": [
-      {
-        "1": "GlobalCtor",
-        "5": {
-          "2": 5,
-          "4": {
-            "3": "source/globals.js.src.html"
-          }
-        },
-        "6": {
-          "1": [
-            {
-              "1": "GlobalCtor.Other",
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eThis is a nested constructor and should be documented as a nested type.\u003c/p\u003e\n"
-                  }
-                ]
-              },
-              "5": {
-                "3": "GlobalCtor.Other.html"
-              }
-            }
+[
+  null,
+  [
+    [
+      [
+        "GlobalCtor",
+        null,
+        null,
+        null,
+        [
+          null,
+          5,
+          null,
+          [
+            null,
+            null,
+            "source/globals.js.src.html"
           ]
-        },
-        "7": {
-          "1": [
-            {
-              "2": "\u003cp\u003eThis is a global constructor.\u003c/p\u003e\n"
-            }
-          ]
-        },
-        "8": {},
-        "12": [
-          {
-            "1": {
-              "1": "GlobalCtor.dateCtor",
-              "2": {
-                "2": 30,
-                "4": {
-                  "3": "source/globals.js.src.html"
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eThis is just an alias for an extern and should be documented as such.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            },
-            "3": true
-          },
-          {
-            "1": {
-              "1": "GlobalCtor.staticFunc",
-              "2": {
-                "2": 44,
-                "4": {
-                  "3": "source/globals.js.src.html"
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eA static function.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            },
-            "5": {
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eReturn statement; no type.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            }
-          }
         ],
-        "13": [
-          {
-            "1": {
-              "1": "GlobalCtor.staticProp",
-              "2": {
-                "2": 23,
-                "4": {
-                  "3": "source/globals.js.src.html"
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eA static property.\u003c/p\u003e\n"
-                  }
+        [
+          [
+            [
+              "GlobalCtor.Other",
+              null,
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eThis is a nested constructor and should be documented as a nested type.\u003c/p\u003e\n"
+                  ]
                 ]
-              }
-            },
-            "2": {
-              "4": {
-                "1": "string",
-                "4": true
-              }
-            }
-          }
-        ],
-        "14": {
-          "1": {
-            "1": "GlobalCtor",
-            "2": {
-              "2": 5,
-              "4": {
-                "3": "source/globals.js.src.html"
-              }
-            },
-            "3": {
-              "1": [
-                {
-                  "2": "\u003cp\u003eThis is a global constructor.\u003c/p\u003e\n"
-                }
+              ],
+              null,
+              [
+                null,
+                null,
+                "GlobalCtor.Other.html"
               ]
-            }
-          },
-          "3": true
-        },
-        "15": [
-          {
-            "1": {
-              "1": "deprecatedMethod",
-              "2": {
-                "2": 62,
-                "4": {
-                  "3": "source/globals.js.src.html"
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eMethod description here.\u003c/p\u003e\n"
-                  }
-                ]
-              },
-              "4": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eThis is a deprecated method.\u003c/p\u003e\n"
-                  }
-                ]
-              },
-              "6": {
-                "2": true
-              }
-            },
-            "5": {
-              "2": {
-                "4": {
-                  "1": "string",
-                  "4": true
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eA string.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            }
-          },
-          {
-            "1": {
-              "1": "deprecatedMethod2",
-              "2": {
-                "2": 69,
-                "4": {
-                  "3": "source/globals.js.src.html"
-                }
-              },
-              "3": {},
-              "4": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eAnnotation is only detail on method.\u003c/p\u003e\n"
-                  }
-                ]
-              },
-              "6": {
-                "2": true
-              }
-            }
-          },
-          {
-            "1": {
-              "1": "instanceMethod",
-              "2": {
-                "2": 16,
-                "4": {
-                  "3": "source/globals.js.src.html"
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eThis is a function defined inside the constructor.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            }
-          },
-          {
-            "1": {
-              "1": "protoMethod",
-              "2": {
-                "2": 53,
-                "4": {
-                  "3": "source/globals.js.src.html"
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eThis is function defined on the prototype.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            },
-            "4": [
-              {
-                "1": "x",
-                "2": {
-                  "4": {
-                    "1": "string",
-                    "4": true
-                  }
-                },
-                "3": {
-                  "1": [
-                    {
-                      "2": "\u003cp\u003edescription.\u003c/p\u003e\n"
-                    }
-                  ]
-                }
-              },
-              {
-                "1": "y",
-                "3": {
-                  "1": [
-                    {
-                      "2": "\u003cp\u003edescription only.\u003c/p\u003e\n"
-                    }
-                  ]
-                }
-              },
-              {
-                "1": "z",
-                "2": {
-                  "4": {
-                    "1": "number",
-                    "4": true
-                  }
-                }
-              }
             ]
-          }
+          ],
+          [],
+          []
         ],
-        "23": "GlobalCtor.html",
-        "24": "GlobalCtor"
-      }
+        [
+          [
+            [
+              null,
+              "\u003cp\u003eThis is a global constructor.\u003c/p\u003e\n"
+            ]
+          ]
+        ],
+        [],
+        null,
+        [],
+        null,
+        [
+          [
+            [
+              "GlobalCtor.dateCtor",
+              [
+                null,
+                30,
+                null,
+                [
+                  null,
+                  null,
+                  "source/globals.js.src.html"
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eThis is just an alias for an extern and should be documented as such.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [],
+              []
+            ],
+            [],
+            1,
+            [],
+            null,
+            []
+          ],
+          [
+            [
+              "GlobalCtor.staticFunc",
+              [
+                null,
+                44,
+                null,
+                [
+                  null,
+                  null,
+                  "source/globals.js.src.html"
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eA static function.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [],
+              []
+            ],
+            [],
+            null,
+            [],
+            [
+              null,
+              null,
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eReturn statement; no type.\u003c/p\u003e\n"
+                  ]
+                ]
+              ]
+            ],
+            []
+          ]
+        ],
+        [
+          [
+            [
+              "GlobalCtor.staticProp",
+              [
+                null,
+                23,
+                null,
+                [
+                  null,
+                  null,
+                  "source/globals.js.src.html"
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eA static property.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [],
+              []
+            ],
+            [
+              null,
+              null,
+              null,
+              [
+                "string",
+                null,
+                null,
+                1,
+                []
+              ]
+            ]
+          ]
+        ],
+        [
+          [
+            "GlobalCtor",
+            [
+              null,
+              5,
+              null,
+              [
+                null,
+                null,
+                "source/globals.js.src.html"
+              ]
+            ],
+            [
+              [
+                [
+                  null,
+                  "\u003cp\u003eThis is a global constructor.\u003c/p\u003e\n"
+                ]
+              ]
+            ],
+            null,
+            null,
+            null,
+            null,
+            null,
+            [],
+            []
+          ],
+          [],
+          1,
+          [],
+          null,
+          []
+        ],
+        [
+          [
+            [
+              "deprecatedMethod",
+              [
+                null,
+                62,
+                null,
+                [
+                  null,
+                  null,
+                  "source/globals.js.src.html"
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eMethod description here.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eThis is a deprecated method.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              [
+                null,
+                1
+              ],
+              null,
+              null,
+              [],
+              []
+            ],
+            [],
+            null,
+            [],
+            [
+              null,
+              [
+                null,
+                null,
+                null,
+                [
+                  "string",
+                  null,
+                  null,
+                  1,
+                  []
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eA string.\u003c/p\u003e\n"
+                  ]
+                ]
+              ]
+            ],
+            []
+          ],
+          [
+            [
+              "deprecatedMethod2",
+              [
+                null,
+                69,
+                null,
+                [
+                  null,
+                  null,
+                  "source/globals.js.src.html"
+                ]
+              ],
+              [
+                []
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eAnnotation is only detail on method.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              [
+                null,
+                1
+              ],
+              null,
+              null,
+              [],
+              []
+            ],
+            [],
+            null,
+            [],
+            null,
+            []
+          ],
+          [
+            [
+              "instanceMethod",
+              [
+                null,
+                16,
+                null,
+                [
+                  null,
+                  null,
+                  "source/globals.js.src.html"
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eThis is a function defined inside the constructor.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [],
+              []
+            ],
+            [],
+            null,
+            [],
+            null,
+            []
+          ],
+          [
+            [
+              "protoMethod",
+              [
+                null,
+                53,
+                null,
+                [
+                  null,
+                  null,
+                  "source/globals.js.src.html"
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eThis is function defined on the prototype.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [],
+              []
+            ],
+            [],
+            null,
+            [
+              [
+                "x",
+                [
+                  null,
+                  null,
+                  null,
+                  [
+                    "string",
+                    null,
+                    null,
+                    1,
+                    []
+                  ]
+                ],
+                [
+                  [
+                    [
+                      null,
+                      "\u003cp\u003edescription.\u003c/p\u003e\n"
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "y",
+                null,
+                [
+                  [
+                    [
+                      null,
+                      "\u003cp\u003edescription only.\u003c/p\u003e\n"
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "z",
+                [
+                  null,
+                  null,
+                  null,
+                  [
+                    "number",
+                    null,
+                    null,
+                    1,
+                    []
+                  ]
+                ]
+              ]
+            ],
+            null,
+            []
+          ]
+        ],
+        [],
+        null,
+        [],
+        [],
+        [],
+        null,
+        null,
+        "GlobalCtor.html",
+        "GlobalCtor",
+        [],
+        [],
+        [],
+        []
+      ]
     ]
-  }
-}
+  ]
+]

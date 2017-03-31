@@ -1,245 +1,429 @@
-{
-  "2": {
-    "1": [
-      {
-        "1": "Calculator",
-        "5": {
-          "2": 22,
-          "4": {
-            "3": "source/es2015.js.src.html"
-          }
-        },
-        "7": {
-          "1": [
-            {
-              "2": "\u003cp\u003eA simple arithmetic calculator.\u003c/p\u003e\n"
-            }
+[
+  null,
+  [
+    [
+      [
+        "Calculator",
+        null,
+        null,
+        null,
+        [
+          null,
+          22,
+          null,
+          [
+            null,
+            null,
+            "source/es2015.js.src.html"
           ]
-        },
-        "8": {},
-        "12": [
-          {
-            "1": {
-              "1": "Calculator.base2",
-              "2": {
-                "2": 34,
-                "4": {
-                  "3": "source/es2015.js.src.html"
-                }
-              },
-              "3": {}
-            },
-            "5": {
-              "2": {
-                "4": {
-                  "1": "Calculator",
-                  "3": {
-                    "3": {
-                      "3": "Calculator.html"
-                    }
-                  }
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eA new base-2 calculator.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            }
-          },
-          {
-            "1": {
-              "1": "Calculator.decimal",
-              "2": {
-                "2": 41,
-                "4": {
-                  "3": "source/es2015.js.src.html"
-                }
-              },
-              "3": {}
-            },
-            "5": {
-              "2": {
-                "4": {
-                  "1": "Calculator",
-                  "3": {
-                    "3": {
-                      "3": "Calculator.html"
-                    }
-                  }
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eA new decimal calculator.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            }
-          },
-          {
-            "1": {
-              "1": "Calculator.fibonacci",
-              "2": {
-                "2": 51,
-                "4": {
-                  "3": "source/es2015.js.src.html"
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eReturns an iterable object that will compute \u003ccode\u003en\u003c/code\u003e values in the fibonacci\nsequence.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            },
-            "4": [
-              {
-                "1": "n",
-                "2": {
-                  "4": {
-                    "1": "number",
-                    "4": true
-                  }
-                },
-                "3": {
-                  "1": [
-                    {
-                      "2": "\u003cp\u003ethe number of places to compute.\u003c/p\u003e\n"
-                    }
-                  ]
-                }
-              }
+        ],
+        null,
+        [
+          [
+            [
+              null,
+              "\u003cp\u003eA simple arithmetic calculator.\u003c/p\u003e\n"
             ]
-          }
-        ],
-        "14": {
-          "1": {
-            "1": "Calculator",
-            "2": {
-              "2": 22,
-              "4": {
-                "3": "source/es2015.js.src.html"
-              }
-            },
-            "3": {
-              "1": [
-                {
-                  "2": "\u003cp\u003eA simple arithmetic calculator.\u003c/p\u003e\n"
-                }
-              ]
-            }
-          },
-          "3": true,
-          "4": [
-            {
-              "1": "radix",
-              "2": {
-                "4": {
-                  "1": "number",
-                  "4": true
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003ethe radix to use.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            }
           ]
-        },
-        "15": [
-          {
-            "1": {
-              "1": "add",
-              "2": {
-                "2": 86,
-                "4": {
-                  "3": "source/es2015.js.src.html"
-                }
-              },
-              "3": {}
-            },
-            "4": [
-              {
-                "1": "a",
-                "2": {
-                  "4": {
-                    "1": "number",
-                    "4": true
-                  }
-                },
-                "3": {
-                  "1": [
-                    {
-                      "2": "\u003cp\u003ethe first number to add.\u003c/p\u003e\n"
-                    }
-                  ]
-                }
-              },
-              {
-                "1": "b",
-                "2": {
-                  "4": {
-                    "1": "number",
-                    "4": true
-                  }
-                },
-                "3": {
-                  "1": [
-                    {
-                      "2": "\u003cp\u003ethe second number to add.\u003c/p\u003e\n"
-                    }
-                  ]
-                }
-              }
-            ],
-            "5": {
-              "2": {
-                "4": {
-                  "1": "number",
-                  "4": true
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003ethe result of adding the two numbers.\u003c/p\u003e\n"
-                  }
+        ],
+        [],
+        null,
+        [],
+        null,
+        [
+          [
+            [
+              "Calculator.base2",
+              [
+                null,
+                34,
+                null,
+                [
+                  null,
+                  null,
+                  "source/es2015.js.src.html"
                 ]
-              }
-            }
-          }
+              ],
+              [
+                []
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [],
+              []
+            ],
+            [],
+            null,
+            [],
+            [
+              null,
+              [
+                null,
+                null,
+                null,
+                [
+                  "Calculator",
+                  null,
+                  [
+                    null,
+                    null,
+                    [
+                      null,
+                      null,
+                      "Calculator.html"
+                    ]
+                  ],
+                  null,
+                  []
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eA new base-2 calculator.\u003c/p\u003e\n"
+                  ]
+                ]
+              ]
+            ],
+            []
+          ],
+          [
+            [
+              "Calculator.decimal",
+              [
+                null,
+                41,
+                null,
+                [
+                  null,
+                  null,
+                  "source/es2015.js.src.html"
+                ]
+              ],
+              [
+                []
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [],
+              []
+            ],
+            [],
+            null,
+            [],
+            [
+              null,
+              [
+                null,
+                null,
+                null,
+                [
+                  "Calculator",
+                  null,
+                  [
+                    null,
+                    null,
+                    [
+                      null,
+                      null,
+                      "Calculator.html"
+                    ]
+                  ],
+                  null,
+                  []
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eA new decimal calculator.\u003c/p\u003e\n"
+                  ]
+                ]
+              ]
+            ],
+            []
+          ],
+          [
+            [
+              "Calculator.fibonacci",
+              [
+                null,
+                51,
+                null,
+                [
+                  null,
+                  null,
+                  "source/es2015.js.src.html"
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eReturns an iterable object that will compute \u003ccode\u003en\u003c/code\u003e values in the fibonacci\nsequence.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [],
+              []
+            ],
+            [],
+            null,
+            [
+              [
+                "n",
+                [
+                  null,
+                  null,
+                  null,
+                  [
+                    "number",
+                    null,
+                    null,
+                    1,
+                    []
+                  ]
+                ],
+                [
+                  [
+                    [
+                      null,
+                      "\u003cp\u003ethe number of places to compute.\u003c/p\u003e\n"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            null,
+            []
+          ]
         ],
-        "16": [
-          {
-            "1": {
-              "1": "radix",
-              "2": {
-                "2": 22,
-                "4": {
-                  "3": "source/es2015.js.src.html"
-                }
-              },
-              "3": {}
-            },
-            "2": {
-              "4": {
-                "1": "number",
-                "4": true
-              }
-            }
-          }
+        [],
+        [
+          [
+            "Calculator",
+            [
+              null,
+              22,
+              null,
+              [
+                null,
+                null,
+                "source/es2015.js.src.html"
+              ]
+            ],
+            [
+              [
+                [
+                  null,
+                  "\u003cp\u003eA simple arithmetic calculator.\u003c/p\u003e\n"
+                ]
+              ]
+            ],
+            null,
+            null,
+            null,
+            null,
+            null,
+            [],
+            []
+          ],
+          [],
+          1,
+          [
+            [
+              "radix",
+              [
+                null,
+                null,
+                null,
+                [
+                  "number",
+                  null,
+                  null,
+                  1,
+                  []
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003ethe radix to use.\u003c/p\u003e\n"
+                  ]
+                ]
+              ]
+            ]
+          ],
+          null,
+          []
         ],
-        "23": "Calculator.html",
-        "24": "Calculator"
-      }
+        [
+          [
+            [
+              "add",
+              [
+                null,
+                86,
+                null,
+                [
+                  null,
+                  null,
+                  "source/es2015.js.src.html"
+                ]
+              ],
+              [
+                []
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [],
+              []
+            ],
+            [],
+            null,
+            [
+              [
+                "a",
+                [
+                  null,
+                  null,
+                  null,
+                  [
+                    "number",
+                    null,
+                    null,
+                    1,
+                    []
+                  ]
+                ],
+                [
+                  [
+                    [
+                      null,
+                      "\u003cp\u003ethe first number to add.\u003c/p\u003e\n"
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "b",
+                [
+                  null,
+                  null,
+                  null,
+                  [
+                    "number",
+                    null,
+                    null,
+                    1,
+                    []
+                  ]
+                ],
+                [
+                  [
+                    [
+                      null,
+                      "\u003cp\u003ethe second number to add.\u003c/p\u003e\n"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              null,
+              [
+                null,
+                null,
+                null,
+                [
+                  "number",
+                  null,
+                  null,
+                  1,
+                  []
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003ethe result of adding the two numbers.\u003c/p\u003e\n"
+                  ]
+                ]
+              ]
+            ],
+            []
+          ]
+        ],
+        [
+          [
+            [
+              "radix",
+              [
+                null,
+                22,
+                null,
+                [
+                  null,
+                  null,
+                  "source/es2015.js.src.html"
+                ]
+              ],
+              [
+                []
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [],
+              []
+            ],
+            [
+              null,
+              null,
+              null,
+              [
+                "number",
+                null,
+                null,
+                1,
+                []
+              ]
+            ]
+          ]
+        ],
+        null,
+        [],
+        [],
+        [],
+        null,
+        null,
+        "Calculator.html",
+        "Calculator",
+        [],
+        [],
+        [],
+        []
+      ]
     ]
-  }
-}
+  ]
+]

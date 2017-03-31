@@ -1,314 +1,564 @@
-{
-  "2": {
-    "1": [
-      {
-        "1": "sample.inheritance.NumberClass",
-        "5": {
-          "2": 128,
-          "4": {
-            "3": "source/inheritance.js.src.html"
-          }
-        },
-        "7": {},
-        "8": {
-          "7": true
-        },
-        "10": [
-          {
-            "1": {
-              "1": "NumberClass.Result",
-              "2": {
-                "2": 137,
-                "4": {
-                  "3": "source/inheritance.js.src.html"
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eType definition for an addition result.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            },
-            "2": {
-              "4": {
-                "1": "number",
-                "4": true
-              }
-            }
-          }
+[
+  null,
+  [
+    [
+      [
+        "sample.inheritance.NumberClass",
+        null,
+        null,
+        null,
+        [
+          null,
+          128,
+          null,
+          [
+            null,
+            null,
+            "source/inheritance.js.src.html"
+          ]
         ],
-        "14": {
-          "1": {
-            "1": "NumberClass",
-            "2": {
-              "2": 128,
-              "4": {
-                "3": "source/inheritance.js.src.html"
-              }
-            },
-            "3": {}
-          },
-          "3": true
-        },
-        "15": [
-          {
-            "1": {
-              "1": "add",
-              "2": {
-                "2": 118,
-                "4": {
-                  "3": "source/inheritance.js.src.html"
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eAdds a value to this instance\u0026#39;s \u003ca href\u003d\"sample.inheritance.NumberClass.html#getValue\"\u003e\u003ccode\u003evalue\u003c/code\u003e\u003c/a\u003e.\u003c/p\u003e\n"
-                  }
+        null,
+        [
+          []
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1
+        ],
+        null,
+        [
+          [
+            [
+              "NumberClass.Result",
+              [
+                null,
+                137,
+                null,
+                [
+                  null,
+                  null,
+                  "source/inheritance.js.src.html"
                 ]
-              },
-              "7": {
-                "1": "sample.inheritance.TemplateClass",
-                "3": {
-                  "3": {
-                    "3": "sample.inheritance.TemplateClass.html#add"
-                  }
-                }
-              }
-            },
-            "4": [
-              {
-                "1": "value",
-                "2": {
-                  "6": {
-                    "1": [
-                      {
-                        "4": {
-                          "1": "T"
-                        }
-                      },
-                      {
-                        "10": true
-                      }
-                    ]
-                  }
-                },
-                "3": {
-                  "1": [
-                    {
-                      "2": "\u003cp\u003eThe value to add.\u003c/p\u003e\n"
-                    }
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eType definition for an addition result.\u003c/p\u003e\n"
                   ]
-                }
-              }
-            ]
-          },
-          {
-            "1": {
-              "1": "addMany",
-              "2": {
-                "2": 147,
-                "4": {
-                  "3": "source/inheritance.js.src.html"
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eSimilar to \u003ca href\u003d\"sample.inheritance.NumberClass.html#add\"\u003e\u003ccode\u003e#add\u003c/code\u003e\u003c/a\u003e, but handles many values.\u003c/p\u003e\n"
-                  }
                 ]
-              },
-              "10": [
-                {
-                  "1": [
-                    {
-                      "1": "#add",
-                      "3": {
-                        "3": {
-                          "3": "sample.inheritance.NumberClass.html#add"
-                        }
-                      }
-                    }
-                  ]
-                }
-              ]
-            },
-            "4": [
-              {
-                "1": "n",
-                "2": {
-                  "4": {
-                    "1": "number",
-                    "4": true
-                  }
-                },
-                "3": {
-                  "1": [
-                    {
-                      "2": "\u003cp\u003eThe first number to add.\u003c/p\u003e\n"
-                    }
-                  ]
-                }
-              },
-              {
-                "1": "var_args",
-                "2": {
-                  "2": true,
-                  "4": {
-                    "1": "number",
-                    "4": true
-                  }
-                },
-                "3": {
-                  "1": [
-                    {
-                      "2": "\u003cp\u003eThe remaining numbers to add.\u003c/p\u003e\n"
-                    }
-                  ]
-                }
-              }
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [],
+              []
             ],
-            "5": {
-              "2": {
-                "4": {
-                  "1": "number",
-                  "4": true
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eThe result.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            }
-          },
-          {
-            "1": {
-              "1": "getValue",
-              "2": {
-                "2": 109,
-                "4": {
-                  "3": "source/inheritance.js.src.html"
-                }
-              },
-              "3": {},
-              "7": {
-                "1": "sample.inheritance.TemplateClass",
-                "3": {
-                  "3": {
-                    "3": "sample.inheritance.TemplateClass.html#getValue"
-                  }
-                }
-              }
-            },
-            "5": {
-              "2": {
-                "4": {
-                  "1": "number",
-                  "4": true
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003e.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            }
-          }
-        ],
-        "16": [
-          {
-            "1": {
-              "1": "name",
-              "2": {
-                "2": 104,
-                "4": {
-                  "3": "source/inheritance.js.src.html"
-                }
-              },
-              "3": {},
-              "7": {
-                "1": "sample.inheritance.TemplateClass",
-                "3": {
-                  "3": {
-                    "3": "sample.inheritance.TemplateClass.html#name"
-                  }
-                }
-              }
-            },
-            "2": {
-              "4": {
-                "1": "string",
-                "4": true
-              }
-            }
-          },
-          {
-            "1": {
-              "1": "value",
-              "2": {
-                "2": 119,
-                "4": {
-                  "3": "source/inheritance.js.src.html"
-                }
-              },
-              "3": {},
-              "7": {
-                "1": "sample.inheritance.TemplateClass",
-                "3": {
-                  "3": {
-                    "3": "sample.inheritance.TemplateClass.html#value"
-                  }
-                }
-              }
-            },
-            "2": {
-              "4": {
-                "1": "number",
-                "4": true
-              }
-            }
-          }
-        ],
-        "18": [
-          {
-            "1": "sample.inheritance.TemplateClass",
-            "3": {
-              "3": {
-                "3": "sample.inheritance.TemplateClass.html"
-              }
-            },
-            "5": [
-              {
-                "4": {
-                  "1": "number",
-                  "4": true
-                }
-              }
+            [
+              null,
+              null,
+              null,
+              [
+                "number",
+                null,
+                null,
+                1,
+                []
+              ]
             ]
-          }
+          ]
         ],
-        "21": {
-          "1": {
-            "1": "sample.inheritance",
-            "3": {
-              "3": {
-                "3": "sample.inheritance.html"
-              }
-            }
-          },
-          "4": true
-        },
-        "23": "sample.inheritance.NumberClass.html",
-        "24": "sample.inheritance.NumberClass"
-      }
+        null,
+        [],
+        [],
+        [
+          [
+            "NumberClass",
+            [
+              null,
+              128,
+              null,
+              [
+                null,
+                null,
+                "source/inheritance.js.src.html"
+              ]
+            ],
+            [
+              []
+            ],
+            null,
+            null,
+            null,
+            null,
+            null,
+            [],
+            []
+          ],
+          [],
+          1,
+          [],
+          null,
+          []
+        ],
+        [
+          [
+            [
+              "add",
+              [
+                null,
+                118,
+                null,
+                [
+                  null,
+                  null,
+                  "source/inheritance.js.src.html"
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eAdds a value to this instance\u0026#39;s \u003ca href\u003d\"sample.inheritance.NumberClass.html#getValue\"\u003e\u003ccode\u003evalue\u003c/code\u003e\u003c/a\u003e.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              null,
+              null,
+              [
+                "sample.inheritance.TemplateClass",
+                null,
+                [
+                  null,
+                  null,
+                  [
+                    null,
+                    null,
+                    "sample.inheritance.TemplateClass.html#add"
+                  ]
+                ],
+                null,
+                []
+              ],
+              null,
+              [],
+              []
+            ],
+            [],
+            null,
+            [
+              [
+                "value",
+                [
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  [
+                    [
+                      [
+                        null,
+                        null,
+                        null,
+                        [
+                          "T",
+                          null,
+                          null,
+                          null,
+                          []
+                        ]
+                      ],
+                      [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        1
+                      ]
+                    ]
+                  ]
+                ],
+                [
+                  [
+                    [
+                      null,
+                      "\u003cp\u003eThe value to add.\u003c/p\u003e\n"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            null,
+            []
+          ],
+          [
+            [
+              "addMany",
+              [
+                null,
+                147,
+                null,
+                [
+                  null,
+                  null,
+                  "source/inheritance.js.src.html"
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eSimilar to \u003ca href\u003d\"sample.inheritance.NumberClass.html#add\"\u003e\u003ccode\u003e#add\u003c/code\u003e\u003c/a\u003e, but handles many values.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [],
+              [
+                [
+                  [
+                    [
+                      "#add",
+                      null,
+                      [
+                        null,
+                        null,
+                        [
+                          null,
+                          null,
+                          "sample.inheritance.NumberClass.html#add"
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [],
+            null,
+            [
+              [
+                "n",
+                [
+                  null,
+                  null,
+                  null,
+                  [
+                    "number",
+                    null,
+                    null,
+                    1,
+                    []
+                  ]
+                ],
+                [
+                  [
+                    [
+                      null,
+                      "\u003cp\u003eThe first number to add.\u003c/p\u003e\n"
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "var_args",
+                [
+                  null,
+                  1,
+                  null,
+                  [
+                    "number",
+                    null,
+                    null,
+                    1,
+                    []
+                  ]
+                ],
+                [
+                  [
+                    [
+                      null,
+                      "\u003cp\u003eThe remaining numbers to add.\u003c/p\u003e\n"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              null,
+              [
+                null,
+                null,
+                null,
+                [
+                  "number",
+                  null,
+                  null,
+                  1,
+                  []
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eThe result.\u003c/p\u003e\n"
+                  ]
+                ]
+              ]
+            ],
+            []
+          ],
+          [
+            [
+              "getValue",
+              [
+                null,
+                109,
+                null,
+                [
+                  null,
+                  null,
+                  "source/inheritance.js.src.html"
+                ]
+              ],
+              [
+                []
+              ],
+              null,
+              null,
+              null,
+              [
+                "sample.inheritance.TemplateClass",
+                null,
+                [
+                  null,
+                  null,
+                  [
+                    null,
+                    null,
+                    "sample.inheritance.TemplateClass.html#getValue"
+                  ]
+                ],
+                null,
+                []
+              ],
+              null,
+              [],
+              []
+            ],
+            [],
+            null,
+            [],
+            [
+              null,
+              [
+                null,
+                null,
+                null,
+                [
+                  "number",
+                  null,
+                  null,
+                  1,
+                  []
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003e.\u003c/p\u003e\n"
+                  ]
+                ]
+              ]
+            ],
+            []
+          ]
+        ],
+        [
+          [
+            [
+              "name",
+              [
+                null,
+                104,
+                null,
+                [
+                  null,
+                  null,
+                  "source/inheritance.js.src.html"
+                ]
+              ],
+              [
+                []
+              ],
+              null,
+              null,
+              null,
+              [
+                "sample.inheritance.TemplateClass",
+                null,
+                [
+                  null,
+                  null,
+                  [
+                    null,
+                    null,
+                    "sample.inheritance.TemplateClass.html#name"
+                  ]
+                ],
+                null,
+                []
+              ],
+              null,
+              [],
+              []
+            ],
+            [
+              null,
+              null,
+              null,
+              [
+                "string",
+                null,
+                null,
+                1,
+                []
+              ]
+            ]
+          ],
+          [
+            [
+              "value",
+              [
+                null,
+                119,
+                null,
+                [
+                  null,
+                  null,
+                  "source/inheritance.js.src.html"
+                ]
+              ],
+              [
+                []
+              ],
+              null,
+              null,
+              null,
+              [
+                "sample.inheritance.TemplateClass",
+                null,
+                [
+                  null,
+                  null,
+                  [
+                    null,
+                    null,
+                    "sample.inheritance.TemplateClass.html#value"
+                  ]
+                ],
+                null,
+                []
+              ],
+              null,
+              [],
+              []
+            ],
+            [
+              null,
+              null,
+              null,
+              [
+                "number",
+                null,
+                null,
+                1,
+                []
+              ]
+            ]
+          ]
+        ],
+        null,
+        [
+          [
+            "sample.inheritance.TemplateClass",
+            null,
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "sample.inheritance.TemplateClass.html"
+              ]
+            ],
+            null,
+            [
+              [
+                null,
+                null,
+                null,
+                [
+                  "number",
+                  null,
+                  null,
+                  1,
+                  []
+                ]
+              ]
+            ]
+          ]
+        ],
+        [],
+        [],
+        [
+          [
+            "sample.inheritance",
+            null,
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "sample.inheritance.html"
+              ]
+            ],
+            null,
+            []
+          ],
+          null,
+          null,
+          1
+        ],
+        null,
+        "sample.inheritance.NumberClass.html",
+        "sample.inheritance.NumberClass",
+        [],
+        [],
+        [],
+        []
+      ]
     ]
-  }
-}
+  ]
+]

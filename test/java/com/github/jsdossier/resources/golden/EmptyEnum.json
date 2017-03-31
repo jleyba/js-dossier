@@ -1,27 +1,62 @@
-{
-  "2": {
-    "1": [
-      {
-        "1": "EmptyEnum",
-        "5": {
-          "2": 2,
-          "4": {
-            "3": "source/subdir/emptyenum.js.src.html"
-          }
-        },
-        "7": {},
-        "8": {},
-        "11": {
-          "1": {
-            "4": {
-              "1": "string",
-              "4": true
-            }
-          }
-        },
-        "23": "EmptyEnum.html",
-        "24": "EmptyEnum"
-      }
+[
+  null,
+  [
+    [
+      [
+        "EmptyEnum",
+        null,
+        null,
+        null,
+        [
+          null,
+          2,
+          null,
+          [
+            null,
+            null,
+            "source/subdir/emptyenum.js.src.html"
+          ]
+        ],
+        null,
+        [
+          []
+        ],
+        [],
+        null,
+        [],
+        [
+          [
+            null,
+            null,
+            null,
+            [
+              "string",
+              null,
+              null,
+              1,
+              []
+            ]
+          ],
+          []
+        ],
+        [],
+        [],
+        null,
+        [],
+        [],
+        null,
+        [],
+        [],
+        [],
+        null,
+        null,
+        "EmptyEnum.html",
+        "EmptyEnum",
+        [],
+        [],
+        [],
+        []
+      ]
     ]
-  }
-}
+  ]
+]

@@ -31,6 +31,7 @@ const soy = goog.require('goog.soy');
 const {getRandomString} = goog.require('goog.string');
 const style = goog.require('goog.style');
 const userAgent = goog.require('goog.userAgent');
+const Link = goog.require('proto.dossier.Link');
 const PageData = goog.require('proto.dossier.PageData');
 const PageSnapshot = goog.require('proto.dossier.state.PageSnapshot');
 
@@ -200,8 +201,8 @@ class HistoryService extends EventTarget {
   installPopstateListener() {
     window.onpopstate = (/** Event */ e) => {
       let state = e ? e.state : null;
-      if (goog.isObject(state)) {
-        let snapshot = new PageSnapshot(/** @type {!Object} */(state));
+      if (goog.isArray(state)) {
+        let snapshot = new PageSnapshot(/** @type {!Array} */(state));
         if (array.peek(this.forwardStack_) === snapshot.getId()) {
           this.forwardStack_.pop();
         } else {
@@ -252,7 +253,7 @@ class Application {
 
     /** @private @const {!HistoryService} */
     this.historyService_ = new HistoryService(id => {
-      let snapshot = new PageSnapshot({});
+      let snapshot = new PageSnapshot();
       snapshot.setId(id);
       snapshot.setTitle(document.title);
       snapshot.setScroll(this.mainEl.parentElement.scrollTop);
@@ -656,10 +657,12 @@ class Application {
 exports.run = function(typeIndex, searchBox, navDrawer) {
   let uriMap = /** !Map<string, string> */new Map;
 
-  function processLink(
-      /** !(proto.dossier.Link|proto.dossier.expression.TypeLink) */link) {
-    if (link.getHref() && !link.getHref().toString().startsWith('http') && link.getJson()) {
-      let href = resolveUri(page.getBasePath() + link.getHref());
+  function processLink(/** (!Link|!proto.dossier.expression.TypeLink) */link) {
+    let /** string */hrefStr = link instanceof Link
+        ? link.getHref()
+        : link.getHref().getPrivateDoNotAccessOrElseSafeUrlWrappedValue();
+    if (hrefStr && !hrefStr.startsWith('http') && link.getJson()) {
+      let href = resolveUri(page.getBasePath() + hrefStr);
       let json = resolveUri(page.getBasePath() + link.getJson());
       uriMap.set(href, json);
     }
@@ -682,7 +685,7 @@ exports.run = function(typeIndex, searchBox, navDrawer) {
   let mainEl = /** @type {!Element} */(document.querySelector('main'));
   if (mainEl.dataset['pageData']) {
     let jsonData = JSON.parse(mainEl.dataset['pageData']);
-    if (goog.isObject(jsonData)) {
+    if (goog.isArray(jsonData)) {
       let data = new PageData(jsonData);
       soy.renderElement(mainEl, mainPageContent, {data});
       delete mainEl.dataset['pageData'];

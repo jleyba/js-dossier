@@ -29,12 +29,12 @@ const ordainSanitizedUri = soydata.VERY_UNSAFE.ordainSanitizedUri;
 
 /** @private */
 pd.Message_ = class {
-  /** @param {Object=} opt_data */
+  /** @param {Array=} opt_data */
   constructor(opt_data) {
-    /** @private @const {!Object} */
-    this.data_ = opt_data || {};
+    /** @private @const {!Array} */
+    this.data_ = opt_data || [];
 
-    /** @private @const */
+    /** @private @const {!Map<number, ?>} */
     this.converted_ = new Map;
   }
 
@@ -43,8 +43,7 @@ pd.Message_ = class {
    * @return {!pd.Message_}
    */
   static clone(msg) {
-    let data = Object.assign({}, msg.data_);
-    return new msg.constructor(data);
+    return new msg.constructor(msg.data_.concat());
   }
 
   /**
@@ -57,11 +56,25 @@ pd.Message_ = class {
     destination.converted_ = source.converted_;
   }
 
-  /** @return {!Object} */
+  /** @return {!Array} */
+  toArray() {
+    function encode(value) {
+      if (value instanceof pd.Message_) {
+        return value.toArray();
+      } else if (goog.isArray(value)) {
+        return value.map(encode);
+      }
+      return value;
+    };
+
+    let ret = this.data_.map(encode);
+    this.converted_.forEach((key, value) => ret[key] = encode(value));
+    return ret;
+  }
+
+  /** @return {!Array} */
   toJSON() {
-    let json = Object.assign({}, this.data_);
-    this.converted_.forEach((value, key) => json[key] = value);
-    return json;
+    return this.toArray();
   }
 };
 
@@ -75,7 +88,7 @@ pd.Message_ = class {
  * @private
  */
 pd.getPrimitiveField_ = function(message, fieldNumber, defaultValue) {
-  return message.data_[fieldNumber] || defaultValue;
+  return message.data_[fieldNumber - 1] || defaultValue;
 };
 
 
@@ -90,7 +103,8 @@ pd.getPrimitiveListField_ = function(message, fieldNumber) {
   if (message.converted_.has(fieldNumber)) {
     return message.converted_.get(fieldNumber);
   }
-  let data = message.data_[fieldNumber] || [];
+  let /** Array */data = pd.getPrimitiveField_(message, fieldNumber, null);
+  data = data || [];
   message.converted_.set(fieldNumber, data);
   return data;
 };
@@ -103,7 +117,7 @@ pd.getPrimitiveListField_ = function(message, fieldNumber) {
  * @private
  */
 pd.setPrimitiveField_ = function(message, fieldNumber, value) {
-  message.data_[fieldNumber] = value;
+  message.data_[fieldNumber - 1] = value;
 };
 
 
@@ -121,17 +135,18 @@ pd.setComplexField_ = function(message, fieldNumber, value) {
 /**
  * @param {!pd.Message_} message
  * @param {number} fieldNumber
- * @param {(function(!Object): !T|function(string): !T)} deserializer
+ * @param {function(new: T, (Array|undefined|null))} messageCtor
  * @return {!Array<!T>}
  * @template T
  * @private
  */
-pd.getMessageListField_ = function(message, fieldNumber, deserializer) {
+pd.getMessageListField_ = function(message, fieldNumber, messageCtor) {
   if (message.converted_.has(fieldNumber)) {
     return message.converted_.get(fieldNumber);
   }
-  let data = message.data_[fieldNumber];
-  let value = data ? data.map(/** @type {(!Object|string)} */(deserializer)) : [];
+  let /** Array<(Array|undefined|null)> */ data = pd.getPrimitiveField_(
+      message, fieldNumber, null);
+  let value = data ? data.map(d => new messageCtor(d)) : [];
   message.converted_.set(fieldNumber, value);
   return value;
 };
@@ -140,17 +155,17 @@ pd.getMessageListField_ = function(message, fieldNumber, deserializer) {
 /**
  * @param {!pd.Message_} message
  * @param {number} fieldNumber
- * @param {function(!Object): !T} deserializer
+ * @param {function(new: T, Array)} msgType
  * @return {T}
  * @template T
  * @private
  */
-pd.getMessageField_ = function(message, fieldNumber, deserializer) {
+pd.getMessageField_ = function(message, fieldNumber, msgType) {
   if (message.converted_.has(fieldNumber)) {
     return message.converted_.get(fieldNumber);
   }
-  let data = message.data_[fieldNumber];
-  let value = data ? deserializer(/** @type {!Object} */(data)) : null;
+  let /** Array */ data = pd.getPrimitiveField_(message, fieldNumber, null);
+  let value = data ? new msgType(data) : null;
   message.converted_.set(fieldNumber, value);
   return value;
 };
@@ -168,8 +183,8 @@ pd.getSanitizedField_ = function(message, fieldNumber, deserializer) {
   if (message.converted_.has(fieldNumber)) {
     return message.converted_.get(fieldNumber);
   }
-  let data = message.data_[fieldNumber];
-  let value = deserializer(data || '');
+  let data = pd.getPrimitiveField_(message, fieldNumber, '');
+  let value = deserializer(data);
   message.converted_.set(fieldNumber, value);
   return value;
 };
@@ -223,7 +238,7 @@ pd.getSanitizedField_ = function(message, fieldNumber, deserializer) {
 
 {\n}
 {typeName($name)}{literal} = class extends pd.Message_ {
-  /** @param {Object=} opt_data */
+  /** @param {Array=} opt_data */
   constructor(opt_data) {
     super(opt_data);
   }
@@ -267,9 +282,9 @@ pd.getSanitizedField_ = function(message, fieldNumber, deserializer) {
     {/literal}
     {if $isMessage}
       {if $isRepeated}
-        return pd.getMessageListField_(this, {$field.number}, data => new {typeName($field.typeName)}(data));
+        return pd.getMessageListField_(this, {$field.number}, {typeName($field.typeName)});
       {else}
-        return pd.getMessageField_(this, {$field.number}, data => new {typeName($field.typeName)}(data));
+        return pd.getMessageField_(this, {$field.number}, {typeName($field.typeName)});
       {/if}
     {elseif $isRepeated}
       return pd.getPrimitiveListField_(this, {$field.number});

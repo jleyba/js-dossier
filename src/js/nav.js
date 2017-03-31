@@ -96,9 +96,9 @@ function buildTree(entries, opt_modules) {
   }
 
   function recordFakeEntry(/** string */name, /** string */qualifiedName) {
-    let fakeEntry = new Index.Entry({});
+    let fakeEntry = new Index.Entry();
     fakeEntry.setIsNamespace(true);
-    fakeEntry.setType(new NamedType({}));
+    fakeEntry.setType(new NamedType());
     fakeEntry.getType().setName(name);
     fakeEntry.getType().setQualifiedName(qualifiedName);
 

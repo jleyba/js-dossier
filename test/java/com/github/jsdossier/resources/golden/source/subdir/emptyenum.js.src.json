@@ -1,10 +1,13 @@
-{
-  "4": {
-    "1": "emptyenum.js",
-    "2": "subdir/emptyenum.js",
-    "3": [
+[
+  null,
+  null,
+  null,
+  [
+    "emptyenum.js",
+    "subdir/emptyenum.js",
+    [
       "/** @enum {string} */",
       "var EmptyEnum \u003d {};"
     ]
-  }
-}
+  ]
+]

@@ -1,65 +1,112 @@
-{
-  "2": {
-    "1": [
-      {
-        "1": "DeprecatedFoo",
-        "5": {
-          "2": 89,
-          "4": {
-            "3": "source/globals.js.src.html"
-          }
-        },
-        "7": {
-          "1": [
-            {
-              "2": "\u003cp\u003eLorem ipsum blah blah blah.\u003c/p\u003e\n"
-            }
+[
+  null,
+  [
+    [
+      [
+        "DeprecatedFoo",
+        null,
+        null,
+        null,
+        [
+          null,
+          89,
+          null,
+          [
+            null,
+            null,
+            "source/globals.js.src.html"
           ]
-        },
-        "8": {
-          "2": true,
-          "4": true,
-          "7": true
-        },
-        "9": {
-          "1": [
-            {
-              "2": "\u003cp\u003eDo not use this deprecated class. Use something else.\u003c/p\u003e\n"
-            }
+        ],
+        null,
+        [
+          [
+            [
+              null,
+              "\u003cp\u003eLorem ipsum blah blah blah.\u003c/p\u003e\n"
+            ]
           ]
-        },
-        "14": {
-          "1": {
-            "1": "DeprecatedFoo",
-            "2": {
-              "2": 89,
-              "4": {
-                "3": "source/globals.js.src.html"
-              }
-            },
-            "3": {
-              "1": [
-                {
-                  "2": "\u003cp\u003eLorem ipsum blah blah blah.\u003c/p\u003e\n"
-                }
+        ],
+        [
+          null,
+          1,
+          null,
+          1,
+          null,
+          null,
+          1
+        ],
+        [
+          [
+            [
+              null,
+              "\u003cp\u003eDo not use this deprecated class. Use something else.\u003c/p\u003e\n"
+            ]
+          ]
+        ],
+        [],
+        null,
+        [],
+        [],
+        [
+          [
+            "DeprecatedFoo",
+            [
+              null,
+              89,
+              null,
+              [
+                null,
+                null,
+                "source/globals.js.src.html"
               ]
-            },
-            "4": {
-              "1": [
-                {
-                  "2": "\u003cp\u003eDo not use this deprecated class. Use something else.\u003c/p\u003e\n"
-                }
+            ],
+            [
+              [
+                [
+                  null,
+                  "\u003cp\u003eLorem ipsum blah blah blah.\u003c/p\u003e\n"
+                ]
               ]
-            },
-            "6": {
-              "2": true
-            }
-          },
-          "3": true
-        },
-        "23": "DeprecatedFoo.html",
-        "24": "DeprecatedFoo"
-      }
+            ],
+            [
+              [
+                [
+                  null,
+                  "\u003cp\u003eDo not use this deprecated class. Use something else.\u003c/p\u003e\n"
+                ]
+              ]
+            ],
+            null,
+            [
+              null,
+              1
+            ],
+            null,
+            null,
+            [],
+            []
+          ],
+          [],
+          1,
+          [],
+          null,
+          []
+        ],
+        [],
+        [],
+        null,
+        [],
+        [],
+        [],
+        null,
+        null,
+        "DeprecatedFoo.html",
+        "DeprecatedFoo",
+        [],
+        [],
+        [],
+        []
+      ]
     ]
-  }
-}
+  ]
+]

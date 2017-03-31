@@ -1,314 +1,538 @@
-{
-  "2": {
-    "1": [
-      {
-        "1": "sample.inheritance.RunnableError",
-        "5": {
-          "2": 163,
-          "4": {
-            "3": "source/inheritance.js.src.html"
-          }
-        },
-        "7": {
-          "1": [
-            {
-              "2": "\u003cp\u003eA runnable error.\u003c/p\u003e\n"
-            }
+[
+  null,
+  [
+    [
+      [
+        "sample.inheritance.RunnableError",
+        null,
+        null,
+        null,
+        [
+          null,
+          163,
+          null,
+          [
+            null,
+            null,
+            "source/inheritance.js.src.html"
           ]
-        },
-        "8": {},
-        "14": {
-          "1": {
-            "1": "RunnableError",
-            "2": {
-              "2": 163,
-              "4": {
-                "3": "source/inheritance.js.src.html"
-              }
-            },
-            "3": {
-              "1": [
-                {
-                  "2": "\u003cp\u003eA runnable error.\u003c/p\u003e\n"
-                }
-              ]
-            }
-          },
-          "3": true,
-          "4": [
-            {
-              "1": "msg",
-              "2": {
-                "4": {
-                  "1": "string",
-                  "4": true
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eThe error message.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            }
+        ],
+        null,
+        [
+          [
+            [
+              null,
+              "\u003cp\u003eA runnable error.\u003c/p\u003e\n"
+            ]
           ]
-        },
-        "15": [
-          {
-            "1": {
-              "1": "run",
-              "2": {
-                "2": 170,
-                "4": {
-                  "3": "source/inheritance.js.src.html"
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eRun this instance.\u003c/p\u003e\n"
-                  }
-                ]
-              },
-              "9": [
-                {
-                  "1": "sample.inheritance.Runnable",
-                  "3": {
-                    "3": {
-                      "3": "sample.inheritance.Runnable.html#run"
-                    }
-                  }
-                }
-              ]
-            }
-          }
         ],
-        "16": [
-          {
-            "1": {
-              "1": "description",
-              "2": {
-                "4": {}
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eIE-only.\u003c/p\u003e\n"
-                  }
-                ]
-              },
-              "7": {
-                "1": "Error",
-                "4": true
-              },
-              "10": [
-                {
-                  "1": [
-                    {
-                      "2": "\u003cp\u003e\u003ca href\u003d\"http://msdn.microsoft.com/en-us/library/2w6a45b5.aspx\"\u003ehttp://msdn.microsoft.com/en-us/library/2w6a45b5.aspx\u003c/a\u003e\u003c/p\u003e\n"
-                    }
-                  ]
-                }
+        [],
+        null,
+        [],
+        null,
+        [],
+        [],
+        [
+          [
+            "RunnableError",
+            [
+              null,
+              163,
+              null,
+              [
+                null,
+                null,
+                "source/inheritance.js.src.html"
               ]
-            },
-            "2": {
-              "4": {
-                "1": "string",
-                "4": true
-              }
-            }
-          },
-          {
-            "1": {
-              "1": "fileName",
-              "2": {
-                "4": {}
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eMozilla-only\u003c/p\u003e\n"
-                  }
+            ],
+            [
+              [
+                [
+                  null,
+                  "\u003cp\u003eA runnable error.\u003c/p\u003e\n"
                 ]
-              },
-              "7": {
-                "1": "Error",
-                "4": true
-              },
-              "10": [
-                {
-                  "1": [
-                    {
-                      "2": "\u003cp\u003e\u003ca href\u003d\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/fileName\"\u003ehttps://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/fileName\u003c/a\u003e\u003c/p\u003e\n"
-                    }
-                  ]
-                }
               ]
-            },
-            "2": {
-              "4": {
-                "1": "string",
-                "4": true
-              }
-            }
-          },
-          {
-            "1": {
-              "1": "lineNumber",
-              "2": {
-                "4": {}
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eMozilla-only.\u003c/p\u003e\n"
-                  }
+            ],
+            null,
+            null,
+            null,
+            null,
+            null,
+            [],
+            []
+          ],
+          [],
+          1,
+          [
+            [
+              "msg",
+              [
+                null,
+                null,
+                null,
+                [
+                  "string",
+                  null,
+                  null,
+                  1,
+                  []
                 ]
-              },
-              "7": {
-                "1": "Error",
-                "4": true
-              },
-              "10": [
-                {
-                  "1": [
-                    {
-                      "2": "\u003cp\u003e\u003ca href\u003d\"http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/lineNumber\"\u003ehttp://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/lineNumber\u003c/a\u003e\u003c/p\u003e\n"
-                    }
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eThe error message.\u003c/p\u003e\n"
                   ]
-                }
-              ]
-            },
-            "2": {
-              "4": {
-                "1": "number",
-                "4": true
-              }
-            }
-          },
-          {
-            "1": {
-              "1": "message",
-              "2": {
-                "4": {}
-              },
-              "3": {},
-              "7": {
-                "1": "Error",
-                "4": true
-              },
-              "10": [
-                {
-                  "1": [
-                    {
-                      "2": "\u003cp\u003e\u003ca href\u003d\"http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/message\"\u003ehttp://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/message\u003c/a\u003e\u003c/p\u003e\n"
-                    }
-                  ]
-                }
-              ]
-            },
-            "2": {
-              "4": {
-                "1": "string",
-                "4": true
-              }
-            }
-          },
-          {
-            "1": {
-              "1": "name",
-              "2": {
-                "2": 167,
-                "4": {
-                  "3": "source/inheritance.js.src.html"
-                }
-              },
-              "3": {},
-              "8": {
-                "1": "Error",
-                "4": true
-              }
-            },
-            "2": {
-              "4": {
-                "1": "string",
-                "4": true
-              }
-            }
-          },
-          {
-            "1": {
-              "1": "sourceURL",
-              "2": {
-                "4": {}
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eDoesn\u0026#39;t seem to exist, but closure/debug.js references it.\u003c/p\u003e\n"
-                  }
                 ]
-              },
-              "7": {
-                "1": "Error",
-                "4": true
-              }
-            },
-            "2": {
-              "8": true
-            }
-          },
-          {
-            "1": {
-              "1": "stack",
-              "2": {
-                "4": {}
-              },
-              "3": {},
-              "7": {
-                "1": "Error",
-                "4": true
-              }
-            },
-            "2": {
-              "4": {
-                "1": "string",
-                "4": true
-              }
-            }
-          }
+              ]
+            ]
+          ],
+          null,
+          []
         ],
-        "18": [
-          {
-            "1": "Error",
-            "4": true
-          }
+        [
+          [
+            [
+              "run",
+              [
+                null,
+                170,
+                null,
+                [
+                  null,
+                  null,
+                  "source/inheritance.js.src.html"
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eRun this instance.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [
+                [
+                  "sample.inheritance.Runnable",
+                  null,
+                  [
+                    null,
+                    null,
+                    [
+                      null,
+                      null,
+                      "sample.inheritance.Runnable.html#run"
+                    ]
+                  ],
+                  null,
+                  []
+                ]
+              ],
+              []
+            ],
+            [],
+            null,
+            [],
+            null,
+            []
+          ]
         ],
-        "19": [
-          {
-            "1": "sample.inheritance.Runnable",
-            "3": {
-              "3": {
-                "3": "sample.inheritance.Runnable.html"
-              }
-            }
-          }
+        [
+          [
+            [
+              "description",
+              [
+                null,
+                null,
+                null,
+                []
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eIE-only.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              null,
+              null,
+              [
+                "Error",
+                null,
+                null,
+                1,
+                []
+              ],
+              null,
+              [],
+              [
+                [
+                  [
+                    [
+                      null,
+                      "\u003cp\u003e\u003ca href\u003d\"http://msdn.microsoft.com/en-us/library/2w6a45b5.aspx\"\u003ehttp://msdn.microsoft.com/en-us/library/2w6a45b5.aspx\u003c/a\u003e\u003c/p\u003e\n"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              null,
+              null,
+              null,
+              [
+                "string",
+                null,
+                null,
+                1,
+                []
+              ]
+            ]
+          ],
+          [
+            [
+              "fileName",
+              [
+                null,
+                null,
+                null,
+                []
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eMozilla-only\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              null,
+              null,
+              [
+                "Error",
+                null,
+                null,
+                1,
+                []
+              ],
+              null,
+              [],
+              [
+                [
+                  [
+                    [
+                      null,
+                      "\u003cp\u003e\u003ca href\u003d\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/fileName\"\u003ehttps://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/fileName\u003c/a\u003e\u003c/p\u003e\n"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              null,
+              null,
+              null,
+              [
+                "string",
+                null,
+                null,
+                1,
+                []
+              ]
+            ]
+          ],
+          [
+            [
+              "lineNumber",
+              [
+                null,
+                null,
+                null,
+                []
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eMozilla-only.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              null,
+              null,
+              [
+                "Error",
+                null,
+                null,
+                1,
+                []
+              ],
+              null,
+              [],
+              [
+                [
+                  [
+                    [
+                      null,
+                      "\u003cp\u003e\u003ca href\u003d\"http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/lineNumber\"\u003ehttp://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/lineNumber\u003c/a\u003e\u003c/p\u003e\n"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              null,
+              null,
+              null,
+              [
+                "number",
+                null,
+                null,
+                1,
+                []
+              ]
+            ]
+          ],
+          [
+            [
+              "message",
+              [
+                null,
+                null,
+                null,
+                []
+              ],
+              [
+                []
+              ],
+              null,
+              null,
+              null,
+              [
+                "Error",
+                null,
+                null,
+                1,
+                []
+              ],
+              null,
+              [],
+              [
+                [
+                  [
+                    [
+                      null,
+                      "\u003cp\u003e\u003ca href\u003d\"http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/message\"\u003ehttp://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/message\u003c/a\u003e\u003c/p\u003e\n"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              null,
+              null,
+              null,
+              [
+                "string",
+                null,
+                null,
+                1,
+                []
+              ]
+            ]
+          ],
+          [
+            [
+              "name",
+              [
+                null,
+                167,
+                null,
+                [
+                  null,
+                  null,
+                  "source/inheritance.js.src.html"
+                ]
+              ],
+              [
+                []
+              ],
+              null,
+              null,
+              null,
+              null,
+              [
+                "Error",
+                null,
+                null,
+                1,
+                []
+              ],
+              [],
+              []
+            ],
+            [
+              null,
+              null,
+              null,
+              [
+                "string",
+                null,
+                null,
+                1,
+                []
+              ]
+            ]
+          ],
+          [
+            [
+              "sourceURL",
+              [
+                null,
+                null,
+                null,
+                []
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eDoesn\u0026#39;t seem to exist, but closure/debug.js references it.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              null,
+              null,
+              [
+                "Error",
+                null,
+                null,
+                1,
+                []
+              ],
+              null,
+              [],
+              []
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              1
+            ]
+          ],
+          [
+            [
+              "stack",
+              [
+                null,
+                null,
+                null,
+                []
+              ],
+              [
+                []
+              ],
+              null,
+              null,
+              null,
+              [
+                "Error",
+                null,
+                null,
+                1,
+                []
+              ],
+              null,
+              [],
+              []
+            ],
+            [
+              null,
+              null,
+              null,
+              [
+                "string",
+                null,
+                null,
+                1,
+                []
+              ]
+            ]
+          ]
         ],
-        "21": {
-          "1": {
-            "1": "sample.inheritance",
-            "3": {
-              "3": {
-                "3": "sample.inheritance.html"
-              }
-            }
-          },
-          "4": true
-        },
-        "23": "sample.inheritance.RunnableError.html",
-        "24": "sample.inheritance.RunnableError"
-      }
+        null,
+        [
+          [
+            "Error",
+            null,
+            null,
+            1,
+            []
+          ]
+        ],
+        [
+          [
+            "sample.inheritance.Runnable",
+            null,
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "sample.inheritance.Runnable.html"
+              ]
+            ],
+            null,
+            []
+          ]
+        ],
+        [],
+        [
+          [
+            "sample.inheritance",
+            null,
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "sample.inheritance.html"
+              ]
+            ],
+            null,
+            []
+          ],
+          null,
+          null,
+          1
+        ],
+        null,
+        "sample.inheritance.RunnableError.html",
+        "sample.inheritance.RunnableError",
+        [],
+        [],
+        [],
+        []
+      ]
     ]
-  }
-}
+  ]
+]

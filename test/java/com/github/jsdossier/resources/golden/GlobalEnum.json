@@ -1,85 +1,137 @@
-{
-  "2": {
-    "1": [
-      {
-        "1": "GlobalEnum",
-        "5": {
-          "2": 97,
-          "4": {
-            "3": "source/globals.js.src.html"
-          }
-        },
-        "7": {
-          "1": [
-            {
-              "2": "\u003cp\u003eThis is a global enumeration of strings.\u003c/p\u003e\n"
-            }
+[
+  null,
+  [
+    [
+      [
+        "GlobalEnum",
+        null,
+        null,
+        null,
+        [
+          null,
+          97,
+          null,
+          [
+            null,
+            null,
+            "source/globals.js.src.html"
           ]
-        },
-        "8": {},
-        "11": {
-          "1": {
-            "4": {
-              "1": "string",
-              "4": true
-            }
-          },
-          "2": [
-            {
-              "1": "COLOR",
-              "2": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eColor description.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            },
-            {
-              "1": "DAY",
-              "2": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eDay of the week.\u003c/p\u003e\n"
-                  }
-                ]
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eDo not use this anymore.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            },
-            {
-              "1": "FRUIT"
-            }
-          ]
-        },
-        "12": [
-          {
-            "1": {
-              "1": "GlobalEnum.doSomething",
-              "2": {
-                "2": 114,
-                "4": {
-                  "3": "source/globals.js.src.html"
-                }
-              },
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eThis is a function defined on a global enumeration.\u003c/p\u003e\n"
-                  }
-                ]
-              }
-            }
-          }
         ],
-        "23": "GlobalEnum.html",
-        "24": "GlobalEnum"
-      }
+        null,
+        [
+          [
+            [
+              null,
+              "\u003cp\u003eThis is a global enumeration of strings.\u003c/p\u003e\n"
+            ]
+          ]
+        ],
+        [],
+        null,
+        [],
+        [
+          [
+            null,
+            null,
+            null,
+            [
+              "string",
+              null,
+              null,
+              1,
+              []
+            ]
+          ],
+          [
+            [
+              "COLOR",
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eColor description.\u003c/p\u003e\n"
+                  ]
+                ]
+              ]
+            ],
+            [
+              "DAY",
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eDay of the week.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eDo not use this anymore.\u003c/p\u003e\n"
+                  ]
+                ]
+              ]
+            ],
+            [
+              "FRUIT"
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              "GlobalEnum.doSomething",
+              [
+                null,
+                114,
+                null,
+                [
+                  null,
+                  null,
+                  "source/globals.js.src.html"
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eThis is a function defined on a global enumeration.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [],
+              []
+            ],
+            [],
+            null,
+            [],
+            null,
+            []
+          ]
+        ],
+        [],
+        null,
+        [],
+        [],
+        null,
+        [],
+        [],
+        [],
+        null,
+        null,
+        "GlobalEnum.html",
+        "GlobalEnum",
+        [],
+        [],
+        [],
+        []
+      ]
     ]
-  }
-}
+  ]
+]

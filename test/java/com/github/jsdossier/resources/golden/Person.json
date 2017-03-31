@@ -1,72 +1,162 @@
-{
-  "2": {
-    "1": [
-      {
-        "1": "Person",
-        "5": {
-          "2": 410,
-          "4": {
-            "3": "source/globals.js.src.html"
-          }
-        },
-        "7": {},
-        "8": {
-          "5": true,
-          "9": true
-        },
-        "14": {
-          "1": {
-            "1": "Person",
-            "2": {
-              "2": 410,
-              "4": {
-                "3": "source/globals.js.src.html"
-              }
-            },
-            "3": {}
-          }
-        },
-        "16": [
-          {
-            "1": {
-              "1": "age",
-              "2": {
-                "2": 412,
-                "4": {
-                  "3": "source/globals.js.src.html"
-                }
-              },
-              "3": {}
-            },
-            "2": {
-              "4": {
-                "1": "number",
-                "4": true
-              }
-            }
-          },
-          {
-            "1": {
-              "1": "name",
-              "2": {
-                "2": 411,
-                "4": {
-                  "3": "source/globals.js.src.html"
-                }
-              },
-              "3": {}
-            },
-            "2": {
-              "4": {
-                "1": "string",
-                "4": true
-              }
-            }
-          }
+[
+  null,
+  [
+    [
+      [
+        "Person",
+        null,
+        null,
+        null,
+        [
+          null,
+          410,
+          null,
+          [
+            null,
+            null,
+            "source/globals.js.src.html"
+          ]
         ],
-        "23": "Person.html",
-        "24": "Person"
-      }
+        null,
+        [
+          []
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          1,
+          null,
+          null,
+          null,
+          1
+        ],
+        null,
+        [],
+        null,
+        [],
+        [],
+        [
+          [
+            "Person",
+            [
+              null,
+              410,
+              null,
+              [
+                null,
+                null,
+                "source/globals.js.src.html"
+              ]
+            ],
+            [
+              []
+            ],
+            null,
+            null,
+            null,
+            null,
+            null,
+            [],
+            []
+          ],
+          [],
+          null,
+          [],
+          null,
+          []
+        ],
+        [],
+        [
+          [
+            [
+              "age",
+              [
+                null,
+                412,
+                null,
+                [
+                  null,
+                  null,
+                  "source/globals.js.src.html"
+                ]
+              ],
+              [
+                []
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [],
+              []
+            ],
+            [
+              null,
+              null,
+              null,
+              [
+                "number",
+                null,
+                null,
+                1,
+                []
+              ]
+            ]
+          ],
+          [
+            [
+              "name",
+              [
+                null,
+                411,
+                null,
+                [
+                  null,
+                  null,
+                  "source/globals.js.src.html"
+                ]
+              ],
+              [
+                []
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              [],
+              []
+            ],
+            [
+              null,
+              null,
+              null,
+              [
+                "string",
+                null,
+                null,
+                1,
+                []
+              ]
+            ]
+          ]
+        ],
+        null,
+        [],
+        [],
+        [],
+        null,
+        null,
+        "Person.html",
+        "Person",
+        [],
+        [],
+        [],
+        []
+      ]
     ]
-  }
-}
+  ]
+]

@@ -1,98 +1,163 @@
-{
-  "2": {
-    "1": [
-      {
-        "1": "example/nested",
-        "5": {
-          "2": 9,
-          "4": {
-            "3": "../../source/example/nested.js.src.html"
-          }
-        },
-        "6": {
-          "1": [
-            {
-              "1": "Greeter",
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eA greeter.\u003c/p\u003e\n"
-                  }
+[
+  null,
+  [
+    [
+      [
+        "example/nested",
+        null,
+        null,
+        null,
+        [
+          null,
+          9,
+          null,
+          [
+            null,
+            null,
+            "../../source/example/nested.js.src.html"
+          ]
+        ],
+        [
+          [
+            [
+              "Greeter",
+              null,
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eA greeter.\u003c/p\u003e\n"
+                  ]
                 ]
-              },
-              "5": {
-                "3": "nested_exports_Greeter.html"
-              }
-            },
-            {
-              "1": "IncrementingIdGenerator",
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eAn \u003ca href\u003d\"nested_exports_IdGenerator.html\"\u003e\u003ccode\u003eIdGenerator\u003c/code\u003e\u003c/a\u003e that generates incrementing IDs.\u003c/p\u003e\n"
-                  }
+              ],
+              null,
+              [
+                null,
+                null,
+                "nested_exports_Greeter.html"
+              ]
+            ],
+            [
+              "IncrementingIdGenerator",
+              null,
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eAn \u003ca href\u003d\"nested_exports_IdGenerator.html\"\u003e\u003ccode\u003eIdGenerator\u003c/code\u003e\u003c/a\u003e that generates incrementing IDs.\u003c/p\u003e\n"
+                  ]
                 ]
-              },
-              "5": {
-                "3": "nested_exports_IncrementingIdGenerator.html"
-              }
-            },
-            {
-              "1": "Person",
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eBasic description of a person.\u003c/p\u003e\n"
-                  }
+              ],
+              null,
+              [
+                null,
+                null,
+                "nested_exports_IncrementingIdGenerator.html"
+              ]
+            ],
+            [
+              "Person",
+              null,
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eBasic description of a person.\u003c/p\u003e\n"
+                  ]
                 ]
-              },
-              "5": {
-                "3": "nested_exports_Person.html"
-              }
-            }
+              ],
+              null,
+              [
+                null,
+                null,
+                "nested_exports_Person.html"
+              ]
+            ]
           ],
-          "3": [
-            {
-              "1": "IdGenerator",
-              "3": {
-                "1": [
-                  {
-                    "2": "\u003cp\u003eGenerates IDs.\u003c/p\u003e\n"
-                  }
+          [],
+          [
+            [
+              "IdGenerator",
+              null,
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eGenerates IDs.\u003c/p\u003e\n"
+                  ]
                 ]
-              },
-              "4": {
-                "5": true
-              },
-              "5": {
-                "3": "nested_exports_IdGenerator.html"
-              }
-            },
-            {
-              "1": "IncreasingIdGenerator",
-              "3": {},
-              "4": {
-                "5": true
-              },
-              "5": {
-                "3": "nested_exports_IncreasingIdGenerator.html"
-              }
-            }
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                1
+              ],
+              [
+                null,
+                null,
+                "nested_exports_IdGenerator.html"
+              ]
+            ],
+            [
+              "IncreasingIdGenerator",
+              null,
+              [
+                []
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                1
+              ],
+              [
+                null,
+                null,
+                "nested_exports_IncreasingIdGenerator.html"
+              ]
+            ]
           ]
-        },
-        "7": {
-          "1": [
-            {
-              "2": "\u003cp\u003eA nested package.\u003c/p\u003e\n"
-            }
+        ],
+        [
+          [
+            [
+              null,
+              "\u003cp\u003eA nested package.\u003c/p\u003e\n"
+            ]
           ]
-        },
-        "8": {
-          "6": true
-        },
-        "23": "nested.html",
-        "24": "example/nested"
-      }
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          1
+        ],
+        null,
+        [],
+        null,
+        [],
+        [],
+        null,
+        [],
+        [],
+        null,
+        [],
+        [],
+        [],
+        null,
+        null,
+        "nested.html",
+        "example/nested",
+        [],
+        [],
+        [],
+        []
+      ]
     ]
-  }
-}
+  ]
+]

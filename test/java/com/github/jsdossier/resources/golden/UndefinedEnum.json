@@ -1,69 +1,138 @@
-{
-  "2": {
-    "1": [
-      {
-        "1": "UndefinedEnum",
-        "5": {
-          "2": 123,
-          "4": {
-            "3": "source/globals.js.src.html"
-          }
-        },
-        "7": {
-          "1": [
-            {
-              "2": "\u003cp\u003eEven though this enum is just a declared name and has is never assigned a\nvalue, it should still be documented.\u003c/p\u003e\n"
-            }
+[
+  null,
+  [
+    [
+      [
+        "UndefinedEnum",
+        null,
+        null,
+        null,
+        [
+          null,
+          123,
+          null,
+          [
+            null,
+            null,
+            "source/globals.js.src.html"
           ]
-        },
-        "8": {},
-        "11": {
-          "1": {
-            "6": {
-              "1": [
-                {
-                  "4": {
-                    "1": "string",
-                    "4": true
-                  }
-                },
-                {
-                  "4": {
-                    "1": "number",
-                    "4": true
-                  }
-                },
-                {
-                  "5": {
-                    "1": [
-                      {
-                        "1": "age",
-                        "2": {
-                          "6": {
-                            "1": [
-                              {
-                                "4": {
-                                  "1": "number",
-                                  "4": true
-                                }
-                              },
-                              {
-                                "10": true
-                              }
+        ],
+        null,
+        [
+          [
+            [
+              null,
+              "\u003cp\u003eEven though this enum is just a declared name and has is never assigned a\nvalue, it should still be documented.\u003c/p\u003e\n"
+            ]
+          ]
+        ],
+        [],
+        null,
+        [],
+        [
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            [
+              [
+                [
+                  null,
+                  null,
+                  null,
+                  [
+                    "string",
+                    null,
+                    null,
+                    1,
+                    []
+                  ]
+                ],
+                [
+                  null,
+                  null,
+                  null,
+                  [
+                    "number",
+                    null,
+                    null,
+                    1,
+                    []
+                  ]
+                ],
+                [
+                  null,
+                  null,
+                  null,
+                  null,
+                  [
+                    [
+                      [
+                        "age",
+                        [
+                          null,
+                          null,
+                          null,
+                          null,
+                          null,
+                          [
+                            [
+                              [
+                                null,
+                                null,
+                                null,
+                                [
+                                  "number",
+                                  null,
+                                  null,
+                                  1,
+                                  []
+                                ]
+                              ],
+                              [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                1
+                              ]
                             ]
-                          }
-                        }
-                      }
+                          ]
+                        ]
+                      ]
                     ]
-                  }
-                }
+                  ]
+                ]
               ]
-            }
-          }
-        },
-        "23": "UndefinedEnum.html",
-        "24": "UndefinedEnum"
-      }
+            ]
+          ],
+          []
+        ],
+        [],
+        [],
+        null,
+        [],
+        [],
+        null,
+        [],
+        [],
+        [],
+        null,
+        null,
+        "UndefinedEnum.html",
+        "UndefinedEnum",
+        [],
+        [],
+        [],
+        []
+      ]
     ]
-  }
-}
+  ]
+]

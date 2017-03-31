@@ -1,26 +1,60 @@
-{
-  "2": {
-    "1": [
-      {
-        "1": "example/empty",
-        "5": {
-          "4": {
-            "3": "../../source/example/empty.js.src.html"
-          }
-        },
-        "7": {
-          "1": [
-            {
-              "2": "\u003cp\u003eThis is an \u0026#34;empty\u0026#34; module that imports others, but has no\nexports or types of its own.\u003c/p\u003e\n"
-            }
+[
+  null,
+  [
+    [
+      [
+        "example/empty",
+        null,
+        null,
+        null,
+        [
+          null,
+          null,
+          null,
+          [
+            null,
+            null,
+            "../../source/example/empty.js.src.html"
           ]
-        },
-        "8": {
-          "6": true
-        },
-        "23": "empty.html",
-        "24": "example/empty"
-      }
+        ],
+        null,
+        [
+          [
+            [
+              null,
+              "\u003cp\u003eThis is an \u0026#34;empty\u0026#34; module that imports others, but has no\nexports or types of its own.\u003c/p\u003e\n"
+            ]
+          ]
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          1
+        ],
+        null,
+        [],
+        null,
+        [],
+        [],
+        null,
+        [],
+        [],
+        null,
+        [],
+        [],
+        [],
+        null,
+        null,
+        "empty.html",
+        "example/empty",
+        [],
+        [],
+        [],
+        []
+      ]
     ]
-  }
-}
+  ]
+]
