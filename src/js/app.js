@@ -30,7 +30,7 @@ const search = goog.require('dossier.search');
 const soy = goog.require('goog.soy');
 const style = goog.require('goog.style');
 const userAgent = goog.require('goog.userAgent');
-const xhr = goog.require('goog.labs.net.xhr');
+const xhr = goog.require('dossier.xhr');
 const {getRandomString} = goog.require('goog.string');
 const {mainPageContent, pageTitle} = goog.require('dossier.soy');
 
