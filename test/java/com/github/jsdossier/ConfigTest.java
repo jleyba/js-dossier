@@ -64,7 +64,7 @@ public class ConfigTest {
         .setSources(ImmutableSet.of(input))
         .build();
 
-    Config loaded = load(initial.toJson().toString());
+    Config loaded = load(initial.toJson());
 
     assertThat(loaded).isEqualTo(initial);
     assertThat(exists(output)).isFalse();
@@ -84,7 +84,7 @@ public class ConfigTest {
         .setSources(ImmutableSet.of(input))
         .build();
 
-    Config loaded = load(initial.toJson().toString());
+    Config loaded = load(initial.toJson());
 
     assertThat(loaded).isEqualTo(initial);
     assertThat(isDirectory(output)).isTrue();
@@ -105,7 +105,7 @@ public class ConfigTest {
         .setSources(ImmutableSet.of(input))
         .build();
 
-    Config loaded = load(initial.toJson().toString());
+    Config loaded = load(initial.toJson());
 
     assertThat(loaded).isEqualTo(initial);
     assertThat(isDirectory(output)).isFalse();
@@ -139,7 +139,9 @@ public class ConfigTest {
       builder.build();
       fail();
     } catch (InvalidConfigurationException expected) {
-      assertThat(expected).hasMessage("There must be at least one input module or source file");
+      assertThat(expected)
+          .hasMessageThat()
+          .isEqualTo("There must be at least one input module or source file");
     }
 
     createFile(fs.getPath("in.js"));
@@ -150,7 +152,7 @@ public class ConfigTest {
     assertThat(config.getModules()).isEmpty();
 
     config = builder
-        .setSources(ImmutableSet.<Path>of())
+        .setSources(ImmutableSet.of())
         .setModules(files)
         .build();
     assertThat(config.getSources()).isEmpty();
@@ -175,7 +177,7 @@ public class ConfigTest {
       builder.build();
       fail();
     } catch (InvalidConfigurationException expected) {
-      assertThat(expected).hasMessage("Input file does not exist: c.js");
+      assertThat(expected).hasMessageThat().isEqualTo("Input file does not exist: c.js");
     }
   }
 
@@ -197,7 +199,7 @@ public class ConfigTest {
       builder.build();
       fail();
     } catch (InvalidConfigurationException expected) {
-      assertThat(expected).hasMessage("Input file does not exist: c.js");
+      assertThat(expected).hasMessageThat().isEqualTo("Input file does not exist: c.js");
     }
   }
 
@@ -219,7 +221,7 @@ public class ConfigTest {
       builder.build();
       fail();
     } catch (InvalidConfigurationException expected) {
-      assertThat(expected).hasMessage("Input file does not exist: c.js");
+      assertThat(expected).hasMessageThat().isEqualTo("Input file does not exist: c.js");
     }
   }
 
@@ -241,7 +243,7 @@ public class ConfigTest {
       builder.build();
       fail();
     } catch (InvalidConfigurationException expected) {
-      assertThat(expected).hasMessage("Input file does not exist: c.js");
+      assertThat(expected).hasMessageThat().isEqualTo("Input file does not exist: c.js");
     }
   }
 
@@ -260,7 +262,7 @@ public class ConfigTest {
       builder.build();
       fail();
     } catch (InvalidConfigurationException expected) {
-      assertThat(expected).hasMessage("Input file does not exist: not-there.md");
+      assertThat(expected).hasMessageThat().isEqualTo("Input file does not exist: not-there.md");
     }
 
     createFile(fs.getPath("not-there.md"));
