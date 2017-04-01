@@ -47,7 +47,6 @@ public final class DossierSoyModule extends AbstractModule {
     install(new SoyModule());
 
     Multibinder<SoyFunction> binder = Multibinder.newSetBinder(binder(), SoyFunction.class);
-    binder.addBinding().to(ImportScriptFunction.class);
     binder.addBinding().to(ExternLinkFunction.class);
     binder.addBinding().to(SanitizeHtmlFunction.class);
   }

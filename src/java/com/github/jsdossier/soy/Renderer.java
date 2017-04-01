@@ -29,9 +29,14 @@ import com.github.jsdossier.proto.TypeLink;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.html.types.SafeUrlProto;
+import com.google.common.html.types.SafeUrls;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.template.soy.SoyFileSet;
+import com.google.template.soy.data.SanitizedContent;
+import com.google.template.soy.data.SoyValue;
+import com.google.template.soy.data.restricted.NullData;
 import com.google.template.soy.jssrc.SoyJsSrcOptions;
 import com.google.template.soy.tofu.SoyTofu;
 import com.google.template.soy.types.SoyTypeProvider;
@@ -45,24 +50,28 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 /**
  * Renders soy templates.
  */
 public class Renderer {
 
+  private final Provider<SoyFileSet.Builder> filesetBuilderProvider;
   private final SoyTofu tofu;
   private final JsonRenderer jsonRenderer;
 
   @Inject
   Renderer(
-      SoyFileSet.Builder filesetBuilder,
+      Provider<SoyFileSet.Builder> filesetBuilderProvider,
       SoyTypeProvider typeProvider,
       JsonRenderer jsonRenderer) {
-    this.tofu = filesetBuilder
+    this.filesetBuilderProvider = filesetBuilderProvider;
+    this.tofu = filesetBuilderProvider.get()
         .add(Renderer.class.getResource("resources/types.soy"))
         .add(Renderer.class.getResource("resources/dossier.soy"))
         .setLocalTypeRegistry(new SoyTypeRegistry(ImmutableSet.of(typeProvider)))
@@ -90,9 +99,43 @@ public class Renderer {
           .setData(ImmutableMap.of(
               "resources", resources,
               "data", data,
-              "jsonData", jsonData))
+              "jsonData", jsonData,
+              "headContent", renderHeadContent(resources),
+              "tailContent", renderTailContent(resources)))
           .render(writer);
     }
+  }
+
+  private SoyValue renderHeadContent(Resources resources) {
+    if (resources.getTailScriptList().isEmpty()) {
+      return NullData.INSTANCE;
+    }
+    return renderScripts(resources.getHeadScriptList());
+  }
+
+  private SoyValue renderTailContent(Resources resources) {
+    if (resources.getTailScriptList().isEmpty()) {
+      return NullData.INSTANCE;
+    }
+    return renderScripts(resources.getTailScriptList());
+  }
+
+  private SoyValue renderScripts(List<SafeUrlProto> urls) {
+    String template =
+        "{namespace dossier.soy.dynamic}{template .scripts kind=\"html\"}";
+    for (SafeUrlProto proto : urls) {
+      String url = SafeUrls.fromProto(proto).getSafeUrlString();
+      template += "<script src=\"" + url + "\" defer></script>";
+    }
+    template += "{/template}";
+
+    return filesetBuilderProvider.get()
+        .add(template, "<dynamic>")
+        .build()
+        .compileToTofu()
+        .newRenderer("dossier.soy.dynamic.scripts")
+        .setContentKind(SanitizedContent.ContentKind.HTML)
+        .renderStrict();
   }
 
   public void render(Appendable appendable, String text, TypeLink link, boolean codeLink)
