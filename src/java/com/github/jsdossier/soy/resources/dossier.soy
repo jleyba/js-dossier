@@ -978,26 +978,9 @@
 
 {template .importScripts_ private="true"}
   {@param scripts: list<webutil.html.types.SafeUrlProto>}  
-  {if length($scripts)}
-    // Script need to be imported dynamically b/c the URLs are generated dynamically
-    // and can only be injected into soy templates as SafeUrlProtos (and not
-    // TrustedResourceUrlProtos). SafeUrlProtos cannot be used to load scripts, but
-    // we can get around it with dynamically loading via the DOM. For now at least.
-    <script>
-      (function() {lb}
-        let scripts = [
-          {foreach $script in $scripts}
-            {$script}{if not isLast($script)},{/if}
-          {/foreach}
-        ];
-        scripts.forEach(function(src) {lb}
-          let s = document.createElement('script');
-          s.src = src;
-          document.body.appendChild(s);
-        {rb});
-      {rb})();
-    </script>
-  {/if}
+  {foreach $script in $scripts}
+    {importScript($script)}
+  {/foreach}
 {/template}
 
 

@@ -346,7 +346,7 @@ final class DossierFileSystem {
     return Resources.newBuilder()
         .addAllCss(toSafeUrls.apply(template.getCss()))
         .addAllHeadScript(toSafeUrls.apply(template.getHeadJs()))
-        .addTailScript(pathToUrl.apply(typesJs))
+        .addHeadScript(pathToUrl.apply(typesJs))
         .addAllTailScript(toSafeUrls.apply(template.getTailJs()))
         .build();
   }
