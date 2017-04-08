@@ -23,14 +23,12 @@ import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.javascript.jscomp.CompilerOptions;
+import java.nio.file.FileSystem;
+import javax.inject.Inject;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.nio.file.FileSystem;
-
-import javax.inject.Inject;
 
 /**
  * Tests for tracking aliases created by the compiler.
@@ -287,42 +285,6 @@ public class AliasDetectionTest {
   }
 
   @Test
-  public void nodeModule_recordsAliasedImports() {
-    defineInputModules("/modules", "/modules/one.js", "/modules/two.js");
-    util.compile(
-        createSourceFile(
-            inputFs.getPath("/modules/one.js"),
-            "exports.One = class {};",
-            "exports.Two = class {};",
-            "exports.Three = class {};",
-            "class X {}",
-            "class Y {}",
-            "exports.Four = {X, Y};"),
-        createSourceFile(
-            inputFs.getPath("/modules/two.js"),
-            "var a = require('./one');",
-            "var b = require('./one').One;",
-            "var {One, Two, Three} = require('./one');",
-            "var {X, Y} = require('./one').Four;"));
-
-    NominalType type = typeRegistry.getType("module$exports$module$$modules$two");
-    assertThat(typeRegistry.resolveAlias(type, "a"))
-        .isEqualTo("module$exports$module$$modules$one");
-    assertThat(typeRegistry.resolveAlias(type, "b"))
-        .isEqualTo("module$exports$module$$modules$one.One");
-    assertThat(typeRegistry.resolveAlias(type, "One"))
-        .isEqualTo("module$exports$module$$modules$one.One");
-    assertThat(typeRegistry.resolveAlias(type, "Two"))
-        .isEqualTo("module$exports$module$$modules$one.Two");
-    assertThat(typeRegistry.resolveAlias(type, "Three"))
-        .isEqualTo("module$exports$module$$modules$one.Three");
-    assertThat(typeRegistry.resolveAlias(type, "X"))
-        .isEqualTo("module$exports$module$$modules$one.Four.X");
-    assertThat(typeRegistry.resolveAlias(type, "Y"))
-        .isEqualTo("module$exports$module$$modules$one.Four.Y");
-  }
-
-  @Test
   public void closureModule_recordsAliasedImports() {
     util.compile(
         createSourceFile(
@@ -403,67 +365,6 @@ public class AliasDetectionTest {
         .isEqualTo("module$exports$one.One");
     assertThat(typeRegistry.resolveAlias(type, "module$contents$two_Three"))
         .isEqualTo("module$exports$one.One");
-  }
-
-  @Test
-  public void nodeModule_recordsContentAliases() {
-    defineInputModules("/modules", "/modules/one.js", "/modules/two.js");
-    util.compile(
-        createSourceFile(
-            inputFs.getPath("/modules/one.js"),
-            "exports.One = class {};",
-            "exports.Two = class {};",
-            "exports.Three = class {};",
-            "class X {}",
-            "class Y {}",
-            "exports.Four = {X, Y};"),
-        createSourceFile(
-            inputFs.getPath("/modules/two.js"),
-            "var a = require('./one');",
-            "var b = require('./one').One;",
-            "var {One, Two, Three} = require('./one');"));
-
-    NominalType type = typeRegistry.getType("module$exports$module$$modules$two");
-    assertThat(typeRegistry.resolveAlias(type, "module$contents$module$$modules$two_a"))
-        .isEqualTo("module$exports$module$$modules$one");
-    assertThat(typeRegistry.resolveAlias(type, "module$contents$module$$modules$two_b"))
-        .isEqualTo("module$exports$module$$modules$one.One");
-    assertThat(typeRegistry.resolveAlias(type, "module$contents$module$$modules$two_One"))
-        .isEqualTo("module$exports$module$$modules$one.One");
-    assertThat(typeRegistry.resolveAlias(type, "module$contents$module$$modules$two_Two"))
-        .isEqualTo("module$exports$module$$modules$one.Two");
-  }
-
-  @Test
-  public void nodeModule_recordsContentAliases_multipleLevels() {
-    defineInputModules("/modules", "/modules/one.js", "/modules/two.js");
-    util.compile(
-        createSourceFile(
-            inputFs.getPath("/modules/one.js"),
-            "exports.One = class {};"),
-        createSourceFile(
-            inputFs.getPath("/modules/two.js"),
-            "const a = require('./one');",
-            "const b = a;",
-            "const c = b;",
-            "const One = a.One;",
-            "const Two = b.One;",
-            "const Three = c.One;",
-            "exports.Two = One;"));
-
-    NominalType type = typeRegistry.getType("module$exports$module$$modules$two");
-    assertThat(typeRegistry.resolveAlias(type, "module$contents$module$$modules$two_a"))
-        .isEqualTo("module$exports$module$$modules$one");
-    assertThat(typeRegistry.resolveAlias(type, "module$contents$module$$modules$two_b"))
-        .isEqualTo("module$exports$module$$modules$one");
-    assertThat(typeRegistry.resolveAlias(type, "module$contents$module$$modules$two_c"))
-        .isEqualTo("module$exports$module$$modules$one");
-    assertThat(typeRegistry.resolveAlias(type, "module$contents$module$$modules$two_One"))
-        .isEqualTo("module$exports$module$$modules$one.One");
-    assertThat(typeRegistry.resolveAlias(type, "module$contents$module$$modules$two_Two"))
-        .isEqualTo("module$exports$module$$modules$one.One");
-    assertThat(typeRegistry.resolveAlias(type, "module$contents$module$$modules$two_Three"))
-        .isEqualTo("module$exports$module$$modules$one.One");
   }
 
   private void defineInputModules(String prefix, String... modules) {
