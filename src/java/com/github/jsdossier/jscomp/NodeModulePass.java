@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier.jscomp;
 
@@ -57,13 +57,13 @@ import java.util.Set;
 import javax.inject.Inject;
 
 /**
- * Processes all files flagged as CommonJS modules by renaming all variables so they may be
- * safely inserted into the global scope to be processed along with all other files. This pass
- * will also generate {@code goog.provide} statements for each module and replace all calls to
- * {@code require} with a direct reference to the required module's {@code exports}
- * object.
+ * Processes all files flagged as CommonJS modules by renaming all variables so they may be safely
+ * inserted into the global scope to be processed along with all other files. This pass will also
+ * generate {@code goog.provide} statements for each module and replace all calls to {@code require}
+ * with a direct reference to the required module's {@code exports} object.
  *
  * <p>For instance, suppose we had two modules, foo.js and bar.js:
+ *
  * <pre><code>
  *   // foo.js
  *   exports.sayHi = function() {
@@ -79,6 +79,7 @@ import javax.inject.Inject;
  * </code></pre>
  *
  * <p>Given the code above, this pass would produce:
+ *
  * <pre><code>
  *   var module$foo = {exports: {}};
  *   module$foo.sayHi = function() {
@@ -97,9 +98,7 @@ class NodeModulePass {
 
   // NB: The following errors are forbid situations that complicate type checking.
 
-  /**
-   * Reported when there are multiple assignments to module.exports.
-   */
+  /** Reported when there are multiple assignments to module.exports. */
   private static final DiagnosticType MULTIPLE_ASSIGNMENTS_TO_MODULE_EXPORTS =
       DiagnosticType.error(
           "DOSSIER_INVALID_MODULE_EXPORTS_ASSIGNMENT",
@@ -107,8 +106,7 @@ class NodeModulePass {
 
   private static final DiagnosticType REQUIRE_INVALID_MODULE_ID =
       DiagnosticType.error(
-          "DOSSIER_REQUIRE_INVALID_MODULE_ID",
-          "Invalid module ID passed to require()");
+          "DOSSIER_REQUIRE_INVALID_MODULE_ID", "Invalid module ID passed to require()");
 
   private final TypeRegistry typeRegistry;
   private final FileSystem inputFs;
@@ -147,9 +145,7 @@ class NodeModulePass {
     }
   }
 
-  /**
-   * Main traversal callback for processing the AST of a CommonJS module.
-   */
+  /** Main traversal callback for processing the AST of a CommonJS module. */
   private class CommonJsModuleCallback implements NodeTraversal.Callback {
 
     private final List<Node> moduleExportRefs = new ArrayList<>();
@@ -189,8 +185,7 @@ class NodeModulePass {
         visitRequireCall(t, n, parent);
       }
 
-      if (n.isGetProp()
-          && "module.exports".equals(n.getQualifiedName())) {
+      if (n.isGetProp() && "module.exports".equals(n.getQualifiedName())) {
         if (t.getScope().getVar("module") == null) {
           moduleExportRefs.add(n);
         }
@@ -236,12 +231,7 @@ class NodeModulePass {
     private Node createModuleBody() {
       Node moduleBody = new Node(Token.MODULE_BODY);
       moduleBody.addChildToBack(
-          exprResult(
-              call(
-                  getprop(
-                      name("goog"),
-                      string("module")),
-                  string(currentModule))));
+          exprResult(call(getprop(name("goog"), string("module")), string(currentModule))));
       googRequireExpr.values().forEach(moduleBody::addChildToBack);
       return moduleBody;
     }
@@ -260,21 +250,16 @@ class NodeModulePass {
       }
 
       for (Node ref : moduleExportRefs) {
-        ref.getParent().replaceChild(
-            ref,
-            name("exports").srcrefTree(ref));
+        ref.getParent().replaceChild(ref, name("exports").srcrefTree(ref));
       }
     }
 
     private boolean isTopLevelAssign(Node n) {
-      return n.isAssign()
-          && n.getParent().isExprResult()
-          && n.getParent().getParent().isScript();
+      return n.isAssign() && n.getParent().isExprResult() && n.getParent().getParent().isScript();
     }
 
     private boolean isTopLevelAssignLhs(Node n) {
-      return n == n.getParent().getFirstChild()
-          && isTopLevelAssign(n.getParent());
+      return n == n.getParent().getFirstChild() && isTopLevelAssign(n.getParent());
     }
 
     private void visitRequireCall(NodeTraversal t, Node require, Node parent) {
@@ -293,8 +278,8 @@ class NodeModulePass {
         Path moduleFile = currentFile.getParent().resolve(modulePath).normalize();
         if (modulePath.endsWith("/")
             || isDirectory(moduleFile)
-            && !modulePath.endsWith(".js")
-            && !Files.exists(moduleFile.resolveSibling(moduleFile.getFileName() + ".js"))) {
+                && !modulePath.endsWith(".js")
+                && !Files.exists(moduleFile.resolveSibling(moduleFile.getFileName() + ".js"))) {
           moduleFile = moduleFile.resolve("index.js");
         }
         moduleId = getModuleId(moduleFile);
@@ -311,9 +296,7 @@ class NodeModulePass {
         // the compiler. For more information on how Node handles cycles, see:
         //     http://www.nodejs.org/api/modules.html#modules_cycles
         if (t.getScope().isGlobal()) {
-          Node googRequire = call(
-              getprop(name("goog"), string("require")),
-              string(moduleId));
+          Node googRequire = call(getprop(name("goog"), string("require")), string(moduleId));
 
           // ClosureCheckModule enforces that goog.require statements are at the top level. To
           // compensate, if we have a require statement that is not at the top level, we introduce
@@ -326,9 +309,7 @@ class NodeModulePass {
             infoBuilder.recordConstancy();
 
             googRequireExpr.put(
-                hiddenName,
-                var(name(hiddenName).setJSDocInfo(infoBuilder.build()),
-                    googRequire));
+                hiddenName, var(name(hiddenName).setJSDocInfo(infoBuilder.build()), googRequire));
             googRequire = name(hiddenName);
           }
 
@@ -350,17 +331,15 @@ class NodeModulePass {
   }
 
   /**
-   * Rewrites all compound require statements into multiple statements to aid
-   * type checking.
+   * Rewrites all compound require statements into multiple statements to aid type checking.
    *
-   * That is, splits
+   * <p>That is, splits
    *
-   *     var a = require('a'), b = require('b');
+   * <p>var a = require('a'), b = require('b');
    *
-   * into
+   * <p>into
    *
-   *     var a = require('a');
-   *     var b = require('b');
+   * <p>var a = require('a'); var b = require('b');
    */
   private final class SplitRequireDeclarations implements NodeTraversal.Callback {
     @Override
@@ -419,15 +398,13 @@ class NodeModulePass {
       if (typeNode.isString()) {
         typeNode.putProp(Node.ORIGINALNAME_PROP, typeNode.getString());
 
-        if (typeNode.getString().startsWith("./")
-            || typeNode.getString().startsWith("../")) {
+        if (typeNode.getString().startsWith("./") || typeNode.getString().startsWith("../")) {
           Path currentFile = inputFs.getPath(t.getSourceName());
           String newName = resolveModuleTypeReference(currentFile, typeNode.getString());
           typeNode.setString(newName);
 
         } else if (typeNode.getString().startsWith("exports.")) {
-          String newName = currentModule +
-              typeNode.getString().substring("exports".length());
+          String newName = currentModule + typeNode.getString().substring("exports".length());
           typeNode.setString(newName);
         }
       }
@@ -450,8 +427,10 @@ class NodeModulePass {
    */
   @VisibleForTesting
   static String resolveModuleTypeReference(Path referencePath, String relativePath) {
-    checkArgument(relativePath.startsWith("./") || relativePath.startsWith("../"),
-        "Relative path must start with ./ or ../ (%s)", relativePath);
+    checkArgument(
+        relativePath.startsWith("./") || relativePath.startsWith("../"),
+        "Relative path must start with ./ or ../ (%s)",
+        relativePath);
 
     // First check if the path resolves to a module.
     Optional<Path> path = maybeResolvePath(referencePath, relativePath);
@@ -467,7 +446,7 @@ class NodeModulePass {
 
       index = name.indexOf('.');
       if (index == -1 || index == name.length() - 1) {
-        return relativePath;  // throw AssertionError?
+        return relativePath; // throw AssertionError?
       }
 
       String exportedType = name.substring(index + 1);

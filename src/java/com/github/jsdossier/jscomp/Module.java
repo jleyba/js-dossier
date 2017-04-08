@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier.jscomp;
 
@@ -23,15 +23,11 @@ import com.google.common.collect.ImmutableMap;
 import com.google.javascript.rhino.JSDocInfo;
 import java.nio.file.Path;
 
-/**
- * Describes a JavaScript module.
- */
+/** Describes a JavaScript module. */
 @AutoValue
 public abstract class Module {
 
-  /**
-   * Returns a new builder.
-   */
+  /** Returns a new builder. */
   public static Builder builder() {
     return new AutoValue_Module.Builder()
         .setExportedDocs(ImmutableMap.<String, JSDocInfo>of())
@@ -50,26 +46,20 @@ public abstract class Module {
   public abstract String getOriginalName();
 
   /**
-   * Returns the ID used to reference this module in code after any transformations
-   * applied by the compiler. For Closure module's, this will simply be the ID specified in the
-   * "goog.module" declaration. For Node and ES6 modules, this will be derived by the compiler from
-   * the module's file path.
+   * Returns the ID used to reference this module in code after any transformations applied by the
+   * compiler. For Closure module's, this will simply be the ID specified in the "goog.module"
+   * declaration. For Node and ES6 modules, this will be derived by the compiler from the module's
+   * file path.
    */
   public abstract String getId();
 
-  /**
-   * Returns the input file that defines this module.
-   */
+  /** Returns the input file that defines this module. */
   public abstract Path getPath();
 
-  /**
-   * Returns which syntactic type of module this is.
-   */
+  /** Returns which syntactic type of module this is. */
   public abstract Type getType();
 
-  /**
-   * Returns the file-level JSDoc for this module.
-   */
+  /** Returns the file-level JSDoc for this module. */
   public abstract JsDoc getJsDoc();
 
   /**
@@ -79,9 +69,9 @@ public abstract class Module {
   public abstract ImmutableMap<String, JSDocInfo> getExportedDocs();
 
   /**
-   * Returns a map of exported names. Keys will be the exported symbol and values will be the
-   * name of the exported value, as seen within the module. This map will only include exported
-   * names:
+   * Returns a map of exported names. Keys will be the exported symbol and values will be the name
+   * of the exported value, as seen within the module. This map will only include exported names:
+   *
    * <pre><code>
    *   function foo() {}
    *   exports.bar = foo;  // Will record (foo, bar)
@@ -89,30 +79,21 @@ public abstract class Module {
    */
   public abstract ImmutableMap<String, String> getExportedNames();
 
-  /**
-   * Returns the JSDoc for symbols defined within this module.
-   */
+  /** Returns the JSDoc for symbols defined within this module. */
   public abstract ImmutableMap<String, JSDocInfo> getInternalVarDocs();
 
-  /**
-   * Returns the alias region encompassing this module.
-   */
+  /** Returns the alias region encompassing this module. */
   public abstract AliasRegion getAliases();
 
   /**
-   * Returns whether this module has a legacy namespace equal to its
-   * {@link #getOriginalName() original name}. This will always return false
-   * for non-closure modules.
+   * Returns whether this module has a legacy namespace equal to its {@link #getOriginalName()
+   * original name}. This will always return false for non-closure modules.
    */
   public abstract boolean getHasLegacyNamespace();
 
-  /**
-   * The recognized module types.
-   */
+  /** The recognized module types. */
   public enum Type {
-    /**
-     * A module defined using the Closure library's "goog.module" syntax.
-     */
+    /** A module defined using the Closure library's "goog.module" syntax. */
     CLOSURE() {
       @Override
       public boolean isModuleId(String name) {
@@ -126,9 +107,7 @@ public abstract class Module {
       }
     },
 
-    /**
-     * A standard ES6 module.
-     */
+    /** A standard ES6 module. */
     ES6() {
       @Override
       public boolean isModuleId(String name) {
@@ -156,49 +135,66 @@ public abstract class Module {
       }
     };
 
-    /**
-     * Returns whether the given variable name could be ID for this type of module.
-     */
+    /** Returns whether the given variable name could be ID for this type of module. */
     public abstract boolean isModuleId(String name);
 
     /**
-     * Strips the module prefix used on the given name to generate a module ID from another
-     * JS identifier. In the case of ES6 modules, the initial value will always be returned
-     * unchanged.
+     * Strips the module prefix used on the given name to generate a module ID from another JS
+     * identifier. In the case of ES6 modules, the initial value will always be returned unchanged.
      */
     public abstract String stripModulePrefix(String name);
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder setOriginalName(String name);
+
     public abstract String getOriginalName();
+
     public abstract Builder setId(String id);
+
     public abstract String getId();
+
     public abstract Builder setPath(Path path);
+
     public abstract Path getPath();
+
     public abstract Builder setType(Type type);
+
     public abstract Type getType();
+
     public abstract Builder setJsDoc(JsDoc doc);
+
     public abstract Builder setExportedNames(ImmutableMap<String, String> names);
+
     public abstract Builder setExportedDocs(ImmutableMap<String, JSDocInfo> docs);
+
     public abstract Builder setInternalVarDocs(ImmutableMap<String, JSDocInfo> docs);
+
     public abstract Builder setAliases(AliasRegion region);
+
     public abstract AliasRegion getAliases();
+
     public abstract Builder setHasLegacyNamespace(boolean legacy);
 
     abstract Module autoBuild();
 
     public Module build() {
       Module m = autoBuild();
-      checkArgument(m.getPath().equals(m.getAliases().getPath()),
+      checkArgument(
+          m.getPath().equals(m.getAliases().getPath()),
           "Module path does not match alias region path: %s != %s",
-          m.getPath(), m.getAliases().getPath());
-      checkArgument(!m.getHasLegacyNamespace() || m.getType() == Type.CLOSURE,
-          "Only Closure modules may have a legacy namespace: %s", m.getId());
-      checkArgument(!m.getHasLegacyNamespace() || m.getId().equals(m.getOriginalName()),
+          m.getPath(),
+          m.getAliases().getPath());
+      checkArgument(
+          !m.getHasLegacyNamespace() || m.getType() == Type.CLOSURE,
+          "Only Closure modules may have a legacy namespace: %s",
+          m.getId());
+      checkArgument(
+          !m.getHasLegacyNamespace() || m.getId().equals(m.getOriginalName()),
           "Module ID and legacy namespace must be the same: %s != %s",
-          m.getOriginalName(), m.getId());
+          m.getOriginalName(),
+          m.getId());
       return m;
     }
   }

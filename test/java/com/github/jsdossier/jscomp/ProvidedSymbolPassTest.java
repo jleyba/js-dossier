@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier.jscomp;
 
@@ -23,32 +23,30 @@ import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.javascript.jscomp.CompilerOptions;
+import java.nio.file.FileSystem;
+import javax.inject.Inject;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.nio.file.FileSystem;
-
-import javax.inject.Inject;
-
-/**
- * Tests for {@link ProvidedSymbolPass}.
- */
+/** Tests for {@link ProvidedSymbolPass}. */
 @RunWith(JUnit4.class)
 public class ProvidedSymbolPassTest {
 
   @Rule
-  public GuiceRule guiceRule = GuiceRule.builder(this)
-      .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
-      .build();
+  public GuiceRule guiceRule =
+      GuiceRule.builder(this)
+          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
+          .build();
 
   @Inject @Input private FileSystem fs;
   @Inject private TypeRegistry typeRegistry;
   @Inject private CompilerUtil util;
 
   private void declareNodeModules() {
-    guiceRule.toBuilder()
+    guiceRule
+        .toBuilder()
         .setModulePrefix("/modules")
         .setModules("foo/bar.js")
         .build()
@@ -58,17 +56,26 @@ public class ProvidedSymbolPassTest {
 
   @Test
   public void collectsProvidedSymbols() {
-    util.compile(fs.getPath("foo/bar.js"),
+    util.compile(
+        fs.getPath("foo/bar.js"),
         "goog.provide('Foo');",
         "goog.provide('foo.Bar');",
         "goog.provide('foo.bar.Baz');",
         "goog.provide('one.two.three.Four');");
 
-    assertThat(typeRegistry.getProvidedSymbols()).containsExactly(
-        "Foo", "foo.Bar", "foo.bar.Baz", "one.two.three.Four");
-    assertThat(typeRegistry.getImplicitNamespaces()).containsExactly(
-        "Foo", "foo", "foo.Bar", "foo.bar", "foo.bar.Baz",
-        "one", "one.two", "one.two.three", "one.two.three.Four");
+    assertThat(typeRegistry.getProvidedSymbols())
+        .containsExactly("Foo", "foo.Bar", "foo.bar.Baz", "one.two.three.Four");
+    assertThat(typeRegistry.getImplicitNamespaces())
+        .containsExactly(
+            "Foo",
+            "foo",
+            "foo.Bar",
+            "foo.bar",
+            "foo.bar.Baz",
+            "one",
+            "one.two",
+            "one.two.three",
+            "one.two.three.Four");
 
     assertThat(typeRegistry.isProvided("one.two.three")).isFalse();
     assertThat(typeRegistry.isProvided("one.two.three.Four")).isTrue();
@@ -76,7 +83,8 @@ public class ProvidedSymbolPassTest {
 
   @Test
   public void collectsClosureModules() {
-    util.compile(fs.getPath("/foo/bar/module.js"),
+    util.compile(
+        fs.getPath("/foo/bar/module.js"),
         "goog.module('sample.module');",
         "",
         "function internalFunction1() {}",
@@ -86,8 +94,7 @@ public class ProvidedSymbolPassTest {
         "",
         "exports.publicFunction1 = internalFunction1;",
         "exports.publicFunction2 = internalFunction2;",
-        "exports.publicX = internalX;"
-    );
+        "exports.publicX = internalX;");
 
     assertThat(typeRegistry.getProvidedSymbols()).isEmpty();
     assertThat(typeRegistry.getImplicitNamespaces()).isEmpty();
@@ -100,7 +107,8 @@ public class ProvidedSymbolPassTest {
 
   @Test
   public void collectsClosureModules_withLegacyNamespace() {
-    util.compile(fs.getPath("/foo/bar/module.js"),
+    util.compile(
+        fs.getPath("/foo/bar/module.js"),
         "goog.module('sample.module');",
         "goog.module.declareLegacyNamespace();",
         "",
@@ -111,8 +119,7 @@ public class ProvidedSymbolPassTest {
         "",
         "exports.publicFunction1 = internalFunction1;",
         "exports.publicFunction2 = internalFunction2;",
-        "exports.publicX = internalX;"
-    );
+        "exports.publicX = internalX;");
 
     assertThat(typeRegistry.getProvidedSymbols()).isEmpty();
     assertThat(typeRegistry.getImplicitNamespaces()).containsExactly("sample", "sample.module");
@@ -125,7 +132,8 @@ public class ProvidedSymbolPassTest {
 
   @Test
   public void collectsJsDocForModuleInternalVars_closureModule() {
-    util.compile(fs.getPath("module.js"),
+    util.compile(
+        fs.getPath("module.js"),
         "goog.module('sample.module');",
         "",
         "function fnDeclNoDocs() {}",
@@ -149,17 +157,28 @@ public class ProvidedSymbolPassTest {
         "let letNoDocs;");
 
     Module module = typeRegistry.getModule(nameToId("sample.module"));
-    assertThat(module.getInternalVarDocs().keySet()).containsExactly(
-        "fnDeclDocs", "fnExpr", "fnExpr2", "fnExpr3",
-        "varClass", "letClass", "constClass",
-        "undef1", "undef2", "x", "y", "z");
+    assertThat(module.getInternalVarDocs().keySet())
+        .containsExactly(
+            "fnDeclDocs",
+            "fnExpr",
+            "fnExpr2",
+            "fnExpr3",
+            "varClass",
+            "letClass",
+            "constClass",
+            "undef1",
+            "undef2",
+            "x",
+            "y",
+            "z");
   }
 
   @Test
   public void collectsJsDocForModuleInternalVars_nodeModule() {
     declareNodeModules();
 
-    util.compile(fs.getPath("/modules/foo/bar.js"),
+    util.compile(
+        fs.getPath("/modules/foo/bar.js"),
         "",
         "function fnDeclNoDocs() {}",
         "/** Has docs. */ function fnDeclDocs() {}",
@@ -182,15 +201,26 @@ public class ProvidedSymbolPassTest {
         "let letNoDocs;");
 
     Module module = typeRegistry.getModule(nameToId("module$$modules$foo$bar"));
-    assertThat(module.getInternalVarDocs().keySet()).containsExactly(
-        "fnDeclDocs", "fnExpr", "fnExpr2", "fnExpr3",
-        "varClass", "letClass", "constClass",
-        "undef1", "undef2", "x", "y", "z");
+    assertThat(module.getInternalVarDocs().keySet())
+        .containsExactly(
+            "fnDeclDocs",
+            "fnExpr",
+            "fnExpr2",
+            "fnExpr3",
+            "varClass",
+            "letClass",
+            "constClass",
+            "undef1",
+            "undef2",
+            "x",
+            "y",
+            "z");
   }
 
   @Test
   public void buildsExportToInternalNameMap_closureModule() {
-    util.compile(fs.getPath("module.js"),
+    util.compile(
+        fs.getPath("module.js"),
         "goog.module('sample.module');",
         "",
         "function internalFunction1() {}",
@@ -206,8 +236,8 @@ public class ProvidedSymbolPassTest {
     assertThat(typeRegistry.getImplicitNamespaces()).isEmpty();
 
     Module module = typeRegistry.getModule(nameToId("sample.module"));
-    assertThat(module.getExportedNames().keySet()).containsExactly(
-        "publicFunction1", "publicFunction2", "publicX");
+    assertThat(module.getExportedNames().keySet())
+        .containsExactly("publicFunction1", "publicFunction2", "publicX");
     assertThat(module.getExportedNames()).containsEntry("publicFunction1", "internalFunction1");
     assertThat(module.getExportedNames()).containsEntry("publicFunction2", "internalFunction2");
     assertThat(module.getExportedNames()).containsEntry("publicX", "internalX");
@@ -215,7 +245,8 @@ public class ProvidedSymbolPassTest {
 
   @Test
   public void buildsExportToInternalNameMap_exportsObjectLit_closureModule() {
-    util.compile(fs.getPath("module.js"),
+    util.compile(
+        fs.getPath("module.js"),
         "goog.module('sample.module');",
         "",
         "function internalFunction1() {}",
@@ -236,8 +267,8 @@ public class ProvidedSymbolPassTest {
     assertThat(typeRegistry.getImplicitNamespaces()).isEmpty();
 
     Module module = typeRegistry.getModule(nameToId("sample.module"));
-    assertThat(module.getExportedNames().keySet()).containsExactly(
-        "publicFunction1", "publicFunction2", "publicX", "publicB");
+    assertThat(module.getExportedNames().keySet())
+        .containsExactly("publicFunction1", "publicFunction2", "publicX", "publicB");
     assertThat(module.getExportedNames()).containsEntry("publicFunction1", "internalFunction1");
     assertThat(module.getExportedNames()).containsEntry("publicFunction2", "internalFunction2");
     assertThat(module.getExportedNames()).containsEntry("publicX", "internalX");
@@ -246,7 +277,8 @@ public class ProvidedSymbolPassTest {
 
   @Test
   public void buildsExportToInternalNameMap_exportsDestructuredObjectLit_closureModule() {
-    util.compile(fs.getPath("module.js"),
+    util.compile(
+        fs.getPath("module.js"),
         "goog.module('sample.module');",
         "",
         "function internalFunction1() {}",
@@ -262,8 +294,8 @@ public class ProvidedSymbolPassTest {
     assertThat(typeRegistry.getImplicitNamespaces()).isEmpty();
 
     Module module = typeRegistry.getModule(nameToId("sample.module"));
-    assertThat(module.getExportedNames().keySet()).containsExactly(
-        "internalFunction1", "internalFunction2", "internalX");
+    assertThat(module.getExportedNames().keySet())
+        .containsExactly("internalFunction1", "internalFunction2", "internalX");
     assertThat(module.getExportedNames()).containsEntry("internalFunction1", "internalFunction1");
     assertThat(module.getExportedNames()).containsEntry("internalFunction2", "internalFunction2");
     assertThat(module.getExportedNames()).containsEntry("internalX", "internalX");
@@ -271,7 +303,8 @@ public class ProvidedSymbolPassTest {
 
   @Test
   public void buildsExportToInternalNameMap_exportsNameAssignedToObjectLit_closureModule() {
-    util.compile(fs.getPath("module.js"),
+    util.compile(
+        fs.getPath("module.js"),
         "goog.module('sample.module');",
         "",
         "function internalFunction1() {}",
@@ -294,7 +327,8 @@ public class ProvidedSymbolPassTest {
   public void buildsExportToInternalNameMap_nodeModule() {
     declareNodeModules();
 
-    util.compile(fs.getPath("/modules/foo/bar.js"),
+    util.compile(
+        fs.getPath("/modules/foo/bar.js"),
         "",
         "function internalFunction1() {}",
         "var internalFunction2 = function() {}",
@@ -311,8 +345,8 @@ public class ProvidedSymbolPassTest {
     Module module = typeRegistry.getModule(nameToId("module$$modules$foo$bar"));
     assertThat(module.getPath().toString()).isEqualTo("/modules/foo/bar.js");
     assertThat(module.getType()).isEqualTo(Module.Type.NODE);
-    assertThat(module.getExportedNames().keySet()).containsExactly(
-        "publicFunction1", "publicFunction2", "publicX");
+    assertThat(module.getExportedNames().keySet())
+        .containsExactly("publicFunction1", "publicFunction2", "publicX");
     assertThat(module.getExportedNames()).containsEntry("publicFunction1", "internalFunction1");
     assertThat(module.getExportedNames()).containsEntry("publicFunction2", "internalFunction2");
     assertThat(module.getExportedNames()).containsEntry("publicX", "internalX");
@@ -322,7 +356,8 @@ public class ProvidedSymbolPassTest {
   public void buildsExportToInternalNameMap_exportsObjectLit_nodeModule() {
     declareNodeModules();
 
-    util.compile(fs.getPath("/modules/foo/bar.js"),
+    util.compile(
+        fs.getPath("/modules/foo/bar.js"),
         "",
         "function internalFunction1() {}",
         "var internalFunction2 = function() {}",
@@ -344,8 +379,8 @@ public class ProvidedSymbolPassTest {
     Module module = typeRegistry.getModule(nameToId("module$$modules$foo$bar"));
     assertThat(module.getPath().toString()).isEqualTo("/modules/foo/bar.js");
     assertThat(module.getType()).isEqualTo(Module.Type.NODE);
-    assertThat(module.getExportedNames().keySet()).containsExactly(
-        "publicFunction1", "publicFunction2", "publicX", "publicB");
+    assertThat(module.getExportedNames().keySet())
+        .containsExactly("publicFunction1", "publicFunction2", "publicX", "publicB");
     assertThat(module.getExportedNames()).containsEntry("publicFunction1", "internalFunction1");
     assertThat(module.getExportedNames()).containsEntry("publicFunction2", "internalFunction2");
     assertThat(module.getExportedNames()).containsEntry("publicX", "internalX");

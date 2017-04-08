@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier.soy;
 
@@ -29,16 +29,15 @@ import com.google.protobuf.Message;
 import java.util.List;
 
 /**
- * Encodes {@link Message} objects as JSON arrays, storing each field in the
- * array at the position {@code field_number - 1}.
+ * Encodes {@link Message} objects as JSON arrays, storing each field in the array at the position
+ * {@code field_number - 1}.
  */
 final class JsonEncoder {
 
-  @Inject JsonEncoder() {}
+  @Inject
+  JsonEncoder() {}
 
-  /**
-   * Encode the given message as a JSON array.
-   */
+  /** Encode the given message as a JSON array. */
   public JsonArray encode(Message message) {
     JsonArray array = new JsonArray();
     for (FieldDescriptor field : message.getDescriptorForType().getFields()) {
@@ -89,7 +88,8 @@ final class JsonEncoder {
 
       case STRING:
         return isNullOrEmpty((String) value)
-            ? JsonNull.INSTANCE : new JsonPrimitive((String) value);
+            ? JsonNull.INSTANCE
+            : new JsonPrimitive((String) value);
 
       default:
         return JsonNull.INSTANCE;

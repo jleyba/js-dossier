@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier.soy;
 
@@ -56,9 +56,7 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-/**
- * Renders soy templates.
- */
+/** Renders soy templates. */
 public class Renderer {
 
   private final Provider<SoyFileSet.Builder> filesetBuilderProvider;
@@ -71,20 +69,19 @@ public class Renderer {
       SoyTypeProvider typeProvider,
       JsonRenderer jsonRenderer) {
     this.filesetBuilderProvider = filesetBuilderProvider;
-    this.tofu = filesetBuilderProvider.get()
-        .add(Renderer.class.getResource("resources/types.soy"))
-        .add(Renderer.class.getResource("resources/dossier.soy"))
-        .setLocalTypeRegistry(new SoyTypeRegistry(ImmutableSet.of(typeProvider)))
-        .build()
-        .compileToTofu();
+    this.tofu =
+        filesetBuilderProvider
+            .get()
+            .add(Renderer.class.getResource("resources/types.soy"))
+            .add(Renderer.class.getResource("resources/dossier.soy"))
+            .setLocalTypeRegistry(new SoyTypeRegistry(ImmutableSet.of(typeProvider)))
+            .build()
+            .compileToTofu();
     this.jsonRenderer = jsonRenderer;
   }
 
-  public void render(
-      Path htmlOut,
-      Path jsonOut,
-      Resources resources,
-      PageData data) throws IOException {
+  public void render(Path htmlOut, Path jsonOut, Resources resources, PageData data)
+      throws IOException {
     StringWriter sw = new StringWriter();
     jsonRenderer.render(sw, data);
     String jsonData = sw.toString();
@@ -96,12 +93,13 @@ public class Renderer {
 
     try (Writer writer = newBufferedWriter(htmlOut, UTF_8, CREATE, WRITE, TRUNCATE_EXISTING)) {
       tofu.newRenderer("dossier.soy.page")
-          .setData(ImmutableMap.of(
-              "resources", resources,
-              "data", data,
-              "jsonData", jsonData,
-              "headContent", renderHeadContent(resources),
-              "tailContent", renderTailContent(resources)))
+          .setData(
+              ImmutableMap.of(
+                  "resources", resources,
+                  "data", data,
+                  "jsonData", jsonData,
+                  "headContent", renderHeadContent(resources),
+                  "tailContent", renderTailContent(resources)))
           .render(writer);
     }
   }
@@ -121,15 +119,15 @@ public class Renderer {
   }
 
   private SoyValue renderScripts(List<SafeUrlProto> urls) {
-    String template =
-        "{namespace dossier.soy.dynamic}{template .scripts kind=\"html\"}";
+    String template = "{namespace dossier.soy.dynamic}{template .scripts kind=\"html\"}";
     for (SafeUrlProto proto : urls) {
       String url = SafeUrls.fromProto(proto).getSafeUrlString();
       template += "<script src=\"" + url + "\" defer></script>";
     }
     template += "{/template}";
 
-    return filesetBuilderProvider.get()
+    return filesetBuilderProvider
+        .get()
         .add(template, "<dynamic>")
         .build()
         .compileToTofu()
@@ -158,12 +156,14 @@ public class Renderer {
     Injector injector = Guice.createInjector(new DossierSoyModule());
 
     SoyTypeProvider typeProvider = injector.getInstance(SoyProtoTypeProvider.class);
-    SoyFileSet fileSet = injector.getInstance(SoyFileSet.Builder.class)
-        .add(Renderer.class.getResource("resources/dossier.soy"))
-        .add(Renderer.class.getResource("resources/nav.soy"))
-        .add(Renderer.class.getResource("resources/types.soy"))
-        .setLocalTypeRegistry(new SoyTypeRegistry(ImmutableSet.of(typeProvider)))
-        .build();
+    SoyFileSet fileSet =
+        injector
+            .getInstance(SoyFileSet.Builder.class)
+            .add(Renderer.class.getResource("resources/dossier.soy"))
+            .add(Renderer.class.getResource("resources/nav.soy"))
+            .add(Renderer.class.getResource("resources/types.soy"))
+            .setLocalTypeRegistry(new SoyTypeRegistry(ImmutableSet.of(typeProvider)))
+            .build();
 
     SoyJsSrcOptions options = new SoyJsSrcOptions();
 
@@ -183,10 +183,12 @@ public class Renderer {
             + "/** @suppress {extraRequire} */\n"
             + "goog.require('goog.soy.data.SanitizedContent');\n";
 
-    Iterator<Path> files = ImmutableList.of(
-        outputDir.resolve("dossier.soy.js"),
-        outputDir.resolve("nav.soy.js"),
-        outputDir.resolve("types.soy.js")).iterator();
+    Iterator<Path> files =
+        ImmutableList.of(
+                outputDir.resolve("dossier.soy.js"),
+                outputDir.resolve("nav.soy.js"),
+                outputDir.resolve("types.soy.js"))
+            .iterator();
     for (String string : fileSet.compileToJsSrc(options, null)) {
       Matcher matcher = googModulePattern.matcher(string);
       if (matcher.find()) {

@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier;
 
@@ -31,11 +31,6 @@ import com.google.common.jimfs.Jimfs;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import java.util.Optional;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -43,10 +38,12 @@ import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-/**
- * Tests for {@link Config}.
- */
+/** Tests for {@link Config}. */
 @RunWith(JUnit4.class)
 public class ConfigTest {
 
@@ -58,11 +55,12 @@ public class ConfigTest {
     Path input = fs.getPath("/input.js");
     createFile(input);
 
-    Config initial = Config.builder()
-        .setFileSystem(fs)
-        .setOutput(output)
-        .setSources(ImmutableSet.of(input))
-        .build();
+    Config initial =
+        Config.builder()
+            .setFileSystem(fs)
+            .setOutput(output)
+            .setSources(ImmutableSet.of(input))
+            .build();
 
     Config loaded = load(initial.toJson());
 
@@ -78,11 +76,12 @@ public class ConfigTest {
     Path input = fs.getPath("/input.js");
     createFile(input);
 
-    Config initial = Config.builder()
-        .setFileSystem(fs)
-        .setOutput(output)
-        .setSources(ImmutableSet.of(input))
-        .build();
+    Config initial =
+        Config.builder()
+            .setFileSystem(fs)
+            .setOutput(output)
+            .setSources(ImmutableSet.of(input))
+            .build();
 
     Config loaded = load(initial.toJson());
 
@@ -99,11 +98,12 @@ public class ConfigTest {
     Path input = fs.getPath("/input.js");
     createFile(input);
 
-    Config initial = Config.builder()
-        .setFileSystem(fs)
-        .setOutput(output)
-        .setSources(ImmutableSet.of(input))
-        .build();
+    Config initial =
+        Config.builder()
+            .setFileSystem(fs)
+            .setOutput(output)
+            .setSources(ImmutableSet.of(input))
+            .build();
 
     Config loaded = load(initial.toJson());
 
@@ -131,9 +131,7 @@ public class ConfigTest {
 
   @Test
   public void checksAtLeastOneSourceOrModuleIsSpecified() throws IOException {
-    Config.Builder builder = Config.builder()
-        .setOutput(fs.getPath("out"))
-        .setFileSystem(fs);
+    Config.Builder builder = Config.builder().setOutput(fs.getPath("out")).setFileSystem(fs);
 
     try {
       builder.build();
@@ -151,24 +149,19 @@ public class ConfigTest {
     assertThat(config.getSources()).containsExactlyElementsIn(files);
     assertThat(config.getModules()).isEmpty();
 
-    config = builder
-        .setSources(ImmutableSet.of())
-        .setModules(files)
-        .build();
+    config = builder.setSources(ImmutableSet.of()).setModules(files).build();
     assertThat(config.getSources()).isEmpty();
     assertThat(config.getModules()).containsExactlyElementsIn(files);
   }
 
   @Test
   public void checksEveryInputSourceExists() throws IOException {
-    Config.Builder builder = Config.builder()
-        .setFileSystem(fs)
-        .setOutput(fs.getPath("out"))
-        .setSources(
-            ImmutableSet.of(
-                fs.getPath("a.js"),
-                fs.getPath("b.js"),
-                fs.getPath("c.js")));
+    Config.Builder builder =
+        Config.builder()
+            .setFileSystem(fs)
+            .setOutput(fs.getPath("out"))
+            .setSources(
+                ImmutableSet.of(fs.getPath("a.js"), fs.getPath("b.js"), fs.getPath("c.js")));
 
     createFile(fs.getPath("a.js"));
     createFile(fs.getPath("b.js"));
@@ -183,14 +176,12 @@ public class ConfigTest {
 
   @Test
   public void checksEveryInputModuleExists() throws IOException {
-    Config.Builder builder = Config.builder()
-        .setFileSystem(fs)
-        .setOutput(fs.getPath("out"))
-        .setModules(
-            ImmutableSet.of(
-                fs.getPath("a.js"),
-                fs.getPath("b.js"),
-                fs.getPath("c.js")));
+    Config.Builder builder =
+        Config.builder()
+            .setFileSystem(fs)
+            .setOutput(fs.getPath("out"))
+            .setModules(
+                ImmutableSet.of(fs.getPath("a.js"), fs.getPath("b.js"), fs.getPath("c.js")));
 
     createFile(fs.getPath("a.js"));
     createFile(fs.getPath("b.js"));
@@ -205,14 +196,12 @@ public class ConfigTest {
 
   @Test
   public void checksEveryInputExternExists() throws IOException {
-    Config.Builder builder = Config.builder()
-        .setFileSystem(fs)
-        .setOutput(fs.getPath("out"))
-        .setSources(ImmutableSet.of(fs.getPath("a.js")))
-        .setExterns(
-            ImmutableSet.of(
-                fs.getPath("b.js"),
-                fs.getPath("c.js")));
+    Config.Builder builder =
+        Config.builder()
+            .setFileSystem(fs)
+            .setOutput(fs.getPath("out"))
+            .setSources(ImmutableSet.of(fs.getPath("a.js")))
+            .setExterns(ImmutableSet.of(fs.getPath("b.js"), fs.getPath("c.js")));
 
     createFile(fs.getPath("a.js"));
     createFile(fs.getPath("b.js"));
@@ -227,14 +216,12 @@ public class ConfigTest {
 
   @Test
   public void checksEveryInputExternModuleExists() throws IOException {
-    Config.Builder builder = Config.builder()
-        .setFileSystem(fs)
-        .setOutput(fs.getPath("out"))
-        .setSources(ImmutableSet.of(fs.getPath("a.js")))
-        .setExternModules(
-            ImmutableSet.of(
-                fs.getPath("b.js"),
-                fs.getPath("c.js")));
+    Config.Builder builder =
+        Config.builder()
+            .setFileSystem(fs)
+            .setOutput(fs.getPath("out"))
+            .setSources(ImmutableSet.of(fs.getPath("a.js")))
+            .setExternModules(ImmutableSet.of(fs.getPath("b.js"), fs.getPath("c.js")));
 
     createFile(fs.getPath("a.js"));
     createFile(fs.getPath("b.js"));
@@ -252,11 +239,12 @@ public class ConfigTest {
     Path input = fs.getPath("/input.js");
     createFile(input);
 
-    Config.Builder builder = Config.builder()
-        .setFileSystem(fs)
-        .setSources(ImmutableSet.of(input))
-        .setOutput(fs.getPath("/output"))
-        .setReadme(fs.getPath("not-there.md"));
+    Config.Builder builder =
+        Config.builder()
+            .setFileSystem(fs)
+            .setSources(ImmutableSet.of(input))
+            .setOutput(fs.getPath("/output"))
+            .setReadme(fs.getPath("not-there.md"));
 
     try {
       builder.build();
@@ -279,17 +267,18 @@ public class ConfigTest {
     createDirectories(rootDir);
     createFile(rootDir.resolve("foo.js"));
 
-    String content = String.format(
-        "{\"output\":\"%s\", \"sources\":[\"%s\",]}",  // Want a trailing comma inside sources.
-        rootDir.resolveSibling("out"),
-        rootDir.resolve("**.js"));
+    String content =
+        String.format(
+            "{\"output\":\"%s\", \"sources\":[\"%s\",]}", // Want a trailing comma inside sources.
+            rootDir.resolveSibling("out"), rootDir.resolve("**.js"));
 
     Config config = load(content);
-    Config expected = Config.builder()
-        .setFileSystem(fs)
-        .setOutput(rootDir.resolveSibling("out"))
-        .setSources(ImmutableSet.of(rootDir.resolve("foo.js")))
-        .build();
+    Config expected =
+        Config.builder()
+            .setFileSystem(fs)
+            .setOutput(rootDir.resolveSibling("out"))
+            .setSources(ImmutableSet.of(rootDir.resolve("foo.js")))
+            .build();
     assertThat(config).isEqualTo(expected);
   }
 
@@ -330,8 +319,8 @@ public class ConfigTest {
     assertContentsAnyOrder(getPaths(baseDir, "a/**.js"), bar, baz, quux, quot);
 
     assertContentsAnyOrder(getPaths(baseDir, otherDir + "/a/*.js"), otherBarTest);
-    assertContentsAnyOrder(getPaths(baseDir, otherDir + "/a/**_test.js"),
-        otherBarTest, otherFooTest);
+    assertContentsAnyOrder(
+        getPaths(baseDir, otherDir + "/a/**_test.js"), otherBarTest, otherFooTest);
   }
 
   @Test
@@ -344,21 +333,23 @@ public class ConfigTest {
     createDirectories(rootDir.resolve("nested"));
     createFile(rootDir.resolve("nested/bunnies.js"));
 
-    String content = String.format(
-        "{\"output\":\"%s\", \"sources\":[\"%s\"]}",
-        rootDir.resolveSibling("out"),
-        rootDir.resolve("**.js"));
+    String content =
+        String.format(
+            "{\"output\":\"%s\", \"sources\":[\"%s\"]}",
+            rootDir.resolveSibling("out"), rootDir.resolve("**.js"));
 
     Config config = load(content);
-    Config expected = Config.builder()
-        .setFileSystem(fs)
-        .setOutput(rootDir.resolveSibling("out"))
-        .setSources(ImmutableSet.of(
-            rootDir.resolve("foo.js"),
-            rootDir.resolve("bar.js"),
-            rootDir.resolve("baz.js"),
-            rootDir.resolve("nested/bunnies.js")))
-        .build();
+    Config expected =
+        Config.builder()
+            .setFileSystem(fs)
+            .setOutput(rootDir.resolveSibling("out"))
+            .setSources(
+                ImmutableSet.of(
+                    rootDir.resolve("foo.js"),
+                    rootDir.resolve("bar.js"),
+                    rootDir.resolve("baz.js"),
+                    rootDir.resolve("nested/bunnies.js")))
+            .build();
     assertThat(config).isEqualTo(expected);
     assertThat(config.getSourcePrefix().get().toString()).isEqualTo(rootDir.toString());
   }
@@ -373,21 +364,23 @@ public class ConfigTest {
     createDirectories(rootDir.resolve("nested"));
     createFile(rootDir.resolve("nested/bunnies.js"));
 
-    String content = String.format(
-        "{\"output\":\"%s\", \"modules\":[\"%s\"]}",
-        rootDir.resolveSibling("out"),
-        rootDir.resolve("**.js"));
+    String content =
+        String.format(
+            "{\"output\":\"%s\", \"modules\":[\"%s\"]}",
+            rootDir.resolveSibling("out"), rootDir.resolve("**.js"));
 
     Config config = load(content);
-    Config expected = Config.builder()
-        .setFileSystem(fs)
-        .setOutput(rootDir.resolveSibling("out"))
-        .setModules(ImmutableSet.of(
-            rootDir.resolve("foo.js"),
-            rootDir.resolve("bar.js"),
-            rootDir.resolve("baz.js"),
-            rootDir.resolve("nested/bunnies.js")))
-        .build();
+    Config expected =
+        Config.builder()
+            .setFileSystem(fs)
+            .setOutput(rootDir.resolveSibling("out"))
+            .setModules(
+                ImmutableSet.of(
+                    rootDir.resolve("foo.js"),
+                    rootDir.resolve("bar.js"),
+                    rootDir.resolve("baz.js"),
+                    rootDir.resolve("nested/bunnies.js")))
+            .build();
     assertThat(config).isEqualTo(expected);
   }
 
@@ -402,23 +395,26 @@ public class ConfigTest {
     createFile(rootDir.resolve("externs/baz.js"));
     createFile(rootDir.resolve("externs/nested/bunnies.js"));
 
-    String content = String.format(
-        "{\"output\":\"%s\", \"sources\":[\"%s\"], \"externs\":[\"%s\"]}",
-        rootDir.resolveSibling("out"),
-        rootDir.resolve("sources/one.js"),
-        rootDir.resolve("externs/**.js"));
+    String content =
+        String.format(
+            "{\"output\":\"%s\", \"sources\":[\"%s\"], \"externs\":[\"%s\"]}",
+            rootDir.resolveSibling("out"),
+            rootDir.resolve("sources/one.js"),
+            rootDir.resolve("externs/**.js"));
 
     Config config = load(content);
-    Config expected = Config.builder()
-        .setFileSystem(fs)
-        .setOutput(rootDir.resolveSibling("out"))
-        .setSources(ImmutableSet.of(rootDir.resolve("sources/one.js")))
-        .setExterns(ImmutableSet.of(
-            rootDir.resolve("externs/foo.js"),
-            rootDir.resolve("externs/bar.js"),
-            rootDir.resolve("externs/baz.js"),
-            rootDir.resolve("externs/nested/bunnies.js")))
-        .build();
+    Config expected =
+        Config.builder()
+            .setFileSystem(fs)
+            .setOutput(rootDir.resolveSibling("out"))
+            .setSources(ImmutableSet.of(rootDir.resolve("sources/one.js")))
+            .setExterns(
+                ImmutableSet.of(
+                    rootDir.resolve("externs/foo.js"),
+                    rootDir.resolve("externs/bar.js"),
+                    rootDir.resolve("externs/baz.js"),
+                    rootDir.resolve("externs/nested/bunnies.js")))
+            .build();
     assertThat(config).isEqualTo(expected);
   }
 
@@ -437,9 +433,10 @@ public class ConfigTest {
     write(source, "goog.provide('one'); goog.require('goog.dom');".getBytes(UTF_8));
 
     Path closureDeps = closure.resolve("deps.js");
-    write(closureDeps,
-        ("goog.addDependency('array/array.js', ['goog.array'], [], false);\n" +
-            "goog.addDependency('dom/dom.js', ['goog.dom'], ['goog.array'], false);\n")
+    write(
+        closureDeps,
+        ("goog.addDependency('array/array.js', ['goog.array'], [], false);\n"
+                + "goog.addDependency('dom/dom.js', ['goog.dom'], ['goog.array'], false);\n")
             .getBytes(UTF_8));
 
     JsonObject json = new JsonObject();
@@ -448,16 +445,18 @@ public class ConfigTest {
     json.addProperty("closureLibraryDir", closure.toString());
 
     Config config = load(json.toString());
-    Config expected = Config.builder()
-        .setFileSystem(fs)
-        .setOutput(fs.getPath("/out"))
-        .setSources(ImmutableSet.of(
-            closure.resolve("base.js"),
-            closure.resolve("array/array.js"),
-            closure.resolve("dom/dom.js"),
-            source))
-        .setClosureLibraryDir(Optional.of(closure))
-        .build();
+    Config expected =
+        Config.builder()
+            .setFileSystem(fs)
+            .setOutput(fs.getPath("/out"))
+            .setSources(
+                ImmutableSet.of(
+                    closure.resolve("base.js"),
+                    closure.resolve("array/array.js"),
+                    closure.resolve("dom/dom.js"),
+                    source))
+            .setClosureLibraryDir(Optional.of(closure))
+            .build();
     assertThat(config).isEqualTo(expected);
   }
 

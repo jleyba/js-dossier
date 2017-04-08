@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier;
 
@@ -252,7 +252,8 @@ public class EndToEndTest {
     @Test
     public void checkDeprecatedClassWithSuperTypes() throws IOException {
       Document document = load(outDir.resolve("sample.inheritance.DeprecatedFinalClass.html"));
-      compareWithGoldenFile(extractPageData(document), "sample.inheritance.DeprecatedFinalClass.json");
+      compareWithGoldenFile(
+          extractPageData(document), "sample.inheritance.DeprecatedFinalClass.json");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
@@ -306,8 +307,8 @@ public class EndToEndTest {
 
     @Test
     public void checkCommonJsModuleInterfaceImplementation() throws IOException {
-      Document document = load(outDir.resolve(
-          "module/example/nested_exports_IncrementingIdGenerator.html"));
+      Document document =
+          load(outDir.resolve("module/example/nested_exports_IncrementingIdGenerator.html"));
       compareWithGoldenFile(
           extractPageData(document), "module/example/nested_exports_IncrementingIdGenerator.json");
       checkHeader(document);
@@ -317,10 +318,8 @@ public class EndToEndTest {
 
     @Test
     public void checkModuleExportedClass() throws IOException {
-      Document document = load(outDir.resolve(
-          "module/example/nested_exports_Person.html"));
-      compareWithGoldenFile(
-          extractPageData(document), "module/example/nested_exports_Person.json");
+      Document document = load(outDir.resolve("module/example/nested_exports_Person.html"));
+      compareWithGoldenFile(extractPageData(document), "module/example/nested_exports_Person.json");
       checkHeader(document);
       checkNav(document);
       checkModuleFooter(document);
@@ -328,8 +327,7 @@ public class EndToEndTest {
 
     @Test
     public void checkClassThatExtendsExternType() throws IOException {
-      Document document = load(outDir.resolve(
-          "sample.inheritance.RunnableError.html"));
+      Document document = load(outDir.resolve("sample.inheritance.RunnableError.html"));
       compareWithGoldenFile(extractPageData(document), "sample.inheritance.RunnableError.json");
       checkHeader(document);
       checkNav(document);
@@ -412,9 +410,7 @@ public class EndToEndTest {
       actualContent = actualContent.substring("var TYPES = ".length());
       actualContent = actualContent.substring(0, actualContent.length() - 1);
 
-      Gson gson = new GsonBuilder()
-          .setPrettyPrinting()
-          .create();
+      Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
       JsonArray json = gson.fromJson(actualContent, JsonArray.class);
       actualContent = gson.toJson(json).trim();
@@ -487,35 +483,37 @@ public class EndToEndTest {
 
     private static void updateGoldenFile(String goldenPath, String content) throws IOException {
       if (Boolean.getBoolean("dossier.e2e.updateGolden")) {
-        Path localFsPath = FileSystems.getDefault()
-            .getPath("./test/java")
-            .resolve(EndToEndTest.class.getPackage().getName().replace('.', '/'))
-            .resolve(goldenPath);
+        Path localFsPath =
+            FileSystems.getDefault()
+                .getPath("./test/java")
+                .resolve(EndToEndTest.class.getPackage().getName().replace('.', '/'))
+                .resolve(goldenPath);
         Files.write(localFsPath, content.getBytes(UTF_8));
       }
     }
 
     private static String normalizeLines(String in) {
       Iterable<String> lines = Splitter.on('\n').split(in);
-      lines = Iterables.transform(lines, input -> {
-        int end = input.length();
-        while (end > 0 && input.charAt(end - 1) <= ' ') {
-          end -= 1;
-        }
-        return input.substring(0, end);
-      });
+      lines =
+          Iterables.transform(
+              lines,
+              input -> {
+                int end = input.length();
+                while (end > 0 && input.charAt(end - 1) <= ' ') {
+                  end -= 1;
+                }
+                return input.substring(0, end);
+              });
       return Joiner.on('\n').join(lines).trim();
     }
 
     private static Document load(Path path) throws IOException {
       String html = toString(path);
       Document document = Jsoup.parse(html);
-      document.outputSettings()
-          .prettyPrint(true)
-          .indentAmount(2);
+      document.outputSettings().prettyPrint(true).indentAmount(2);
       return document;
     }
-    
+
     private static String extractPageData(Document document) {
       Elements elements = document.select("main[data-page-data]");
       checkState(!elements.isEmpty(), "Main element not found in %s", document);
@@ -530,8 +528,7 @@ public class EndToEndTest {
 
     private static Element querySelector(Document document, String selector) {
       Elements elements = document.select(selector);
-      checkState(!elements.isEmpty(),
-          "Selector %s not found in %s", selector, document);
+      checkState(!elements.isEmpty(), "Selector %s not found in %s", selector, document);
       return Iterables.getOnlyElement(elements);
     }
 
@@ -758,46 +755,52 @@ public class EndToEndTest {
 
     String[] buildCommandLine() throws IOException {
       final Path output = tmpDir.resolveSibling(outputPath);
-      final List<String> filters = ImmutableList.of(
-          "^foo.\\w+_.*",
-          "foo.FilteredClass",
-          "foo.bar");
+      final List<String> filters = ImmutableList.of("^foo.\\w+_.*", "foo.FilteredClass", "foo.bar");
 
       final List<String> moduleFilters = ImmutableList.of(".*/main/example/filter.js$");
 
-      final List<Path> sources = ImmutableList.of(
-          srcDir.resolve("main/closure_module.js"),
-          srcDir.resolve("main/es2015.js"),
-          srcDir.resolve("main/filter.js"),
-          srcDir.resolve("main/globals.js"),
-          srcDir.resolve("main/json.js"),
-          srcDir.resolve("main/inheritance.js"),
-          srcDir.resolve("main/namespace.js"),
-          srcDir.resolve("main/registry.js"),
-          srcDir.resolve("main/visibility.js"),
-          srcDir.resolve("main/subdir/emptyenum.js"),
+      final List<Path> sources =
+          ImmutableList.of(
+              srcDir.resolve("main/closure_module.js"),
+              srcDir.resolve("main/es2015.js"),
+              srcDir.resolve("main/filter.js"),
+              srcDir.resolve("main/globals.js"),
+              srcDir.resolve("main/json.js"),
+              srcDir.resolve("main/inheritance.js"),
+              srcDir.resolve("main/namespace.js"),
+              srcDir.resolve("main/registry.js"),
+              srcDir.resolve("main/visibility.js"),
+              srcDir.resolve("main/subdir/emptyenum.js"),
 
-          // NB: this is explicitly declared as a normal source input to test that Dossier detects
-          // the import statement and registers it as a module.
-          srcDir.resolve("main/example/empty.js"));
+              // NB: this is explicitly declared as a normal source input to test that Dossier detects
+              // the import statement and registers it as a module.
+              srcDir.resolve("main/example/empty.js"));
 
-      final List<Path> modules = ImmutableList.of(
-          srcDir.resolve("main/example/filter.js"),
-          srcDir.resolve("main/example/index.js"),
-          srcDir.resolve("main/example/nested.js"),
-          srcDir.resolve("main/example/net.js"),
-          srcDir.resolve("main/example/worker.js"));
+      final List<Path> modules =
+          ImmutableList.of(
+              srcDir.resolve("main/example/filter.js"),
+              srcDir.resolve("main/example/index.js"),
+              srcDir.resolve("main/example/nested.js"),
+              srcDir.resolve("main/example/net.js"),
+              srcDir.resolve("main/example/worker.js"));
 
       String[] args;
       if (useFlags) {
         List<String> list = new ArrayList<>();
-        addAll(list,
-            "--num_threads", "1",
-            "--output", output.toString(),
-            "--readme", srcDir.resolve("SimpleReadme.md").toString(),
-            "--language", "ES6_STRICT",
-            "--custom_page", "Custom Page:" + srcDir.resolve("Custom.md"),
-            "--module_naming_convention", "NODE");
+        addAll(
+            list,
+            "--num_threads",
+            "1",
+            "--output",
+            output.toString(),
+            "--readme",
+            srcDir.resolve("SimpleReadme.md").toString(),
+            "--language",
+            "ES6_STRICT",
+            "--custom_page",
+            "Custom Page:" + srcDir.resolve("Custom.md"),
+            "--module_naming_convention",
+            "NODE");
 
         for (String filter : filters) {
           list.add("--type_filter");
@@ -823,35 +826,39 @@ public class EndToEndTest {
         list.toArray(args);
       } else {
         Path config = createTempFile(tmpDir, "config", ".json");
-        writeConfig(config, new Config() {{
-          setOutput(output);
-          setReadme(srcDir.resolve("SimpleReadme.md"));
-          setLanguage("ES6_STRICT");
+        writeConfig(
+            config,
+            new Config() {
+              {
+                setOutput(output);
+                setReadme(srcDir.resolve("SimpleReadme.md"));
+                setLanguage("ES6_STRICT");
 
-          addCustomPage("Custom Page", srcDir.resolve("Custom.md"));
+                addCustomPage("Custom Page", srcDir.resolve("Custom.md"));
 
-          for (String filter : filters) {
-            addFilter(filter);
-          }
+                for (String filter : filters) {
+                  addFilter(filter);
+                }
 
-          for (String filter : moduleFilters) {
-            addModuleFilter(filter);
-          }
+                for (String filter : moduleFilters) {
+                  addModuleFilter(filter);
+                }
 
-          for (Path source : sources) {
-            addSource(source);
-          }
+                for (Path source : sources) {
+                  addSource(source);
+                }
 
-          for (Path module : modules) {
-            addModule(module);
-          }
-        }});
+                for (Path module : modules) {
+                  addModule(module);
+                }
+              }
+            });
 
         if (config.getFileSystem() == FileSystems.getDefault()) {
           config.toFile().deleteOnExit();
         }
 
-        args = new String[]{"-c", config.toAbsolutePath().toString()};
+        args = new String[] {"-c", config.toAbsolutePath().toString()};
       }
       return args;
     }
@@ -869,9 +876,11 @@ public class EndToEndTest {
           URI uri = URI.create("jar:file:" + output.toAbsolutePath());
           fs = FileSystems.newFileSystem(uri, ImmutableMap.<String, Object>of());
         } else {
-          fs = output.getFileSystem()
-              .provider()
-              .newFileSystem(output, ImmutableMap.<String, Object>of());
+          fs =
+              output
+                  .getFileSystem()
+                  .provider()
+                  .newFileSystem(output, ImmutableMap.<String, Object>of());
         }
         return fs.getPath("/");
       }

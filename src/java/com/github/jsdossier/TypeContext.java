@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier;
 
@@ -31,6 +31,7 @@ import javax.inject.Inject;
 
 /**
  * Defines a context in which type names may be defined. For instance, consider:
+ *
  * <pre><code>
  *   goog.provide('foo');
  *   goog.provide('bar');
@@ -56,8 +57,8 @@ import javax.inject.Inject;
  *   });
  * </code></pre>
  *
- * <p>In this example, for the context {@code foo.Two}, the type name {@code ns.One} will resolve
- * to {@code foo.One}, whereas for {@code bar.Two} it will resolve to {@code bar.One}.
+ * <p>In this example, for the context {@code foo.Two}, the type name {@code ns.One} will resolve to
+ * {@code foo.One}, whereas for {@code bar.Two} it will resolve to {@code bar.One}.
  */
 final class TypeContext {
 
@@ -73,14 +74,16 @@ final class TypeContext {
   TypeContext(
       TypeRegistry typeRegistry,
       JSTypeRegistry jsTypeRegistry,
-      ModuleNamingConvention moduleNamingConvention, DossierFileSystem dfs) {
+      ModuleNamingConvention moduleNamingConvention,
+      DossierFileSystem dfs) {
     this(typeRegistry, jsTypeRegistry, dfs, moduleNamingConvention, Optional.empty());
   }
 
   private TypeContext(
       TypeRegistry typeRegistry,
       JSTypeRegistry jsTypeRegistry,
-      DossierFileSystem dfs, ModuleNamingConvention moduleNamingConvention,
+      DossierFileSystem dfs,
+      ModuleNamingConvention moduleNamingConvention,
       Optional<NominalType> context) {
     this.typeRegistry = typeRegistry;
     this.jsTypeRegistry = jsTypeRegistry;
@@ -89,20 +92,16 @@ final class TypeContext {
     this.context = context;
   }
 
-  /**
-   * Returns the root context that resolves types against the global scope.
-   */
+  /** Returns the root context that resolves types against the global scope. */
   public TypeContext clearContext() {
     if (context.isPresent()) {
-      return new TypeContext(typeRegistry, jsTypeRegistry, dfs, moduleNamingConvention,
-          Optional.empty());
+      return new TypeContext(
+          typeRegistry, jsTypeRegistry, dfs, moduleNamingConvention, Optional.empty());
     }
     return this;
   }
 
-  /**
-   * Creates a new context focused on the given type.
-   */
+  /** Creates a new context focused on the given type. */
   public TypeContext changeContext(@Nullable NominalType context) {
     return new TypeContext(
         typeRegistry, jsTypeRegistry, dfs, moduleNamingConvention, Optional.ofNullable(context));
@@ -112,9 +111,7 @@ final class TypeContext {
     return !context.isPresent();
   }
 
-  /**
-   * Returns the type type names or are resolved against, or null if using the global scope.
-   */
+  /** Returns the type type names or are resolved against, or null if using the global scope. */
   @Nullable
   public NominalType getContextType() {
     return context.orElse(null);
@@ -139,7 +136,7 @@ final class TypeContext {
     if (def != null) {
       name = def;
     } else {
-      for (int index = name.indexOf('.'); index != -1;) {
+      for (int index = name.indexOf('.'); index != -1; ) {
         String subName = name.substring(0, index);
         def = typeRegistry.resolveAlias(context.get(), subName);
         if (def != null) {
@@ -220,11 +217,7 @@ final class TypeContext {
         || (!pathStr.startsWith("./") && !pathStr.startsWith("../"))) {
       return dfs.resolveModule(pathStr);
     } else {
-      return context.get()
-          .getModule().get()
-          .getPath()
-          .resolveSibling(pathStr)
-          .normalize();
+      return context.get().getModule().get().getPath().resolveSibling(pathStr).normalize();
     }
   }
 

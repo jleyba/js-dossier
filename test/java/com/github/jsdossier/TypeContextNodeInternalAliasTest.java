@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier;
 
@@ -26,18 +26,14 @@ import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.javascript.jscomp.CompilerOptions;
+import java.nio.file.FileSystem;
+import javax.inject.Inject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.nio.file.FileSystem;
-
-import javax.inject.Inject;
-
-/**
- * Tests for resolving aliases for types defined within a Node module.
- */
+/** Tests for resolving aliases for types defined within a Node module. */
 @RunWith(JUnit4.class)
 public final class TypeContextNodeInternalAliasTest {
 
@@ -49,15 +45,16 @@ public final class TypeContextNodeInternalAliasTest {
 
   @BeforeClass
   public static void classSetup() {
-    TestData data = GuiceRule.builder(new Object())
-        .setOutputDir("/out")
-        .setSourcePrefix("/src")
-        .setModulePrefix("/src/modules")
-        .setModules("foo.js", "bar.js", "baz.js")
-        .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
-        .build()
-        .createInjector()
-        .getInstance(TestData.class);
+    TestData data =
+        GuiceRule.builder(new Object())
+            .setOutputDir("/out")
+            .setSourcePrefix("/src")
+            .setModulePrefix("/src/modules")
+            .setModules("foo.js", "bar.js", "baz.js")
+            .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
+            .build()
+            .createInjector()
+            .getInstance(TestData.class);
 
     data.util.compile(
         createSourceFile(
@@ -70,9 +67,7 @@ public final class TypeContextNodeInternalAliasTest {
             "const Ext = require('./foo').External;",
             "exports.ForwardedExternal = Ext;",
             "exports.B = class extends Ext {}"),
-        createSourceFile(
-            data.fs.getPath("/src/modules/baz.js"),
-            "exports.C = class {};"));
+        createSourceFile(data.fs.getPath("/src/modules/baz.js"), "exports.C = class {};"));
 
     typeRegistry = data.typeRegistry;
     context = data.context;
@@ -106,9 +101,9 @@ public final class TypeContextNodeInternalAliasTest {
   @Test
   public void canResolveAliasFromAnotherModule() {
     assertThat(
-        context
-            .changeContext(typeRegistry.getType("module$exports$module$$src$modules$baz"))
-            .resolveType(ALIAS))
+            context
+                .changeContext(typeRegistry.getType("module$exports$module$$src$modules$baz"))
+                .resolveType(ALIAS))
         .isEqualTo(target);
   }
 
@@ -122,9 +117,9 @@ public final class TypeContextNodeInternalAliasTest {
   public void resolvessAliasesFromAnotherModule_fromAnotherModule() {
     String alias = "module$contents$module$$src$modules$bar_Ext";
     assertThat(
-        context
-            .changeContext(typeRegistry.getType("module$exports$module$$src$modules$baz"))
-            .resolveType(alias))
+            context
+                .changeContext(typeRegistry.getType("module$exports$module$$src$modules$baz"))
+                .resolveType(alias))
         .isEqualTo(target);
   }
 

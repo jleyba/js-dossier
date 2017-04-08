@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier;
 
@@ -29,9 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Tests for extracting property information with a {@link TypeInspector}.
- */
+/** Tests for extracting property information with a {@link TypeInspector}. */
 @RunWith(JUnit4.class)
 public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
 
@@ -64,41 +62,36 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
   @Test
   public void doesNotReturnNestedNamespacesAsProperty() {
     compile(
-        "goog.provide('foo');",
-        "goog.provide('foo.bar');",
-        "",
-        "foo.x = 123;",
-        "foo.bar.y = 456;");
+        "goog.provide('foo');", "goog.provide('foo.bar');", "", "foo.x = 123;", "foo.bar.y = 456;");
 
     NominalType type = typeRegistry.getType("foo");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
-    assertThat(report.getProperties()).containsExactly(
-        Property.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("x")
-                .setSource(sourceFile("source/foo.js.src.html", 4))
-                .setDescription(Comment.getDefaultInstance()))
-            .setType(numberTypeExpression())
-            .build());
+    assertThat(report.getProperties())
+        .containsExactly(
+            Property.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("x")
+                        .setSource(sourceFile("source/foo.js.src.html", 4))
+                        .setDescription(Comment.getDefaultInstance()))
+                .setType(numberTypeExpression())
+                .build());
   }
 
   @Test
   public void doesNotReturnNestedNamespacesAsProperty_subNamespaceHasBeenFiltered() {
-    guice.toBuilder()
+    guice
+        .toBuilder()
         .setTypeNameFilter("foo.bar"::equals)
         .build()
         .createInjector()
         .injectMembers(this);
 
     compile(
-        "goog.provide('foo');",
-        "goog.provide('foo.bar');",
-        "",
-        "foo.x = 123;",
-        "foo.bar.y = 456;");
+        "goog.provide('foo');", "goog.provide('foo.bar');", "", "foo.x = 123;", "foo.bar.y = 456;");
 
     assertThat(typeRegistry.isType("foo.bar")).isFalse();
 
@@ -107,14 +100,16 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
-    assertThat(report.getProperties()).containsExactly(
-        Property.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("x")
-                .setSource(sourceFile("source/foo.js.src.html", 4))
-                .setDescription(Comment.getDefaultInstance()))
-            .setType(numberTypeExpression())
-            .build());
+    assertThat(report.getProperties())
+        .containsExactly(
+            Property.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("x")
+                        .setSource(sourceFile("source/foo.js.src.html", 4))
+                        .setDescription(Comment.getDefaultInstance()))
+                .setType(numberTypeExpression())
+                .build());
   }
 
   @Test
@@ -134,14 +129,16 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
-    assertThat(report.getProperties()).containsExactly(
-        Property.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("A.b")
-                .setSource(sourceFile("source/foo.js.src.html", 8))
-                .setDescription(htmlComment("<p>A property.</p>\n")))
-            .setType(numberTypeExpression())
-            .build());
+    assertThat(report.getProperties())
+        .containsExactly(
+            Property.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("A.b")
+                        .setSource(sourceFile("source/foo.js.src.html", 8))
+                        .setDescription(htmlComment("<p>A property.</p>\n")))
+                .setType(numberTypeExpression())
+                .build());
   }
 
   @Test
@@ -161,14 +158,16 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
-    assertThat(report.getProperties()).containsExactly(
-        Property.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("A.b")
-                .setSource(sourceFile("source/foo.js.src.html", 8))
-                .setDescription(htmlComment("<p>A property.</p>\n")))
-            .setType(numberTypeExpression())
-            .build());
+    assertThat(report.getProperties())
+        .containsExactly(
+            Property.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("A.b")
+                        .setSource(sourceFile("source/foo.js.src.html", 8))
+                        .setDescription(htmlComment("<p>A property.</p>\n")))
+                .setType(numberTypeExpression())
+                .build());
   }
 
   @Test
@@ -187,14 +186,16 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
-    assertThat(report.getProperties()).containsExactly(
-        Property.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("b")
-                .setSource(sourceFile("source/foo.js.src.html", 7))
-                .setDescription(htmlComment("<p>A property.</p>\n")))
-            .setType(numberTypeExpression())
-            .build());
+    assertThat(report.getProperties())
+        .containsExactly(
+            Property.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("b")
+                        .setSource(sourceFile("source/foo.js.src.html", 7))
+                        .setDescription(htmlComment("<p>A property.</p>\n")))
+                .setType(numberTypeExpression())
+                .build());
   }
 
   @Test
@@ -213,16 +214,18 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getCompilerConstants()).containsExactly(
-        Property.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("foo.bar.BAZ")
-                .setSource(sourceFile("source/foo.js.src.html", 7))
-                .setDescription(htmlComment("<p>This is a constant defined on foo.bar.</p>\n"))
-                .setTags(Tags.newBuilder()
-                    .setIsConst(true)))
-            .setType(numberTypeExpression())
-            .build());
+    assertThat(report.getCompilerConstants())
+        .containsExactly(
+            Property.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("foo.bar.BAZ")
+                        .setSource(sourceFile("source/foo.js.src.html", 7))
+                        .setDescription(
+                            htmlComment("<p>This is a constant defined on foo.bar.</p>\n"))
+                        .setTags(Tags.newBuilder().setIsConst(true)))
+                .setType(numberTypeExpression())
+                .build());
   }
 
   @Test
@@ -241,25 +244,24 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getCompilerConstants()).containsExactly(
-        Property.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("foo.bar.BAZ")
-                .setSource(sourceFile("source/foo.js.src.html", 7))
-                .setDescription(htmlComment("<p>This is a constant defined on foo.bar.</p>\n"))
-                .setTags(Tags.newBuilder()
-                    .setIsConst(true)))
-            .setType(numberTypeExpression())
-            .build());
+    assertThat(report.getCompilerConstants())
+        .containsExactly(
+            Property.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("foo.bar.BAZ")
+                        .setSource(sourceFile("source/foo.js.src.html", 7))
+                        .setDescription(
+                            htmlComment("<p>This is a constant defined on foo.bar.</p>\n"))
+                        .setTags(Tags.newBuilder().setIsConst(true)))
+                .setType(numberTypeExpression())
+                .build());
   }
 
   @Test
   public void linkReferencesAreParsedRelativeToOwningType() {
     util.compile(
-        createSourceFile(
-            fs.getPath("/src/globals.js"),
-            "/** Global person. */",
-            "class Person {}"),
+        createSourceFile(fs.getPath("/src/globals.js"), "/** Global person. */", "class Person {}"),
         createSourceFile(
             fs.getPath("/src/modules/foo/bar.js"),
             "",
@@ -274,18 +276,20 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getCompilerConstants()).isEmpty();
-    assertThat(report.getProperties()).containsExactly(
-        Property.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("limit")
-                .setSource(sourceFile("../../source/modules/foo/bar.js.src.html", 7))
-                .setDescription(htmlComment(
-                    "<p>Link to a <a href=\"bar_exports_Person.html\">" +
-                        "<code>Person</code></a>.</p>\n"))
-                .setTags(Tags.newBuilder()
-                    .setIsConst(true)))
-            .setType(numberTypeExpression())
-            .build());
+    assertThat(report.getProperties())
+        .containsExactly(
+            Property.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("limit")
+                        .setSource(sourceFile("../../source/modules/foo/bar.js.src.html", 7))
+                        .setDescription(
+                            htmlComment(
+                                "<p>Link to a <a href=\"bar_exports_Person.html\">"
+                                    + "<code>Person</code></a>.</p>\n"))
+                        .setTags(Tags.newBuilder().setIsConst(true)))
+                .setType(numberTypeExpression())
+                .build());
   }
 
   @Test
@@ -299,24 +303,24 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
     NominalType type = typeRegistry.getType("module$$src$modules$foo$baz");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
-    assertThat(report.getProperties()).containsExactly(
-        Property.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("default")
-                .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 3))
-                .setDescription(htmlComment("<p>Hello, world!</p>\n"))
-                .setTags(Tags.newBuilder().setIsDefault(true))
-                .build())
-            .setType(numberTypeExpression())
-            .build());
+    assertThat(report.getProperties())
+        .containsExactly(
+            Property.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("default")
+                        .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 3))
+                        .setDescription(htmlComment("<p>Hello, world!</p>\n"))
+                        .setTags(Tags.newBuilder().setIsDefault(true))
+                        .build())
+                .setType(numberTypeExpression())
+                .build());
   }
 
   @Test
   public void moduleExportsAnotherModuleAsAProperty() {
     util.compile(
-        createSourceFile(
-            fs.getPath("/src/modules/foo/bar.js"),
-            "exports.One = class {};"),
+        createSourceFile(fs.getPath("/src/modules/foo/bar.js"), "exports.One = class {};"),
         createSourceFile(
             fs.getPath("/src/modules/foo/baz.js"),
             "let bar = require('./bar');",
@@ -325,15 +329,17 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
     NominalType type = typeRegistry.getType("module$exports$module$$src$modules$foo$baz");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
-    assertThat(report.getProperties()).containsExactly(
-        Property.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("bar")
-                .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 2))
-                .setDescription(Comment.getDefaultInstance())
-                .setTags(Tags.newBuilder().setIsModule(true))
-                .build())
-            .setType(namedTypeExpression("foo/bar", "bar.html"))
-            .build());
+    assertThat(report.getProperties())
+        .containsExactly(
+            Property.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("bar")
+                        .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 2))
+                        .setDescription(Comment.getDefaultInstance())
+                        .setTags(Tags.newBuilder().setIsModule(true))
+                        .build())
+                .setType(namedTypeExpression("foo/bar", "bar.html"))
+                .build());
   }
 }

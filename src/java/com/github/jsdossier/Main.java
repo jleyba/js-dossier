@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 package com.github.jsdossier;
 
 import static com.google.common.collect.Iterables.concat;
@@ -76,19 +76,20 @@ final class Main {
   private static void configureLogging() {
     Logger log = Logger.getLogger(Main.class.getPackage().getName());
     log.setLevel(Level.WARNING);
-    log.addHandler(new Handler() {
-      @Override
-      public void publish(LogRecord record) {
-        System.err.printf(
-            "[%s][%s] %s\n",
-            record.getLevel(),
-            record.getLoggerName(),
-            record.getMessage());
-      }
+    log.addHandler(
+        new Handler() {
+          @Override
+          public void publish(LogRecord record) {
+            System.err.printf(
+                "[%s][%s] %s\n", record.getLevel(), record.getLoggerName(), record.getMessage());
+          }
 
-      @Override public void flush() {}
-      @Override public void close() {}
-    });
+          @Override
+          public void flush() {}
+
+          @Override
+          public void close() {}
+        });
   }
 
   @VisibleForTesting
@@ -112,9 +113,8 @@ final class Main {
   }
 
   private static FileSystem openZipFileSystem(Path zip) throws IOException {
-    ImmutableMap<String, String> attributes = ImmutableMap.of(
-        "create", "true",
-        "encoding", UTF_8.displayName());
+    ImmutableMap<String, String> attributes =
+        ImmutableMap.of("create", "true", "encoding", UTF_8.displayName());
     if (zip.getFileSystem() == FileSystems.getDefault()) {
       URI uri = URI.create("jar:file:" + zip.toAbsolutePath());
       return FileSystems.newFileSystem(uri, attributes);
@@ -122,27 +122,28 @@ final class Main {
     // An in-memory file system used for testing.
     return zip.getFileSystem().provider().newFileSystem(zip, attributes);
   }
-  
+
   private static ListenableFuture<List<Path>> submitRenderingTasks(
       ListeningExecutorService executor, Injector injector, Class<? extends Annotation> qualifier)
       throws InterruptedException {
     List<RenderTask> tasks = injector.getInstance(new Key<List<RenderTask>>(qualifier) {});
 
-    @SuppressWarnings("unchecked")  // Safe by the contract of invokeAll().
+    @SuppressWarnings("unchecked") // Safe by the contract of invokeAll().
     List<ListenableFuture<List<Path>>> stage1 = (List) executor.invokeAll(tasks);
     ListenableFuture<List<List<Path>>> stage2 = allAsList(stage1);
-    return transform(stage2, lists ->  lists.stream().flatMap(List::stream).collect(toList()));
+    return transform(stage2, lists -> lists.stream().flatMap(List::stream).collect(toList()));
   }
 
   private static int run(Flags flags, Config config, Path outputDir) throws IOException {
     configureLogging();
-    
+
     ExplicitScope documentationScope = new ExplicitScope();
 
-    Injector injector = Guice.createInjector(
-        new CompilerModule(),
-        new ConfigModule(flags, config, outputDir, documentationScope),
-        new RenderTaskModule());
+    Injector injector =
+        Guice.createInjector(
+            new CompilerModule(),
+            new ConfigModule(flags, config, outputDir, documentationScope),
+            new RenderTaskModule());
 
     DossierCommandLineRunner runner = injector.getInstance(DossierCommandLineRunner.class);
     if (!runner.shouldRunCompiler()) {
@@ -168,7 +169,7 @@ final class Main {
       createDirectories(outputDir);
 
       executor = listeningDecorator(newFixedThreadPool(flags.numThreads));
-      
+
       List<Path> stage1Results =
           submitRenderingTasks(executor, injector, RenderingTasks.class).get();
       List<Path> stage2Results =
@@ -195,14 +196,18 @@ final class Main {
     }
 
     Instant stop = Instant.now();
-    String output = new PeriodFormatterBuilder()
-        .appendHours().appendSuffix("h")  // I hope not...
-        .appendSeparator(" ")
-        .appendMinutes().appendSuffix("m")
-        .appendSeparator(" ")
-        .appendSecondsWithOptionalMillis().appendSuffix("s")
-        .toFormatter()
-        .print(new Period(start, stop));
+    String output =
+        new PeriodFormatterBuilder()
+            .appendHours()
+            .appendSuffix("h") // I hope not...
+            .appendSeparator(" ")
+            .appendMinutes()
+            .appendSuffix("m")
+            .appendSeparator(" ")
+            .appendSecondsWithOptionalMillis()
+            .appendSuffix("s")
+            .toFormatter()
+            .print(new Period(start, stop));
 
     System.out.println("Finished in " + output);
     return 0;

@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier;
 
@@ -95,17 +95,16 @@ final class TypeInspector {
 
   private static final Pattern SUMMARY_REGEX = Pattern.compile("(.*?\\.)[\\s$]", Pattern.DOTALL);
 
-  /**
-   * URI pattern from RFC 2396, with the scheme portion restricted to http/s.
-   */
-  private static final Pattern URI_PATTERN = Pattern.compile(
-      "^\\s*https?://" +
-          "(?<authority>[^/?#]+)" +
-          "(?<path>/[^?#]*)?" +
-          "(?<query>\\?[^#]*)?" +
-          "(?<fragment>#.*)?" +
-          "\\s*$",
-      Pattern.CASE_INSENSITIVE);
+  /** URI pattern from RFC 2396, with the scheme portion restricted to http/s. */
+  private static final Pattern URI_PATTERN =
+      Pattern.compile(
+          "^\\s*https?://"
+              + "(?<authority>[^/?#]+)"
+              + "(?<path>/[^?#]*)?"
+              + "(?<query>\\?[^#]*)?"
+              + "(?<fragment>#.*)?"
+              + "\\s*$",
+          Pattern.CASE_INSENSITIVE);
 
   private final DossierFileSystem dfs;
   private final CommentParser parser;
@@ -149,20 +148,18 @@ final class TypeInspector {
     typeMapReplacer = new TemplateTypeMapReplacer(jsRegistry, type.getTemplateTypeMap());
   }
 
-  /**
-   * Returns the top description for the inspected type.
-   */
+  /** Returns the top description for the inspected type. */
   public Comment getTypeDescription() {
     return getTypeDescription(inspectedType, false);
   }
 
   /**
-   * Returns the description for the given type. All links in the returned comment will be
-   * generated relative to the output file for this instance's inspected type.
+   * Returns the description for the given type. All links in the returned comment will be generated
+   * relative to the output file for this instance's inspected type.
    *
    * @param type the type to extract a description from.
-   * @param summaryOnly whether to only extract a summary description. The summary is substring
-   *     up to the first period (.) followed by a blank, tab, or newline. Summaries are extracted
+   * @param summaryOnly whether to only extract a summary description. The summary is substring up
+   *     to the first period (.) followed by a blank, tab, or newline. Summaries are extracted
    *     before the markdown parser is invoked.
    * @return the extracted description.
    */
@@ -189,9 +186,8 @@ final class TypeInspector {
         blockComment = JsDoc.from(info).getBlockComment();
 
         if (isNullOrEmpty(blockComment)) {
-          NominalType resolved = linkFactory.getTypeContext()
-              .changeContext(type)
-              .resolveType(internalName);
+          NominalType resolved =
+              linkFactory.getTypeContext().changeContext(type).resolveType(internalName);
           if (resolved != null) {
             blockComment = resolved.getJsDoc().getBlockComment();
             if (!isNullOrEmpty(blockComment)) {
@@ -235,7 +231,8 @@ final class TypeInspector {
     TypeExpressionParser parser =
         expressionParserFactory.create(linkFactory.withTypeContext(inspectedType));
 
-    return registry.getTypeHierarchy(inspectedType.getType())
+    return registry
+        .getTypeHierarchy(inspectedType.getType())
         .stream()
         .map(type -> type.visit(typeMapReplacer))
         .map(type -> parseNamedType(parser, type))
@@ -263,20 +260,17 @@ final class TypeInspector {
     TemplateTypeMapReplacer replacer =
         new TemplateTypeMapReplacer(
             jsRegistry,
-            inspectedType.getType().toMaybeFunctionType()
-                .getInstanceType()
-                .getTemplateTypeMap());
+            inspectedType.getType().toMaybeFunctionType().getInstanceType().getTemplateTypeMap());
 
-    return implementedTypes.stream()
+    return implementedTypes
+        .stream()
         .map(t -> t.visit(replacer))
         .map(t -> parseNamedType(parser, t))
         .sorted(compareNamedTypes())
         .collect(toImmutableSet());
   }
 
-  /**
-   * Returns the known implementations for the inspected type, if it is an interface.
-   */
+  /** Returns the known implementations for the inspected type, if it is an interface. */
   public ImmutableSet<NamedType> getKnownImplementations() {
     JSType type = inspectedType.getType();
     if (!type.isFunctionType()) {
@@ -304,8 +298,8 @@ final class TypeInspector {
         expressionParserFactory.create(linkFactory.withTypeContext(inspectedType));
 
     return Stream.concat(
-        parseTypes(registry.getSubInterfaces(type.toMaybeFunctionType()), parser),
-        parseTypes(registry.getDirectSubTypes(type.toMaybeFunctionType()), parser))
+            parseTypes(registry.getSubInterfaces(type.toMaybeFunctionType()), parser),
+            parseTypes(registry.getDirectSubTypes(type.toMaybeFunctionType()), parser))
         .sorted(compareNamedTypes())
         .collect(toImmutableSet());
   }
@@ -315,9 +309,7 @@ final class TypeInspector {
     return types.stream().map(t -> parseNamedType(parser, t));
   }
 
-  /**
-   * Returns the aliased type, if any.
-   */
+  /** Returns the aliased type, if any. */
   @Nullable
   @CheckReturnValue
   public NamedType getAliasedType() {
@@ -330,9 +322,7 @@ final class TypeInspector {
     return linkFactory.withTypeContext(inspectedType).createTypeReference(primary);
   }
 
-  /**
-   * Returns the known aliases for the inspected type.
-   */
+  /** Returns the known aliases for the inspected type. */
   public ImmutableSet<NamedType> getKnownAliases() {
     List<NominalType> allAliases = registry.getTypes(inspectedType.getType());
 
@@ -342,7 +332,8 @@ final class TypeInspector {
     }
 
     LinkFactory lf = linkFactory.withTypeContext(inspectedType);
-    return allAliases.stream()
+    return allAliases
+        .stream()
         .skip(1)
         .map(lf::createTypeReference)
         .sorted(compareNamedTypes())
@@ -366,9 +357,9 @@ final class TypeInspector {
   }
 
   /**
-   * Extracts information on the properties defined directly on the given nominal type. For
-   * classes and interfaces, this will return information on the <em>static</em> properties, not
-   * instance properties.
+   * Extracts information on the properties defined directly on the given nominal type. For classes
+   * and interfaces, this will return information on the <em>static</em> properties, not instance
+   * properties.
    */
   public Report inspectType() {
     List<Property> properties = getProperties(inspectedType);
@@ -400,25 +391,16 @@ final class TypeInspector {
 
       if (jsdoc.isDefine()) {
         name = dfs.getQualifiedDisplayName(inspectedType) + "." + property.getName();
-        report.addCompilerConstant(getPropertyData(
-            name,
-            property.getType(),
-            property.getNode(),
-            docs));
+        report.addCompilerConstant(
+            getPropertyData(name, property.getType(), property.getNode(), docs));
 
       } else if (property.getType().isFunctionType()) {
-        report.addFunction(getFunctionData(
-            name,
-            property.getType().toMaybeFunctionType(),
-            property.getNode(),
-            docs));
+        report.addFunction(
+            getFunctionData(
+                name, property.getType().toMaybeFunctionType(), property.getNode(), docs));
 
       } else if (!property.getType().isEnumElementType()) {
-        report.addProperty(getPropertyData(
-            name,
-            property.getType(),
-            property.getNode(),
-            docs));
+        report.addProperty(getPropertyData(name, property.getType(), property.getNode(), docs));
       }
     }
 
@@ -474,8 +456,7 @@ final class TypeInspector {
       String name = internalName.substring(0, index);
       if (registry.isType(name)) {
         NominalType type = registry.getType(name);
-        property = type.getType().toObjectType().getOwnSlot(
-            internalName.substring(index + 1));
+        property = type.getType().toObjectType().getOwnSlot(internalName.substring(index + 1));
         if (property != null) {
           return findStaticPropertyJsDoc(type, property);
         }
@@ -489,9 +470,7 @@ final class TypeInspector {
     return isNullOrEmpty(doc.getOriginalCommentString());
   }
 
-  /**
-   * Returns the raw properties for the given type.
-   */
+  /** Returns the raw properties for the given type. */
   public List<Property> getProperties(NominalType nominalType) {
     JSType type = nominalType.getType();
     ObjectType object = ObjectType.cast(type);
@@ -523,7 +502,7 @@ final class TypeInspector {
         // registered as a nominal type, but its qualified name has been filtered out by the user.
         String qualifiedName = nominalType.getName() + "." + property.getName();
         if (((inspectedType.isModuleExports() && registry.isModule(property.getType()))
-            || registry.getTypes(property.getType()).isEmpty())
+                || registry.getTypes(property.getType()).isEmpty())
             && !typeFilter.test(qualifiedName)) {
           properties.add(property);
         }
@@ -545,21 +524,19 @@ final class TypeInspector {
     }
 
     Report report = new Report();
-    Multimap<String, InstanceProperty> properties = MultimapBuilder
-        .treeKeys()
-        .linkedHashSetValues()
-        .build();
+    Multimap<String, InstanceProperty> properties =
+        MultimapBuilder.treeKeys().linkedHashSetValues().build();
 
     for (JSType assignableType : getAssignableTypes(inspectedType.getType())) {
-      for (Map.Entry<String, InstanceProperty> entry
-          : getInstanceProperties(assignableType).entrySet()) {
+      for (Map.Entry<String, InstanceProperty> entry :
+          getInstanceProperties(assignableType).entrySet()) {
         properties.put(entry.getKey(), entry.getValue());
       }
     }
 
     final JSType currentType = ((FunctionType) inspectedType.getType()).getInstanceType();
-    final TemplateTypeMapReplacer replacer = new TemplateTypeMapReplacer(
-        jsRegistry, currentType.getTemplateTypeMap());
+    final TemplateTypeMapReplacer replacer =
+        new TemplateTypeMapReplacer(jsRegistry, currentType.getTemplateTypeMap());
 
     for (String key : properties.keySet()) {
       Deque<InstanceProperty> definitions = new ArrayDeque<>(properties.get(key));
@@ -572,29 +549,30 @@ final class TypeInspector {
       }
 
       NominalType ownerType = property.getOwnerType().orElse(inspectedType);
-      NamedType definedBy =
-          getDefinedByComment(linkFactory, ownerType, currentType, property);
+      NamedType definedBy = getDefinedByComment(linkFactory, ownerType, currentType, property);
 
       if (!currentType.getTemplateTypeMap().isEmpty()) {
         propertyType = propertyType.visit(replacer);
       }
 
       if (propertyType.isFunctionType()) {
-        report.addFunction(getFunctionData(
-            property.getName(),
-            propertyType.toMaybeFunctionType(),
-            property.getNode(),
-            PropertyDocs.create(ownerType, property.getJsDoc()),
-            definedBy,
-            definitions));
+        report.addFunction(
+            getFunctionData(
+                property.getName(),
+                propertyType.toMaybeFunctionType(),
+                property.getNode(),
+                PropertyDocs.create(ownerType, property.getJsDoc()),
+                definedBy,
+                definitions));
       } else {
-        report.addProperty(getPropertyData(
-            property.getName(),
-            propertyType,
-            property.getNode(),
-            PropertyDocs.create(ownerType, property.getJsDoc()),
-            definedBy,
-            definitions));
+        report.addProperty(
+            getPropertyData(
+                property.getName(),
+                propertyType,
+                property.getNode(),
+                PropertyDocs.create(ownerType, property.getJsDoc()),
+                definedBy,
+                definitions));
       }
     }
 
@@ -611,10 +589,13 @@ final class TypeInspector {
   }
 
   private Set<JSType> getAssignableTypes(JSType type) {
-    if (type.isNamedType() && registry.isType(
-        ((com.google.javascript.rhino.jstype.NamedType) type).getReferenceName())) {
-      type = registry.getType(
-          ((com.google.javascript.rhino.jstype.NamedType) type).getReferenceName()).getType();
+    if (type.isNamedType()
+        && registry.isType(
+            ((com.google.javascript.rhino.jstype.NamedType) type).getReferenceName())) {
+      type =
+          registry
+              .getType(((com.google.javascript.rhino.jstype.NamedType) type).getReferenceName())
+              .getType();
     }
 
     Set<JSType> types = new LinkedHashSet<>();
@@ -658,14 +639,16 @@ final class TypeInspector {
     for (String name : object.getOwnPropertyNames()) {
       if (!"constructor".equals(name)) {
         Property property = object.getOwnSlot(name);
-        properties.put(property.getName(), InstanceProperty.builder()
-            .setOwnerType(getFirst(registry.getTypes(definingType), null))
-            .setDefinedByType(definingType)
-            .setName(property.getName())
-            .setType(getType(object, property))
-            .setNode(property.getNode())
-            .setJsDoc(JsDoc.from(property.getJSDocInfo()))
-            .build());
+        properties.put(
+            property.getName(),
+            InstanceProperty.builder()
+                .setOwnerType(getFirst(registry.getTypes(definingType), null))
+                .setDefinedByType(definingType)
+                .setName(property.getName())
+                .setType(getType(object, property))
+                .setNode(property.getNode())
+                .setJsDoc(JsDoc.from(property.getJSDocInfo()))
+                .build());
       }
     }
     return properties;
@@ -698,8 +681,8 @@ final class TypeInspector {
       types = registry.getTypes(definedByType.toObjectType().getConstructor());
     }
 
-    TypeExpressionParser parser = expressionParserFactory.create(
-        linkFactory.withTypeContext(context));
+    TypeExpressionParser parser =
+        expressionParserFactory.create(linkFactory.withTypeContext(context));
 
     if (!types.isEmpty()) {
       definedByType = types.get(0).getType();
@@ -720,20 +703,17 @@ final class TypeInspector {
         && !urlString(namedType.getLink().getHref()).startsWith("http")) {
       SafeUrl url = SafeUrls.fromProto(namedType.getLink().getHref());
       url = SafeUrls.sanitize(url.getSafeUrlString() + "#" + propertyName);
-      
-      namedType = namedType.toBuilder()
-          .setLink(
-              namedType.getLink()
-                  .toBuilder()
-                  .setHref(SafeUrls.toProto(url)))
-          .build();
+
+      namedType =
+          namedType
+              .toBuilder()
+              .setLink(namedType.getLink().toBuilder().setHref(SafeUrls.toProto(url)))
+              .build();
     }
     return namedType;
   }
 
-  /**
-   * Finds the properties defined on a class.
-   */
+  /** Finds the properties defined on a class. */
   @Nullable
   @CheckReturnValue
   private InstanceProperty findFirstClassOverride(Iterable<InstanceProperty> properties) {
@@ -752,42 +732,33 @@ final class TypeInspector {
     return null;
   }
 
-  /**
-   * Given a list of properties, finds those that are specified on an interface.
-   */
+  /** Given a list of properties, finds those that are specified on an interface. */
   private List<InstanceProperty> findSpecifications(Iterable<InstanceProperty> properties) {
     return StreamSupport.stream(properties.spliterator(), false)
-        .filter(property -> {
-          JSType definedOn = property.getDefinedByType();
-          if (!definedOn.isInterface()) {
-            JSType ctor = null;
-            if (definedOn.isInstanceType()) {
-              ctor = definedOn.toObjectType().getConstructor();
-            }
-            if (ctor == null || !ctor.isInterface()) {
-              return false;
-            }
-          }
-          return true;
-        })
+        .filter(
+            property -> {
+              JSType definedOn = property.getDefinedByType();
+              if (!definedOn.isInterface()) {
+                JSType ctor = null;
+                if (definedOn.isInstanceType()) {
+                  ctor = definedOn.toObjectType().getConstructor();
+                }
+                if (ctor == null || !ctor.isInterface()) {
+                  return false;
+                }
+              }
+              return true;
+            })
         .collect(toList());
   }
 
   public Function getFunctionData(
-      String name,
-      FunctionType type,
-      Node node,
-      NominalType context,
-      JsDoc jsDoc) {
+      String name, FunctionType type, Node node, NominalType context, JsDoc jsDoc) {
     PropertyDocs propertyDocs = PropertyDocs.create(context, jsDoc);
     return getFunctionData(name, type, node, propertyDocs, null, ImmutableList.of());
   }
 
-  private Function getFunctionData(
-      String name,
-      FunctionType type,
-      Node node,
-      PropertyDocs docs) {
+  private Function getFunctionData(String name, FunctionType type, Node node, PropertyDocs docs) {
     return getFunctionData(name, type, node, docs, null, ImmutableList.of());
   }
 
@@ -801,8 +772,9 @@ final class TypeInspector {
     boolean isConstructor = function.isConstructor() && !isFunctionTypeConstructor(function);
     boolean isInterface = !isConstructor && function.isInterface();
 
-    Function.Builder builder = Function.newBuilder()
-        .setBase(getBasePropertyDetails(name, function, node, docs, definedBy, overrides));
+    Function.Builder builder =
+        Function.newBuilder()
+            .setBase(getBasePropertyDetails(name, function, node, docs, definedBy, overrides));
 
     if (isConstructor) {
       builder.setIsConstructor(true);
@@ -813,9 +785,10 @@ final class TypeInspector {
           findPropertyDocs(docs, overrides, input -> input.hasAnnotation(Annotation.RETURN));
 
       if (returnDocs != null) {
-        Comment returnComment = parser.parseComment(
-            returnDocs.getJsDoc().getReturnClause().getDescription(),
-            linkFactory.withTypeContext(returnDocs.getContextType()));
+        Comment returnComment =
+            parser.parseComment(
+                returnDocs.getJsDoc().getReturnClause().getDescription(),
+                linkFactory.withTypeContext(returnDocs.getContextType()));
         if (returnComment.getTokenCount() > 0) {
           builder.getReturnBuilder().setDescription(returnComment);
         }
@@ -827,7 +800,8 @@ final class TypeInspector {
       }
     }
 
-    builder.addAllTemplateName(docs.getJsDoc().getTemplateTypeNames())
+    builder
+        .addAllTemplateName(docs.getJsDoc().getTemplateTypeNames())
         .addAllThrown(buildThrowsData(docs.getContextType(), docs.getJsDoc()))
         .addAllParameter(getParameters(function, node, docs, overrides));
 
@@ -835,10 +809,7 @@ final class TypeInspector {
   }
 
   private Iterable<Function.Detail> getParameters(
-      FunctionType type,
-      Node node,
-      PropertyDocs docs,
-      Iterable<InstanceProperty> overrides) {
+      FunctionType type, Node node, PropertyDocs docs, Iterable<InstanceProperty> overrides) {
     PropertyDocs foundDocs =
         findPropertyDocs(docs, overrides, input -> !input.getParameters().isEmpty());
 
@@ -849,42 +820,43 @@ final class TypeInspector {
     //    * @param {number}
     //    *\
     //   Clazz.prototype.add = function(x, y) { return x + y; };
-    if (foundDocs != null
-        && !foundDocs.getJsDoc().getParameters().isEmpty()) {
+    if (foundDocs != null && !foundDocs.getJsDoc().getParameters().isEmpty()) {
       final LinkFactory contextualLinkFactory =
           linkFactory.withTypeContext(foundDocs.getContextType());
       final TypeExpressionParser expressionParser =
           expressionParserFactory.create(contextualLinkFactory);
-      return foundDocs.getJsDoc().getParameters()
+      return foundDocs
+          .getJsDoc()
+          .getParameters()
           .stream()
-          .map(input -> {
-            Detail.Builder detail = Detail.newBuilder().setName(input.getName());
-            if (!isNullOrEmpty(input.getDescription())) {
-              detail.setDescription(
-                  parser.parseComment(input.getDescription(), contextualLinkFactory));
-            }
-            if (input.getType() != null) {
-              JSTypeExpression paramTypeExpression = input.getType();
-              JSType paramType = evaluate(paramTypeExpression);
+          .map(
+              input -> {
+                Detail.Builder detail = Detail.newBuilder().setName(input.getName());
+                if (!isNullOrEmpty(input.getDescription())) {
+                  detail.setDescription(
+                      parser.parseComment(input.getDescription(), contextualLinkFactory));
+                }
+                if (input.getType() != null) {
+                  JSTypeExpression paramTypeExpression = input.getType();
+                  JSType paramType = evaluate(paramTypeExpression);
 
-              TypeExpression.Builder expression =
-                  expressionParser.parse(paramType).toBuilder();
+                  TypeExpression.Builder expression = expressionParser.parse(paramType).toBuilder();
 
-              if (paramTypeExpression.isVarArgs()) {
-                expression.setIsVarargs(true);
-                removeVoid(expression);
-              } else if (paramTypeExpression.isOptionalArg()) {
-                expression.setIsOptional(true);
-              }
+                  if (paramTypeExpression.isVarArgs()) {
+                    expression.setIsVarargs(true);
+                    removeVoid(expression);
+                  } else if (paramTypeExpression.isOptionalArg()) {
+                    expression.setIsOptional(true);
+                  }
 
-              if (paramTypeExpression.getRoot().getToken() == Token.BANG) {
-                removeNull(expression);
-              }
+                  if (paramTypeExpression.getRoot().getToken() == Token.BANG) {
+                    removeNull(expression);
+                  }
 
-              detail.setType(expression);
-            }
-            return detail.build();
-          })
+                  detail.setType(expression);
+                }
+                return detail.build();
+              })
           .collect(toImmutableList());
     }
 
@@ -896,8 +868,9 @@ final class TypeInspector {
     List<Detail> details = new ArrayList<>(parameterNodes.size());
     @Nullable Node paramList = findParamList(node);
 
-    LinkFactory factory = linkFactory.withTypeContext(
-        foundDocs == null ? docs.getContextType() : foundDocs.getContextType());
+    LinkFactory factory =
+        linkFactory.withTypeContext(
+            foundDocs == null ? docs.getContextType() : foundDocs.getContextType());
     TypeExpressionParser parser = expressionParserFactory.create(factory);
     for (int i = 0; i < parameterNodes.size(); i++) {
       Detail.Builder detail = Detail.newBuilder().setName("arg" + i);
@@ -960,8 +933,7 @@ final class TypeInspector {
    * {@code @type {!Function}}).
    */
   private static boolean isFunctionTypeConstructor(JSType type) {
-    return type.isConstructor()
-        && ((FunctionType) type).getInstanceType().isUnknownType();
+    return type.isConstructor() && ((FunctionType) type).getInstanceType().isUnknownType();
   }
 
   @Nullable
@@ -979,9 +951,7 @@ final class TypeInspector {
       return src.getFirstChild().getNext();
     }
 
-    if (!src.isFunction()
-        && src.getFirstChild() != null
-        && src.getFirstChild().isFunction()) {
+    if (!src.isFunction() && src.getFirstChild() != null && src.getFirstChild().isFunction()) {
       src = src.getFirstChild();
     }
 
@@ -997,33 +967,36 @@ final class TypeInspector {
   private Iterable<Function.Detail> buildThrowsData(final NominalType context, JsDoc jsDoc) {
     final LinkFactory contextLinkFactory = linkFactory.withTypeContext(context);
     final TypeExpressionParser typeParser = expressionParserFactory.create(contextLinkFactory);
-    return jsDoc.getThrowsClauses()
+    return jsDoc
+        .getThrowsClauses()
         .stream()
-        .map(input -> {
-          Detail.Builder detail = Detail.newBuilder();
+        .map(
+            input -> {
+              Detail.Builder detail = Detail.newBuilder();
 
-          Comment comment = parser.parseComment(input.getDescription(), contextLinkFactory);
-          if (comment.getTokenCount() > 0) {
-            detail.setDescription(comment);
-          }
+              Comment comment = parser.parseComment(input.getDescription(), contextLinkFactory);
+              if (comment.getTokenCount() > 0) {
+                detail.setDescription(comment);
+              }
 
-          if (input.getType().isPresent()) {
-            JSTypeExpression expression = input.getType().get();
-            JSType thrownType = evaluate(expression);
-            detail.setType(typeParser.parse(thrownType));
-          }
-          return detail.build();
-        })
+              if (input.getType().isPresent()) {
+                JSTypeExpression expression = input.getType().get();
+                JSType thrownType = evaluate(expression);
+                detail.setType(typeParser.parse(thrownType));
+              }
+              return detail.build();
+            })
         .collect(toImmutableList());
   }
 
   @Nullable
   private TypeExpression getReturnType(
-      PropertyDocs docs,
-      Iterable<InstanceProperty> overrides,
-      FunctionType function) {
-    PropertyDocs returnDocs = findPropertyDocs(
-        docs, overrides, input -> input != null && input.getReturnClause().getType().isPresent());
+      PropertyDocs docs, Iterable<InstanceProperty> overrides, FunctionType function) {
+    PropertyDocs returnDocs =
+        findPropertyDocs(
+            docs,
+            overrides,
+            input -> input != null && input.getReturnClause().getType().isPresent());
 
     JSType returnType = function.getReturnType();
 
@@ -1053,8 +1026,7 @@ final class TypeInspector {
       }
     }
 
-    if (returnType.isVoidType()
-        || (returnType.isUnknownType() && !returnType.isTemplateType())) {
+    if (returnType.isVoidType() || (returnType.isUnknownType() && !returnType.isTemplateType())) {
       return null;
     }
 
@@ -1080,10 +1052,7 @@ final class TypeInspector {
   }
 
   private com.github.jsdossier.proto.Property getPropertyData(
-      String name,
-      JSType type,
-      Node node,
-      PropertyDocs docs) {
+      String name, JSType type, Node node, PropertyDocs docs) {
     return getPropertyData(name, type, node, docs, null, ImmutableList.of());
   }
 
@@ -1098,8 +1067,8 @@ final class TypeInspector {
         com.github.jsdossier.proto.Property.newBuilder()
             .setBase(getBasePropertyDetails(name, type, node, docs, definedBy, overrides));
 
-    TypeExpressionParser parser = expressionParserFactory
-        .create(linkFactory.withTypeContext(docs.getContextType()));
+    TypeExpressionParser parser =
+        expressionParserFactory.create(linkFactory.withTypeContext(docs.getContextType()));
     if (docs.getJsDoc().getType() != null) {
       JSTypeExpression typeExpression = docs.getJsDoc().getType();
       type = evaluate(typeExpression);
@@ -1120,10 +1089,11 @@ final class TypeInspector {
       PropertyDocs docs,
       @Nullable NamedType definedBy,
       Iterable<InstanceProperty> overrides) {
-    BaseProperty.Builder builder = BaseProperty.newBuilder()
-        .setName(name)
-        .setDescription(findBlockComment(linkFactory, docs, overrides))
-        .setSource(linkFactory.withTypeContext(docs.getContextType()).createSourceLink(node));
+    BaseProperty.Builder builder =
+        BaseProperty.newBuilder()
+            .setName(name)
+            .setDescription(findBlockComment(linkFactory, docs, overrides))
+            .setSource(linkFactory.withTypeContext(docs.getContextType()).createSourceLink(node));
 
     if (registry.isModule(type)) {
       builder.getTagsBuilder().setIsModule(true);
@@ -1150,7 +1120,7 @@ final class TypeInspector {
     }
 
     JSDocInfo.Visibility visibility = determineVisibility(docs, overrides);
-    if (JSDocInfo.Visibility.PUBLIC  != visibility) {
+    if (JSDocInfo.Visibility.PUBLIC != visibility) {
       Protos.setVisibility(builder.getVisibilityBuilder(), visibility);
     }
 
@@ -1159,20 +1129,14 @@ final class TypeInspector {
     JsDoc jsdoc = docs.getJsDoc();
     if (jsdoc.isDeprecated()) {
       builder.getTagsBuilder().setIsDeprecated(true);
-      builder.setDeprecation(
-          parser.parseComment(
-              jsdoc.getDeprecationReason(),
-              contextLinkFactory));
+      builder.setDeprecation(parser.parseComment(jsdoc.getDeprecationReason(), contextLinkFactory));
     }
 
     for (String seeAlso : jsdoc.getSeeClauses()) {
       // 1) Try as a link reference to another type.
       @Nullable NamedType typeRef = contextLinkFactory.resolveTypeReference(seeAlso);
       if (typeRef != null && !urlString(typeRef.getLink().getHref()).isEmpty()) {
-        builder.addSeeAlsoBuilder()
-            .addTokenBuilder()
-            .setText(seeAlso)
-            .setLink(typeRef.getLink());
+        builder.addSeeAlsoBuilder().addTokenBuilder().setText(seeAlso).setLink(typeRef.getLink());
         continue;
       }
 
@@ -1188,7 +1152,7 @@ final class TypeInspector {
     }
     return builder.build();
   }
-  
+
   private static String urlString(SafeUrlProto url) {
     return SafeUrls.fromProto(url).getSafeUrlString();
   }
@@ -1220,22 +1184,17 @@ final class TypeInspector {
   }
 
   private Comment findBlockComment(
-      LinkFactory linkFactory,
-      PropertyDocs docs,
-      Iterable<InstanceProperty> overrides) {
+      LinkFactory linkFactory, PropertyDocs docs, Iterable<InstanceProperty> overrides) {
     docs = findPropertyDocs(docs, overrides, input -> !isNullOrEmpty(input.getBlockComment()));
     return docs == null
         ? Comment.getDefaultInstance()
         : parser.parseComment(
-            docs.getJsDoc().getBlockComment(),
-            linkFactory.withTypeContext(docs.getContextType()));
+            docs.getJsDoc().getBlockComment(), linkFactory.withTypeContext(docs.getContextType()));
   }
 
   @Nullable
   private PropertyDocs findPropertyDocs(
-      PropertyDocs docs,
-      Iterable<InstanceProperty> overrides,
-      Predicate<JsDoc> predicate) {
+      PropertyDocs docs, Iterable<InstanceProperty> overrides, Predicate<JsDoc> predicate) {
     if (predicate.test(docs.getJsDoc())) {
       return docs;
     }
@@ -1268,12 +1227,13 @@ final class TypeInspector {
     return buildPropertyLink(parser, type, property.getName());
   }
 
-  private NamedType parseNamedType(
-      TypeExpressionParser parser, JSType type) {
+  private NamedType parseNamedType(TypeExpressionParser parser, JSType type) {
     TypeExpression expression = parser.parse(type);
     NamedType namedType = expression.getNamedType();
-    verify(namedType != NamedType.getDefaultInstance(),
-        "Expected a named type expression: %s", expression);
+    verify(
+        namedType != NamedType.getDefaultInstance(),
+        "Expected a named type expression: %s",
+        expression);
     return namedType;
   }
 
@@ -1314,13 +1274,31 @@ final class TypeInspector {
     fakeNode.getSourceFileName();
     fakeNode.setStaticSourceFile(
         new StaticSourceFile() {
-          @Override public String getName() { return type.getSourceFile().toString(); }
-          @Override public boolean isExtern() { return false; }
-          @Override public int getLineOffset(int lineNumber) { return 0; }
-          @Override public int getLineOfOffset(int offset) { return 0; }
-          @Override public int getColumnOfOffset(int offset) { return 0; }
-        }
-    );
+          @Override
+          public String getName() {
+            return type.getSourceFile().toString();
+          }
+
+          @Override
+          public boolean isExtern() {
+            return false;
+          }
+
+          @Override
+          public int getLineOffset(int lineNumber) {
+            return 0;
+          }
+
+          @Override
+          public int getLineOfOffset(int offset) {
+            return 0;
+          }
+
+          @Override
+          public int getColumnOfOffset(int offset) {
+            return 0;
+          }
+        });
     fakeNode.setLineno(type.getSourcePosition().getLine());
     return fakeNode;
   }
@@ -1371,40 +1349,52 @@ final class TypeInspector {
   }
 
   @AutoValue
-  static abstract class PropertyDocs {
+  abstract static class PropertyDocs {
     static PropertyDocs create(NominalType context, JsDoc jsDoc) {
       return new AutoValue_TypeInspector_PropertyDocs(context, jsDoc);
     }
 
     abstract NominalType getContextType();
+
     abstract JsDoc getJsDoc();
   }
 
   @AutoValue
-  static abstract class InstanceProperty {
+  abstract static class InstanceProperty {
     static Builder builder() {
       return new AutoValue_TypeInspector_InstanceProperty.Builder();
     }
 
     abstract Optional<NominalType> getOwnerType();
+
     abstract JSType getDefinedByType();
+
     abstract String getName();
+
     abstract JSType getType();
+
     abstract Node getNode();
+
     abstract JsDoc getJsDoc();
 
     @AutoValue.Builder
-    static abstract class Builder {
+    abstract static class Builder {
       final Builder setOwnerType(@Nullable NominalType type) {
         return setOwnerType(Optional.ofNullable(type));
       }
 
       abstract Builder setOwnerType(Optional<NominalType> type);
+
       abstract Builder setDefinedByType(JSType type);
+
       abstract Builder setName(String name);
+
       abstract Builder setType(JSType type);
+
       abstract Builder setNode(Node node);
+
       abstract Builder setJsDoc(JsDoc doc);
+
       abstract InstanceProperty build();
     }
   }

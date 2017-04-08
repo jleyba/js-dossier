@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier;
 
@@ -35,9 +35,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 
-/**
- * Class responsible for generating the paths for all rendered items.
- */
+/** Class responsible for generating the paths for all rendered items. */
 @DocumentationScoped
 final class DossierFileSystem {
 
@@ -76,16 +74,12 @@ final class DossierFileSystem {
     return modulePrefix.resolve(path).normalize();
   }
 
-  /**
-   * Returns the path on the input file system for the script containing the given node.
-   */
+  /** Returns the path on the input file system for the script containing the given node. */
   public Path getSourcePath(Node node) {
     return sourcePrefix.getFileSystem().getPath(node.getSourceFileName());
   }
 
-  /**
-   * Returns the path to the global types index.
-   */
+  /** Returns the path to the global types index. */
   public Path getGlobalsPath() {
     return outputRoot.resolve(".globals.html");
   }
@@ -101,8 +95,8 @@ final class DossierFileSystem {
    */
   public Path getPath(String path) {
     Path p = outputRoot.resolve(path).normalize();
-    checkArgument(p.startsWith(outputRoot),
-        "The requested path is not under the output root: %s", path);
+    checkArgument(
+        p.startsWith(outputRoot), "The requested path is not under the output root: %s", path);
     return p;
   }
 
@@ -126,8 +120,8 @@ final class DossierFileSystem {
       jsonPath = dataRoot.resolve(jsonPath).normalize();
     }
 
-    checkArgument(jsonPath.startsWith(dataRoot),
-        "The requested path is not under the data root: %s", path);
+    checkArgument(
+        jsonPath.startsWith(dataRoot), "The requested path is not under the data root: %s", path);
     return jsonPath;
   }
 
@@ -138,32 +132,27 @@ final class DossierFileSystem {
    *     directory.
    */
   public Path getPath(MarkdownPage page) {
-    String name = page.getName()
-        .replace(' ', '_')
-        .replace(outputRoot.getFileSystem().getSeparator(), "_")
-        + ".html";
+    String name =
+        page.getName().replace(' ', '_').replace(outputRoot.getFileSystem().getSeparator(), "_")
+            + ".html";
 
     Path p = outputRoot.resolve(PAGE_DIR).resolve(name).normalize();
-    checkArgument(p.startsWith(outputRoot),
-        "The requested path is not under the output root: %s", page.getName());
+    checkArgument(
+        p.startsWith(outputRoot),
+        "The requested path is not under the output root: %s",
+        page.getName());
     return p;
   }
 
-  /**
-   * Returns the path to the given file once copied to the output directory.
-   */
+  /** Returns the path to the given file once copied to the output directory. */
   public Path getPath(TemplateFile file) {
     return outputRoot.resolve(file.getName());
   }
 
-  /**
-   * Returns the given page's JSON companion under the data directory.
-   */
+  /** Returns the given page's JSON companion under the data directory. */
   public Path getJsonPath(MarkdownPage page) {
     Path path = getPath(page);
-    String name = path.getFileName()
-        .toString()
-        .replaceAll("\\.html$", ".json");
+    String name = path.getFileName().toString().replaceAll("\\.html$", ".json");
     path = outputRoot.relativize(path.resolveSibling(name));
     return outputRoot.resolve(DATA_DIR).resolve(path);
   }
@@ -177,8 +166,10 @@ final class DossierFileSystem {
     if (sourcePrefix.isAbsolute()) {
       sourceFile = sourceFile.toAbsolutePath();
     }
-    checkArgument(sourceFile.startsWith(sourcePrefix),
-        "The requested path is not a recognized source file: %s", sourceFile);
+    checkArgument(
+        sourceFile.startsWith(sourcePrefix),
+        "The requested path is not a recognized source file: %s",
+        sourceFile);
     return sourcePrefix.relativize(sourceFile.normalize());
   }
 
@@ -188,21 +179,17 @@ final class DossierFileSystem {
    * @throws IllegalArgumentException if the given file is not under the common source directory.
    */
   public Path getPath(Path sourceFile) {
-    Path path = getSourceRelativePath(sourceFile)
-        .resolveSibling(sourceFile.getFileName() + ".src.html");
+    Path path =
+        getSourceRelativePath(sourceFile).resolveSibling(sourceFile.getFileName() + ".src.html");
     return outputRoot.resolve(SOURCE_DIR).resolve(path.toString());
   }
 
-  /**
-   * Returns the path of the generated documentation for the given node's source file.
-   */
+  /** Returns the path of the generated documentation for the given node's source file. */
   public Path getPath(Node node) {
     return getPath(getSourcePath(node));
   }
 
-  /**
-   * Returns the path to the generated documentation for the given {@code type}.
-   */
+  /** Returns the path to the generated documentation for the given {@code type}. */
   public Path getPath(NominalType type) {
     if (type.isModuleExports()) {
       return getPath(type.getModule().get());
@@ -217,26 +204,19 @@ final class DossierFileSystem {
 
     Path path = getPath(module);
     String name = getDisplayName(type);
-    String exports =
-        stripExtension(path).getFileName().toString() + "_exports_" + name + ".html";
+    String exports = stripExtension(path).getFileName().toString() + "_exports_" + name + ".html";
     return path.resolveSibling(exports);
   }
 
-  /**
-   * Returns the path to the generated JSON data file for the given type.
-   */
+  /** Returns the path to the generated JSON data file for the given type. */
   public Path getJsonPath(NominalType type) {
     Path path = getPath(type);
-    String name = path.getFileName()
-        .toString()
-        .replaceAll("\\.html$", ".json");
+    String name = path.getFileName().toString().replaceAll("\\.html$", ".json");
     path = outputRoot.relativize(path.resolveSibling(name));
     return outputRoot.resolve(DATA_DIR).resolve(path);
   }
 
-  /**
-   * Returns the path to the generated documentation for the given {@code module}.
-   */
+  /** Returns the path to the generated documentation for the given {@code module}. */
   public Path getPath(Module module) {
     if (module.getType() == Type.CLOSURE) {
       return outputRoot.resolve(getDisplayName(module) + ".html");
@@ -259,9 +239,7 @@ final class DossierFileSystem {
     return name;
   }
 
-  /**
-   * Returns the display name for the given type.
-   */
+  /** Returns the display name for the given type. */
   public String getDisplayName(NominalType type) {
     if (type.getModule().isPresent()) {
       Module module = type.getModule().get();
@@ -277,9 +255,7 @@ final class DossierFileSystem {
     return type.getName();
   }
 
-  /**
-   * Returns the display name for the given module.
-   */
+  /** Returns the display name for the given module. */
   public String getDisplayName(Module module) {
     if (module.getType() == Module.Type.CLOSURE) {
       return module.getOriginalName();
@@ -300,9 +276,7 @@ final class DossierFileSystem {
     return toCanonicalString(modulePrefix.relativize(path));
   }
 
-  /**
-   * Returns the path to the given {@code file}, relative to the output root.
-   */
+  /** Returns the path to the given {@code file}, relative to the output root. */
   public Path getRelativePath(Path file) {
     return outputRoot.relativize(file);
   }
@@ -314,13 +288,12 @@ final class DossierFileSystem {
   public Path getRelativePath(NominalType type, Path file) {
     checkArgument(
         file.getFileSystem() == outputRoot.getFileSystem() && file.startsWith(outputRoot),
-        "The target file does not belong to the output file system: %s", file);
+        "The target file does not belong to the output file system: %s",
+        file);
     return Paths.getRelativePath(getPath(type), file);
   }
 
-  /**
-   * Returns the relative path between two generated files.
-   */
+  /** Returns the relative path between two generated files. */
   public Path getRelativePath(NominalType from, NominalType to) {
     return getRelativePath(from, getPath(to));
   }
@@ -334,11 +307,12 @@ final class DossierFileSystem {
    * @return the resource set for the generated file.
    */
   Resources getResources(Path outputPath, DocTemplate template) {
-    java.util.function.Function<Path, SafeUrlProto> pathToUrl = path -> {
-      SafeUrl url = SafeUrls.sanitize(Paths.getRelativePath(outputPath, path).toString());
-      return SafeUrls.toProto(url);
-    };
-    
+    java.util.function.Function<Path, SafeUrlProto> pathToUrl =
+        path -> {
+          SafeUrl url = SafeUrls.sanitize(Paths.getRelativePath(outputPath, path).toString());
+          return SafeUrls.toProto(url);
+        };
+
     java.util.function.Function<List<TemplateFile>, List<SafeUrlProto>> toSafeUrls =
         files -> files.stream().map(this::getPath).map(pathToUrl).collect(Collectors.toList());
 

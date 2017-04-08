@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier;
 
@@ -51,32 +51,25 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Tests for {@link TypeExpressionParser}.
- */
+/** Tests for {@link TypeExpressionParser}. */
 @RunWith(JUnit4.class)
 public class TypeExpressionParserTest {
 
   @Rule
-  public GuiceRule guice = GuiceRule.builder(this)
-      .setOutputDir("out")
-      .setSourcePrefix("source")
-      .setModulePrefix("source/modules")
-      .setModules("one.js", "two.js", "three.js")
-      .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
-      .build();
+  public GuiceRule guice =
+      GuiceRule.builder(this)
+          .setOutputDir("out")
+          .setSourcePrefix("source")
+          .setModulePrefix("source/modules")
+          .setModules("one.js", "two.js", "three.js")
+          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
+          .build();
 
-  @Inject
-  @Input
-  private FileSystem fs;
-  @Inject
-  private CompilerUtil util;
-  @Inject
-  private TypeRegistry typeRegistry;
-  @Inject
-  private LinkFactoryBuilder linkFactoryBuilder;
-  @Inject
-  private TypeExpressionParserFactory parserFactory;
+  @Inject @Input private FileSystem fs;
+  @Inject private CompilerUtil util;
+  @Inject private TypeRegistry typeRegistry;
+  @Inject private LinkFactoryBuilder linkFactoryBuilder;
+  @Inject private TypeExpressionParserFactory parserFactory;
 
   @Test
   public void parseTypeDefinition() {
@@ -93,19 +86,16 @@ public class TypeExpressionParserTest {
                 .setRecordType(
                     RecordType.newBuilder()
                         .addEntry(
-                            RecordType.Entry.newBuilder()
-                                .setKey("age")
-                                .setValue(numberType()))
+                            RecordType.Entry.newBuilder().setKey("age").setValue(numberType()))
                         .addEntry(
-                            RecordType.Entry.newBuilder()
-                                .setKey("name")
-                                .setValue(stringType())))
+                            RecordType.Entry.newBuilder().setKey("name").setValue(stringType())))
                 .build());
   }
 
   @Test
   public void parseConstructorFunctionReference() {
-    util.compile(fs.getPath("foo.js"),
+    util.compile(
+        fs.getPath("foo.js"),
         "class Person {}",
         "/**",
         " * @param {function(new: Person)} a A person constructor.",
@@ -118,18 +108,20 @@ public class TypeExpressionParserTest {
     JSTypeExpression jsExpression = type.getJsDoc().getParameter("a").getType();
     JSType jsType = util.evaluate(jsExpression);
     TypeExpression expression = parser.parse(jsType);
-    assertThat(expression).isEqualTo(
-        TypeExpression.newBuilder()
-            .setFunctionType(
-                FunctionType.newBuilder()
-                    .setIsConstructor(true)
-                    .setInstanceType(namedTypeExpression("Person", "Person.html")))
-            .build());
+    assertThat(expression)
+        .isEqualTo(
+            TypeExpression.newBuilder()
+                .setFunctionType(
+                    FunctionType.newBuilder()
+                        .setIsConstructor(true)
+                        .setInstanceType(namedTypeExpression("Person", "Person.html")))
+                .build());
   }
 
   @Test
   public void parseFunctionTypeExpressionWithNoReturnType() {
-    util.compile(fs.getPath("foo.js"),
+    util.compile(
+        fs.getPath("foo.js"),
         "class Person {}",
         "/**",
         " * @param {function(this: Person)} a .",
@@ -142,18 +134,20 @@ public class TypeExpressionParserTest {
     JSTypeExpression jsExpression = type.getJsDoc().getParameter("a").getType();
     JSType jsType = util.evaluate(jsExpression);
     TypeExpression expression = parser.parse(jsType);
-    assertThat(expression).isEqualTo(
-        TypeExpression.newBuilder()
-            .setFunctionType(
-                FunctionType.newBuilder()
-                    .setInstanceType(namedTypeExpression("Person", "Person.html"))
-                    .setReturnType(TypeExpression.newBuilder().setUnknownType(true)))
-            .build());
+    assertThat(expression)
+        .isEqualTo(
+            TypeExpression.newBuilder()
+                .setFunctionType(
+                    FunctionType.newBuilder()
+                        .setInstanceType(namedTypeExpression("Person", "Person.html"))
+                        .setReturnType(TypeExpression.newBuilder().setUnknownType(true)))
+                .build());
   }
 
   @Test
   public void parseFunctionTypeExpressionWithReturnType() {
-    util.compile(fs.getPath("foo.js"),
+    util.compile(
+        fs.getPath("foo.js"),
         "class Person {}",
         "/**",
         " * @param {function(): Person} a .",
@@ -166,20 +160,20 @@ public class TypeExpressionParserTest {
     JSTypeExpression jsExpression = type.getJsDoc().getParameter("a").getType();
     JSType jsType = util.evaluate(jsExpression);
     TypeExpression expression = parser.parse(jsType);
-    assertThat(expression).isEqualTo(
-        TypeExpression.newBuilder()
-            .setFunctionType(
-                FunctionType.newBuilder()
-                    .setReturnType(
-                        unionType(
-                            namedTypeExpression("Person", "Person.html"),
-                            NULL_TYPE)))
-            .build());
+    assertThat(expression)
+        .isEqualTo(
+            TypeExpression.newBuilder()
+                .setFunctionType(
+                    FunctionType.newBuilder()
+                        .setReturnType(
+                            unionType(namedTypeExpression("Person", "Person.html"), NULL_TYPE)))
+                .build());
   }
 
   @Test
   public void parseFunctionTypeExpressionWithVarArgs() {
-    util.compile(fs.getPath("foo.js"),
+    util.compile(
+        fs.getPath("foo.js"),
         "class Person {}",
         "/**",
         " * @param {function(...!Person)} a .",
@@ -193,20 +187,23 @@ public class TypeExpressionParserTest {
     JSType jsType = util.evaluate(expression);
 
     TypeExpression typeExpression = parser.parse(jsType);
-    assertThat(typeExpression).isEqualTo(
-        TypeExpression.newBuilder()
-            .setFunctionType(
-                FunctionType.newBuilder()
-                    .addParameter(TypeExpression.newBuilder()
-                        .setIsVarargs(true)
-                        .setNamedType(namedType("Person", "Person.html")))
-                    .setReturnType(UNKNOWN_TYPE))
-            .build());
+    assertThat(typeExpression)
+        .isEqualTo(
+            TypeExpression.newBuilder()
+                .setFunctionType(
+                    FunctionType.newBuilder()
+                        .addParameter(
+                            TypeExpression.newBuilder()
+                                .setIsVarargs(true)
+                                .setNamedType(namedType("Person", "Person.html")))
+                        .setReturnType(UNKNOWN_TYPE))
+                .build());
   }
 
   @Test
   public void parseFunctionTypeExpressionWithVarArgs_withContext() {
-    util.compile(fs.getPath("foo.js"),
+    util.compile(
+        fs.getPath("foo.js"),
         "class Person {}",
         "/**",
         " * @param {function(this: Person, ...!Person)} a .",
@@ -219,27 +216,27 @@ public class TypeExpressionParserTest {
     JSTypeExpression jsExpression = type.getJsDoc().getParameter("a").getType();
     JSType jsType = util.evaluate(jsExpression);
     TypeExpression expression = parser.parse(jsType);
-    assertThat(expression).isEqualTo(
-        TypeExpression.newBuilder()
-            .setFunctionType(
-                FunctionType.newBuilder()
-                    .setInstanceType(namedTypeExpression("Person", "Person.html"))
-                    .addParameter(
-                        namedTypeExpression("Person", "Person.html")
-                            .toBuilder()
-                            .setIsVarargs(true))
-                    .setReturnType(TypeExpression.newBuilder().setUnknownType(true)))
-            .build());
+    assertThat(expression)
+        .isEqualTo(
+            TypeExpression.newBuilder()
+                .setFunctionType(
+                    FunctionType.newBuilder()
+                        .setInstanceType(namedTypeExpression("Person", "Person.html"))
+                        .addParameter(
+                            namedTypeExpression("Person", "Person.html")
+                                .toBuilder()
+                                .setIsVarargs(true))
+                        .setReturnType(TypeExpression.newBuilder().setUnknownType(true)))
+                .build());
   }
 
   @Test
   public void moduleContextWillHideGlobalTypeNames() {
     util.compile(
-        createSourceFile(fs.getPath("source/global.js"),
-            "class Person {}"),
-        createSourceFile(fs.getPath("source/modules/one.js"),
-            "export class Foo {}"),
-        createSourceFile(fs.getPath("source/modules/two.js"),
+        createSourceFile(fs.getPath("source/global.js"), "class Person {}"),
+        createSourceFile(fs.getPath("source/modules/one.js"), "export class Foo {}"),
+        createSourceFile(
+            fs.getPath("source/modules/two.js"),
             "import {Foo as Person} from './one';",
             "/**",
             " * @param {!Person} a A person.",
@@ -248,23 +245,22 @@ public class TypeExpressionParserTest {
             "export function Greeter(a) {}"));
 
     NominalType type = typeRegistry.getType("module$source$modules$two.Greeter");
-    TypeExpressionParser parser = parserFactory.create(
-        linkFactoryBuilder.create(type).withTypeContext(type));
+    TypeExpressionParser parser =
+        parserFactory.create(linkFactoryBuilder.create(type).withTypeContext(type));
 
     JSType jsType = util.evaluate(type.getJsDoc().getParameter("a").getType());
     TypeExpression expression = parser.parse(jsType);
-    assertThat(expression).isEqualTo(
-        TypeExpression.newBuilder()
-            .setNamedType(namedType("Foo", "one.Foo", "one_exports_Foo.html"))
-            .build());
+    assertThat(expression)
+        .isEqualTo(
+            TypeExpression.newBuilder()
+                .setNamedType(namedType("Foo", "one.Foo", "one_exports_Foo.html"))
+                .build());
 
-    parser = parserFactory.create(
-        linkFactoryBuilder.create(typeRegistry.getType("Person")));
+    parser = parserFactory.create(linkFactoryBuilder.create(typeRegistry.getType("Person")));
     expression = parser.parse(jsType);
-    assertThat(expression).isEqualTo(
-        TypeExpression.newBuilder()
-            .setNamedType(namedType("Person", "Person.html"))
-            .build());
+    assertThat(expression)
+        .isEqualTo(
+            TypeExpression.newBuilder().setNamedType(namedType("Person", "Person.html")).build());
   }
 
   @Test
@@ -283,7 +279,8 @@ public class TypeExpressionParserTest {
   @Test
   public void parseExpressionWithTemplatizedType() {
     util.compile(
-        createSourceFile(fs.getPath("source/global.js"),
+        createSourceFile(
+            fs.getPath("source/global.js"),
             "/** @template T */",
             "class Container {}",
             "class Person {",
@@ -292,32 +289,31 @@ public class TypeExpressionParserTest {
             "}"));
 
     NominalType type = typeRegistry.getType("Person");
-    JSDocInfo info = type.getType()
-        .toMaybeFunctionType()
-        .getPrototype()
-        .getOwnPropertyJSDocInfo("name");
+    JSDocInfo info =
+        type.getType().toMaybeFunctionType().getPrototype().getOwnPropertyJSDocInfo("name");
     JSTypeExpression jsExpression = info.getReturnType();
     JSType jsType = util.evaluate(jsExpression);
 
-    TypeExpressionParser parser = parserFactory.create(
-        linkFactoryBuilder.create(type).withTypeContext(type));
+    TypeExpressionParser parser =
+        parserFactory.create(linkFactoryBuilder.create(type).withTypeContext(type));
     TypeExpression expression = parser.parse(jsType);
-    assertThat(expression).isEqualTo(
-        TypeExpression.newBuilder()
-            .setNamedType(
-                namedType("Container", "Container.html")
-                    .toBuilder()
-                    .addTemplateType(stringType()))
-            .build());
+    assertThat(expression)
+        .isEqualTo(
+            TypeExpression.newBuilder()
+                .setNamedType(
+                    namedType("Container", "Container.html")
+                        .toBuilder()
+                        .addTemplateType(stringType()))
+                .build());
   }
 
   @Test
   public void parseExpressionWithTemplatizedTypeFromAnotherModule() {
     util.compile(
-        createSourceFile(fs.getPath("source/modules/one.js"),
-            "/** @template T */",
-            "export class Container {}"),
-        createSourceFile(fs.getPath("source/modules/two.js"),
+        createSourceFile(
+            fs.getPath("source/modules/one.js"), "/** @template T */", "export class Container {}"),
+        createSourceFile(
+            fs.getPath("source/modules/two.js"),
             "import {Container} from './one';",
             "export class Person {",
             "  /** @return {!Container<string>} . */",
@@ -325,23 +321,22 @@ public class TypeExpressionParserTest {
             "}"));
 
     NominalType type = typeRegistry.getType("module$source$modules$two.Person");
-    JSDocInfo info = type.getType()
-        .toMaybeFunctionType()
-        .getPrototype()
-        .getOwnPropertyJSDocInfo("name");
+    JSDocInfo info =
+        type.getType().toMaybeFunctionType().getPrototype().getOwnPropertyJSDocInfo("name");
     JSTypeExpression jsExpression = info.getReturnType();
     JSType jsType = util.evaluate(jsExpression);
 
-    TypeExpressionParser parser = parserFactory.create(
-        linkFactoryBuilder.create(type).withTypeContext(type));
+    TypeExpressionParser parser =
+        parserFactory.create(linkFactoryBuilder.create(type).withTypeContext(type));
     TypeExpression expression = parser.parse(jsType);
-    assertThat(expression).isEqualTo(
-        TypeExpression.newBuilder()
-            .setNamedType(
-                namedType("Container", "one.Container", "one_exports_Container.html")
-                    .toBuilder()
-                    .addTemplateType(stringType()))
-            .build());
+    assertThat(expression)
+        .isEqualTo(
+            TypeExpression.newBuilder()
+                .setNamedType(
+                    namedType("Container", "one.Container", "one_exports_Container.html")
+                        .toBuilder()
+                        .addTemplateType(stringType()))
+                .build());
   }
 
   @Test
@@ -377,22 +372,19 @@ public class TypeExpressionParserTest {
   @Test
   public void parseExpression_primitiveUnionType() {
     TypeExpression expression = compileExpression("string|number");
-    assertThat(expression)
-        .isEqualTo(unionType(stringType(), numberType()));
+    assertThat(expression).isEqualTo(unionType(stringType(), numberType()));
   }
 
   @Test
   public void parseExpression_nullablePrimitiveUnionType() {
     TypeExpression expression = compileExpression("?(string|number)");
-    assertThat(expression)
-        .isEqualTo(unionType(stringType(), numberType(), NULL_TYPE));
+    assertThat(expression).isEqualTo(unionType(stringType(), numberType(), NULL_TYPE));
   }
 
   @Test
   public void parseExpression_unionWithNullableComponent() {
     TypeExpression expression = compileExpression("(?string|number)");
-    assertThat(expression)
-        .isEqualTo(unionType(stringType(), numberType(), NULL_TYPE));
+    assertThat(expression).isEqualTo(unionType(stringType(), numberType(), NULL_TYPE));
   }
 
   @Test
@@ -430,18 +422,20 @@ public class TypeExpressionParserTest {
 
   @Test
   public void parseExpression_externalEnumReference() {
-    ImmutableList<SourceFile> externs = ImmutableList.of(
-        createSourceFile(fs.getPath("externs.js"),
-            "/** @enum {string} */",
-            "var Data = {ONE: 'one'};"));
+    ImmutableList<SourceFile> externs =
+        ImmutableList.of(
+            createSourceFile(
+                fs.getPath("externs.js"), "/** @enum {string} */", "var Data = {ONE: 'one'};"));
 
-    ImmutableList<SourceFile> sources = ImmutableList.of(
-        createSourceFile(fs.getPath("one.js"),
-            "/**",
-            " * @param {Data} x .",
-            " * @constructor",
-            " */",
-            "function Widget(x) {}"));
+    ImmutableList<SourceFile> sources =
+        ImmutableList.of(
+            createSourceFile(
+                fs.getPath("one.js"),
+                "/**",
+                " * @param {Data} x .",
+                " * @constructor",
+                " */",
+                "function Widget(x) {}"));
     util.compile(externs, sources);
 
     NominalType type = typeRegistry.getType("Widget");
@@ -471,18 +465,14 @@ public class TypeExpressionParserTest {
 
     Property property = type.getType().toMaybeFunctionType().getInstanceType().getSlot("stream");
     TypeExpression expression =
-        parserFactory.create(linkFactoryBuilder.create(type))
-            .parse(property.getType());
-    assertThat(expression)
-        .isEqualTo(
-            unionType(
-                namedTypeExpression("stream.Stream"),
-                NULL_TYPE));
+        parserFactory.create(linkFactoryBuilder.create(type)).parse(property.getType());
+    assertThat(expression).isEqualTo(unionType(namedTypeExpression("stream.Stream"), NULL_TYPE));
   }
 
   private TypeExpression compileExpression(String expressionText) {
     util.compile(
-        createSourceFile(fs.getPath("one.js"),
+        createSourceFile(
+            fs.getPath("one.js"),
             "/**",
             " * @param {" + expressionText + "} x .",
             " * @constructor",
@@ -496,26 +486,20 @@ public class TypeExpressionParserTest {
 
   private static TypeExpression numberType() {
     return TypeExpression.newBuilder()
-        .setNamedType(NamedType.newBuilder()
-            .setExtern(true)
-            .setName("number"))
+        .setNamedType(NamedType.newBuilder().setExtern(true).setName("number"))
         .build();
   }
 
   private static TypeExpression stringType() {
     return TypeExpression.newBuilder()
-        .setNamedType(NamedType.newBuilder()
-            .setExtern(true)
-            .setName("string"))
+        .setNamedType(NamedType.newBuilder().setExtern(true).setName("string"))
         .build();
   }
 
   private static TypeExpression unionType(TypeExpression... expressions) {
     checkArgument(expressions.length > 0);
     return TypeExpression.newBuilder()
-        .setUnionType(
-            UnionType.newBuilder()
-                .addAllType(Arrays.asList(expressions)))
+        .setUnionType(UnionType.newBuilder().addAllType(Arrays.asList(expressions)))
         .build();
   }
 

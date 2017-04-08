@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier;
 
@@ -33,9 +33,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-/**
- * Utilities for working with {@link Path paths}.
- */
+/** Utilities for working with {@link Path paths}. */
 class Paths {
   private Paths() {}
 
@@ -51,16 +49,14 @@ class Paths {
     return fs.getPath(first, rest).toAbsolutePath().normalize();
   }
 
-  /**
-   * Returns a function that transforms paths to an absolute, normalized path.
-   */
+  /** Returns a function that transforms paths to an absolute, normalized path. */
   static Function<Path, Path> toNormalizedAbsolutePath() {
     return input -> input.toAbsolutePath().normalize();
   }
 
   /**
-   * Computes the relative path {@code from} one path {@code to} another. The
-   * origin path is assumed to be a file.
+   * Computes the relative path {@code from} one path {@code to} another. The origin path is assumed
+   * to be a file.
    */
   static Path getRelativePath(Path from, Path to) {
     from = from.toAbsolutePath().getParent();
@@ -77,9 +73,9 @@ class Paths {
   }
 
   /**
-   * Returns the {@link Path} that represents the longest common prefix for the provided
-   * {@code paths}. All paths will be resolved and normalized relative to the given {@code root}
-   * directory before computing a common prefix.
+   * Returns the {@link Path} that represents the longest common prefix for the provided {@code
+   * paths}. All paths will be resolved and normalized relative to the given {@code root} directory
+   * before computing a common prefix.
    *
    * <p>If all of the provided {@code paths} do not designate
    */
@@ -104,8 +100,8 @@ class Paths {
   }
 
   /**
-   * Expands the given directory path, collecting all of its descendant files that are accepted
-   * by the filter.
+   * Expands the given directory path, collecting all of its descendant files that are accepted by
+   * the filter.
    *
    * @param dir The directory to expand.
    * @param filter The filter to apply to the directory entries.
@@ -127,16 +123,12 @@ class Paths {
     return paths;
   }
 
-  /**
-   * Returns a predicate that accepts paths not in the provided set.
-   */
+  /** Returns a predicate that accepts paths not in the provided set. */
   static Predicate<Path> notIn(final ImmutableSet<Path> paths) {
     return input -> !paths.contains(input);
   }
 
-  /**
-   * Returns a predicate that accepts paths to files that are not hidden.
-   */
+  /** Returns a predicate that accepts paths to files that are not hidden. */
   static Predicate<Path> notHidden() {
     return input -> {
       try {

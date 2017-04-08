@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier.soy;
 
@@ -49,9 +49,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Qualifier;
 
-/**
- * Generates JavaScript classes for JSON-encoded protocol buffers.
- */
+/** Generates JavaScript classes for JSON-encoded protocol buffers. */
 final class ProtoDescriptorsToJs {
 
   private final Path output;
@@ -116,35 +114,39 @@ final class ProtoDescriptorsToJs {
     checkArgument(args.length > 0, "no output directory specified");
 
     final Path output = FileSystems.getDefault().getPath(args[0]);
-    Injector injector = Guice.createInjector(
-        new DossierSoyModule(),
-        new AbstractModule() {
-          @Override
-          protected void configure() {
-            Multibinder<SoyFunction> binder = Multibinder.newSetBinder(binder(), SoyFunction.class);
-            binder.addBinding().to(DynamicJsFunction.class);
-            binder.addBinding().to(TypeNameFunction.class);
-            binder.addBinding().to(ToLowerCamelCaseFunction.class);
-            binder.addBinding().to(ToUpperCamelCaseFunction.class);
-          }
+    Injector injector =
+        Guice.createInjector(
+            new DossierSoyModule(),
+            new AbstractModule() {
+              @Override
+              protected void configure() {
+                Multibinder<SoyFunction> binder =
+                    Multibinder.newSetBinder(binder(), SoyFunction.class);
+                binder.addBinding().to(DynamicJsFunction.class);
+                binder.addBinding().to(TypeNameFunction.class);
+                binder.addBinding().to(ToLowerCamelCaseFunction.class);
+                binder.addBinding().to(ToUpperCamelCaseFunction.class);
+              }
 
-          @Provides
-          @Internal
-          Path provideOutput() {
-            return output;
-          }
+              @Provides
+              @Internal
+              Path provideOutput() {
+                return output;
+              }
 
-          @Provides
-          @Internal
-          SoyTofu provideTofu(SoyFileSet.Builder builder, SoyTypeProvider typeProvider) {
-            return builder.add(ProtoDescriptorsToJs.class.getResource("resources/proto.soy"))
-                .setLocalTypeRegistry(new SoyTypeRegistry(ImmutableSet.of(typeProvider)))
-                .build()
-                .compileToTofu();
-          }
-        });
+              @Provides
+              @Internal
+              SoyTofu provideTofu(SoyFileSet.Builder builder, SoyTypeProvider typeProvider) {
+                return builder
+                    .add(ProtoDescriptorsToJs.class.getResource("resources/proto.soy"))
+                    .setLocalTypeRegistry(new SoyTypeRegistry(ImmutableSet.of(typeProvider)))
+                    .build()
+                    .compileToTofu();
+              }
+            });
 
-    injector.getInstance(ProtoDescriptorsToJs.class)
+    injector
+        .getInstance(ProtoDescriptorsToJs.class)
         .processFiles(
             TrustedResourceUrlProto.getDescriptor().getFile(),
             Dossier.getDescriptor(),

@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier.tools;
 
@@ -36,24 +36,30 @@ import java.util.List;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-/**
- * Invokes the Closure compiler.
- */
+/** Invokes the Closure compiler. */
 final class Compile {
   static final class Flags {
     @Option(
-        name = "--input", aliases = "-i", required = true,
-        usage = "Specified the path to a file to extract dependency info from")
+      name = "--input",
+      aliases = "-i",
+      required = true,
+      usage = "Specified the path to a file to extract dependency info from"
+    )
     List<String> inputs = new ArrayList<>();
 
     @Option(
-        name = "--closure", aliases = "-c", required = true,
-        usage = "Path to the Closure library directory")
+      name = "--closure",
+      aliases = "-c",
+      required = true,
+      usage = "Path to the Closure library directory"
+    )
     String closure = "";
 
     @Option(
-        name = "--flag", aliases = "-f",
-        usage = "An additional flag to pass to the Closure compiler")
+      name = "--flag",
+      aliases = "-f",
+      usage = "An additional flag to pass to the Closure compiler"
+    )
     List<String> flags = new ArrayList<>();
   }
 
@@ -74,24 +80,26 @@ final class Compile {
     for (String path : flags.inputs) {
       Path absPath = fs.getPath(path).toAbsolutePath();
       Path closureRelativePath = closure.relativize(absPath);
-      info.add(jsFileParser.parseFile(
-          absPath.toString(),
-          closureRelativePath.toString(),
-          new String(Files.readAllBytes(absPath), UTF_8)));
+      info.add(
+          jsFileParser.parseFile(
+              absPath.toString(),
+              closureRelativePath.toString(),
+              new String(Files.readAllBytes(absPath), UTF_8)));
     }
 
     List<DependencyInfo> allDeps = new LinkedList<>(info);
     allDeps.addAll(
         new DepsFileParser(errorManager).parseFile(closure.resolve("deps.js").toString()));
 
-    List<String> compilerFlags = new ClosureSortedDependencies<>(allDeps)
-        .getSortedDependenciesOf(info)
-        .stream()
-        .map(input -> closure.resolve(input.getPathRelativeToClosureBase()))
-        .map(Path::toAbsolutePath)
-        .map(Path::normalize)
-        .map(path -> "--js=" + path)
-        .collect(toList());
+    List<String> compilerFlags =
+        new ClosureSortedDependencies<>(allDeps)
+            .getSortedDependenciesOf(info)
+            .stream()
+            .map(input -> closure.resolve(input.getPathRelativeToClosureBase()))
+            .map(Path::toAbsolutePath)
+            .map(Path::normalize)
+            .map(path -> "--js=" + path)
+            .collect(toList());
     compilerFlags.add("--js=" + closure.resolve("base.js"));
     compilerFlags.addAll(flags.flags);
 

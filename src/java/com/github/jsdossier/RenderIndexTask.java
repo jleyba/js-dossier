@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier;
 
@@ -28,9 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
 
-/**
- * Renders the main index file.
- */
+/** Renders the main index file. */
 final class RenderIndexTask implements RenderTask {
 
   private final DossierFileSystem dfs;
@@ -62,18 +60,14 @@ final class RenderIndexTask implements RenderTask {
     Comment content = Comment.getDefaultInstance();
 
     if (readmeFile.isPresent()) {
-      String readme = new String(
-          Files.readAllBytes(readmeFile.get()),
-          StandardCharsets.UTF_8);
+      String readme = new String(Files.readAllBytes(readmeFile.get()), StandardCharsets.UTF_8);
       content = parser.parseComment(readme, linkFactory);
     }
 
-    PageData data = PageData.newBuilder()
-        .setMarkdown(
-            PageData.Markdown.newBuilder()
-                .setTitle("Index")
-                .setContent(content))
-        .build();
+    PageData data =
+        PageData.newBuilder()
+            .setMarkdown(PageData.Markdown.newBuilder().setTitle("Index").setContent(content))
+            .build();
 
     Path htmlPath = dfs.getPath("index.html");
     Path jsonPath = dfs.getJsonPath(htmlPath);

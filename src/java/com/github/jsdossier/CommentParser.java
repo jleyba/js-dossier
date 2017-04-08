@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier;
 
@@ -27,6 +27,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.escape.CharEscaperBuilder;
 import com.google.common.escape.Escaper;
+import com.google.common.html.types.SafeUrls;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
@@ -34,8 +35,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
-
-import com.google.common.html.types.SafeUrls;
 import org.commonmark.Extension;
 import org.commonmark.html.HtmlRenderer;
 import org.commonmark.node.Node;
@@ -45,23 +44,22 @@ import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
 import org.owasp.html.Sanitizers;
 
-/**
- * Utility class for working with JSDoc comments.
- */
+/** Utility class for working with JSDoc comments. */
 public class CommentParser {
 
   private static final Logger log = Logger.getLogger(CommentParser.class.getName());
 
-  private static Escaper HTML_ESCAPER = new CharEscaperBuilder()
-      .addEscape('"', "&quot;")
-      .addEscape('\'', "&#39;")
-      .addEscape('&', "&amp;")
-      .addEscape('<', "&lt;")
-      .addEscape('>', "&gt;")
-      .toEscaper();
+  private static Escaper HTML_ESCAPER =
+      new CharEscaperBuilder()
+          .addEscape('"', "&quot;")
+          .addEscape('\'', "&#39;")
+          .addEscape('&', "&amp;")
+          .addEscape('<', "&lt;")
+          .addEscape('>', "&gt;")
+          .toEscaper();
 
-  private static final Pattern HTML_TITLE = Pattern.compile(
-      "[\\p{L}\\p{N}\\s\\-_',:\\[\\]!\\./\\\\\\(\\)&]*");
+  private static final Pattern HTML_TITLE =
+      Pattern.compile("[\\p{L}\\p{N}\\s\\-_',:\\[\\]!\\./\\\\\\(\\)&]*");
   private static final Pattern HTML4_ID = Pattern.compile("[A-Za-z][A-Za-z0-9\\-_:\\.]*");
   private static final Pattern NUMBER = Pattern.compile("[0-9]+");
   private static final Pattern NUMBER_OR_PERCENT = Pattern.compile("[0-9]+%?");
@@ -70,43 +68,112 @@ public class CommentParser {
   private static final Pattern HTML_DIR = Pattern.compile("(?i)ltr|rtl|auto");
   private static final Pattern LANGUAGE_INFO = Pattern.compile("language-[A-Za-z]+");
 
-  private static final PolicyFactory HTML_POLICY = new HtmlPolicyBuilder()
-      .allowElements(
-          "a",
-          "h1", "h2", "h3", "h4", "h5", "h6",
-          "p", "div", "span", "blockquote", "pre",
-          "b", "i", "strong", "em", "tt", "code", "ins", "del", "sup", "sub", "kbd", "samp", "q",
-          "var", "cite", "strike", "center",
-          "hr", "br", "wbr",
-          "ul", "ol", "li", "dd", "dt", "dl",
-          "table", "caption", "tbody", "thead", "tfoot", "td", "th", "tr", "colgroup", "col")
-      .allowStandardUrlProtocols()
-      .allowAttributes("id", "name").matching(HTML4_ID).globally()
-      .allowAttributes("title").matching(HTML_TITLE).globally()
-      .allowAttributes("dir").matching(HTML_DIR).globally()
-      .allowAttributes("lang").matching(Pattern.compile("[a-zA-Z]{2,20}")).globally()
-      .allowAttributes("href").onElements("a")
-      .allowAttributes("data-json").onElements("a")
-      .allowAttributes("border", "cellpadding", "cellspacing").matching(NUMBER).onElements("table")
-      .allowAttributes("colspan").matching(NUMBER).onElements("td", "th")
-      .allowAttributes("nowrap").onElements("td", "th")
-      .allowAttributes("height", "width").matching(NUMBER_OR_PERCENT).onElements(
-          "table", "td", "th", "tr")
-      .allowAttributes("align").matching(ALIGN).onElements(
-          "thead", "tbody", "tfoot", "td", "th", "tr", "colgroup", "col")
-      .allowAttributes("valign").matching(VALIGN).onElements(
-          "thead", "tbody", "tfoot", "td", "th", "tr", "colgroup", "col")
-      .allowAttributes("charoff").matching(NUMBER_OR_PERCENT).onElements(
-          "td", "th", "tr", "colgroup", "col", "thead", "tbody", "tfoot")
-      .allowAttributes("colspan", "rowspan").matching(NUMBER).onElements("td", "th")
-      .allowAttributes("span", "width").matching(NUMBER_OR_PERCENT).onElements("colgroup", "col")
-      .allowAttributes("cite").onElements("q")
-      .allowAttributes("class").matching(LANGUAGE_INFO).onElements("code")
-      .allowAttributes("start").matching(NUMBER).onElements("ol")
-      .toFactory()
-      .and(Sanitizers.BLOCKS)
-      .and(Sanitizers.FORMATTING)
-      .and(Sanitizers.IMAGES);
+  private static final PolicyFactory HTML_POLICY =
+      new HtmlPolicyBuilder()
+          .allowElements(
+              "a",
+              "h1",
+              "h2",
+              "h3",
+              "h4",
+              "h5",
+              "h6",
+              "p",
+              "div",
+              "span",
+              "blockquote",
+              "pre",
+              "b",
+              "i",
+              "strong",
+              "em",
+              "tt",
+              "code",
+              "ins",
+              "del",
+              "sup",
+              "sub",
+              "kbd",
+              "samp",
+              "q",
+              "var",
+              "cite",
+              "strike",
+              "center",
+              "hr",
+              "br",
+              "wbr",
+              "ul",
+              "ol",
+              "li",
+              "dd",
+              "dt",
+              "dl",
+              "table",
+              "caption",
+              "tbody",
+              "thead",
+              "tfoot",
+              "td",
+              "th",
+              "tr",
+              "colgroup",
+              "col")
+          .allowStandardUrlProtocols()
+          .allowAttributes("id", "name")
+          .matching(HTML4_ID)
+          .globally()
+          .allowAttributes("title")
+          .matching(HTML_TITLE)
+          .globally()
+          .allowAttributes("dir")
+          .matching(HTML_DIR)
+          .globally()
+          .allowAttributes("lang")
+          .matching(Pattern.compile("[a-zA-Z]{2,20}"))
+          .globally()
+          .allowAttributes("href")
+          .onElements("a")
+          .allowAttributes("data-json")
+          .onElements("a")
+          .allowAttributes("border", "cellpadding", "cellspacing")
+          .matching(NUMBER)
+          .onElements("table")
+          .allowAttributes("colspan")
+          .matching(NUMBER)
+          .onElements("td", "th")
+          .allowAttributes("nowrap")
+          .onElements("td", "th")
+          .allowAttributes("height", "width")
+          .matching(NUMBER_OR_PERCENT)
+          .onElements("table", "td", "th", "tr")
+          .allowAttributes("align")
+          .matching(ALIGN)
+          .onElements("thead", "tbody", "tfoot", "td", "th", "tr", "colgroup", "col")
+          .allowAttributes("valign")
+          .matching(VALIGN)
+          .onElements("thead", "tbody", "tfoot", "td", "th", "tr", "colgroup", "col")
+          .allowAttributes("charoff")
+          .matching(NUMBER_OR_PERCENT)
+          .onElements("td", "th", "tr", "colgroup", "col", "thead", "tbody", "tfoot")
+          .allowAttributes("colspan", "rowspan")
+          .matching(NUMBER)
+          .onElements("td", "th")
+          .allowAttributes("span", "width")
+          .matching(NUMBER_OR_PERCENT)
+          .onElements("colgroup", "col")
+          .allowAttributes("cite")
+          .onElements("q")
+          .allowAttributes("class")
+          .matching(LANGUAGE_INFO)
+          .onElements("code")
+          .allowAttributes("start")
+          .matching(NUMBER)
+          .onElements("ol")
+          .toFactory()
+          .and(Sanitizers.BLOCKS)
+          .and(Sanitizers.FORMATTING)
+          .and(Sanitizers.IMAGES);
 
   private static final Pattern TAGLET_START_PATTERN = Pattern.compile("\\{@(\\w+)\\s");
 
@@ -114,30 +181,22 @@ public class CommentParser {
 
   private final List<? extends Extension> extensions =
       ImmutableList.of(new MarkdownTableExtension());
-  private final Parser parser = Parser.builder()
-      .extensions(extensions)
-      .build();
-  private final HtmlRenderer renderer = HtmlRenderer.builder()
-      .escapeHtml(false)
-      .extensions(extensions)
-      .build();
+  private final Parser parser = Parser.builder().extensions(extensions).build();
+  private final HtmlRenderer renderer =
+      HtmlRenderer.builder().escapeHtml(false).extensions(extensions).build();
 
   @Inject
   CommentParser(Renderer soyRenderer) {
     this.soyRenderer = soyRenderer;
   }
 
-  /**
-   * Parses the {@code text} of a JSDoc block comment.
-   */
+  /** Parses the {@code text} of a JSDoc block comment. */
   public Comment parseComment(String text, LinkFactory factory) {
     String html = parseMarkdown(text, factory);
     if (html.isEmpty()) {
       return Comment.getDefaultInstance();
     }
-    return Comment.newBuilder()
-        .addToken(Comment.Token.newBuilder().setHtml(html))
-        .build();
+    return Comment.newBuilder().addToken(Comment.Token.newBuilder().setHtml(html)).build();
   }
 
   private String parseMarkdown(String text, LinkFactory linkFactory) {
@@ -209,19 +268,26 @@ public class CommentParser {
   }
 
   private static String sanitize(final String html) {
-    return HTML_POLICY.sanitize(html, new HtmlChangeListener<Void>() {
-      @Override
-      public void discardedTag(Void context, String elementName) {
-        log.warning("Discarded tag \"" + elementName + "\" in text:\n" + html);
-      }
+    return HTML_POLICY.sanitize(
+        html,
+        new HtmlChangeListener<Void>() {
+          @Override
+          public void discardedTag(Void context, String elementName) {
+            log.warning("Discarded tag \"" + elementName + "\" in text:\n" + html);
+          }
 
-      @Override
-      public void discardedAttributes(
-          Void context, String tagName, String... attributeNames) {
-        log.warning("In tag \"" + tagName + "\", removed attributes: [\""
-            + Joiner.on("\", \"").join(attributeNames) + "\"], from text:\n" + html);
-      }
-    }, null);
+          @Override
+          public void discardedAttributes(Void context, String tagName, String... attributeNames) {
+            log.warning(
+                "In tag \""
+                    + tagName
+                    + "\", removed attributes: [\""
+                    + Joiner.on("\", \"").join(attributeNames)
+                    + "\"], from text:\n"
+                    + html);
+          }
+        },
+        null);
   }
 
   private static int findInlineTagStart(String text, int start) {

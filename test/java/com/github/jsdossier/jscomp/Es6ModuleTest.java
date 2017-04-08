@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier.jscomp;
 
@@ -27,29 +27,26 @@ import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 import com.google.javascript.jscomp.CompilerOptions;
+import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.Files;
+import javax.inject.Inject;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.io.IOException;
-import java.nio.file.FileSystem;
-import java.nio.file.Files;
-
-import javax.inject.Inject;
-
-/**
- * Tests for ES6 module handling.
- */
+/** Tests for ES6 module handling. */
 @RunWith(JUnit4.class)
 public class Es6ModuleTest {
 
   @Rule
-  public GuiceRule guiceRule = GuiceRule.builder(this)
-      .setModulePrefix("/modules")
-      .setModules("foo/bar.js")
-      .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
-      .build();
+  public GuiceRule guiceRule =
+      GuiceRule.builder(this)
+          .setModulePrefix("/modules")
+          .setModules("foo/bar.js")
+          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
+          .build();
 
   @Inject @Input private FileSystem fs;
   @Inject private TypeRegistry typeRegistry;
@@ -57,8 +54,9 @@ public class Es6ModuleTest {
 
   @Test
   public void collectsJsDocForModuleInternalVars() {
-    util.compile(fs.getPath("module.js"),
-        "export default function () {};",  // Trigger ES6 identificatio.
+    util.compile(
+        fs.getPath("module.js"),
+        "export default function () {};", // Trigger ES6 identificatio.
         "",
         "function fnDeclNoDocs() {}",
         "/** Has docs. */ function fnDeclDocs() {}",
@@ -81,22 +79,33 @@ public class Es6ModuleTest {
         "let letNoDocs;");
 
     Module module = typeRegistry.getModule("module$module");
-    assertThat(module.getInternalVarDocs().keySet()).containsExactly(
-        "fnDeclDocs", "fnExpr", "fnExpr2", "fnExpr3",
-        "varClass", "letClass", "constClass",
-        "undef1", "undef2", "x", "y", "z");
+    assertThat(module.getInternalVarDocs().keySet())
+        .containsExactly(
+            "fnDeclDocs",
+            "fnExpr",
+            "fnExpr2",
+            "fnExpr3",
+            "varClass",
+            "letClass",
+            "constClass",
+            "undef1",
+            "undef2",
+            "x",
+            "y",
+            "z");
   }
 
   @Test
   public void buildsExportToInternalNameMap() {
-    util.compile(fs.getPath("module.js"),
+    util.compile(
+        fs.getPath("module.js"),
         "",
         "function internalFunction1() {}",
         "var internalFunction2 = function() {}",
         "var internalX = 1234;",
         "var internalObj = {};",
         "",
-        "export default function() {}",  // Should not be recorded.
+        "export default function() {}", // Should not be recorded.
         "export function x() {}",
         "export class y {}",
         "",
@@ -110,8 +119,9 @@ public class Es6ModuleTest {
         "}");
 
     Module module = typeRegistry.getModule("module$module");
-    assertThat(module.getExportedNames().keySet()).containsExactly(
-        "Bar", "AClass", "publicFunction1", "publicFunction2", "publicX", "x", "y");
+    assertThat(module.getExportedNames().keySet())
+        .containsExactly(
+            "Bar", "AClass", "publicFunction1", "publicFunction2", "publicX", "x", "y");
     assertThat(module.getExportedNames()).containsEntry("Bar", "AClass");
     assertThat(module.getExportedNames()).containsEntry("AClass", "AClass");
     assertThat(module.getExportedNames()).containsEntry("publicFunction1", "internalFunction1");
@@ -125,15 +135,13 @@ public class Es6ModuleTest {
   public void buildsExportToInternalNameMap_wildcardExports() {
     try {
       util.compile(
-          createSourceFile(fs.getPath("one.js"),
-              "export class Foo {}",
-              "export class Bar {}"),
-          createSourceFile(fs.getPath("two.js"),
-              "export * from './one';"));
+          createSourceFile(fs.getPath("one.js"), "export class Foo {}", "export class Bar {}"),
+          createSourceFile(fs.getPath("two.js"), "export * from './one';"));
       fail("Update this test");
     } catch (CompilerUtil.CompileFailureException expected) {
-      if (expected.getMessage().contains(
-          "ES6 transpilation of 'Wildcard export' is not yet implemented.")) {
+      if (expected
+          .getMessage()
+          .contains("ES6 transpilation of 'Wildcard export' is not yet implemented.")) {
         assumeNoException("wildcard exports not yet implemented", expected);
       }
       throw expected;
@@ -143,17 +151,16 @@ public class Es6ModuleTest {
   @Test
   public void buildsExportToInternalNameMap_forwardOtherModuleExport() {
     util.compile(
-        createSourceFile(fs.getPath("one.js"),
-            "export class Foo {}",
-            "export class Bar {}"),
-        createSourceFile(fs.getPath("two.js"),
+        createSourceFile(fs.getPath("one.js"), "export class Foo {}", "export class Bar {}"),
+        createSourceFile(
+            fs.getPath("two.js"),
             "export {Foo} from './one';",
             "export {Foo as One, Bar as Two} from './one';",
             "export {Bar as Three, Bar} from './one';"));
 
     Module module = typeRegistry.getModule("module$two");
-    assertThat(module.getExportedNames().keySet()).containsExactly(
-        "Foo", "Bar", "One", "Two", "Three");
+    assertThat(module.getExportedNames().keySet())
+        .containsExactly("Foo", "Bar", "One", "Two", "Three");
     assertThat(module.getExportedNames()).containsEntry("Foo", "module$one.Foo");
     assertThat(module.getExportedNames()).containsEntry("One", "module$one.Foo");
     assertThat(module.getExportedNames()).containsEntry("Two", "module$one.Bar");
@@ -164,9 +171,7 @@ public class Es6ModuleTest {
   @Test
   public void buildsExportToInternalNameMap_handlesDefaultExports() {
     util.compile(
-        createSourceFile(fs.getPath("one.js"),
-            "function foo() {}",
-            "export default foo;"));
+        createSourceFile(fs.getPath("one.js"), "function foo() {}", "export default foo;"));
 
     Module module = typeRegistry.getModule("module$one");
     assertThat(module.getExportedNames().keySet()).containsExactly("default");
@@ -178,14 +183,13 @@ public class Es6ModuleTest {
     assertThat(Files.exists(fs.getPath("does_not_exist.js"))).isFalse();
     try {
       util.compile(
-          createSourceFile(fs.getPath("one.js"),
-              "import * as dne from './does_not_exist';"));
+          createSourceFile(fs.getPath("one.js"), "import * as dne from './does_not_exist';"));
       fail("should fail to compile!");
     } catch (CompilerUtil.CompileFailureException expected) {
-      assertThat(expected.getMessage()).contains(
-          "required \"module$does_not_exist\" namespace never provided one.js:1");
-      assertThat(expected.getMessage()).contains(
-          "Failed to load module \"./does_not_exist.js\" null:-1");
+      assertThat(expected.getMessage())
+          .contains("required \"module$does_not_exist\" namespace never provided one.js:1");
+      assertThat(expected.getMessage())
+          .contains("Failed to load module \"./does_not_exist.js\" null:-1");
     }
   }
 
@@ -193,56 +197,43 @@ public class Es6ModuleTest {
   public void reportsACompilerErrorIfImportedModuleIsNotACompilerInput() throws IOException {
     Files.createFile(fs.getPath("two.js"));
     try {
-      util.compile(
-          createSourceFile(fs.getPath("one.js"),
-              "import * as dne from './two';"));
+      util.compile(createSourceFile(fs.getPath("one.js"), "import * as dne from './two';"));
       fail("should fail to compile!");
     } catch (CompilerUtil.CompileFailureException expected) {
-      assertThat(expected.getMessage()).contains(
-          "required \"module$two\" namespace never provided one.js:1");
-      assertThat(expected.getMessage()).contains(
-          "Failed to load module \"./two.js\" null:-1");
+      assertThat(expected.getMessage())
+          .contains("required \"module$two\" namespace never provided one.js:1");
+      assertThat(expected.getMessage()).contains("Failed to load module \"./two.js\" null:-1");
     }
   }
 
   @Test
   public void identifiesModulesWithAbsolutePaths() {
-    util.compile(fs.getPath("/one/two.js"),
-        "export default function() {}");
+    util.compile(fs.getPath("/one/two.js"), "export default function() {}");
     assertThat(typeRegistry.isModule("module$$one$two")).isTrue();
   }
 
   @Test
   public void identifiesModulesWithAbsolutePaths_windows() {
     FileSystem inputFs = Jimfs.newFileSystem(Configuration.windows());
-    guiceRule.toBuilder()
-        .setInputFs(inputFs)
-        .build()
-        .createInjector()
-        .injectMembers(this);
+    guiceRule.toBuilder().setInputFs(inputFs).build().createInjector().injectMembers(this);
 
-    util.compile(fs.getPath("C:\\one\\two\\three.js"),
-        "export default function() {}");
+    util.compile(fs.getPath("C:\\one\\two\\three.js"), "export default function() {}");
     assertThat(typeRegistry.isModule("module$C_$one$two$three")).isTrue();
   }
 
   @Test
   public void identifiesModulesWithAbsolutePaths_windows_withSpace() {
     FileSystem inputFs = Jimfs.newFileSystem(Configuration.windows());
-    guiceRule.toBuilder()
-        .setInputFs(inputFs)
-        .build()
-        .createInjector()
-        .injectMembers(this);
+    guiceRule.toBuilder().setInputFs(inputFs).build().createInjector().injectMembers(this);
 
-    util.compile(fs.getPath("C:\\one\\two\\three four.js"),
-        "export default function() {}");
+    util.compile(fs.getPath("C:\\one\\two\\three four.js"), "export default function() {}");
     assertThat(typeRegistry.isModule("module$C_$one$two$three_four")).isTrue();
   }
 
   @Test
   public void recordsInternalDocsForExportExpressions() {
-    util.compile(fs.getPath("/one/two.js"),
+    util.compile(
+        fs.getPath("/one/two.js"),
         "/** Class one. */ export class One {}",
         "export /** Class one (a) */ class OneA {}",
         "",
@@ -269,7 +260,8 @@ public class Es6ModuleTest {
 
   @Test
   public void declaredModulesThatUseAnImportStatementAreFlaggedAsEs6() {
-    guiceRule.toBuilder()
+    guiceRule
+        .toBuilder()
         .setModulePrefix("/modules")
         .setModules("bar.js", "baz.js")
         .build()
@@ -277,17 +269,10 @@ public class Es6ModuleTest {
         .injectMembers(this);
 
     util.compile(
+        createSourceFile(fs.getPath("/globals/foo.js"), "class Foo {}"),
+        createSourceFile(fs.getPath("/modules/bar.js"), "class Bar {}", "export default Bar;"),
         createSourceFile(
-            fs.getPath("/globals/foo.js"),
-            "class Foo {}"),
-        createSourceFile(
-            fs.getPath("/modules/bar.js"),
-            "class Bar {}",
-            "export default Bar;"),
-        createSourceFile(
-            fs.getPath("/modules/baz.js"),
-            "import Bar from './bar';",
-            "class Baz extends Bar {}"));
+            fs.getPath("/modules/baz.js"), "import Bar from './bar';", "class Baz extends Bar {}"));
 
     Module bar = typeRegistry.getModule("module$$modules$bar");
     assertThat(bar.getType()).isEqualTo(Module.Type.ES6);
@@ -298,7 +283,8 @@ public class Es6ModuleTest {
 
   @Test
   public void undeclaredModulesThatUseAnImportStatementAreFlaggedAsEs6() {
-    guiceRule.toBuilder()
+    guiceRule
+        .toBuilder()
         .setModulePrefix("/modules")
         .setModules("bar.js")
         .build()
@@ -306,17 +292,10 @@ public class Es6ModuleTest {
         .injectMembers(this);
 
     util.compile(
+        createSourceFile(fs.getPath("/globals/foo.js"), "class Foo {}"),
+        createSourceFile(fs.getPath("/modules/bar.js"), "class Bar {}", "export default Bar;"),
         createSourceFile(
-            fs.getPath("/globals/foo.js"),
-            "class Foo {}"),
-        createSourceFile(
-            fs.getPath("/modules/bar.js"),
-            "class Bar {}",
-            "export default Bar;"),
-        createSourceFile(
-            fs.getPath("/modules/baz.js"),
-            "import Bar from './bar';",
-            "class Baz extends Bar {}"));
+            fs.getPath("/modules/baz.js"), "import Bar from './bar';", "class Baz extends Bar {}"));
 
     Module bar = typeRegistry.getModule("module$$modules$bar");
     assertThat(bar.getType()).isEqualTo(Module.Type.ES6);
@@ -327,7 +306,8 @@ public class Es6ModuleTest {
 
   @Test
   public void extractsModuleDocsFromTheScriptNode() {
-    util.compile(fs.getPath("/one/two.js"),
+    util.compile(
+        fs.getPath("/one/two.js"),
         "/** @fileoverview The file overview comment should be used for module docs. */",
         "",
         "/** Class does should not be used. */",
@@ -341,9 +321,8 @@ public class Es6ModuleTest {
 
   @Test
   public void modulesWithNoFileOverviewHaveNoDocs() {
-    util.compile(fs.getPath("/one/two.js"),
-        "/** Class does should not be used. */",
-        "export class A {}");
+    util.compile(
+        fs.getPath("/one/two.js"), "/** Class does should not be used. */", "export class A {}");
 
     Module module = typeRegistry.getModule("module$$one$two");
     assertThat(module.getJsDoc().getBlockComment()).isEmpty();
@@ -351,7 +330,8 @@ public class Es6ModuleTest {
 
   @Test
   public void modulesWithFileOverview_moduleAlsoHasDefaultExportClass() {
-    util.compile(fs.getPath("/one/two.js"),
+    util.compile(
+        fs.getPath("/one/two.js"),
         "/** @fileoverview This fileoverview should be used even when there is a default export */",
         "/** This class is the default export */",
         "export default class A {}");

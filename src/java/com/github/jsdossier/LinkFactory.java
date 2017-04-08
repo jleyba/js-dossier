@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier;
 
@@ -53,7 +53,7 @@ import javax.annotation.Nullable;
  * Class responsible for generating the information necessary to render links between documented
  * types.
  */
-@AutoFactory(className = "LinkFactoryBuilder")  // Avoid generating a LinkFactoryFactory.
+@AutoFactory(className = "LinkFactoryBuilder") // Avoid generating a LinkFactoryFactory.
 final class LinkFactory {
 
   private static final ImmutableMap<String, NamedType> EXTERN_TYPE_REFERENCES =
@@ -72,7 +72,8 @@ final class LinkFactory {
 
   /**
    * Creates a new link factory.
-   *  @param dfs used to generate paths to documentation in the output file system.
+   *
+   * @param dfs used to generate paths to documentation in the output file system.
    * @param typeRegistry used to lookup nominal types.
    * @param jsTypeRegistry used to lookup JavaScript types.
    * @param typeContext defines the context in which to resolve type names.
@@ -90,8 +91,17 @@ final class LinkFactory {
       @Provided @SourceUrlTemplate Optional<String> urlTemplate,
       @Provided @TypeFilter Predicate<String> typeNameFilter,
       @Nullable NominalType pathContext) {
-    this(dfs, typeRegistry, jsTypeRegistry, nodeLibrary, namingConvention,
-        typeContext, urlTemplate, typeNameFilter, pathContext, false);
+    this(
+        dfs,
+        typeRegistry,
+        jsTypeRegistry,
+        nodeLibrary,
+        namingConvention,
+        typeContext,
+        urlTemplate,
+        typeNameFilter,
+        pathContext,
+        false);
   }
 
   LinkFactory(
@@ -129,9 +139,16 @@ final class LinkFactory {
     // NB: Can't use an overloaded constructor b/c AutoFactory tries to generate a constructor
     // for everything, even ones with private visibility.
     return new LinkFactory(
-        dfs, typeRegistry, jsTypeRegistry, nodeLibrary, namingConvention,
-        typeContext.changeContext(context), urlTemplate, typeNameFilter,
-        pathContext.orElse(null), jsonPaths);
+        dfs,
+        typeRegistry,
+        jsTypeRegistry,
+        nodeLibrary,
+        namingConvention,
+        typeContext.changeContext(context),
+        urlTemplate,
+        typeNameFilter,
+        pathContext.orElse(null),
+        jsonPaths);
   }
 
   /**
@@ -139,13 +156,19 @@ final class LinkFactory {
    */
   public LinkFactory withJsonPaths() {
     return new LinkFactory(
-        dfs, typeRegistry, jsTypeRegistry, nodeLibrary, namingConvention,
-        typeContext, urlTemplate, typeNameFilter, pathContext.orElse(null), true);
+        dfs,
+        typeRegistry,
+        jsTypeRegistry,
+        nodeLibrary,
+        namingConvention,
+        typeContext,
+        urlTemplate,
+        typeNameFilter,
+        pathContext.orElse(null),
+        true);
   }
 
-  /**
-   * Creates a link to a specific line in a rendered source file.
-   */
+  /** Creates a link to a specific line in a rendered source file. */
   public SourceLink createSourceLink(Path path, Position position) {
     if (urlTemplate.isPresent()) {
       path = dfs.getSourceRelativePath(path);
@@ -157,13 +180,16 @@ final class LinkFactory {
     }
 
     String pathStr = getUriPath(path);
-    SourceLink.Builder link = SourceLink.newBuilder()
-        .setPath(SafeUrls.toProto(sanitize(pathStr)))
-        .setLine(position.getLine());
+    SourceLink.Builder link =
+        SourceLink.newBuilder()
+            .setPath(SafeUrls.toProto(sanitize(pathStr)))
+            .setLine(position.getLine());
     if (urlTemplate.isPresent()) {
-      String url = urlTemplate.get()
-          .replaceAll("%path%", pathStr)
-          .replaceAll("%line%", String.valueOf(position.getLine()));
+      String url =
+          urlTemplate
+              .get()
+              .replaceAll("%path%", pathStr)
+              .replaceAll("%line%", String.valueOf(position.getLine()));
 
       link.setUrl(SafeUrls.toProto(sanitize(url)));
     }
@@ -208,7 +234,8 @@ final class LinkFactory {
         String parentName = type.getName().substring(0, index);
         NamedType parentType = createTypeReference(typeRegistry.getType(parentName));
         String displayName = dfs.getDisplayName(type);
-        return parentType.toBuilder()
+        return parentType
+            .toBuilder()
             .setName(displayName)
             .setLink(appendFragment(parentType.getLink(), displayName))
             .build();
@@ -250,13 +277,13 @@ final class LinkFactory {
     return builder.build();
   }
 
-  /**
-   * Creates a link to a specific property on a type.
-   */
+  /** Creates a link to a specific property on a type. */
   public NamedType createTypeReference(NominalType type, String property) {
     NamedType typeRef = createTypeReference(type);
-    checkState(!SafeUrls.fromProto(typeRef.getLink().getHref()).getSafeUrlString().isEmpty(),
-        "Failed to build link for %s", type.getName());
+    checkState(
+        !SafeUrls.fromProto(typeRef.getLink().getHref()).getSafeUrlString().isEmpty(),
+        "Failed to build link for %s",
+        type.getName());
 
     boolean checkPrototype = false;
     if (property.startsWith("#")) {
@@ -268,11 +295,11 @@ final class LinkFactory {
       return typeRef;
     }
 
-    if (checkPrototype
-        && (type.getType().isConstructor() || type.getType().isInterface())) {
+    if (checkPrototype && (type.getType().isConstructor() || type.getType().isInterface())) {
       ObjectType instanceType = ((FunctionType) type.getType()).getInstanceType();
       if (instanceType.getPropertyNames().contains(property)) {
-        return typeRef.toBuilder()
+        return typeRef
+            .toBuilder()
             .setName(typeRef.getName() + "#" + property)
             .setLink(appendFragment(typeRef.getLink(), property))
             .build();
@@ -287,7 +314,8 @@ final class LinkFactory {
     }
 
     if (type.getType().toObjectType().getPropertyType(property).isEnumElementType()) {
-      return typeRef.toBuilder()
+      return typeRef
+          .toBuilder()
           .setName(typeRef.getName() + "." + property)
           .setLink(appendFragment(typeRef.getLink(), property))
           .build();
@@ -296,16 +324,15 @@ final class LinkFactory {
     JSDocInfo propertyDocs = type.getType().toObjectType().getOwnPropertyJSDocInfo(property);
     if (propertyDocs != null && propertyDocs.isDefine()) {
       String name = dfs.getQualifiedDisplayName(type) + "." + property;
-      return typeRef.toBuilder()
+      return typeRef
+          .toBuilder()
           .setName(name)
           .setLink(appendFragment(typeRef.getLink(), name))
           .build();
     }
 
     if (!type.getType().toObjectType().getPropertyNames().contains(property)) {
-      return typeRef.toBuilder()
-          .setName(typeRef.getName() + "." + property)
-          .build();
+      return typeRef.toBuilder().setName(typeRef.getName() + "." + property).build();
     }
 
     String id = property;
@@ -324,7 +351,8 @@ final class LinkFactory {
     if (typeNameFilter.test(fullName)) {
       return NamedType.newBuilder().setName(fullName).build();
     }
-    return typeRef.toBuilder()
+    return typeRef
+        .toBuilder()
         .setName(fullName)
         .setLink(appendFragment(typeRef.getLink(), id))
         .build();
@@ -355,9 +383,7 @@ final class LinkFactory {
 
     TypeRef ref = TypeRef.from(symbol);
     if (ref.type.isEmpty() && typeContext.isGlobalScope()) {
-      return NamedType.newBuilder()
-          .setName(symbol)
-          .build();
+      return NamedType.newBuilder().setName(symbol).build();
     }
 
     String typeName = ref.type;
@@ -371,7 +397,8 @@ final class LinkFactory {
     }
 
     // Link might be an unqualified reference to a property exported by a ES6 module.
-    if (type == null && property.isEmpty()
+    if (type == null
+        && property.isEmpty()
         && typeContext.getContextType() != null
         && typeContext.getContextType().getModule().isPresent()
         && typeContext.getContextType().getModule().get().getType() == Module.Type.ES6) {
@@ -400,16 +427,13 @@ final class LinkFactory {
     NamedType link = resolveExternModuleReference(ref.type);
     if (link != null) {
       if (!ref.property.isEmpty()) {
-        link = link.toBuilder()
-            .setName(link.getName() + "." + ref.property)
-            .build();
+        link = link.toBuilder().setName(link.getName() + "." + ref.property).build();
       }
       return link;
     }
 
     link = createNativeExternLink(ref.type);
-    if (link == null && ref.property.isEmpty()
-        && (index = ref.type.indexOf('.')) != -1) {
+    if (link == null && ref.property.isEmpty() && (index = ref.type.indexOf('.')) != -1) {
       link = createNativeExternLink(ref.type.substring(0, index));
     }
 
@@ -417,9 +441,7 @@ final class LinkFactory {
       return link.toBuilder().setName(symbol).build();
     }
 
-    return NamedType.newBuilder()
-        .setName(symbol)
-        .build();
+    return NamedType.newBuilder().setName(symbol).build();
   }
 
   @Nullable
@@ -457,9 +479,7 @@ final class LinkFactory {
     return null;
   }
 
-  /**
-   * Creates a link to one of the JS built-in types defined in externs.
-   */
+  /** Creates a link to one of the JS built-in types defined in externs. */
   @Nullable
   @CheckReturnValue
   public NamedType createNativeExternLink(String name) {
@@ -516,10 +536,7 @@ final class LinkFactory {
   }
 
   private static NamedType createExternReference(String name) {
-    return NamedType.newBuilder()
-        .setName(name)
-        .setExtern(true)
-        .build();
+    return NamedType.newBuilder().setName(name).setExtern(true).build();
   }
 
   private static class TypeRef {

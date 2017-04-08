@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier.jscomp;
 
@@ -36,12 +36,12 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 /**
- * Wraps a {@link JSDocInfo} object to compensate for the loss of information from
- * compiler's original parsing:
+ * Wraps a {@link JSDocInfo} object to compensate for the loss of information from compiler's
+ * original parsing:
+ *
  * <ol>
- *   <li>guarantees parameter info will be returned in order of declaration in the original
- *       comment</li>
- *   <li>preserves whitespace on multi-line comments</li>
+ *   <li>guarantees parameter info will be returned in order of declaration in the original comment
+ *   <li>preserves whitespace on multi-line comments
  * </ol>
  */
 public class JsDoc {
@@ -224,14 +224,12 @@ public class JsDoc {
     blockComment = nullToEmpty(info.getBlockDescription()).trim();
     deprecationReason = nullToEmpty(info.getDeprecationReason()).trim();
     fileoverview = nullToEmpty(info.getFileOverview()).trim();
-    returnDescription = new TypedDescription(
-        info.getReturnType(), info.getReturnDescription());
+    returnDescription = new TypedDescription(info.getReturnType(), info.getReturnDescription());
 
     for (String name : info.getParameterNames()) {
-      parameters.put(name, new Parameter(
+      parameters.put(
           name,
-          info.getParameterType(name),
-          info.getDescriptionForParameter(name)));
+          new Parameter(name, info.getParameterType(name), info.getDescriptionForParameter(name)));
     }
 
     Set<JSTypeExpression> missingThrowsDescriptions = new HashSet<>();
@@ -253,11 +251,13 @@ public class JsDoc {
     for (JSDocInfo.Marker marker : info.getMarkers()) {
       Optional<Annotation> annotation = Annotation.forMarker(marker);
       if (!annotation.isPresent()) {
-        continue;  // Unrecognized/unsupported annotation.
+        continue; // Unrecognized/unsupported annotation.
       }
 
-      String description = marker.getDescription() == null
-          ? "" : nullToEmpty(marker.getDescription().getItem()).trim();
+      String description =
+          marker.getDescription() == null
+              ? ""
+              : nullToEmpty(marker.getDescription().getItem()).trim();
       switch (annotation.get()) {
         case DEFINE:
           defineComment = description;
@@ -265,16 +265,17 @@ public class JsDoc {
         case SEE:
           seeClauses.add(description);
           break;
-        case THROWS: {
-          JSTypeExpression markerType = getJsTypeExpression(marker);
-          if (missingThrowsDescriptions.contains(markerType)) {
-            missingThrowsDescriptions.remove(markerType);
-            throwsClauses.add(new TypedDescription(markerType, description));
+        case THROWS:
+          {
+            JSTypeExpression markerType = getJsTypeExpression(marker);
+            if (missingThrowsDescriptions.contains(markerType)) {
+              missingThrowsDescriptions.remove(markerType);
+              throwsClauses.add(new TypedDescription(markerType, description));
+            }
+            break;
           }
-          break;
-        }
         default:
-          break;  // Do nothing.
+          break; // Do nothing.
       }
     }
 
@@ -333,8 +334,7 @@ public class JsDoc {
     SEE("see"),
     STRUCT("struct"),
     THROWS("throws"),
-    TYPE("type")
-    ;
+    TYPE("type");
 
     private final String annotation;
 

@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier;
 
@@ -29,10 +29,6 @@ import static org.junit.Assert.assertSame;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.jimfs.Jimfs;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystem;
@@ -40,10 +36,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-/**
- * Tests for {@link Paths}.
- */
+/** Tests for {@link Paths}. */
 @RunWith(JUnit4.class)
 public class PathsTest {
 
@@ -91,7 +88,8 @@ public class PathsTest {
 
     assertEquals(
         root.resolve("..").normalize(),
-        getCommonPrefix(root,
+        getCommonPrefix(
+            root,
             newArrayList(
                 FILE_SYSTEM.getPath("../up/a/level/foo/bar"),
                 FILE_SYSTEM.getPath("../up/a/level"),
@@ -120,8 +118,7 @@ public class PathsTest {
     createDirectories(deepDir);
     write(deepDir.resolve("hidden.js"), new byte[0]);
 
-    List<Path> found = expandDir(testData, new JsFileFilter(newHashSet(
-        "externs.js", "three.js")));
+    List<Path> found = expandDir(testData, new JsFileFilter(newHashSet("externs.js", "three.js")));
 
     assertEquals(
         ImmutableSet.of(
@@ -139,83 +136,35 @@ public class PathsTest {
     Path d = FILE_SYSTEM.getPath("/foo/bar/one/orange");
     Path e = FILE_SYSTEM.getPath("/foo/bar/one/color/red");
 
-    assertEquals(
-        FILE_SYSTEM.getPath("../one/two/three"),
-        getRelativePath(a, b));
-    assertEquals(
-        FILE_SYSTEM.getPath("../one/apple"),
-        getRelativePath(a, c));
-    assertEquals(
-        FILE_SYSTEM.getPath("../one/orange"),
-        getRelativePath(a, d));
-    assertEquals(
-        FILE_SYSTEM.getPath("../one/color/red"),
-        getRelativePath(a, e));
+    assertEquals(FILE_SYSTEM.getPath("../one/two/three"), getRelativePath(a, b));
+    assertEquals(FILE_SYSTEM.getPath("../one/apple"), getRelativePath(a, c));
+    assertEquals(FILE_SYSTEM.getPath("../one/orange"), getRelativePath(a, d));
+    assertEquals(FILE_SYSTEM.getPath("../one/color/red"), getRelativePath(a, e));
 
-    assertEquals(
-        FILE_SYSTEM.getPath("../../bim/baz"),
-        getRelativePath(b, a));
-    assertEquals(
-        FILE_SYSTEM.getPath("../apple"),
-        getRelativePath(b, c));
-    assertEquals(
-        FILE_SYSTEM.getPath("../orange"),
-        getRelativePath(b, d));
-    assertEquals(
-        FILE_SYSTEM.getPath("../color/red"),
-        getRelativePath(b, e));
+    assertEquals(FILE_SYSTEM.getPath("../../bim/baz"), getRelativePath(b, a));
+    assertEquals(FILE_SYSTEM.getPath("../apple"), getRelativePath(b, c));
+    assertEquals(FILE_SYSTEM.getPath("../orange"), getRelativePath(b, d));
+    assertEquals(FILE_SYSTEM.getPath("../color/red"), getRelativePath(b, e));
 
-    assertEquals(
-        FILE_SYSTEM.getPath("../bim/baz"),
-        getRelativePath(c, a));
-    assertEquals(
-        FILE_SYSTEM.getPath("two/three"),
-        getRelativePath(c, b));
-    assertEquals(
-        FILE_SYSTEM.getPath("orange"),
-        getRelativePath(c, d));
-    assertEquals(
-        FILE_SYSTEM.getPath("color/red"),
-        getRelativePath(c, e));
+    assertEquals(FILE_SYSTEM.getPath("../bim/baz"), getRelativePath(c, a));
+    assertEquals(FILE_SYSTEM.getPath("two/three"), getRelativePath(c, b));
+    assertEquals(FILE_SYSTEM.getPath("orange"), getRelativePath(c, d));
+    assertEquals(FILE_SYSTEM.getPath("color/red"), getRelativePath(c, e));
 
-    assertEquals(
-        FILE_SYSTEM.getPath("../bim/baz"),
-        getRelativePath(d, a));
-    assertEquals(
-        FILE_SYSTEM.getPath("two/three"),
-        getRelativePath(d, b));
-    assertEquals(
-        FILE_SYSTEM.getPath("apple"),
-        getRelativePath(d, c));
-    assertEquals(
-        FILE_SYSTEM.getPath("color/red"),
-        getRelativePath(d, e));
+    assertEquals(FILE_SYSTEM.getPath("../bim/baz"), getRelativePath(d, a));
+    assertEquals(FILE_SYSTEM.getPath("two/three"), getRelativePath(d, b));
+    assertEquals(FILE_SYSTEM.getPath("apple"), getRelativePath(d, c));
+    assertEquals(FILE_SYSTEM.getPath("color/red"), getRelativePath(d, e));
 
-    assertEquals(
-        FILE_SYSTEM.getPath("../bim/baz"),
-        getRelativePath(d, a));
-    assertEquals(
-        FILE_SYSTEM.getPath("two/three"),
-        getRelativePath(d, b));
-    assertEquals(
-        FILE_SYSTEM.getPath("apple"),
-        getRelativePath(d, c));
-    assertEquals(
-        FILE_SYSTEM.getPath("color/red"),
-        getRelativePath(d, e));
+    assertEquals(FILE_SYSTEM.getPath("../bim/baz"), getRelativePath(d, a));
+    assertEquals(FILE_SYSTEM.getPath("two/three"), getRelativePath(d, b));
+    assertEquals(FILE_SYSTEM.getPath("apple"), getRelativePath(d, c));
+    assertEquals(FILE_SYSTEM.getPath("color/red"), getRelativePath(d, e));
 
-    assertEquals(
-        FILE_SYSTEM.getPath("../../bim/baz"),
-        getRelativePath(e, a));
-    assertEquals(
-        FILE_SYSTEM.getPath("../two/three"),
-        getRelativePath(e, b));
-    assertEquals(
-        FILE_SYSTEM.getPath("../apple"),
-        getRelativePath(e, c));
-    assertEquals(
-        FILE_SYSTEM.getPath("../orange"),
-        getRelativePath(e, d));
+    assertEquals(FILE_SYSTEM.getPath("../../bim/baz"), getRelativePath(e, a));
+    assertEquals(FILE_SYSTEM.getPath("../two/three"), getRelativePath(e, b));
+    assertEquals(FILE_SYSTEM.getPath("../apple"), getRelativePath(e, c));
+    assertEquals(FILE_SYSTEM.getPath("../orange"), getRelativePath(e, d));
   }
 
   private static class JsFileFilter implements DirectoryStream.Filter<Path> {
@@ -230,7 +179,7 @@ public class PathsTest {
     public boolean accept(Path entry) {
       return Files.isDirectory(entry)
           || (entry.toString().endsWith(".js")
-          && !excluded.contains(entry.getFileName().toString()));
+              && !excluded.contains(entry.getFileName().toString()));
     }
   }
 }

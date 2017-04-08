@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier.jscomp;
 
@@ -39,9 +39,7 @@ public abstract class AliasRegion implements CompilerOptions.AliasTransformation
 
   private final Map<String, String> aliases = new HashMap<>();
 
-  /**
-   * Returns a new region builder.
-   */
+  /** Returns a new region builder. */
   public static Builder builder() {
     return new AutoValue_AliasRegion.Builder();
   }
@@ -53,10 +51,7 @@ public abstract class AliasRegion implements CompilerOptions.AliasTransformation
    * @return the new AliasRegion.
    */
   public static AliasRegion forFile(Path path) {
-    return AliasRegion.builder()
-        .setPath(path)
-        .setRange(Range.<Position>all())
-        .build();
+    return AliasRegion.builder().setPath(path).setRange(Range.<Position>all()).build();
   }
 
   // Package-private to prevent extensions.
@@ -82,26 +77,21 @@ public abstract class AliasRegion implements CompilerOptions.AliasTransformation
     return resolved;
   }
 
-  /**
-   * Returns all aliases defined in this region.
-   */
+  /** Returns all aliases defined in this region. */
   public Iterable<String> getAliases() {
     return Collections.unmodifiableCollection(aliases.keySet());
   }
 
-  /**
-   * Returns the path to the file defines this region.
-   */
+  /** Returns the path to the file defines this region. */
   public abstract Path getPath();
 
-  /**
-   * Returns the bounded region in the file that defines the region.
-   */
+  /** Returns the bounded region in the file that defines the region. */
   public abstract Range<Position> getRange();
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
     public abstract Builder setPath(Path p);
+
     public abstract Builder setRange(Range<Position> r);
 
     public Builder setRange(SourcePosition<?> position) {

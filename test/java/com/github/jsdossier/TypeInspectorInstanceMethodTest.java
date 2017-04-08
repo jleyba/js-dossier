@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier;
 
@@ -38,15 +38,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Tests for extracting function information with a {@link TypeInspector}.
- */
+/** Tests for extracting function information with a {@link TypeInspector}. */
 @RunWith(JUnit4.class)
 public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
 
   /**
-   * Simulates the definition of goog.abstractMethod, which is not a built-in automatically
-   *  handled by the closure compiler.
+   * Simulates the definition of goog.abstractMethod, which is not a built-in automatically handled
+   * by the closure compiler.
    */
   private static final String DEFINE_ABSTRACT_METHOD =
       "/** @type {!Function} */ var abstractMethod = function() {};";
@@ -69,23 +67,28 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(a);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("sayHi")
-                .setSource(sourceFile("source/foo.js.src.html", 10))
-                .setDescription(htmlComment("<p>Says hello.</p>\n")))
-            .addParameter(Detail.newBuilder()
-                .setName("name")
-                .setType(stringTypeExpression())
-                .setDescription(htmlComment("<p>The person to greet.</p>\n")))
-            .setReturn(Detail.newBuilder()
-                .setType(stringTypeExpression())
-                .setDescription(htmlComment("<p>A greeting.</p>\n")))
-            .addThrown(Detail.newBuilder()
-                .setType(nullableErrorTypeExpression())
-                .setDescription(htmlComment("<p>If the person does not exist.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("sayHi")
+                        .setSource(sourceFile("source/foo.js.src.html", 10))
+                        .setDescription(htmlComment("<p>Says hello.</p>\n")))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("name")
+                        .setType(stringTypeExpression())
+                        .setDescription(htmlComment("<p>The person to greet.</p>\n")))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(stringTypeExpression())
+                        .setDescription(htmlComment("<p>A greeting.</p>\n")))
+                .addThrown(
+                    Detail.newBuilder()
+                        .setType(nullableErrorTypeExpression())
+                        .setDescription(htmlComment("<p>If the person does not exist.</p>\n")))
+                .build());
   }
 
   @Test
@@ -107,23 +110,28 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(a);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("sayHi")
-                .setSource(sourceFile("source/foo.js.src.html", 10))
-                .setDescription(htmlComment("<p>Says hello.</p>\n")))
-            .addParameter(Detail.newBuilder()
-                .setName("name")
-                .setType(stringTypeExpression())
-                .setDescription(htmlComment("<p>The person to greet.</p>\n")))
-            .setReturn(Detail.newBuilder()
-                .setType(stringTypeExpression())
-                .setDescription(htmlComment("<p>A greeting.</p>\n")))
-            .addThrown(Detail.newBuilder()
-                .setType(nullableErrorTypeExpression())
-                .setDescription(htmlComment("<p>If the person does not exist.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("sayHi")
+                        .setSource(sourceFile("source/foo.js.src.html", 10))
+                        .setDescription(htmlComment("<p>Says hello.</p>\n")))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("name")
+                        .setType(stringTypeExpression())
+                        .setDescription(htmlComment("<p>The person to greet.</p>\n")))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(stringTypeExpression())
+                        .setDescription(htmlComment("<p>A greeting.</p>\n")))
+                .addThrown(
+                    Detail.newBuilder()
+                        .setType(nullableErrorTypeExpression())
+                        .setDescription(htmlComment("<p>If the person does not exist.</p>\n")))
+                .build());
   }
 
   @Test
@@ -145,23 +153,28 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(a);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("sayHi")
-                .setSource(sourceFile("source/foo.js.src.html", 10))
-                .setDescription(htmlComment("<p>Says hello.</p>\n")))
-            .addParameter(Detail.newBuilder()
-                .setName("name")
-                .setType(stringTypeExpression())
-                .setDescription(htmlComment("<p>The person to greet.</p>\n")))
-            .setReturn(Detail.newBuilder()
-                .setType(stringTypeExpression())
-                .setDescription(htmlComment("<p>A greeting.</p>\n")))
-            .addThrown(Detail.newBuilder()
-                .setType(nullableErrorTypeExpression())
-                .setDescription(htmlComment("<p>If the person does not exist.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("sayHi")
+                        .setSource(sourceFile("source/foo.js.src.html", 10))
+                        .setDescription(htmlComment("<p>Says hello.</p>\n")))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("name")
+                        .setType(stringTypeExpression())
+                        .setDescription(htmlComment("<p>The person to greet.</p>\n")))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(stringTypeExpression())
+                        .setDescription(htmlComment("<p>A greeting.</p>\n")))
+                .addThrown(
+                    Detail.newBuilder()
+                        .setType(nullableErrorTypeExpression())
+                        .setDescription(htmlComment("<p>If the person does not exist.</p>\n")))
+                .build());
   }
 
   @Test
@@ -183,23 +196,28 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(a);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("sayHi")
-                .setSource(sourceFile("source/foo.js.src.html", 10))
-                .setDescription(htmlComment("<p>Says hello.</p>\n")))
-            .addParameter(Detail.newBuilder()
-                .setName("name")
-                .setType(stringTypeExpression())
-                .setDescription(htmlComment("<p>The person to greet.</p>\n")))
-            .setReturn(Detail.newBuilder()
-                .setType(stringTypeExpression())
-                .setDescription(htmlComment("<p>A greeting.</p>\n")))
-            .addThrown(Detail.newBuilder()
-                .setType(nullableErrorTypeExpression())
-                .setDescription(htmlComment("<p>If the person does not exist.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("sayHi")
+                        .setSource(sourceFile("source/foo.js.src.html", 10))
+                        .setDescription(htmlComment("<p>Says hello.</p>\n")))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("name")
+                        .setType(stringTypeExpression())
+                        .setDescription(htmlComment("<p>The person to greet.</p>\n")))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(stringTypeExpression())
+                        .setDescription(htmlComment("<p>A greeting.</p>\n")))
+                .addThrown(
+                    Detail.newBuilder()
+                        .setType(nullableErrorTypeExpression())
+                        .setDescription(htmlComment("<p>If the person does not exist.</p>\n")))
+                .build());
   }
 
   @Test
@@ -220,24 +238,29 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("add")
-                .setSource(sourceFile("source/foo.js.src.html", 10))
-                .setDescription(Comment.getDefaultInstance()))
-            .addParameter(Detail.newBuilder()
-                .setName("x")
-                .setType(numberTypeExpression())
-                .setDescription(htmlComment("<p>the first number.</p>\n")))
-            .addParameter(Detail.newBuilder()
-                .setName("y")
-                .setType(numberTypeExpression())
-                .setDescription(htmlComment("<p>the second number.</p>\n")))
-            .setReturn(Detail.newBuilder()
-                .setType(numberTypeExpression())
-                .setDescription(htmlComment("<p>x &#43; y.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("add")
+                        .setSource(sourceFile("source/foo.js.src.html", 10))
+                        .setDescription(Comment.getDefaultInstance()))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("x")
+                        .setType(numberTypeExpression())
+                        .setDescription(htmlComment("<p>the first number.</p>\n")))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("y")
+                        .setType(numberTypeExpression())
+                        .setDescription(htmlComment("<p>the second number.</p>\n")))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(numberTypeExpression())
+                        .setDescription(htmlComment("<p>x &#43; y.</p>\n")))
+                .build());
   }
 
   @Test
@@ -258,19 +281,17 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("add")
-                .setSource(sourceFile("source/foo.js.src.html", 9))
-                .setDescription(Comment.getDefaultInstance()))
-            .addParameter(Detail.newBuilder()
-                .setName("x")
-                .setType(numberTypeExpression()))
-            .addParameter(Detail.newBuilder()
-                .setName("y")
-                .setType(numberTypeExpression()))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("add")
+                        .setSource(sourceFile("source/foo.js.src.html", 9))
+                        .setDescription(Comment.getDefaultInstance()))
+                .addParameter(Detail.newBuilder().setName("x").setType(numberTypeExpression()))
+                .addParameter(Detail.newBuilder().setName("y").setType(numberTypeExpression()))
+                .build());
   }
 
   @Test
@@ -284,19 +305,23 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("add")
-                .setSource(sourceFile("source/foo.js.src.html", 3))
-                .setDescription(Comment.getDefaultInstance()))
-            .addParameter(Detail.newBuilder()
-                .setName("x")
-                .setType(TypeExpression.newBuilder().setUnknownType(true)))
-            .addParameter(Detail.newBuilder()
-                .setName("y")
-                .setType(TypeExpression.newBuilder().setUnknownType(true)))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("add")
+                        .setSource(sourceFile("source/foo.js.src.html", 3))
+                        .setDescription(Comment.getDefaultInstance()))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("x")
+                        .setType(TypeExpression.newBuilder().setUnknownType(true)))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("y")
+                        .setType(TypeExpression.newBuilder().setUnknownType(true)))
+                .build());
   }
 
   @Test
@@ -315,19 +340,23 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("add")
-                .setSource(sourceFile("source/foo.js.src.html", 8))
-                .setDescription(Comment.getDefaultInstance()))
-            .addParameter(Detail.newBuilder()
-                .setName("x")
-                .setType(TypeExpression.newBuilder().setUnknownType(true)))
-            .addParameter(Detail.newBuilder()
-                .setName("y")
-                .setType(TypeExpression.newBuilder().setUnknownType(true)))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("add")
+                        .setSource(sourceFile("source/foo.js.src.html", 8))
+                        .setDescription(Comment.getDefaultInstance()))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("x")
+                        .setType(TypeExpression.newBuilder().setUnknownType(true)))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("y")
+                        .setType(TypeExpression.newBuilder().setUnknownType(true)))
+                .build());
   }
 
   @Test
@@ -346,19 +375,23 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("add")
-                .setSource(sourceFile("source/foo.js.src.html", 8))
-                .setDescription(Comment.getDefaultInstance()))
-            .addParameter(Detail.newBuilder()
-                .setName("x")
-                .setDescription(htmlComment("<p>the first number to add.</p>\n")))
-            .addParameter(Detail.newBuilder()
-                .setName("y")
-                .setDescription(htmlComment("<p>the second number to add.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("add")
+                        .setSource(sourceFile("source/foo.js.src.html", 8))
+                        .setDescription(Comment.getDefaultInstance()))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("x")
+                        .setDescription(htmlComment("<p>the first number to add.</p>\n")))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("y")
+                        .setDescription(htmlComment("<p>the second number to add.</p>\n")))
+                .build());
   }
 
   @Test
@@ -375,19 +408,17 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("add")
-                .setSource(sourceFile("source/foo.js.src.html", 6))
-                .setDescription(Comment.getDefaultInstance()))
-            .addParameter(Detail.newBuilder()
-                .setName("arg0")
-                .setType(numberTypeExpression()))
-            .addParameter(Detail.newBuilder()
-                .setName("arg1")
-                .setType(numberTypeExpression()))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("add")
+                        .setSource(sourceFile("source/foo.js.src.html", 6))
+                        .setDescription(Comment.getDefaultInstance()))
+                .addParameter(Detail.newBuilder().setName("arg0").setType(numberTypeExpression()))
+                .addParameter(Detail.newBuilder().setName("arg1").setType(numberTypeExpression()))
+                .build());
   }
 
   @Test
@@ -413,14 +444,16 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 15))
-                .setDescription(htmlComment("<p>Comment on B.</p>\n"))
-                .setOverrides(namedType("A", "A.html#record")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("record")
+                        .setSource(sourceFile("source/foo.js.src.html", 15))
+                        .setDescription(htmlComment("<p>Comment on B.</p>\n"))
+                        .setOverrides(namedType("A", "A.html#record")))
+                .build());
   }
 
   @Test
@@ -446,14 +479,16 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 15))
-                .setDescription(htmlComment("<p>Comment on B.</p>\n"))
-                .addSpecifiedBy(namedType("A", "A.html#record")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("record")
+                        .setSource(sourceFile("source/foo.js.src.html", 15))
+                        .setDescription(htmlComment("<p>Comment on B.</p>\n"))
+                        .addSpecifiedBy(namedType("A", "A.html#record")))
+                .build());
   }
 
   @Test
@@ -479,14 +514,16 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 15))
-                .setDescription(htmlComment("<p>Comment on B.</p>\n"))
-                .addSpecifiedBy(namedType("A", "A.html#record")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("record")
+                        .setSource(sourceFile("source/foo.js.src.html", 15))
+                        .setDescription(htmlComment("<p>Comment on B.</p>\n"))
+                        .addSpecifiedBy(namedType("A", "A.html#record")))
+                .build());
   }
 
   @Test
@@ -511,14 +548,16 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 14))
-                .setDescription(htmlComment("<p>Comment on A.</p>\n"))
-                .setOverrides(namedType("A", "A.html#record")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("record")
+                        .setSource(sourceFile("source/foo.js.src.html", 14))
+                        .setDescription(htmlComment("<p>Comment on A.</p>\n"))
+                        .setOverrides(namedType("A", "A.html#record")))
+                .build());
   }
 
   @Test
@@ -543,14 +582,16 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 14))
-                .setDescription(htmlComment("<p>Comment on A.</p>\n"))
-                .addSpecifiedBy(namedType("A", "A.html#record")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("record")
+                        .setSource(sourceFile("source/foo.js.src.html", 14))
+                        .setDescription(htmlComment("<p>Comment on A.</p>\n"))
+                        .addSpecifiedBy(namedType("A", "A.html#record")))
+                .build());
   }
 
   @Test
@@ -575,18 +616,21 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 14))
-                .setDescription(Comment.getDefaultInstance())
-                .setOverrides(namedType("A", "A.html#record")))
-            .addParameter(Detail.newBuilder()
-                .setName("v")
-                .setType(numberTypeExpression())
-                .setDescription(htmlComment("<p>The value to record.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("record")
+                        .setSource(sourceFile("source/foo.js.src.html", 14))
+                        .setDescription(Comment.getDefaultInstance())
+                        .setOverrides(namedType("A", "A.html#record")))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("v")
+                        .setType(numberTypeExpression())
+                        .setDescription(htmlComment("<p>The value to record.</p>\n")))
+                .build());
   }
 
   @Test
@@ -611,18 +655,21 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 14))
-                .setDescription(Comment.getDefaultInstance())
-                .addSpecifiedBy(namedType("A", "A.html#record")))
-            .addParameter(Detail.newBuilder()
-                .setName("v")
-                .setType(numberTypeExpression())
-                .setDescription(htmlComment("<p>The value to record.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("record")
+                        .setSource(sourceFile("source/foo.js.src.html", 14))
+                        .setDescription(Comment.getDefaultInstance())
+                        .addSpecifiedBy(namedType("A", "A.html#record")))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("v")
+                        .setType(numberTypeExpression())
+                        .setDescription(htmlComment("<p>The value to record.</p>\n")))
+                .build());
   }
 
   @Test
@@ -647,18 +694,21 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 14))
-                .setDescription(Comment.getDefaultInstance())
-                .addSpecifiedBy(namedType("A", "A.html#record")))
-            .addParameter(Detail.newBuilder()
-                .setName("v")
-                .setType(numberTypeExpression())
-                .setDescription(htmlComment("<p>The value to record.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("record")
+                        .setSource(sourceFile("source/foo.js.src.html", 14))
+                        .setDescription(Comment.getDefaultInstance())
+                        .addSpecifiedBy(namedType("A", "A.html#record")))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("v")
+                        .setType(numberTypeExpression())
+                        .setDescription(htmlComment("<p>The value to record.</p>\n")))
+                .build());
   }
 
   @Test
@@ -689,19 +739,22 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 20))
-                .setDescription(Comment.getDefaultInstance())
-                .setOverrides(namedType("B", "B.html#record"))
-                .addSpecifiedBy(namedType("A", "A.html#record")))
-            .addParameter(Detail.newBuilder()
-                .setName("v")
-                .setType(numberTypeExpression())
-                .setDescription(htmlComment("<p>The value to record.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("record")
+                        .setSource(sourceFile("source/foo.js.src.html", 20))
+                        .setDescription(Comment.getDefaultInstance())
+                        .setOverrides(namedType("B", "B.html#record"))
+                        .addSpecifiedBy(namedType("A", "A.html#record")))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("v")
+                        .setType(numberTypeExpression())
+                        .setDescription(htmlComment("<p>The value to record.</p>\n")))
+                .build());
   }
 
   @Test
@@ -726,18 +779,21 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 8))
-                .setDescription(Comment.getDefaultInstance())
-                .setDefinedBy(namedType("A", "A.html#record")))
-            .addParameter(Detail.newBuilder()
-                .setName("v")
-                .setType(numberTypeExpression())
-                .setDescription(htmlComment("<p>The value to record.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("record")
+                        .setSource(sourceFile("source/foo.js.src.html", 8))
+                        .setDescription(Comment.getDefaultInstance())
+                        .setDefinedBy(namedType("A", "A.html#record")))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("v")
+                        .setType(numberTypeExpression())
+                        .setDescription(htmlComment("<p>The value to record.</p>\n")))
+                .build());
   }
 
   @Test
@@ -762,18 +818,21 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 14))
-                .setDescription(Comment.getDefaultInstance())
-                .addSpecifiedBy(namedType("A", "A.html#record")))
-            .addParameter(Detail.newBuilder()
-                .setName("v")
-                .setType(numberTypeExpression())
-                .setDescription(htmlComment("<p>The value to record.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("record")
+                        .setSource(sourceFile("source/foo.js.src.html", 14))
+                        .setDescription(Comment.getDefaultInstance())
+                        .addSpecifiedBy(namedType("A", "A.html#record")))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("v")
+                        .setType(numberTypeExpression())
+                        .setDescription(htmlComment("<p>The value to record.</p>\n")))
+                .build());
   }
 
   @Test
@@ -798,17 +857,20 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 14))
-                .setDescription(Comment.getDefaultInstance())
-                .setOverrides(namedType("A", "A.html#record")))
-            .setReturn(Detail.newBuilder()
-                .setType(stringTypeExpression())
-                .setDescription(htmlComment("<p>Return from A.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("record")
+                        .setSource(sourceFile("source/foo.js.src.html", 14))
+                        .setDescription(Comment.getDefaultInstance())
+                        .setOverrides(namedType("A", "A.html#record")))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(stringTypeExpression())
+                        .setDescription(htmlComment("<p>Return from A.</p>\n")))
+                .build());
   }
 
   @Test
@@ -829,17 +891,20 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 9))
-                .setDescription(Comment.getDefaultInstance())
-                .setOverrides(namedType("A", "A.html#record")))
-            .setReturn(Detail.newBuilder()
-                .setType(stringTypeExpression())
-                .setDescription(htmlComment("<p>Return from A.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("record")
+                        .setSource(sourceFile("source/foo.js.src.html", 9))
+                        .setDescription(Comment.getDefaultInstance())
+                        .setOverrides(namedType("A", "A.html#record")))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(stringTypeExpression())
+                        .setDescription(htmlComment("<p>Return from A.</p>\n")))
+                .build());
   }
 
   @Test
@@ -864,17 +929,20 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 14))
-                .setDescription(Comment.getDefaultInstance())
-                .addSpecifiedBy(namedType("A", "A.html#record")))
-            .setReturn(Detail.newBuilder()
-                .setType(stringTypeExpression())
-                .setDescription(htmlComment("<p>Return from A.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("record")
+                        .setSource(sourceFile("source/foo.js.src.html", 14))
+                        .setDescription(Comment.getDefaultInstance())
+                        .addSpecifiedBy(namedType("A", "A.html#record")))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(stringTypeExpression())
+                        .setDescription(htmlComment("<p>Return from A.</p>\n")))
+                .build());
   }
 
   @Test
@@ -899,17 +967,20 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 14))
-                .setDescription(Comment.getDefaultInstance())
-                .addSpecifiedBy(namedType("A", "A.html#record")))
-            .setReturn(Detail.newBuilder()
-                .setType(stringTypeExpression())
-                .setDescription(htmlComment("<p>Return from A.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("record")
+                        .setSource(sourceFile("source/foo.js.src.html", 14))
+                        .setDescription(Comment.getDefaultInstance())
+                        .addSpecifiedBy(namedType("A", "A.html#record")))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(stringTypeExpression())
+                        .setDescription(htmlComment("<p>Return from A.</p>\n")))
+                .build());
   }
 
   @Test
@@ -935,17 +1006,20 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 15))
-                .setDescription(Comment.getDefaultInstance())
-                .addSpecifiedBy(namedType("A", "A.html#record")))
-            .setReturn(Detail.newBuilder()
-                .setType(stringTypeExpression())
-                .setDescription(htmlComment("<p>Return from A.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("record")
+                        .setSource(sourceFile("source/foo.js.src.html", 15))
+                        .setDescription(Comment.getDefaultInstance())
+                        .addSpecifiedBy(namedType("A", "A.html#record")))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(stringTypeExpression())
+                        .setDescription(htmlComment("<p>Return from A.</p>\n")))
+                .build());
   }
 
   @Test
@@ -978,18 +1052,21 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 22))
-                .setDescription(Comment.getDefaultInstance())
-                .setOverrides(namedType("B", "B.html#record"))
-                .addSpecifiedBy(namedType("A", "A.html#record")))
-            .setReturn(Detail.newBuilder()
-                .setType(stringTypeExpression())
-                .setDescription(htmlComment("<p>Return from A.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("record")
+                        .setSource(sourceFile("source/foo.js.src.html", 22))
+                        .setDescription(Comment.getDefaultInstance())
+                        .setOverrides(namedType("B", "B.html#record"))
+                        .addSpecifiedBy(namedType("A", "A.html#record")))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(stringTypeExpression())
+                        .setDescription(htmlComment("<p>Return from A.</p>\n")))
+                .build());
   }
 
   @Test
@@ -1018,17 +1095,20 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 17))
-                .setDescription(htmlComment("<p>Returns some value.</p>\n"))
-                .addSpecifiedBy(namedType("A", "A.html#record")))
-            .setReturn(Detail.newBuilder()
-                .setType(stringTypeExpression())
-                .setDescription(htmlComment("<p>Return from A.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("record")
+                        .setSource(sourceFile("source/foo.js.src.html", 17))
+                        .setDescription(htmlComment("<p>Returns some value.</p>\n"))
+                        .addSpecifiedBy(namedType("A", "A.html#record")))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(stringTypeExpression())
+                        .setDescription(htmlComment("<p>Return from A.</p>\n")))
+                .build());
   }
 
   @Test
@@ -1057,17 +1137,20 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 9))
-                .setDescription(htmlComment("<p>Returns some value.</p>\n"))
-                .setDefinedBy(namedType("A", "A.html#record")))
-            .setReturn(Detail.newBuilder()
-                .setType(stringTypeExpression())
-                .setDescription(htmlComment("<p>Return from A.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("record")
+                        .setSource(sourceFile("source/foo.js.src.html", 9))
+                        .setDescription(htmlComment("<p>Returns some value.</p>\n"))
+                        .setDefinedBy(namedType("A", "A.html#record")))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(stringTypeExpression())
+                        .setDescription(htmlComment("<p>Return from A.</p>\n")))
+                .build());
   }
 
   @Test
@@ -1108,18 +1191,21 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 28))
-                .setDescription(htmlComment("<p>Returns some value.</p>\n"))
-                .addSpecifiedBy(namedType(
-                    "foo.bar.AnInterface", "foo.bar.AnInterface.html#record")))
-            .setReturn(Detail.newBuilder()
-                .setType(stringTypeExpression())
-                .setDescription(htmlComment("<p>Return from A.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("record")
+                        .setSource(sourceFile("source/foo.js.src.html", 28))
+                        .setDescription(htmlComment("<p>Returns some value.</p>\n"))
+                        .addSpecifiedBy(
+                            namedType("foo.bar.AnInterface", "foo.bar.AnInterface.html#record")))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(stringTypeExpression())
+                        .setDescription(htmlComment("<p>Return from A.</p>\n")))
+                .build());
   }
 
   @Test
@@ -1141,16 +1227,18 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("value")
-                .setSource(sourceFile("source/foo.js.src.html", 8))
-                .setDescription(Comment.getDefaultInstance())
-                .setDefinedBy(namedType("A", "A.html#value")))
-            .setReturn(Detail.newBuilder()
-                .setDescription(htmlComment("<p>The return value.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("value")
+                        .setSource(sourceFile("source/foo.js.src.html", 8))
+                        .setDescription(Comment.getDefaultInstance())
+                        .setDefinedBy(namedType("A", "A.html#value")))
+                .setReturn(
+                    Detail.newBuilder().setDescription(htmlComment("<p>The return value.</p>\n")))
+                .build());
   }
 
   @Test
@@ -1170,16 +1258,18 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("value")
-                .setSource(sourceFile("source/foo.js.src.html", 6))
-                .setDescription(Comment.getDefaultInstance())
-                .setDefinedBy(namedType("A", "A.html#value")))
-            .setReturn(Detail.newBuilder()
-                .setDescription(htmlComment("<p>The return value.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("value")
+                        .setSource(sourceFile("source/foo.js.src.html", 6))
+                        .setDescription(Comment.getDefaultInstance())
+                        .setDefinedBy(namedType("A", "A.html#value")))
+                .setReturn(
+                    Detail.newBuilder().setDescription(htmlComment("<p>The return value.</p>\n")))
+                .build());
   }
 
   @Test
@@ -1200,15 +1290,17 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("value")
-                .setSource(sourceFile("source/foo.js.src.html", 7))
-                .setDescription(Comment.getDefaultInstance()))
-            .setReturn(Detail.newBuilder()
-                .setDescription(htmlComment("<p>The return value.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("value")
+                        .setSource(sourceFile("source/foo.js.src.html", 7))
+                        .setDescription(Comment.getDefaultInstance()))
+                .setReturn(
+                    Detail.newBuilder().setDescription(htmlComment("<p>The return value.</p>\n")))
+                .build());
   }
 
   @Test
@@ -1230,17 +1322,20 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("value")
-                .setSource(sourceFile("source/foo.js.src.html", 8))
-                .setDescription(Comment.getDefaultInstance())
-                .setDefinedBy(namedType("A", "A.html#value")))
-            .setReturn(Detail.newBuilder()
-                .setType(stringTypeExpression())
-                .setDescription(htmlComment("<p>The return value.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("value")
+                        .setSource(sourceFile("source/foo.js.src.html", 8))
+                        .setDescription(Comment.getDefaultInstance())
+                        .setDefinedBy(namedType("A", "A.html#value")))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(stringTypeExpression())
+                        .setDescription(htmlComment("<p>The return value.</p>\n")))
+                .build());
   }
 
   @Test
@@ -1260,17 +1355,20 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("value")
-                .setSource(sourceFile("source/foo.js.src.html", 6))
-                .setDescription(Comment.getDefaultInstance())
-                .setDefinedBy(namedType("A", "A.html#value")))
-            .setReturn(Detail.newBuilder()
-                .setType(stringTypeExpression())
-                .setDescription(htmlComment("<p>The return value.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("value")
+                        .setSource(sourceFile("source/foo.js.src.html", 6))
+                        .setDescription(Comment.getDefaultInstance())
+                        .setDefinedBy(namedType("A", "A.html#value")))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(stringTypeExpression())
+                        .setDescription(htmlComment("<p>The return value.</p>\n")))
+                .build());
   }
 
   @Test
@@ -1291,16 +1389,19 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("value")
-                .setSource(sourceFile("source/foo.js.src.html", 7))
-                .setDescription(Comment.getDefaultInstance()))
-            .setReturn(Detail.newBuilder()
-                .setType(stringTypeExpression())
-                .setDescription(htmlComment("<p>The return value.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("value")
+                        .setSource(sourceFile("source/foo.js.src.html", 7))
+                        .setDescription(Comment.getDefaultInstance()))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(stringTypeExpression())
+                        .setDescription(htmlComment("<p>The return value.</p>\n")))
+                .build());
   }
 
   @Test
@@ -1322,17 +1423,20 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("value")
-                .setSource(sourceFile("source/foo.js.src.html", 8))
-                .setDescription(Comment.getDefaultInstance())
-                .setDefinedBy(namedType("A", "A.html#value")))
-            .setReturn(Detail.newBuilder()
-                .setType(namedTypeExpression("BTYPE"))
-                .setDescription(htmlComment("<p>The return value.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("value")
+                        .setSource(sourceFile("source/foo.js.src.html", 8))
+                        .setDescription(Comment.getDefaultInstance())
+                        .setDefinedBy(namedType("A", "A.html#value")))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(namedTypeExpression("BTYPE"))
+                        .setDescription(htmlComment("<p>The return value.</p>\n")))
+                .build());
   }
 
   @Test
@@ -1352,17 +1456,20 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("value")
-                .setSource(sourceFile("source/foo.js.src.html", 6))
-                .setDescription(Comment.getDefaultInstance())
-                .setDefinedBy(namedType("A", "A.html#value")))
-            .setReturn(Detail.newBuilder()
-                .setType(namedTypeExpression("BTYPE"))
-                .setDescription(htmlComment("<p>The return value.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("value")
+                        .setSource(sourceFile("source/foo.js.src.html", 6))
+                        .setDescription(Comment.getDefaultInstance())
+                        .setDefinedBy(namedType("A", "A.html#value")))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(namedTypeExpression("BTYPE"))
+                        .setDescription(htmlComment("<p>The return value.</p>\n")))
+                .build());
   }
 
   @Test
@@ -1383,16 +1490,19 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("value")
-                .setSource(sourceFile("source/foo.js.src.html", 7))
-                .setDescription(Comment.getDefaultInstance()))
-            .setReturn(Detail.newBuilder()
-                .setType(namedTypeExpression("BTYPE"))
-                .setDescription(htmlComment("<p>The return value.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("value")
+                        .setSource(sourceFile("source/foo.js.src.html", 7))
+                        .setDescription(Comment.getDefaultInstance()))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(namedTypeExpression("BTYPE"))
+                        .setDescription(htmlComment("<p>The return value.</p>\n")))
+                .build());
   }
 
   @Test
@@ -1418,17 +1528,20 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 15))
-                .setDescription(Comment.getDefaultInstance())
-                .addSpecifiedBy(namedType("A", "A.html#record")))
-            .setReturn(Detail.newBuilder()
-                .setType(stringTypeExpression())
-                .setDescription(htmlComment("<p>Return from B.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("record")
+                        .setSource(sourceFile("source/foo.js.src.html", 15))
+                        .setDescription(Comment.getDefaultInstance())
+                        .addSpecifiedBy(namedType("A", "A.html#record")))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(stringTypeExpression())
+                        .setDescription(htmlComment("<p>Return from B.</p>\n")))
+                .build());
   }
 
   @Test
@@ -1465,35 +1578,41 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("greet")
-                .setSource(sourceFile("source/foo.js.src.html", 26))
-                .setDescription(Comment.getDefaultInstance())
-                .addSpecifiedBy(namedType("Greeter", "Greeter.html#greet")))
-            .addParameter(Detail.newBuilder()
-                .setName("student")
-                .setType(namedTypeExpression("Student", "Student.html"))
-                .setDescription(htmlComment("<p>The student to greet.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("greet")
+                        .setSource(sourceFile("source/foo.js.src.html", 26))
+                        .setDescription(Comment.getDefaultInstance())
+                        .addSpecifiedBy(namedType("Greeter", "Greeter.html#greet")))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("student")
+                        .setType(namedTypeExpression("Student", "Student.html"))
+                        .setDescription(htmlComment("<p>The student to greet.</p>\n")))
+                .build());
 
     // Sanity check the interface specification.
     type = typeRegistry.getType("Greeter");
     typeInspector = typeInspectorFactory.create(type);
     report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("greet")
-                .setSource(sourceFile("source/foo.js.src.html", 14))
-                .setDescription(Comment.getDefaultInstance()))
-            .addParameter(Detail.newBuilder()
-                .setName("person")
-                .setType(namedTypeExpression("Person", "Person.html"))
-                .setDescription(htmlComment("<p>The person to greet.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("greet")
+                        .setSource(sourceFile("source/foo.js.src.html", 14))
+                        .setDescription(Comment.getDefaultInstance()))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("person")
+                        .setType(namedTypeExpression("Person", "Person.html"))
+                        .setDescription(htmlComment("<p>The person to greet.</p>\n")))
+                .build());
   }
 
   @Test
@@ -1530,33 +1649,39 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("greet")
-                .setSource(sourceFile("source/foo.js.src.html", 26))
-                .setDescription(Comment.getDefaultInstance())
-                .addSpecifiedBy(namedType("Greeter", "Greeter.html#greet")))
-            .setReturn(Detail.newBuilder()
-                .setType(namedTypeExpression("HappyGreeting", "HappyGreeting.html"))
-                .setDescription(htmlComment("<p>A happy greeting.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("greet")
+                        .setSource(sourceFile("source/foo.js.src.html", 26))
+                        .setDescription(Comment.getDefaultInstance())
+                        .addSpecifiedBy(namedType("Greeter", "Greeter.html#greet")))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(namedTypeExpression("HappyGreeting", "HappyGreeting.html"))
+                        .setDescription(htmlComment("<p>A happy greeting.</p>\n")))
+                .build());
 
     // Sanity check the interface specification.
     type = typeRegistry.getType("Greeter");
     typeInspector = typeInspectorFactory.create(type);
     report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("greet")
-                .setSource(sourceFile("source/foo.js.src.html", 14))
-                .setDescription(Comment.getDefaultInstance()))
-            .setReturn(Detail.newBuilder()
-                .setType(namedTypeExpression("Greeting", "Greeting.html"))
-                .setDescription(htmlComment("<p>Returns a greeting.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("greet")
+                        .setSource(sourceFile("source/foo.js.src.html", 14))
+                        .setDescription(Comment.getDefaultInstance()))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(namedTypeExpression("Greeting", "Greeting.html"))
+                        .setDescription(htmlComment("<p>Returns a greeting.</p>\n")))
+                .build());
   }
 
   @Test
@@ -1582,29 +1707,32 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("go")
-                .setSource(sourceFile("source/foo.js.src.html", 7))
-                .setDescription(Comment.getDefaultInstance())
-                .setTags(Tags.newBuilder()
-                    .setIsDeprecated(true))
-                .setDeprecation(htmlComment("<p>Do not use this.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("go")
+                        .setSource(sourceFile("source/foo.js.src.html", 7))
+                        .setDescription(Comment.getDefaultInstance())
+                        .setTags(Tags.newBuilder().setIsDeprecated(true))
+                        .setDeprecation(htmlComment("<p>Do not use this.</p>\n")))
+                .build());
 
     type = typeRegistry.getType("B");
     typeInspector = typeInspectorFactory.create(type);
     report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("go")
-                .setSource(sourceFile("source/foo.js.src.html", 15))
-                .setDescription(Comment.getDefaultInstance())
-                .addSpecifiedBy(namedType("A", "A.html#go")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("go")
+                        .setSource(sourceFile("source/foo.js.src.html", 15))
+                        .setDescription(Comment.getDefaultInstance())
+                        .addSpecifiedBy(namedType("A", "A.html#go")))
+                .build());
   }
 
   @Test
@@ -1630,29 +1758,34 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("go")
-                .setSource(sourceFile("source/foo.js.src.html", 7))
-                .setDescription(Comment.getDefaultInstance()))
-            .addThrown(Detail.newBuilder()
-                .setType(nullableErrorTypeExpression())
-                .setDescription(htmlComment("<p>if something goes wrong.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("go")
+                        .setSource(sourceFile("source/foo.js.src.html", 7))
+                        .setDescription(Comment.getDefaultInstance()))
+                .addThrown(
+                    Detail.newBuilder()
+                        .setType(nullableErrorTypeExpression())
+                        .setDescription(htmlComment("<p>if something goes wrong.</p>\n")))
+                .build());
 
     type = typeRegistry.getType("B");
     typeInspector = typeInspectorFactory.create(type);
     report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("go")
-                .setSource(sourceFile("source/foo.js.src.html", 15))
-                .setDescription(Comment.getDefaultInstance())
-                .addSpecifiedBy(namedType("A", "A.html#go")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("go")
+                        .setSource(sourceFile("source/foo.js.src.html", 15))
+                        .setDescription(Comment.getDefaultInstance())
+                        .addSpecifiedBy(namedType("A", "A.html#go")))
+                .build());
   }
 
   @Test
@@ -1673,14 +1806,16 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("run")
-                .setSource(sourceFile("source/foo.js.src.html", 7))
-                .setDescription(htmlComment("<p>Runs this instance.</p>\n"))
-                .setDefinedBy(namedType("A", "A.html#run")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("run")
+                        .setSource(sourceFile("source/foo.js.src.html", 7))
+                        .setDescription(htmlComment("<p>Runs this instance.</p>\n"))
+                        .setDefinedBy(namedType("A", "A.html#run")))
+                .build());
   }
 
   @Test
@@ -1714,18 +1849,23 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("addPath")
-                .setSource(sourceFile("source/foo.js.src.html", 22))
-                .setDescription(htmlComment("<p>Render this edge to the given context</p>\n"))
-                .addSpecifiedBy(namedType("Edge", "Edge.html#addPath")))
-            .addParameter(Detail.newBuilder()
-                .setName("context")
-                .setType(namedTypeExpression("CanvasRenderingContext2D"))
-                .setDescription(htmlComment("<p>The canvas to draw this object into</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("addPath")
+                        .setSource(sourceFile("source/foo.js.src.html", 22))
+                        .setDescription(
+                            htmlComment("<p>Render this edge to the given context</p>\n"))
+                        .addSpecifiedBy(namedType("Edge", "Edge.html#addPath")))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("context")
+                        .setType(namedTypeExpression("CanvasRenderingContext2D"))
+                        .setDescription(
+                            htmlComment("<p>The canvas to draw this object into</p>\n")))
+                .build());
   }
 
   @Test
@@ -1745,21 +1885,26 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("a")
-                .setSource(sourceFile("source/foo.js.src.html", 5))
-                .setDescription(htmlComment(
-                    "<p>Go to <a href=\"Foo.html#b\"><code>#b</code></a>.</p>\n")))
-            .build(),
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("b")
-                .setSource(sourceFile("source/foo.js.src.html", 8))
-                .setDescription(htmlComment(
-                    "<p>Go to <a href=\"Foo.html#a\"><code>#a</code></a>.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("a")
+                        .setSource(sourceFile("source/foo.js.src.html", 5))
+                        .setDescription(
+                            htmlComment(
+                                "<p>Go to <a href=\"Foo.html#b\"><code>#b</code></a>.</p>\n")))
+                .build(),
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("b")
+                        .setSource(sourceFile("source/foo.js.src.html", 8))
+                        .setDescription(
+                            htmlComment(
+                                "<p>Go to <a href=\"Foo.html#a\"><code>#a</code></a>.</p>\n")))
+                .build());
   }
 
   @Test
@@ -1780,21 +1925,25 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("a")
-                .setSource(sourceFile("source/foo.js.src.html", 3))
-                .setDescription(Comment.getDefaultInstance())
-                .setDefinedBy(namedType("Foo", "Foo.html#a")))
-            .build(),
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("b")
-                .setSource(sourceFile("source/foo.js.src.html", 9))
-                .setDescription(htmlComment(
-                    "<p>Go to <a href=\"Bar.html#a\"><code>#a</code></a>.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("a")
+                        .setSource(sourceFile("source/foo.js.src.html", 3))
+                        .setDescription(Comment.getDefaultInstance())
+                        .setDefinedBy(namedType("Foo", "Foo.html#a")))
+                .build(),
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("b")
+                        .setSource(sourceFile("source/foo.js.src.html", 9))
+                        .setDescription(
+                            htmlComment(
+                                "<p>Go to <a href=\"Bar.html#a\"><code>#a</code></a>.</p>\n")))
+                .build());
   }
 
   @Test
@@ -1818,21 +1967,25 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("a")
-                .setSource(sourceFile("source/foo.js.src.html", 9))
-                .setDescription(Comment.getDefaultInstance())
-                .setOverrides(namedType("Foo", "Foo.html#a")))
-            .build(),
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("b")
-                .setSource(sourceFile("source/foo.js.src.html", 12))
-                .setDescription(htmlComment(
-                    "<p>Go to <a href=\"Bar.html#a\"><code>#a</code></a>.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("a")
+                        .setSource(sourceFile("source/foo.js.src.html", 9))
+                        .setDescription(Comment.getDefaultInstance())
+                        .setOverrides(namedType("Foo", "Foo.html#a")))
+                .build(),
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("b")
+                        .setSource(sourceFile("source/foo.js.src.html", 12))
+                        .setDescription(
+                            htmlComment(
+                                "<p>Go to <a href=\"Bar.html#a\"><code>#a</code></a>.</p>\n")))
+                .build());
   }
 
   @Test
@@ -1856,21 +2009,25 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("a")
-                .setSource(sourceFile("source/foo.js.src.html", 9))
-                .setDescription(Comment.getDefaultInstance())
-                .setOverrides(namedType("Foo", "Foo.html#a")))
-            .build(),
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("b")
-                .setSource(sourceFile("source/foo.js.src.html", 12))
-                .setDescription(htmlComment(
-                    "<p>Go to <a href=\"Foo.html#a\"><code>Foo#a</code></a>.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("a")
+                        .setSource(sourceFile("source/foo.js.src.html", 9))
+                        .setDescription(Comment.getDefaultInstance())
+                        .setOverrides(namedType("Foo", "Foo.html#a")))
+                .build(),
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("b")
+                        .setSource(sourceFile("source/foo.js.src.html", 12))
+                        .setDescription(
+                            htmlComment(
+                                "<p>Go to <a href=\"Foo.html#a\"><code>Foo#a</code></a>.</p>\n")))
+                .build());
   }
 
   @Test
@@ -1890,14 +2047,17 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("b")
-                .setSource(sourceFile("source/foo.js.src.html", 8))
-                .setDescription(htmlComment(
-                    "<p>Go to <a href=\"Foo.html#a\"><code>Foo#a</code></a>.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("b")
+                        .setSource(sourceFile("source/foo.js.src.html", 8))
+                        .setDescription(
+                            htmlComment(
+                                "<p>Go to <a href=\"Foo.html#a\"><code>Foo#a</code></a>.</p>\n")))
+                .build());
   }
 
   @Test
@@ -1924,15 +2084,17 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("greet")
-                .setSource(sourceFile("../source/modules/two.js.src.html", 5))
-                .setDescription(htmlComment("<p>Returns a greeting.</p>\n"))
-                .addSpecifiedBy(
-                    namedType("Greeter", "one.Greeter", "one_exports_Greeter.html#greet")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("greet")
+                        .setSource(sourceFile("../source/modules/two.js.src.html", 5))
+                        .setDescription(htmlComment("<p>Returns a greeting.</p>\n"))
+                        .addSpecifiedBy(
+                            namedType("Greeter", "one.Greeter", "one_exports_Greeter.html#greet")))
+                .build());
   }
 
   @Test
@@ -1959,20 +2121,24 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("method")
-                .setSource(sourceFile("../source/modules/a/b/c.js.src.html", 8))
-                .setDescription(Comment.getDefaultInstance())
-                .setDefinedBy(namedType("Z", "a/b/c.Z", "a/b/c_exports_Z.html#method")))
-            .addParameter(Detail.newBuilder()
-                .setName("x")
-                .setType(namedTypeExpression("Y", "a/b/c.Y", "a/b/c_exports_Y.html"))
-                .setDescription(htmlComment(
-                    "<p>A reference to <a href=\"a/b/c_exports_Y.html\">" +
-                        "<code>X</code></a></p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("method")
+                        .setSource(sourceFile("../source/modules/a/b/c.js.src.html", 8))
+                        .setDescription(Comment.getDefaultInstance())
+                        .setDefinedBy(namedType("Z", "a/b/c.Z", "a/b/c_exports_Z.html#method")))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("x")
+                        .setType(namedTypeExpression("Y", "a/b/c.Y", "a/b/c_exports_Y.html"))
+                        .setDescription(
+                            htmlComment(
+                                "<p>A reference to <a href=\"a/b/c_exports_Y.html\">"
+                                    + "<code>X</code></a></p>\n")))
+                .build());
   }
 
   @Test
@@ -1997,44 +2163,50 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getCompilerConstants()).isEmpty();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("greet")
-                .setSource(sourceFile("source/globals.js.src.html", 2))
-                .setDescription(Comment.getDefaultInstance())
-                .setVisibility(Visibility.newBuilder().setProtected(true)))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("greet")
+                        .setSource(sourceFile("source/globals.js.src.html", 2))
+                        .setDescription(Comment.getDefaultInstance())
+                        .setVisibility(Visibility.newBuilder().setProtected(true)))
+                .build());
 
     type = typeRegistry.getType("CustomGreeter");
     typeInspector = typeInspectorFactory.create(type);
     report = typeInspector.inspectInstanceType();
     assertThat(report.getCompilerConstants()).isEmpty();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("greet")
-                .setSource(sourceFile("source/globals.js.src.html", 6))
-                .setDescription(Comment.getDefaultInstance())
-                .setOverrides(namedType("Greeter", "Greeter.html#greet"))
-                .setVisibility(Visibility.newBuilder().setProtected(true)))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("greet")
+                        .setSource(sourceFile("source/globals.js.src.html", 6))
+                        .setDescription(Comment.getDefaultInstance())
+                        .setOverrides(namedType("Greeter", "Greeter.html#greet"))
+                        .setVisibility(Visibility.newBuilder().setProtected(true)))
+                .build());
 
     type = typeRegistry.getType("FinalGreeter");
     typeInspector = typeInspectorFactory.create(type);
     report = typeInspector.inspectInstanceType();
     assertThat(report.getCompilerConstants()).isEmpty();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("greet")
-                .setSource(sourceFile("source/globals.js.src.html", 10))
-                .setDescription(Comment.getDefaultInstance())
-                .setOverrides(namedType("CustomGreeter", "CustomGreeter.html#greet"))
-                .setVisibility(Visibility.newBuilder().setProtected(true)))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("greet")
+                        .setSource(sourceFile("source/globals.js.src.html", 10))
+                        .setDescription(Comment.getDefaultInstance())
+                        .setOverrides(namedType("CustomGreeter", "CustomGreeter.html#greet"))
+                        .setVisibility(Visibility.newBuilder().setProtected(true)))
+                .build());
   }
 
   @Test
@@ -2052,23 +2224,24 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     NominalType type = typeRegistry.getType("Company");
     TypeInspector inspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = inspector.inspectInstanceType();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(
-                BaseProperty.newBuilder()
-                    .setName("getEmployees")
-                    .setSource(sourceFile("source/foo.js.src.html", 7))
-                    .setDescription(Comment.getDefaultInstance()))
-            .setReturn(
-                Detail.newBuilder()
-                    .setType(
-                        TypeExpression.newBuilder()
-                            .setNamedType(
-                                addTemplateTypes(
-                                    namedType("Container", "Container.html"),
-                                    stringTypeExpression())))
-                    .setDescription(htmlComment("<p>.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("getEmployees")
+                        .setSource(sourceFile("source/foo.js.src.html", 7))
+                        .setDescription(Comment.getDefaultInstance()))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(
+                            TypeExpression.newBuilder()
+                                .setNamedType(
+                                    addTemplateTypes(
+                                        namedType("Container", "Container.html"),
+                                        stringTypeExpression())))
+                        .setDescription(htmlComment("<p>.</p>\n")))
+                .build());
   }
 
   @Test
@@ -2091,24 +2264,27 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     NominalType type = typeRegistry.getType("module$$src$modules$company.Company");
     TypeInspector inspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = inspector.inspectInstanceType();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(
-                BaseProperty.newBuilder()
-                    .setName("getEmployees")
-                    .setSource(sourceFile("../source/modules/company.js.src.html", 6))
-                    .setDescription(Comment.getDefaultInstance()))
-            .setReturn(
-                Detail.newBuilder()
-                    .setType(
-                        TypeExpression.newBuilder()
-                            .setNamedType(
-                                addTemplateTypes(
-                                    namedType("Container", "container.Container",
-                                        "container_exports_Container.html"),
-                                    stringTypeExpression())))
-                    .setDescription(htmlComment("<p>.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("getEmployees")
+                        .setSource(sourceFile("../source/modules/company.js.src.html", 6))
+                        .setDescription(Comment.getDefaultInstance()))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(
+                            TypeExpression.newBuilder()
+                                .setNamedType(
+                                    addTemplateTypes(
+                                        namedType(
+                                            "Container",
+                                            "container.Container",
+                                            "container_exports_Container.html"),
+                                        stringTypeExpression())))
+                        .setDescription(htmlComment("<p>.</p>\n")))
+                .build());
   }
 
   @Test
@@ -2133,34 +2309,39 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     NominalType type = typeRegistry.getType("module$exports$module$$src$modules$foo$baz.Company");
     TypeInspector inspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = inspector.inspectInstanceType();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(
-                BaseProperty.newBuilder()
-                    .setName("getEmployees")
-                    .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 6))
-                    .setDescription(Comment.getDefaultInstance()))
-            .setReturn(
-                Detail.newBuilder()
-                    .setType(
-                        TypeExpression.newBuilder()
-                            .setNamedType(
-                                addTemplateTypes(
-                                    namedType("Container", "foo/bar.Container",
-                                        "bar_exports_Container.html"),
-                                    stringTypeExpression())))
-                    .setDescription(htmlComment("<p>.</p>\n")))
-            .build());
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("getEmployees")
+                        .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 6))
+                        .setDescription(Comment.getDefaultInstance()))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(
+                            TypeExpression.newBuilder()
+                                .setNamedType(
+                                    addTemplateTypes(
+                                        namedType(
+                                            "Container",
+                                            "foo/bar.Container",
+                                            "bar_exports_Container.html"),
+                                        stringTypeExpression())))
+                        .setDescription(htmlComment("<p>.</p>\n")))
+                .build());
   }
 
   @Test
   public void handlesParameterTypesDefinedFromInsideAnotherModule_closure() {
     util.compile(
-        createSourceFile(fs.getPath("/src/modules/foo.js"),
+        createSourceFile(
+            fs.getPath("/src/modules/foo.js"),
             "goog.module('foo');",
             "class Foo {}",
             "exports = {Foo}"),
-        createSourceFile(fs.getPath("/src/modules/bar.js"),
+        createSourceFile(
+            fs.getPath("/src/modules/bar.js"),
             "goog.module('bar');",
             "var foo = goog.require('foo');",
             "class Bar {",
@@ -2168,7 +2349,8 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
             "  work(input) {}",
             "}",
             "exports = {Bar}"),
-        createSourceFile(fs.getPath("/src/modules/baz.js"),
+        createSourceFile(
+            fs.getPath("/src/modules/baz.js"),
             "goog.module('baz');",
             "var bar = goog.require('bar');",
             "class Other {}",
@@ -2190,17 +2372,18 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
 
   @Test
   public void handlesParameterTypesDefinedFromInsideAnotherModule_node() {
-    guice.toBuilder()
+    guice
+        .toBuilder()
         .setModules("/src/modules/foo.js", "/src/modules/bar.js", "/src/modules/baz.js")
         .build()
         .createInjector()
         .injectMembers(this);
 
     util.compile(
-        createSourceFile(fs.getPath("/src/modules/foo.js"),
-            "class Foo {}",
-            "module.exports = {Foo}"),
-        createSourceFile(fs.getPath("/src/modules/bar.js"),
+        createSourceFile(
+            fs.getPath("/src/modules/foo.js"), "class Foo {}", "module.exports = {Foo}"),
+        createSourceFile(
+            fs.getPath("/src/modules/bar.js"),
             "var Foo = require('./foo').Foo;",
             "class Bar {",
             "  /** @param {!Foo} input */",
@@ -2210,7 +2393,8 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
             "  work(input) {}",
             "}",
             "module.exports = {Bar}"),
-        createSourceFile(fs.getPath("/src/modules/baz.js"),
+        createSourceFile(
+            fs.getPath("/src/modules/baz.js"),
             "var bar = require('./bar');",
             "exports.Baz = bar.Bar;"));
 
@@ -2218,8 +2402,12 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector inspector = typeInspectorFactory.create(type);
 
     Node fakeNode = fakeNodeForType(type);
-    FunctionType mainFn = checkNotNull(type.getType().toMaybeFunctionType(),
-        "Expected %s to be a function: %s", type.getName(), type.getType());
+    FunctionType mainFn =
+        checkNotNull(
+            type.getType().toMaybeFunctionType(),
+            "Expected %s to be a function: %s",
+            type.getName(),
+            type.getType());
 
     TypeInspector.Report report = inspector.inspectInstanceType();
     Function function = getOnlyElement(report.getFunctions());

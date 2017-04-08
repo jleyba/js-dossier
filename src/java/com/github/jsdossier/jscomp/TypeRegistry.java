@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier.jscomp;
 
@@ -55,9 +55,7 @@ import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 import javax.inject.Singleton;
 
-/**
- * Dossier's internal type registry.
- */
+/** Dossier's internal type registry. */
 @Singleton
 public final class TypeRegistry {
 
@@ -88,24 +86,20 @@ public final class TypeRegistry {
   private final ListMultimap<FunctionType, JSType> typeHierarchy =
       MultimapBuilder.hashKeys().arrayListValues().build();
 
-  /**
-   * Records a region of a file that defines variable aliases.
-   */
+  /** Records a region of a file that defines variable aliases. */
   public void addAliasRegion(AliasRegion region) {
     aliasRegions.put(region.getPath(), region);
   }
 
-  /**
-   * Returns the alias regions defined for the file with the given path.
-   */
+  /** Returns the alias regions defined for the file with the given path. */
   public Collection<AliasRegion> getAliasRegions(Path path) {
     return aliasRegions.get(path);
   }
 
   /**
    * Iterates over all registered node and closure modules, collecting the names of internal
-   * variables that are aliases for other types. This is used for fast lookup in
-   * {@link #resolveAlias(NominalType, String)}.
+   * variables that are aliases for other types. This is used for fast lookup in {@link
+   * #resolveAlias(NominalType, String)}.
    *
    * @param jsRegistry The JS registry to use when resolving aliases.
    */
@@ -185,9 +179,7 @@ public final class TypeRegistry {
     return definition;
   }
 
-  /**
-   * Registers a new module.
-   */
+  /** Registers a new module. */
   public void addModule(Module module) {
     if (module.getType() == Module.Type.CLOSURE && module.getHasLegacyNamespace()) {
       recordImplicitProvide(module.getOriginalName());
@@ -197,23 +189,17 @@ public final class TypeRegistry {
     addAliasRegion(module.getAliases());
   }
 
-  /**
-   * Returns whether there is a module registered with the given ID.
-   */
+  /** Returns whether there is a module registered with the given ID. */
   public boolean isModule(String id) {
     return modulesById.containsKey(id);
   }
 
-  /**
-   * Returns whether the given path defines a module.
-   */
+  /** Returns whether the given path defines a module. */
   public boolean isModule(Path path) {
     return modulesByPath.containsKey(path);
   }
 
-  /**
-   * Returns whether the given type is registered as a module's exports.
-   */
+  /** Returns whether the given type is registered as a module's exports. */
   public boolean isModule(JSType type) {
     for (NominalType ntype : getTypes(type)) {
       if (ntype.isModuleExports()) {
@@ -243,16 +229,12 @@ public final class TypeRegistry {
     return modulesByPath.get(path);
   }
 
-  /**
-   * Returns all registered modules.
-   */
+  /** Returns all registered modules. */
   public Collection<Module> getAllModules() {
     return Collections.unmodifiableCollection(modulesById.values());
   }
 
-  /**
-   * Records a symbol declared by a "goog.provide" statement.
-   */
+  /** Records a symbol declared by a "goog.provide" statement. */
   public void recordProvide(String symbol) {
     providedSymbols.add(symbol);
     recordImplicitProvide(symbol);
@@ -276,28 +258,26 @@ public final class TypeRegistry {
     return Collections.unmodifiableSet(implicitNamespaces);
   }
 
-  /**
-   * Returns whether the provided symbol was declared with a "goog.provide" statement.
-   */
+  /** Returns whether the provided symbol was declared with a "goog.provide" statement. */
   public boolean isProvided(String symbol) {
     return providedSymbols.contains(symbol);
   }
 
   /**
    * Returns whether a symbol identifies a namespace implicitly created by a "goog.provide" or
-   * "goog.module" statement. For example, {@code goog.module('foo.bar.baz')} implicitly creates
-   * the "foo" and "foo.bar" namespaces.
+   * "goog.module" statement. For example, {@code goog.module('foo.bar.baz')} implicitly creates the
+   * "foo" and "foo.bar" namespaces.
    */
   public boolean isImplicitNamespace(String symbol) {
     return !providedSymbols.contains(symbol) && implicitNamespaces.contains(symbol);
   }
 
-  /**
-   * Registers a nominal type.
-   */
+  /** Registers a nominal type. */
   public void addType(NominalType type) {
-    checkArgument(!typesByName.containsKey(type.getName()),
-        "A type with name %s has already been defined", type.getName());
+    checkArgument(
+        !typesByName.containsKey(type.getName()),
+        "A type with name %s has already been defined",
+        type.getName());
     typesByName.put(type.getName(), type);
     typesByJsType.put(type.getType(), type);
 
@@ -310,12 +290,9 @@ public final class TypeRegistry {
     }
   }
 
-  /**
-   * Returns whether there is a type registered with the given name.
-   */
+  /** Returns whether there is a type registered with the given name. */
   public boolean isType(String name) {
-    return typesByName.containsKey(name)
-        || resolvedModuleContentAliases.containsKey(name);
+    return typesByName.containsKey(name) || resolvedModuleContentAliases.containsKey(name);
   }
 
   /**
@@ -334,17 +311,15 @@ public final class TypeRegistry {
     }
   }
 
-  /**
-   * Returns all nominal types that have the given JSType.
-   */
+  /** Returns all nominal types that have the given JSType. */
   public List<NominalType> getTypes(JSType type) {
     return Collections.unmodifiableList(typesByJsType.get(type));
   }
 
   /**
    * Finds all nominal types whose underlying JSType is <em>equivalent</em> to the given type. This
-   * stands in contrast to {@link #getTypes(JSType)}, which returns the nominal types with the
-   * exact JSType.
+   * stands in contrast to {@link #getTypes(JSType)}, which returns the nominal types with the exact
+   * JSType.
    */
   public Collection<NominalType> findTypes(final JSType type) {
     Predicate<JSType> predicate = input -> typesEqual(type, input);
@@ -373,7 +348,8 @@ public final class TypeRegistry {
     // even though the compiler does not:
     //   function(new: Foo): undefined
     //   function(new: Foo): ?
-    if (a.isConstructor() && b.isConstructor()
+    if (a.isConstructor()
+        && b.isConstructor()
         && a.toMaybeFunctionType() != null
         && b.toMaybeFunctionType() != null) {
       a = a.toMaybeFunctionType().getInstanceType();
@@ -385,32 +361,23 @@ public final class TypeRegistry {
     return false;
   }
 
-  /**
-   * Returns all registered types.
-   */
+  /** Returns all registered types. */
   public Collection<NominalType> getAllTypes() {
     return Collections.unmodifiableCollection(typesByName.values());
   }
 
-  /**
-   * Returns all types nested under another.
-   */
+  /** Returns all types nested under another. */
   public Set<NominalType> getNestedTypes(NominalType type) {
     return Collections.unmodifiableSet(nestedTypes.get(type));
   }
 
-  /**
-   * Sets the default visibility for the given source file.
-   */
+  /** Sets the default visibility for the given source file. */
   public void setDefaultVisibility(Path path, Visibility visibility) {
     defaultVisibilities.put(
-        checkNotNull(path, "null path"),
-        checkNotNull(visibility, "null visibility"));
+        checkNotNull(path, "null path"), checkNotNull(visibility, "null visibility"));
   }
 
-  /**
-   * Returns the effective visibility for the given type.
-   */
+  /** Returns the effective visibility for the given type. */
   public Visibility getDefaultVisibility(Path path) {
     if (defaultVisibilities.containsKey(path)) {
       return defaultVisibilities.get(path);
@@ -418,9 +385,7 @@ public final class TypeRegistry {
     return Visibility.PUBLIC;
   }
 
-  /**
-   * Returns the effective visibility for the given type.
-   */
+  /** Returns the effective visibility for the given type. */
   public Visibility getVisibility(NominalType type) {
     JsDoc docs = type.getJsDoc();
     Visibility visibility = docs.getVisibility();
@@ -436,23 +401,19 @@ public final class TypeRegistry {
     return visibility;
   }
 
-  /**
-   * Returns all known implementations of the given interface.
-   */
+  /** Returns all known implementations of the given interface. */
   public ImmutableSet<ObjectType> getKnownImplementations(FunctionType type) {
     return ImmutableSet.copyOf(knownImplementations.get(type));
   }
 
-  /**
-   * Returns all known sub-interfaces of the given interface.
-   */
+  /** Returns all known sub-interfaces of the given interface. */
   public ImmutableSet<ObjectType> getSubInterfaces(FunctionType type) {
     return ImmutableSet.copyOf(subInterfaces.get(type));
   }
 
   /**
-   * Returns all known direct subtypes for the given type. An empty set will be returned if the
-   * type is not a constructor.
+   * Returns all known direct subtypes for the given type. An empty set will be returned if the type
+   * is not a constructor.
    */
   public ImmutableSet<JSType> getDirectSubTypes(FunctionType type) {
     return ImmutableSet.copyOf(directSubtypes.get(type));
@@ -462,8 +423,8 @@ public final class TypeRegistry {
    * Returns the interfaces implemented by the given type. If the type is itself an interface, the
    * return set will include the interfaces it extends.
    *
-   * <p>Note the returned set contains instances of {@link ObjectType} instead of
-   * {@link NominalType} as each type may be an external type.
+   * <p>Note the returned set contains instances of {@link ObjectType} instead of {@link
+   * NominalType} as each type may be an external type.
    */
   public ImmutableSet<ObjectType> getImplementedInterfaces(JSType type) {
     if (type.toMaybeFunctionType() == null) {
@@ -530,8 +491,9 @@ public final class TypeRegistry {
         && currentCtor.getSuperClassConstructor() != null) {
       types.add(currentInstance);
 
-      JSType superInstance = getSuperInstance(
-          currentInstance.toMaybeObjectType(), currentCtor, globalScope, jsRegistry);
+      JSType superInstance =
+          getSuperInstance(
+              currentInstance.toMaybeObjectType(), currentCtor, globalScope, jsRegistry);
       if (superInstance == null || superInstance.toMaybeObjectType() == null) {
         break;
       }
@@ -548,23 +510,23 @@ public final class TypeRegistry {
 
   private JSType getInstanceType(final JSTypeRegistry jsRegistry, FunctionType ctor) {
     ObjectType instance = ctor.getInstanceType();
-    if (ctor.getJSDocInfo() != null
-        && !ctor.getJSDocInfo().getTemplateTypeNames().isEmpty()) {
+    if (ctor.getJSDocInfo() != null && !ctor.getJSDocInfo().getTemplateTypeNames().isEmpty()) {
       ImmutableList<JSType> templateTypes =
           FluentIterable.from(ctor.getJSDocInfo().getTemplateTypeNames())
-          .transform(input -> (JSType) jsRegistry.createTemplateType(input))
-          .toList();
+              .transform(input -> (JSType) jsRegistry.createTemplateType(input))
+              .toList();
       instance = jsRegistry.createTemplatizedType(instance, templateTypes);
     }
     return instance;
   }
 
   private JSType getSuperInstance(
-      ObjectType instance, FunctionType ctor,
-      StaticTypedScope<JSType> globalScope, JSTypeRegistry jsRegistry) {
+      ObjectType instance,
+      FunctionType ctor,
+      StaticTypedScope<JSType> globalScope,
+      JSTypeRegistry jsRegistry) {
     JSType superInstance;
-    if (ctor.getJSDocInfo() != null
-        && ctor.getJSDocInfo().getBaseType() != null) {
+    if (ctor.getJSDocInfo() != null && ctor.getJSDocInfo().getBaseType() != null) {
       jsRegistry.setTemplateTypeNames(instance.getTemplateTypeMap().getTemplateKeys());
 
       JSTypeExpression baseTypeExpression = ctor.getJSDocInfo().getBaseType();
@@ -625,8 +587,7 @@ public final class TypeRegistry {
       }
 
       checkState(
-          iface.getConstructor().isInterface(), "unexpected type: %s",
-          iface.getConstructor());
+          iface.getConstructor().isInterface(), "unexpected type: %s", iface.getConstructor());
 
       if (seenCtors.add(iface.getConstructor())) {
         scanExtendedInterfaces(seenCtors, iface.getConstructor());

@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier.markdown;
 
@@ -39,20 +39,19 @@ import org.commonmark.parser.block.ParserState;
 
 final class TableBlockParser extends AbstractBlockParser {
 
-  private static final Pattern HEADER_SEPARATOR = Pattern.compile(
-      "^ {0,3}(?:" +
-          "(?<single>(?:\\|\\s*:?-+:?\\s*\\|?|:?-+:?\\s*\\|))" +
-          "|" +
-          "(?:\\|\\s*)?" +
-          "(?<first>:?-+:?)" +
-          "(?<rest>(?:\\s*\\|\\s*:?-+:?)+)" +
-          "\\s*\\|?)\\s*$");
+  private static final Pattern HEADER_SEPARATOR =
+      Pattern.compile(
+          "^ {0,3}(?:"
+              + "(?<single>(?:\\|\\s*:?-+:?\\s*\\|?|:?-+:?\\s*\\|))"
+              + "|"
+              + "(?:\\|\\s*)?"
+              + "(?<first>:?-+:?)"
+              + "(?<rest>(?:\\s*\\|\\s*:?-+:?)+)"
+              + "\\s*\\|?)\\s*$");
 
-  private static final Pattern CAPTION_LINE = Pattern.compile(
-      "^ {0,3}\\[(?<content>.*)\\]\\s*$");
+  private static final Pattern CAPTION_LINE = Pattern.compile("^ {0,3}\\[(?<content>.*)\\]\\s*$");
 
-  private static final Splitter COLUMN_SPLITTER =
-      Splitter.on('|').trimResults().omitEmptyStrings();
+  private static final Splitter COLUMN_SPLITTER = Splitter.on('|').trimResults().omitEmptyStrings();
 
   private final ImmutableList<Alignment> columns;
   private final CharSequence headerRow;
@@ -91,7 +90,7 @@ final class TableBlockParser extends AbstractBlockParser {
     headNode.appendChild(parseRow(headerRow.toString(), inlineParser));
 
     // The first row of data is always the column alignments, which we've already parsed.
-    Node bodyNode =new TableBodyNode();
+    Node bodyNode = new TableBodyNode();
     block.appendChild(bodyNode);
     String caption = null;
     for (CharSequence line : Iterables.skip(rowData, 1)) {
@@ -144,10 +143,9 @@ final class TableBlockParser extends AbstractBlockParser {
           colSpan++;
           data.position(data.position() + 1);
         }
-        index = -1;  // Account for post-forloop increment.
-        Alignment alignment = currentColumn < columns.size()
-            ? columns.get(currentColumn)
-            : Alignment.NONE;
+        index = -1; // Account for post-forloop increment.
+        Alignment alignment =
+            currentColumn < columns.size() ? columns.get(currentColumn) : Alignment.NONE;
         currentColumn += colSpan;
 
         TableCellNode cell = new TableCellNode(colSpan, alignment);

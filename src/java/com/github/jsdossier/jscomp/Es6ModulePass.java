@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier.jscomp;
 
@@ -44,9 +44,7 @@ import java.util.logging.Logger;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 
-/**
- * Pass responsible for processing ES6 modules.
- */
+/** Pass responsible for processing ES6 modules. */
 @AutoFactory
 final class Es6ModulePass implements CompilerPass {
 
@@ -213,12 +211,13 @@ final class Es6ModulePass implements CompilerPass {
       }
 
       Path path = inputFs.getPath(n.getSourceFileName());
-      module = Module.builder()
-          .setId(Types.getModuleId(path))
-          .setOriginalName(path.toString())
-          .setPath(path)
-          .setAliases(AliasRegion.forFile(path))
-          .setType(Module.Type.ES6);
+      module =
+          Module.builder()
+              .setId(Types.getModuleId(path))
+              .setOriginalName(path.toString())
+              .setPath(path)
+              .setAliases(AliasRegion.forFile(path))
+              .setType(Module.Type.ES6);
       log.fine(String.format("Found ES6 module: %s (%s)", path, module.getId()));
 
       if (n.getJSDocInfo() != null && n.getBooleanProp(Node.EXPORT_DEFAULT)) {

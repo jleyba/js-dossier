@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier;
 
@@ -40,28 +40,25 @@ import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
-import org.junit.Rule;
-
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Arrays;
-
 import javax.inject.Inject;
+import org.junit.Rule;
 
-/**
- * Abstract base class for tests for {@link com.github.jsdossier.TypeInspector}.
- */
+/** Abstract base class for tests for {@link com.github.jsdossier.TypeInspector}. */
 public abstract class AbstractTypeInspectorTest {
 
   @Rule
-  public GuiceRule guice = GuiceRule.builder(this)
-      .setModulePrefix("/src/modules")
-      .setModules("foo/bar.js", "foo/baz.js")
-      .setSourcePrefix("/src")
-      .setOutputDir("/out")
-      .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
-      .build();
+  public GuiceRule guice =
+      GuiceRule.builder(this)
+          .setModulePrefix("/src/modules")
+          .setModules("foo/bar.js", "foo/baz.js")
+          .setSourcePrefix("/src")
+          .setOutputDir("/out")
+          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
+          .build();
 
   @Inject protected CompilerUtil util;
   @Inject protected TypeRegistry typeRegistry;
@@ -91,98 +88,70 @@ public abstract class AbstractTypeInspectorTest {
   }
 
   protected static Comment htmlComment(String html) {
-    return Comment.newBuilder()
-        .addToken(Token.newBuilder().setHtml(html))
-        .build();
+    return Comment.newBuilder().addToken(Token.newBuilder().setHtml(html)).build();
   }
 
   protected static TypeExpression unionType(TypeExpression... expressions) {
     checkArgument(expressions.length > 0);
     return TypeExpression.newBuilder()
-        .setUnionType(
-            UnionType.newBuilder()
-                .addAllType(Arrays.asList(expressions)))
+        .setUnionType(UnionType.newBuilder().addAllType(Arrays.asList(expressions)))
         .build();
   }
 
   protected static TypeExpression nullableErrorTypeExpression() {
     NamedType error = namedType("Error").toBuilder().setExtern(true).build();
     return unionType(
-        TypeExpression.newBuilder()
-            .setNamedType(error)
-            .build(),
-        TypeExpressions.NULL_TYPE);
+        TypeExpression.newBuilder().setNamedType(error).build(), TypeExpressions.NULL_TYPE);
   }
 
   protected static TypeExpression numberTypeExpression() {
     NamedType number = namedType("number").toBuilder().setExtern(true).build();
-    return TypeExpression.newBuilder()
-        .setNamedType(number)
-        .build();
+    return TypeExpression.newBuilder().setNamedType(number).build();
   }
 
   protected static TypeExpression stringTypeExpression() {
     NamedType string = namedType("string").toBuilder().setExtern(true).build();
-    return TypeExpression.newBuilder()
-        .setNamedType(string)
-        .build();
+    return TypeExpression.newBuilder().setNamedType(string).build();
   }
 
   protected static TypeExpression namedTypeExpression(String name) {
-    return TypeExpression.newBuilder()
-        .setNamedType(namedType(name))
-        .build();
+    return TypeExpression.newBuilder().setNamedType(namedType(name)).build();
   }
 
   protected static TypeExpression namedTypeExpression(String name, String href) {
-    return TypeExpression.newBuilder()
-        .setNamedType(namedType(name, href))
-        .build();
+    return TypeExpression.newBuilder().setNamedType(namedType(name, href)).build();
   }
 
   protected static TypeExpression namedTypeExpression(
       String name, String qualifiedName, String href) {
-    return TypeExpression.newBuilder()
-        .setNamedType(namedType(name, qualifiedName, href))
-        .build();
+    return TypeExpression.newBuilder().setNamedType(namedType(name, qualifiedName, href)).build();
   }
 
   protected static TypeExpression nullableNamedTypeExpression(String name) {
     return unionType(
-        TypeExpression.newBuilder()
-            .setNamedType(namedType(name))
-            .build(),
+        TypeExpression.newBuilder().setNamedType(namedType(name)).build(),
         TypeExpressions.NULL_TYPE);
   }
 
   protected static TypeExpression nullableNamedTypeExpression(String name, String href) {
     return unionType(
-        TypeExpression.newBuilder()
-            .setNamedType(namedType(name, href))
-            .build(),
+        TypeExpression.newBuilder().setNamedType(namedType(name, href)).build(),
         TypeExpressions.NULL_TYPE);
   }
 
   protected static TypeExpression nullableNamedTypeExpression(
       String name, String qualifiedName, String href) {
     return unionType(
-        TypeExpression.newBuilder()
-            .setNamedType(namedType(name, qualifiedName, href))
-            .build(),
+        TypeExpression.newBuilder().setNamedType(namedType(name, qualifiedName, href)).build(),
         TypeExpressions.NULL_TYPE);
   }
 
   protected static NamedType namedType(String name) {
-    return NamedType.newBuilder()
-        .setName(name)
-        .build();
+    return NamedType.newBuilder().setName(name).build();
   }
 
   protected static NamedType namedType(String name, String href) {
-    return NamedType.newBuilder()
-        .setName(name)
-        .setLink(typeLink(href))
-        .build();
+    return NamedType.newBuilder().setName(name).setLink(typeLink(href)).build();
   }
 
   protected static NamedType namedType(String name, String qualifiedName, String href) {
@@ -194,26 +163,24 @@ public abstract class AbstractTypeInspectorTest {
   }
 
   protected static TypeLink typeLink(String href) {
-    return TypeLink.newBuilder()
-        .setHref(HtmlConversions.newSafeUrlProtoForTest(href))
-        .build();
+    return TypeLink.newBuilder().setHref(HtmlConversions.newSafeUrlProtoForTest(href)).build();
   }
 
   protected static NamedType addTemplateTypes(
       NamedType namedType, TypeExpression... templateTypes) {
-    return namedType.toBuilder()
-        .addAllTemplateType(Arrays.asList(templateTypes))
-        .build();
+    return namedType.toBuilder().addAllTemplateType(Arrays.asList(templateTypes)).build();
   }
 
   protected static InstancePropertySubject assertInstanceProperty(final InstanceProperty property) {
-    return assertAbout(new SubjectFactory<InstancePropertySubject, InstanceProperty>() {
-      @Override
-      public InstancePropertySubject getSubject(
-          FailureStrategy failureStrategy, InstanceProperty property) {
-        return new InstancePropertySubject(failureStrategy, property);
-      }
-    }).that(property);
+    return assertAbout(
+            new SubjectFactory<InstancePropertySubject, InstanceProperty>() {
+              @Override
+              public InstancePropertySubject getSubject(
+                  FailureStrategy failureStrategy, InstanceProperty property) {
+                return new InstancePropertySubject(failureStrategy, property);
+              }
+            })
+        .that(property);
   }
 
   protected static final class InstancePropertySubject
@@ -242,8 +209,7 @@ public abstract class AbstractTypeInspectorTest {
     }
 
     public void isDefinedOn(JSType type) {
-      assertWithMessage("wrong defining type").that(actual().getDefinedByType())
-          .isEqualTo(type);
+      assertWithMessage("wrong defining type").that(actual().getDefinedByType()).isEqualTo(type);
     }
   }
 }

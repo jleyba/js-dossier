@@ -44,19 +44,17 @@ import java.util.Set;
  * from the Closure Compiler in
  * https://github.com/google/closure-compiler/commit/ba594106504e598b43f5b83837e129ea916d920c
  *
- * TODO(jleyba): Delete this class after updating to a Closure Compiler release that includes the
+ * <p>TODO(jleyba): Delete this class after updating to a Closure Compiler release that includes the
  * above commit.
  *
- * Original class comment follows.
+ * <p>Original class comment follows.
  * -----------------------------------------------------------------------------------------------
  *
- * A sorted list of inputs with dependency information.
- * <p>
- * Uses a stable topological sort to make sure that an
- * input always comes after its dependencies.
- * <p>
- * Also exposes other information about the inputs, like which inputs
- * do not provide symbols.
+ * <p>A sorted list of inputs with dependency information.
+ *
+ * <p>Uses a stable topological sort to make sure that an input always comes after its dependencies.
+ *
+ * <p>Also exposes other information about the inputs, like which inputs do not provide symbols.
  *
  * @author nicksantos@google.com (Nick Santos)
  */
@@ -113,8 +111,7 @@ public final class ClosureSortedDependencies<INPUT extends DependencyInfo>
       List<INPUT> subGraph = new ArrayList<>(inputs);
       subGraph.removeAll(sortedList);
 
-      throw new IllegalArgumentException(
-          "cycle detected: " + cycleToString(findCycle(subGraph)));
+      throw new IllegalArgumentException("cycle detected: " + cycleToString(findCycle(subGraph)));
     }
   }
 
@@ -132,9 +129,8 @@ public final class ClosureSortedDependencies<INPUT extends DependencyInfo>
   }
 
   /**
-   * Returns the first circular dependency found. Expressed as a list of
-   * items in reverse dependency order (the second element depends on the
-   * first, etc.).
+   * Returns the first circular dependency found. Expressed as a list of items in reverse dependency
+   * order (the second element depends on the first, etc.).
    */
   private List<INPUT> findCycle(List<INPUT> subGraph) {
     return findCycle(subGraph.get(0), new HashSet<>(subGraph), new HashSet<>());
@@ -142,17 +138,15 @@ public final class ClosureSortedDependencies<INPUT extends DependencyInfo>
 
   private List<INPUT> findCycle(INPUT current, Set<INPUT> subGraph, Set<INPUT> covered) {
     if (covered.add(current)) {
-      List<INPUT> cycle = findCycle(
-          findRequireInSubGraphOrFail(current, subGraph),
-          subGraph, covered);
+      List<INPUT> cycle =
+          findCycle(findRequireInSubGraphOrFail(current, subGraph), subGraph, covered);
 
       if (current == cycle.get(0)) {
         return cycle;
       } else if (cycle.size() == 1 && cycle.get(0) != current) {
         cycle.add(current);
         // Don't add the input to the list if the cycle has closed already.
-      } else if (cycle.get(0) != current
-          && cycle.get(0) != cycle.get(cycle.size() - 1)) {
+      } else if (cycle.get(0) != current && cycle.get(0) != cycle.get(cycle.size() - 1)) {
         if (cycle.get(cycle.size() - 1) != current) {
           cycle.add(current);
         }
@@ -179,9 +173,7 @@ public final class ClosureSortedDependencies<INPUT extends DependencyInfo>
     throw new IllegalStateException("no require found in subgraph");
   }
 
-  /**
-   * @param cycle A cycle in reverse-dependency order.
-   */
+  /** @param cycle A cycle in reverse-dependency order. */
   private String cycleToString(List<INPUT> cycle) {
     List<String> symbols = new ArrayList<>();
     for (int i = cycle.size() - 1; i >= 0; i--) {
@@ -197,10 +189,9 @@ public final class ClosureSortedDependencies<INPUT extends DependencyInfo>
   }
 
   /**
-   * Gets all the dependencies of the given roots. The inputs must be returned
-   * in a stable order. In other words, if A comes before B, and A does not
-   * transitively depend on B, then A must also come before B in the returned
-   * list.
+   * Gets all the dependencies of the given roots. The inputs must be returned in a stable order. In
+   * other words, if A comes before B, and A does not transitively depend on B, then A must also
+   * come before B in the returned list.
    */
   @Override
   public List<INPUT> getSortedDependenciesOf(List<INPUT> roots) {
@@ -238,8 +229,7 @@ public final class ClosureSortedDependencies<INPUT extends DependencyInfo>
     return Collections.unmodifiableList(noProvides);
   }
 
-  private static <T> List<T> topologicalStableSort(
-      List<T> items, Multimap<T, T> deps) {
+  private static <T> List<T> topologicalStableSort(List<T> items, Multimap<T, T> deps) {
     if (items.isEmpty()) {
       // Priority queue blows up if we give it a size of 0. Since we need
       // to special case this either way, just bail out.
@@ -251,8 +241,8 @@ public final class ClosureSortedDependencies<INPUT extends DependencyInfo>
       originalIndex.put(items.get(i), i);
     }
 
-    PriorityQueue<T> inDegreeZero = new PriorityQueue<>(items.size(),
-        (a, b) -> originalIndex.get(a) - originalIndex.get(b));
+    PriorityQueue<T> inDegreeZero =
+        new PriorityQueue<>(items.size(), (a, b) -> originalIndex.get(a) - originalIndex.get(b));
     List<T> result = new ArrayList<>();
 
     Multiset<T> inDegree = HashMultiset.create();

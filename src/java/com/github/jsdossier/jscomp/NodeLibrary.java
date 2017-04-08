@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier.jscomp;
 
@@ -65,31 +65,32 @@ public final class NodeLibrary {
       "/" + NodeLibrary.class.getPackage().getName().replace('.', '/') + "/resources/externs/node";
   private static final String FILE_NAME_PREFIX = "dossier//node-externs.zip//";
 
-  private static final Supplier<ExternCollection> NODE_EXTERNS = Suppliers.memoize(() -> {
-    URI uri = getExternZipUri();
-    try {
-      if ("file".equals(uri.getScheme())) {
-        return loadDirectory(Paths.get(uri));
-      } else {
-        log.fine("Loading externs from jar: " + uri);
-        ImmutableMap<String, String> env = ImmutableMap.of();
-        try (FileSystem jarFs = FileSystems.newFileSystem(uri, env)) {
-          Path directory = jarFs.getPath(NODE_EXTERNS_RESOURCE_DIRECTORY);
-          verify(Files.isDirectory(directory), "Node externs not found: %s", directory);
-          return loadDirectory(directory);
-        }
-      }
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  });
+  private static final Supplier<ExternCollection> NODE_EXTERNS =
+      Suppliers.memoize(
+          () -> {
+            URI uri = getExternZipUri();
+            try {
+              if ("file".equals(uri.getScheme())) {
+                return loadDirectory(Paths.get(uri));
+              } else {
+                log.fine("Loading externs from jar: " + uri);
+                ImmutableMap<String, String> env = ImmutableMap.of();
+                try (FileSystem jarFs = FileSystems.newFileSystem(uri, env)) {
+                  Path directory = jarFs.getPath(NODE_EXTERNS_RESOURCE_DIRECTORY);
+                  verify(Files.isDirectory(directory), "Node externs not found: %s", directory);
+                  return loadDirectory(directory);
+                }
+              }
+            } catch (IOException e) {
+              throw new RuntimeException(e);
+            }
+          });
 
   private final Supplier<ExternCollection> externs;
 
   @Inject
   NodeLibrary(
-      @ModuleExterns ImmutableSet<Path> userExterns,
-      @Modules ImmutableSet<Path> modulePaths) {
+      @ModuleExterns ImmutableSet<Path> userExterns, @Modules ImmutableSet<Path> modulePaths) {
     if (modulePaths.isEmpty()) {
       externs = Suppliers.ofInstance(ExternCollection.empty());
     } else {
@@ -114,9 +115,7 @@ public final class NodeLibrary {
   }
 
   public String getIdFromPath(String path) {
-    checkArgument(
-        externs.get().idsByPath.containsKey(path),
-        "not an extern module: %s", path);
+    checkArgument(externs.get().idsByPath.containsKey(path), "not an extern module: %s", path);
     return externs.get().idsByPath.get(path);
   }
 
@@ -128,8 +127,7 @@ public final class NodeLibrary {
     return name.replace('-', '_');
   }
 
-  private static SourceFile loadSource(Path path, boolean isInternal)
-      throws IOException {
+  private static SourceFile loadSource(Path path, boolean isInternal) throws IOException {
     String sourceName = isInternal ? (FILE_NAME_PREFIX + path.getFileName()) : path.toString();
     String content = new String(readAllBytes(path), UTF_8);
     return SourceFile.fromCode(sourceName, content);
@@ -143,8 +141,10 @@ public final class NodeLibrary {
         return uri;
       }
       verify("jar".equals(uri.getScheme()), "Unexpected resource URI: %s", uri);
-      verify(uri.toString().endsWith("!" + NODE_EXTERNS_RESOURCE_DIRECTORY),
-          "Unexpected resource URI: %s\nExpected final path: %s", uri,
+      verify(
+          uri.toString().endsWith("!" + NODE_EXTERNS_RESOURCE_DIRECTORY),
+          "Unexpected resource URI: %s\nExpected final path: %s",
+          uri,
           NODE_EXTERNS_RESOURCE_DIRECTORY);
 
       String jar = uri.toString();
@@ -165,7 +165,11 @@ public final class NodeLibrary {
       String id = toSafeName(getNameWithoutExtension(path.getFileName().toString()));
       if (modulePathsById.containsKey(id)) {
         throw new IllegalArgumentException(
-            "Duplicate extern module ID <" + id + "> (" + path + "); originally defined by "
+            "Duplicate extern module ID <"
+                + id
+                + "> ("
+                + path
+                + "); originally defined by "
                 + modulePathsById.get(id));
       }
       modulePathsById.put(id, path.toString());
@@ -190,43 +194,44 @@ public final class NodeLibrary {
     final Map<String, SourceFile> modulesByPath = new HashMap<>();
     final BiMap<String, String> modulePathsById = HashBiMap.create();
 
-    Files.walkFileTree(directory, new FileVisitor<Path>() {
-      @Override
-      public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-        return FileVisitResult.CONTINUE;
-      }
-
-      @Override
-      public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
-          throws IOException {
-        if (file.getFileName().toString().endsWith(".js")) {
-          String id = toSafeName(getNameWithoutExtension(file.getFileName().toString()));
-          if ("globals".equals(id)) {
-            externFiles.add(SourceFile.fromInputStream(
-                FILE_NAME_PREFIX + file.getFileName(),
-                Files.newInputStream(file),
-                UTF_8));
-          } else {
-            externIds.add(id);
-
-            SourceFile source = loadSource(file, true);
-            modulesByPath.put(source.getName(), source);
-            modulePathsById.put(id, source.getName());
+    Files.walkFileTree(
+        directory,
+        new FileVisitor<Path>() {
+          @Override
+          public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+            return FileVisitResult.CONTINUE;
           }
-        }
-        return FileVisitResult.CONTINUE;
-      }
 
-      @Override
-      public FileVisitResult visitFileFailed(Path file, IOException exc) {
-        return FileVisitResult.CONTINUE;
-      }
+          @Override
+          public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+              throws IOException {
+            if (file.getFileName().toString().endsWith(".js")) {
+              String id = toSafeName(getNameWithoutExtension(file.getFileName().toString()));
+              if ("globals".equals(id)) {
+                externFiles.add(
+                    SourceFile.fromInputStream(
+                        FILE_NAME_PREFIX + file.getFileName(), Files.newInputStream(file), UTF_8));
+              } else {
+                externIds.add(id);
 
-      @Override
-      public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
-        return FileVisitResult.CONTINUE;
-      }
-    });
+                SourceFile source = loadSource(file, true);
+                modulesByPath.put(source.getName(), source);
+                modulePathsById.put(id, source.getName());
+              }
+            }
+            return FileVisitResult.CONTINUE;
+          }
+
+          @Override
+          public FileVisitResult visitFileFailed(Path file, IOException exc) {
+            return FileVisitResult.CONTINUE;
+          }
+
+          @Override
+          public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
+            return FileVisitResult.CONTINUE;
+          }
+        });
 
     return new ExternCollection(
         ImmutableSet.copyOf(externIds),
@@ -273,30 +278,18 @@ public final class NodeLibrary {
 
     static ExternCollection empty() {
       return new ExternCollection(
-          ImmutableSet.of(),
-          ImmutableList.of(),
-          ImmutableMap.of(),
-          ImmutableMap.of());
+          ImmutableSet.of(), ImmutableList.of(), ImmutableMap.of(), ImmutableMap.of());
     }
 
     ExternCollection merge(ExternCollection other) {
       return new ExternCollection(
-          ImmutableSet.<String>builder()
-              .addAll(ids)
-              .addAll(other.ids)
-              .build(),
-          ImmutableList.<SourceFile>builder()
-              .addAll(files)
-              .addAll(other.files)
-              .build(),
+          ImmutableSet.<String>builder().addAll(ids).addAll(other.ids).build(),
+          ImmutableList.<SourceFile>builder().addAll(files).addAll(other.files).build(),
           ImmutableMap.<String, SourceFile>builder()
               .putAll(modulesByPath)
               .putAll(other.modulesByPath)
               .build(),
-          ImmutableMap.<String, String>builder()
-              .putAll(idsByPath)
-              .putAll(other.idsByPath)
-              .build());
+          ImmutableMap.<String, String>builder().putAll(idsByPath).putAll(other.idsByPath).build());
     }
   }
 }

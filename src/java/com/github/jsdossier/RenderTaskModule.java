@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
- 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
- 
-   http://www.apache.org/licenses/LICENSE-2.0
- 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Copyright 2013-2016 Jason Leyba
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier;
 
@@ -40,13 +40,10 @@ import java.util.Optional;
 import java.util.stream.StreamSupport;
 import javax.inject.Qualifier;
 
-/**
- * Module responsible for providing the bindings for all rendering tasks.
- */
+/** Module responsible for providing the bindings for all rendering tasks. */
 final class RenderTaskModule extends AbstractModule {
   @Override
-  protected void configure() {
-  }
+  protected void configure() {}
 
   @Provides
   @DocumentationScoped
@@ -64,12 +61,13 @@ final class RenderTaskModule extends AbstractModule {
       @DocumentableTypeTasks List<RenderTask> documentableTypeTasks,
       @ResourceFileTasks List<RenderTask> resourceTasks,
       @SourceFileTasks List<RenderTask> sourceFileTasks) {
-    List<RenderTask> result = new ArrayList<>(
-        customPageTasks.size()
-        + documentableTypeTasks.size()
-        + resourceTasks.size()
-        + sourceFileTasks.size()
-        + 1);  // indexTask.
+    List<RenderTask> result =
+        new ArrayList<>(
+            customPageTasks.size()
+                + documentableTypeTasks.size()
+                + resourceTasks.size()
+                + sourceFileTasks.size()
+                + 1); // indexTask.
 
     result.add(indexTask);
     result.addAll(customPageTasks);
@@ -84,8 +82,7 @@ final class RenderTaskModule extends AbstractModule {
   @DocumentationScoped
   @CustomPageTasks
   List<RenderTask> provideCustomPageRenderingTasks(
-      ImmutableSet<MarkdownPage> pages,
-      RenderMarkdownTaskFactory factory) {
+      ImmutableSet<MarkdownPage> pages, RenderMarkdownTaskFactory factory) {
     return pages.stream().map(factory::create).collect(toList());
   }
 
@@ -101,7 +98,9 @@ final class RenderTaskModule extends AbstractModule {
     // Any types with a collision must be rendered together to ensure no data mysteriously
     // disappears when running on a case insensitive file system (OSX is case-insensitive,
     // but case-preserving).
-    return registry.getAllTypes().stream()
+    return registry
+        .getAllTypes()
+        .stream()
         .filter(predicate)
         .collect(
             groupingBy(
@@ -119,8 +118,7 @@ final class RenderTaskModule extends AbstractModule {
   @DocumentationScoped
   @ResourceFileTasks
   List<RenderTask> provideResourceFileTasks(
-      DocTemplate template,
-      RenderResourceTaskFactory factory) {
+      DocTemplate template, RenderResourceTaskFactory factory) {
     Iterable<TemplateFile> templateFiles =
         concat(
             template.getAdditionalFiles(),

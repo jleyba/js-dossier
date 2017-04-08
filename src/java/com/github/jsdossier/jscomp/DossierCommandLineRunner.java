@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier.jscomp;
 
@@ -54,28 +54,29 @@ import javax.inject.Singleton;
 @Singleton
 public final class DossierCommandLineRunner extends CommandLineRunner implements Callable<Integer> {
 
-  private static final ImmutableSet<String> CHECKS = ImmutableSet.of(
-      "accessControls",
-      "ambiguousFunctionDecl",
-      "checkRegExp",
-      "checkTypes",
-      "checkVars",
-      "constantProperty",
-      "deprecated",
-      "duplicateMessage",
-      "es5Strict",
-      "externsValidation",
-      "fileoverviewTags",
-      "globalThis",
-      "invalidCasts",
-      "missingProperties",
-      "nonStandardJsDocs",
-      "strictModuleDepCheck",
-      "typeInvalidation",
-      "undefinedVars",
-      "unknownDefines",
-      "uselessCode",
-      "visibility");
+  private static final ImmutableSet<String> CHECKS =
+      ImmutableSet.of(
+          "accessControls",
+          "ambiguousFunctionDecl",
+          "checkRegExp",
+          "checkTypes",
+          "checkVars",
+          "constantProperty",
+          "deprecated",
+          "duplicateMessage",
+          "es5Strict",
+          "externsValidation",
+          "fileoverviewTags",
+          "globalThis",
+          "invalidCasts",
+          "missingProperties",
+          "nonStandardJsDocs",
+          "strictModuleDepCheck",
+          "typeInvalidation",
+          "undefinedVars",
+          "unknownDefines",
+          "uselessCode",
+          "visibility");
 
   private final FileSystem inputFileSystem;
   private final Provider<DossierCompiler> compilerProvider;
@@ -97,17 +98,22 @@ public final class DossierCommandLineRunner extends CommandLineRunner implements
     this.optionsProvider = optionsProvider;
 
     getCommandLineConfig()
-        .setWarningGuards(CHECKS.stream()
-            .map(c -> new HiddenFlagEntry<>(strictMode ? CheckLevel.ERROR : CheckLevel.WARNING, c))
-            .collect(toList()))
+        .setWarningGuards(
+            CHECKS
+                .stream()
+                .map(
+                    c ->
+                        new HiddenFlagEntry<>(
+                            strictMode ? CheckLevel.ERROR : CheckLevel.WARNING, c))
+                .collect(toList()))
         .setCodingConvention(new ClosureCodingConvention())
         .setJs(sources.stream().map(Path::toString).collect(toList()))
         .setMixedJsSources(
-            sources.stream()
+            sources
+                .stream()
                 .map(s -> new HiddenFlagEntry<>(JsSourceType.JS, s.toString()))
                 .collect(toList()))
-        .setExterns(externs.stream().map(Path::toString).collect(toList()))
-    ;
+        .setExterns(externs.stream().map(Path::toString).collect(toList()));
   }
 
   /** Hack to break encapsulation. */
@@ -138,7 +144,8 @@ public final class DossierCommandLineRunner extends CommandLineRunner implements
       List<FlagEntry<JsSourceType>> files,
       List<JsonFileSpec> jsonFiles,
       boolean allowStdIn,
-      List<JsModuleSpec> jsModuleSpecs) throws IOException {
+      List<JsModuleSpec> jsModuleSpecs)
+      throws IOException {
     // Compiler defaults to reading from stdin if no files specified, but we don't support that.
     if (files.size() == 1 && "-".equals(files.get(0).getValue())) {
       return ImmutableList.of();
@@ -146,8 +153,10 @@ public final class DossierCommandLineRunner extends CommandLineRunner implements
 
     ImmutableList.Builder<SourceFile> inputs = ImmutableList.builder();
     for (FlagEntry<JsSourceType> flagEntry : files) {
-      checkArgument(flagEntry.getFlag() != JsSourceType.JS_ZIP,
-          "Zip file inputs are not supported: %s", flagEntry.getValue());
+      checkArgument(
+          flagEntry.getFlag() != JsSourceType.JS_ZIP,
+          "Zip file inputs are not supported: %s",
+          flagEntry.getValue());
       checkArgument(!"-".equals(flagEntry.getValue()), "Reading from stdin is not supported");
 
       Path path = inputFileSystem.getPath(flagEntry.getValue());

@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier;
 
@@ -59,9 +59,7 @@ import java.util.List;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 
-/**
- * Generates tasks for rendering a list of types.
- */
+/** Generates tasks for rendering a list of types. */
 @AutoFactory
 final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<RenderTask>> {
 
@@ -80,18 +78,20 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
 
   @Override
   public ImmutableList<RenderTask> get() {
-    final List<NominalTypeProcessor> processors =
-        transform(types, processorFactory::create);
+    final List<NominalTypeProcessor> processors = transform(types, processorFactory::create);
 
-    final Supplier<List<JsType>> typeSupplier = memoize(() -> {
-      List<JsType> types1 = new ArrayList<>();
-      for (NominalTypeProcessor processor : processors) {
-        types1.add(processor.buildJsType());
-      }
-      return types1;
-    });
+    final Supplier<List<JsType>> typeSupplier =
+        memoize(
+            () -> {
+              List<JsType> types1 = new ArrayList<>();
+              for (NominalTypeProcessor processor : processors) {
+                types1.add(processor.buildJsType());
+              }
+              return types1;
+            });
 
-    return processors.stream()
+    return processors
+        .stream()
         .map(p -> renderTaskFactory.create(p.getHtmlOutput(), p.getJsonOutput(), typeSupplier))
         .collect(toImmutableList());
   }
@@ -116,11 +116,10 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
 
     @Override
     public List<Path> call() throws Exception {
-      PageData page = PageData.newBuilder()
-          .setTypes(
-              PageData.TypeCollection.newBuilder()
-                  .addAllType(types.get()))
-          .build();
+      PageData page =
+          PageData.newBuilder()
+              .setTypes(PageData.TypeCollection.newBuilder().addAllType(types.get()))
+              .build();
 
       renderer.render(output, jsonOutput, page);
       return ImmutableList.of(output, jsonOutput);
@@ -187,11 +186,13 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
     }
 
     JsType buildJsType() {
-      JsType.Builder typeSpec = JsType.newBuilder()
-          .setName(dfs.getDisplayName(type))
-          .setQualifiedName(dfs.getQualifiedDisplayName(type))
-          .setFilename(dfs.getPath(type).getFileName().toString())
-          .setSource(linkFactory.createSourceLink(type.getSourceFile(), type.getSourcePosition()));
+      JsType.Builder typeSpec =
+          JsType.newBuilder()
+              .setName(dfs.getDisplayName(type))
+              .setQualifiedName(dfs.getQualifiedDisplayName(type))
+              .setFilename(dfs.getPath(type).getFileName().toString())
+              .setSource(
+                  linkFactory.createSourceLink(type.getSourceFile(), type.getSourcePosition()));
 
       addDescription(typeSpec);
       addParentLink(typeSpec);
@@ -204,7 +205,8 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
       addInstanceProperties(typeSpec);
 
       JsDoc jsdoc = type.getJsDoc();
-      typeSpec.getTagsBuilder()
+      typeSpec
+          .getTagsBuilder()
           .setIsModule(type.isModuleExports())
           .setIsInterface(type.getType().isInterface())
           .setIsRecord(type.getType().isStructuralInterface())
@@ -225,9 +227,9 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
       NominalType primary = getPrimaryDefinition(type);
       if (primary != type) {
         if (description.getTokenCount() == 0) {
-          description = parser.parseComment(
-              primary.getJsDoc().getBlockComment(),
-              linkFactory.withTypeContext(primary));
+          description =
+              parser.parseComment(
+                  primary.getJsDoc().getBlockComment(), linkFactory.withTypeContext(primary));
         }
       }
 
@@ -239,8 +241,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
     }
 
     private void addParentLink(JsType.Builder spec) {
-      if (type.isModuleExports()
-          && !Module.Type.CLOSURE.equals(type.getModule().get().getType())) {
+      if (type.isModuleExports() && !Module.Type.CLOSURE.equals(type.getModule().get().getType())) {
         return;
       }
 
@@ -314,7 +315,9 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
 
     private void addNestedTypeInfo(JsType.Builder spec) {
       Iterable<NominalType> types =
-          typeRegistry.getNestedTypes(type).stream()
+          typeRegistry
+              .getNestedTypes(type)
+              .stream()
               .sorted(new QualifiedNameComparator())
               .collect(toList());
       for (NominalType child : types) {
@@ -349,11 +352,13 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
     }
 
     private void addTypedefInfo(JsType.Builder spec) {
-      Iterable<NominalType> typedefs = typeRegistry.getNestedTypes(type)
-          .stream()
-          .filter(NominalType::isTypedef)
-          .sorted(new QualifiedNameComparator())
-          .collect(toList());
+      Iterable<NominalType> typedefs =
+          typeRegistry
+              .getNestedTypes(type)
+              .stream()
+              .filter(NominalType::isTypedef)
+              .sorted(new QualifiedNameComparator())
+              .collect(toList());
       for (NominalType typedef : typedefs) {
         String name = getNestedTypeName(typedef);
         indexReference.addStaticProperty(name);
@@ -365,18 +370,17 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
         com.github.jsdossier.proto.Property.Builder builder = spec.addTypeDefBuilder();
 
         builder.setType(
-            expressionParserFactory.create(linkFactory.withTypeContext(typedef))
-                .parse(type));
+            expressionParserFactory.create(linkFactory.withTypeContext(typedef)).parse(type));
 
-        builder.getBaseBuilder()
+        builder
+            .getBaseBuilder()
             .setName(name)
             .setSource(
                 linkFactory.createSourceLink(typedef.getSourceFile(), typedef.getSourcePosition()))
             .setDescription(
                 parser.parseComment(
-                    typedef.getJsDoc().getBlockComment(),
-                    linkFactory.withTypeContext(typedef)));
-        if (JSDocInfo.Visibility.PUBLIC  != visibility) {
+                    typedef.getJsDoc().getBlockComment(), linkFactory.withTypeContext(typedef)));
+        if (JSDocInfo.Visibility.PUBLIC != visibility) {
           Protos.setVisibility(builder.getBaseBuilder().getVisibilityBuilder(), visibility);
         }
 
@@ -428,8 +432,12 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
 
       // TODO: should not be using Node here.
       Node fakeNode = fakeNodeForType(type);
-      FunctionType mainFn = checkNotNull(type.getType().toMaybeFunctionType(),
-          "Expected %s to be a function: %s", type.getName(), type.getType());
+      FunctionType mainFn =
+          checkNotNull(
+              type.getType().toMaybeFunctionType(),
+              "Expected %s to be a function: %s",
+              type.getName(),
+              type.getType());
       spec.setMainFunction(
           typeInspector.getFunctionData(getBasename(type), mainFn, fakeNode, context, docs));
     }
@@ -440,7 +448,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
       spec.addAllSubtype(typeInspector.getSubtypes());
 
       List<NamedType> hierarchy = typeInspector.getTypeHierarchy();
-      spec.addAllExtendedType(skip(hierarchy, 1));  // First entry is always the type itself.
+      spec.addAllExtendedType(skip(hierarchy, 1)); // First entry is always the type itself.
 
       spec.addAllKnownAlias(typeInspector.getKnownAliases());
       NamedType aliasedType = typeInspector.getAliasedType();
@@ -456,11 +464,13 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
       JSType elementType = ((EnumType) type.getType()).getElementsType();
       JSDocInfo.Visibility visibility = typeRegistry.getVisibility(type);
 
-      Enumeration.Builder enumBuilder = spec.getEnumerationBuilder()
-          .setType(
-              expressionParserFactory.create(linkFactory)
-                  .parse(elementType.toMaybeEnumElementType().getPrimitiveType()));
-      if (JSDocInfo.Visibility.PUBLIC  != visibility) {
+      Enumeration.Builder enumBuilder =
+          spec.getEnumerationBuilder()
+              .setType(
+                  expressionParserFactory
+                      .create(linkFactory)
+                      .parse(elementType.toMaybeEnumElementType().getPrimitiveType()));
+      if (JSDocInfo.Visibility.PUBLIC != visibility) {
         Protos.setVisibility(enumBuilder.getVisibilityBuilder(), visibility);
       }
 
@@ -476,8 +486,8 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
         Node node = property.getNode();
         JSDocInfo valueInfo = node == null ? null : node.getJSDocInfo();
 
-        Enumeration.Value.Builder valueBuilder = enumBuilder.addValueBuilder()
-            .setName(property.getName());
+        Enumeration.Value.Builder valueBuilder =
+            enumBuilder.addValueBuilder().setName(property.getName());
 
         if (valueInfo != null) {
           JsDoc valueJsDoc = JsDoc.from(valueInfo);
@@ -537,9 +547,10 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
       // Do not include the property in the search index if the parent type is an alias,
       // the property is inherited from another type, or the property overrides a parent
       // property but does not provide a comment of its own.
-      if (!spec.hasAliasedType() && !base.hasDefinedBy()
+      if (!spec.hasAliasedType()
+          && !base.hasDefinedBy()
           && (!base.hasOverrides()
-          || (base.hasDescription() && base.getDescription().getTokenCount() > 0))) {
+              || (base.hasDescription() && base.getDescription().getTokenCount() > 0))) {
         indexReference.addInstanceProperty(base.getName());
       }
     }

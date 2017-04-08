@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier;
 
@@ -49,7 +49,6 @@ import com.google.javascript.rhino.jstype.UnionType;
 import com.google.javascript.rhino.jstype.Visitor;
 import java.util.ArrayDeque;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -58,9 +57,7 @@ import java.util.Set;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 
-/**
- * Parses JS type expressions into Soy-friendly comment objects.
- */
+/** Parses JS type expressions into Soy-friendly comment objects. */
 @AutoFactory
 final class TypeExpressionParser {
 
@@ -93,9 +90,7 @@ final class TypeExpressionParser {
     return parser.parse(type);
   }
 
-  /**
-   * A {@link JSType} visitor that converts the type into a type expression.
-   */
+  /** A {@link JSType} visitor that converts the type into a type expression. */
   private class Parser implements Visitor<Void> {
 
     private final TypeExpression.Builder expression = TypeExpression.newBuilder();
@@ -109,13 +104,12 @@ final class TypeExpressionParser {
       return expression.build();
     }
 
-
     @Nullable
     @CheckReturnValue
     private NominalType resolve(JSType type) {
-      Collection<NominalType> types = typeRegistry.getTypes(type);  // Exact check first.
+      Collection<NominalType> types = typeRegistry.getTypes(type); // Exact check first.
       if (types.isEmpty()) {
-        types = typeRegistry.findTypes(type);  // Slow equivalence check next.
+        types = typeRegistry.findTypes(type); // Slow equivalence check next.
       }
       if (types.isEmpty()) {
         return null;
@@ -219,9 +213,7 @@ final class TypeExpressionParser {
     @Override
     public Void caseFunctionType(FunctionType type) {
       if ("Function".equals(type.getReferenceName())) {
-        currentExpression()
-            .getNamedTypeBuilder()
-            .setName("Function");
+        currentExpression().getNamedTypeBuilder().setName("Function");
         return null;
       }
 
@@ -250,8 +242,7 @@ final class TypeExpressionParser {
         }
 
         if (node.getJSType().isUnionType()) {
-          caseUnionType((UnionType) node.getJSType(),
-              node.isVarArgs() || node.isOptionalArg());
+          caseUnionType((UnionType) node.getJSType(), node.isVarArgs() || node.isOptionalArg());
         } else {
           node.getJSType().visit(this);
         }
@@ -305,8 +296,8 @@ final class TypeExpressionParser {
         com.github.jsdossier.proto.NamedType.Builder namedType = createNamedType(type);
 
         if (namedType == null && type.isEnumType()) {
-          namedType = com.github.jsdossier.proto.NamedType.newBuilder()
-              .setName(type.getDisplayName());
+          namedType =
+              com.github.jsdossier.proto.NamedType.newBuilder().setName(type.getDisplayName());
         }
 
         if (namedType != null) {
@@ -322,9 +313,8 @@ final class TypeExpressionParser {
 
     private void caseInstanceType(ObjectType type) {
       NominalType nominalType = resolve(type.getConstructor());
-      String displayName = nominalType == null
-          ? type.getReferenceName()
-          : dfs.getDisplayName(nominalType);
+      String displayName =
+          nominalType == null ? type.getReferenceName() : dfs.getDisplayName(nominalType);
       caseInstanceType(displayName, type);
     }
 
@@ -357,12 +347,13 @@ final class TypeExpressionParser {
     }
 
     private void caseRecordType(final ObjectType type) {
-      Iterable<Property> properties = type.getOwnPropertyNames()
-          .stream()
-          .map(type::getOwnSlot)
-          .filter(input -> input != null && !input.getType().isNoType())
-          .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
-          .collect(toList());
+      Iterable<Property> properties =
+          type.getOwnPropertyNames()
+              .stream()
+              .map(type::getOwnSlot)
+              .filter(input -> input != null && !input.getType().isNoType())
+              .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
+              .collect(toList());
 
       RecordType.Builder recordType = currentExpression().getRecordTypeBuilder();
       for (Property property : properties) {
@@ -394,7 +385,8 @@ final class TypeExpressionParser {
       if (SafeUrls.fromProto(namedType.getLink().getHref()).getSafeUrlString().isEmpty()) {
         // If there is no href, we were not able to resolve the type, so assume it is
         // nullable by default.
-        currentExpression().getUnionTypeBuilder()
+        currentExpression()
+            .getUnionTypeBuilder()
             .addType(TypeExpression.newBuilder().setNamedType(namedType))
             .addType(NULL_TYPE);
       } else {
@@ -409,7 +401,7 @@ final class TypeExpressionParser {
     }
 
     @Override
-    public Void caseNumberType () {
+    public Void caseNumberType() {
       appendNativeType("number");
       return null;
     }
@@ -494,22 +486,23 @@ final class TypeExpressionParser {
   }
 
   private static final Ordering<TypeExpression> UNION_ORDERING =
-      Ordering.from((o1, o2) -> {
-        if (o1.equals(o2)) {
-          return 0;
-        }
-        if (o1.getAnyType() || o2.getAnyType()) {
-          return o1.getAnyType() ? 1 : -1;
-        }
-        if (o1.getVoidType() || o2.getVoidType()) {
-          return o1.getVoidType() ? 1 : -1;
-        }
-        if (o1.getNullType() || o2.getNullType()) {
-          return o1.getNullType() ? 1 : -1;
-        }
-        if (o1.getUnknownType() || o2.getUnknownType()) {
-          return o1.getUnknownType() ? 1 : -1;
-        }
-        return 0;
-      });
+      Ordering.from(
+          (o1, o2) -> {
+            if (o1.equals(o2)) {
+              return 0;
+            }
+            if (o1.getAnyType() || o2.getAnyType()) {
+              return o1.getAnyType() ? 1 : -1;
+            }
+            if (o1.getVoidType() || o2.getVoidType()) {
+              return o1.getVoidType() ? 1 : -1;
+            }
+            if (o1.getNullType() || o2.getNullType()) {
+              return o1.getNullType() ? 1 : -1;
+            }
+            if (o1.getUnknownType() || o2.getUnknownType()) {
+              return o1.getUnknownType() ? 1 : -1;
+            }
+            return 0;
+          });
 }

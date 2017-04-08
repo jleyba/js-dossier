@@ -12,9 +12,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Function for sanitize a relative URL.
- */
+/** Function for sanitize a relative URL. */
 @Singleton
 final class SanitizeHtmlFunction implements SoyJsSrcFunction {
   @Inject
@@ -33,8 +31,7 @@ final class SanitizeHtmlFunction implements SoyJsSrcFunction {
   @Override
   public JsExpr computeForJsSrc(List<JsExpr> args) {
     JsExpr arg0 = args.get(0);
-    return new JsExpr(
-        "dossier.soyplugins.sanitizeHtml(" + arg0.getText() + ")", Integer.MAX_VALUE);
+    return new JsExpr("dossier.soyplugins.sanitizeHtml(" + arg0.getText() + ")", Integer.MAX_VALUE);
   }
 
   @Override

@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier;
 
@@ -25,19 +25,15 @@ import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.javascript.jscomp.CompilerOptions;
+import java.nio.file.FileSystem;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.nio.file.FileSystem;
-
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-
-/**
- * Tests for resolving aliases for types defined within an ES6 module.
- */
+/** Tests for resolving aliases for types defined within an ES6 module. */
 @RunWith(JUnit4.class)
 public final class TypeContextEs6InternalAliasTest {
 
@@ -47,14 +43,15 @@ public final class TypeContextEs6InternalAliasTest {
 
   @BeforeClass
   public static void classSetup() {
-    TestData data = GuiceRule.builder(new Object())
-        .setOutputDir("out")
-        .setSourcePrefix("src")
-        .setModulePrefix("src/modules")
-        .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
-        .build()
-        .createInjector()
-        .getInstance(TestData.class);
+    TestData data =
+        GuiceRule.builder(new Object())
+            .setOutputDir("out")
+            .setSourcePrefix("src")
+            .setModulePrefix("src/modules")
+            .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
+            .build()
+            .createInjector()
+            .getInstance(TestData.class);
 
     data.util.compile(
         createSourceFile(
@@ -67,9 +64,7 @@ public final class TypeContextEs6InternalAliasTest {
             "import {External as BB} from './foo';",
             "export {BB as ForwardExternal}",
             "export class B extends BB {}"),
-        createSourceFile(
-            data.fs.getPath("src/modules/baz.js"),
-            "export class C {}"));
+        createSourceFile(data.fs.getPath("src/modules/baz.js"), "export class C {}"));
 
     typeRegistry = data.typeRegistry;
     context = data.context;

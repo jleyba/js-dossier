@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
- 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
- 
-   http://www.apache.org/licenses/LICENSE-2.0
- 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Copyright 2013-2016 Jason Leyba
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier;
 
@@ -54,11 +54,7 @@ final class ConfigModule extends AbstractModule {
   private final Path outputDir;
   private final Scope documentationScope;
 
-  ConfigModule(
-      Flags flags,
-      Config config,
-      Path outputDir,
-      Scope documentationScope) {
+  ConfigModule(Flags flags, Config config, Path outputDir, Scope documentationScope) {
     this.flags = flags;
     this.config = config;
     this.outputDir = outputDir;
@@ -74,20 +70,21 @@ final class ConfigModule extends AbstractModule {
     bindConstant().annotatedWith(Annotations.NumThreads.class).to(flags.numThreads);
 
     bind(PrintStream.class).annotatedWith(Stderr.class).toInstance(System.err);
-    bind(PrintStream.class).annotatedWith(Stdout.class).toInstance(
-        new PrintStream(ByteStreams.nullOutputStream()));
+    bind(PrintStream.class)
+        .annotatedWith(Stdout.class)
+        .toInstance(new PrintStream(ByteStreams.nullOutputStream()));
 
     bind(new Key<Optional<Path>>(Readme.class) {}).toInstance(config.getReadme());
 
-    ImmutableSet<Path> allInputs = ImmutableSet.<Path>builder()
-        .addAll(config.getSources())
-        .addAll(config.getModules())
-        .build();
+    ImmutableSet<Path> allInputs =
+        ImmutableSet.<Path>builder()
+            .addAll(config.getSources())
+            .addAll(config.getModules())
+            .build();
     bind(new Key<ImmutableSet<Path>>(Input.class) {}).toInstance(allInputs);
     bind(new Key<ImmutableSet<Path>>(Externs.class) {}).toInstance(config.getExterns());
     bind(new Key<ImmutableSet<Path>>(Modules.class) {}).toInstance(config.getModules());
-    bind(new Key<ImmutableSet<Path>>(ModuleExterns.class) {})
-        .toInstance(config.getExternModules());
+    bind(new Key<ImmutableSet<Path>>(ModuleExterns.class) {}).toInstance(config.getExternModules());
     bind(new Key<ImmutableSet<MarkdownPage>>() {}).toInstance(config.getCustomPages());
 
     bind(new Key<Optional<Path>>(ModulePrefix.class) {}).toInstance(config.getModulePrefix());

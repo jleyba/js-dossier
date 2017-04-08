@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier;
 
@@ -29,9 +29,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-/**
- * Renders a single source file in the output tree.
- */
+/** Renders a single source file in the output tree. */
 @AutoFactory
 final class RenderSourceFileTask implements RenderTask {
 
@@ -58,19 +56,20 @@ final class RenderSourceFileTask implements RenderTask {
 
   @Override
   public List<Path> call() throws IOException {
-    String displayPath = prefix.relativize(path)
-        .toString()
-        .replace(path.getFileSystem().getSeparator(), MODULE_SLASH);
+    String displayPath =
+        prefix
+            .relativize(path)
+            .toString()
+            .replace(path.getFileSystem().getSeparator(), MODULE_SLASH);
 
-    SourceFile file = SourceFile.newBuilder()
-        .setBaseName(path.getFileName().toString())
-        .setPath(displayPath)
-        .addAllLines(readAllLines(path, Charsets.UTF_8))
-        .build();
+    SourceFile file =
+        SourceFile.newBuilder()
+            .setBaseName(path.getFileName().toString())
+            .setPath(displayPath)
+            .addAllLines(readAllLines(path, Charsets.UTF_8))
+            .build();
 
-    PageData page = PageData.newBuilder()
-        .setFile(file)
-        .build();
+    PageData page = PageData.newBuilder().setFile(file).build();
 
     Path htmlPath = dfs.getPath(path);
     Path jsonPath = dfs.getJsonPath(htmlPath);

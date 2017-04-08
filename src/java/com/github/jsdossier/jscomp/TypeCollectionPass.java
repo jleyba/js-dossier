@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier.jscomp;
 
@@ -61,9 +61,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
 
-/**
- * Compiler pass responsible for collecting the types to be documented.
- */
+/** Compiler pass responsible for collecting the types to be documented. */
 public final class TypeCollectionPass implements CompilerPass {
 
   private static final String INTERNAL_NAMESPACE_VAR = "$jscomp";
@@ -171,21 +169,80 @@ public final class TypeCollectionPass implements CompilerPass {
       return null;
     }
 
-    @Override public Object caseProxyObjectType(ProxyObjectType type) { return null; }
-    @Override public Object caseNoType(NoType type) { return null; }
-    @Override public Object caseEnumElementType(EnumElementType type) { return null; }
-    @Override public Object caseAllType() { return null; }
-    @Override public Object caseBooleanType() { return null; }
-    @Override public Object caseNoObjectType() { return null; }
-    @Override public Object caseUnknownType() { return null; }
-    @Override public Object caseNullType() { return null; }
-    @Override public Object caseNamedType(NamedType type) { return null; }
-    @Override public Object caseNumberType() { return null; }
-    @Override public Object caseStringType() { return null; }
-    @Override public Object caseVoidType() { return null; }
-    @Override public Object caseUnionType(UnionType type) { return null; }
-    @Override public Object caseTemplatizedType(TemplatizedType type) { return null; }
-    @Override public Object caseTemplateType(TemplateType templateType) { return null; }
+    @Override
+    public Object caseProxyObjectType(ProxyObjectType type) {
+      return null;
+    }
+
+    @Override
+    public Object caseNoType(NoType type) {
+      return null;
+    }
+
+    @Override
+    public Object caseEnumElementType(EnumElementType type) {
+      return null;
+    }
+
+    @Override
+    public Object caseAllType() {
+      return null;
+    }
+
+    @Override
+    public Object caseBooleanType() {
+      return null;
+    }
+
+    @Override
+    public Object caseNoObjectType() {
+      return null;
+    }
+
+    @Override
+    public Object caseUnknownType() {
+      return null;
+    }
+
+    @Override
+    public Object caseNullType() {
+      return null;
+    }
+
+    @Override
+    public Object caseNamedType(NamedType type) {
+      return null;
+    }
+
+    @Override
+    public Object caseNumberType() {
+      return null;
+    }
+
+    @Override
+    public Object caseStringType() {
+      return null;
+    }
+
+    @Override
+    public Object caseVoidType() {
+      return null;
+    }
+
+    @Override
+    public Object caseUnionType(UnionType type) {
+      return null;
+    }
+
+    @Override
+    public Object caseTemplatizedType(TemplatizedType type) {
+      return null;
+    }
+
+    @Override
+    public Object caseTemplateType(TemplateType templateType) {
+      return null;
+    }
   }
 
   private class TypeCollector implements Visitor<Void> {
@@ -265,7 +322,7 @@ public final class TypeCollectionPass implements CompilerPass {
         JSDocInfo info = var.getJSDocInfo();
 
         if (type == null) {
-          if (info  != null && info.getTypedefType() != null) {
+          if (info != null && info.getTypedefType() != null) {
             type = compiler.getTypeRegistry().getNativeType(JSTypeNative.NO_TYPE);
           } else {
             continue;
@@ -352,14 +409,15 @@ public final class TypeCollectionPass implements CompilerPass {
           continue;
         }
 
-        NominalType nominalType = NominalType.builder()
-            .setName(name)
-            .setType(type)
-            .setJsDoc(info)
-            .setSourceFile(path)
-            .setSourcePosition(Position.of(node.getLineno(), node.getCharno()))
-            .setModule(module)
-            .build();
+        NominalType nominalType =
+            NominalType.builder()
+                .setName(name)
+                .setType(type)
+                .setJsDoc(info)
+                .setSourceFile(path)
+                .setSourcePosition(Position.of(node.getLineno(), node.getCharno()))
+                .setModule(module)
+                .build();
 
         recordType(nominalType);
       }
@@ -426,8 +484,10 @@ public final class TypeCollectionPass implements CompilerPass {
 
       Module module = typeRegistry.getModule(path);
       if (module.getHasLegacyNamespace()) {
-        verify(module.getType() == Type.CLOSURE,
-            "legacy namespace on non-closure module: %s", module.getOriginalName());
+        verify(
+            module.getType() == Type.CLOSURE,
+            "legacy namespace on non-closure module: %s",
+            module.getOriginalName());
         verify(module.getOriginalName().equals(module.getId()));
         return Optional.of(module);
       }
@@ -535,14 +595,15 @@ public final class TypeCollectionPass implements CompilerPass {
           return;
         }
 
-        addType(NominalType.builder()
-            .setName(name)
-            .setModule(module)
-            .setJsDoc(jsdoc)
-            .setType(property.getType())
-            .setSourceFile(inputFs.getPath(node.getSourceFileName()))
-            .setSourcePosition(Position.of(node.getLineno(), node.getCharno()))
-            .build());
+        addType(
+            NominalType.builder()
+                .setName(name)
+                .setModule(module)
+                .setJsDoc(jsdoc)
+                .setType(property.getType())
+                .setSourceFile(inputFs.getPath(node.getSourceFileName()))
+                .setSourcePosition(Position.of(node.getLineno(), node.getCharno()))
+                .build());
         return;
       }
 
@@ -564,14 +625,15 @@ public final class TypeCollectionPass implements CompilerPass {
         return;
       }
 
-      NominalType nt = NominalType.builder()
-          .setName(name)
-          .setModule(module)
-          .setJsDoc(jsdoc)
-          .setType(propertyType)
-          .setSourceFile(inputFs.getPath(node.getSourceFileName()))
-          .setSourcePosition(Position.of(node.getLineno(), node.getCharno()))
-          .build();
+      NominalType nt =
+          NominalType.builder()
+              .setName(name)
+              .setModule(module)
+              .setJsDoc(jsdoc)
+              .setType(propertyType)
+              .setSourceFile(inputFs.getPath(node.getSourceFileName()))
+              .setSourcePosition(Position.of(node.getLineno(), node.getCharno()))
+              .build();
 
       if (propertyType.isConstructor()) {
         // If jsdoc is present and says this is not a constructor, we've found a
@@ -630,21 +692,80 @@ public final class TypeCollectionPass implements CompilerPass {
       return null;
     }
 
-    @Override public Void caseNoType(NoType type) { return null; }
-    @Override public Void caseEnumElementType(EnumElementType type) { return null; }
-    @Override public Void caseAllType() { return null; }
-    @Override public Void caseBooleanType() { return null; }
-    @Override public Void caseNoObjectType() { return null; }
-    @Override public Void caseUnknownType() { return null; }
-    @Override public Void caseNullType() { return null; }
-    @Override public Void caseNamedType(NamedType type) { return null; }
-    @Override public Void caseProxyObjectType(ProxyObjectType type) { return null; }
-    @Override public Void caseNumberType() { return null; }
-    @Override public Void caseStringType() { return null; }
-    @Override public Void caseVoidType() { return null; }
-    @Override public Void caseUnionType(UnionType type) { return null; }
-    @Override public Void caseTemplatizedType(TemplatizedType type) { return null; }
-    @Override public Void caseTemplateType(TemplateType templateType) { return null; }
+    @Override
+    public Void caseNoType(NoType type) {
+      return null;
+    }
+
+    @Override
+    public Void caseEnumElementType(EnumElementType type) {
+      return null;
+    }
+
+    @Override
+    public Void caseAllType() {
+      return null;
+    }
+
+    @Override
+    public Void caseBooleanType() {
+      return null;
+    }
+
+    @Override
+    public Void caseNoObjectType() {
+      return null;
+    }
+
+    @Override
+    public Void caseUnknownType() {
+      return null;
+    }
+
+    @Override
+    public Void caseNullType() {
+      return null;
+    }
+
+    @Override
+    public Void caseNamedType(NamedType type) {
+      return null;
+    }
+
+    @Override
+    public Void caseProxyObjectType(ProxyObjectType type) {
+      return null;
+    }
+
+    @Override
+    public Void caseNumberType() {
+      return null;
+    }
+
+    @Override
+    public Void caseStringType() {
+      return null;
+    }
+
+    @Override
+    public Void caseVoidType() {
+      return null;
+    }
+
+    @Override
+    public Void caseUnionType(UnionType type) {
+      return null;
+    }
+
+    @Override
+    public Void caseTemplatizedType(TemplatizedType type) {
+      return null;
+    }
+
+    @Override
+    public Void caseTemplateType(TemplateType templateType) {
+      return null;
+    }
   }
 
   private static boolean isTheObjectType(JSType type) {
@@ -659,14 +780,14 @@ public final class TypeCollectionPass implements CompilerPass {
   private static boolean isPrimitive(JSType type) {
     return !type.isEnumElementType()
         && (type.isBooleanValueType()
-        || type.isBooleanObjectType()
-        || type.isNumber()
-        || type.isNumberValueType()
-        || type.isNumberObjectType()
-        || type.isString()
-        || type.isStringObjectType()
-        || type.isStringValueType()
-        || type.isVoidType()
-        || type.isArrayType());
+            || type.isBooleanObjectType()
+            || type.isNumber()
+            || type.isNumberValueType()
+            || type.isNumberObjectType()
+            || type.isString()
+            || type.isStringObjectType()
+            || type.isStringValueType()
+            || type.isVoidType()
+            || type.isArrayType());
   }
 }

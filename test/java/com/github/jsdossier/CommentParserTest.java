@@ -1,18 +1,18 @@
 /*
- Copyright 2013-2016 Jason Leyba
+Copyright 2013-2016 Jason Leyba
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package com.github.jsdossier;
 
@@ -41,13 +41,14 @@ import org.junit.runners.JUnit4;
 public class CommentParserTest {
 
   @Rule
-  public GuiceRule guice = GuiceRule.builder(this)
-      .setOutputDir("out")
-      .setSourcePrefix("source")
-      .setModulePrefix("source/modules")
-      .setModules("one.js", "two.js", "three.js", "sub/index.js", "sub/foo.js")
-      .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
-      .build();
+  public GuiceRule guice =
+      GuiceRule.builder(this)
+          .setOutputDir("out")
+          .setSourcePrefix("source")
+          .setModulePrefix("source/modules")
+          .setModules("one.js", "two.js", "three.js", "sub/index.js", "sub/foo.js")
+          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
+          .build();
 
   @Inject @Input FileSystem fs;
   @Inject CompilerUtil util;
@@ -65,8 +66,8 @@ public class CommentParserTest {
   @Test
   public void parseCommentWithUnterminatedInlineTaglet() {
     Comment comment = parser.parseComment("Hello {@code world", linkFactory);
-    assertHtmlText(Iterables.getOnlyElement(comment.getTokenList()),
-        "<p>Hello {&#64;code world</p>");
+    assertHtmlText(
+        Iterables.getOnlyElement(comment.getTokenList()), "<p>Hello {&#64;code world</p>");
   }
 
   @Test
@@ -134,68 +135,57 @@ public class CommentParserTest {
 
   @Test
   public void parseCommentWithTypeLinks() {
-    util.compile(fs.getPath("/path/to/foo"),
-        "goog.provide('foo');",
-        "foo.Bar = class {};");
+    util.compile(fs.getPath("/path/to/foo"), "goog.provide('foo');", "foo.Bar = class {};");
 
     Comment comment = parser.parseComment("A link to {@link foo.Bar foo}.", linkFactory);
     assertEquals(1, comment.getTokenCount());
-    assertHtmlText(comment.getToken(0),
-        "<p>A link to <a href=\"foo.Bar.html\"><code>foo</code></a>.</p>");
+    assertHtmlText(
+        comment.getToken(0), "<p>A link to <a href=\"foo.Bar.html\"><code>foo</code></a>.</p>");
   }
 
   @Test
   public void parseCommentWithTypeLinkWhereLinkTextStartsOnNewline() {
-    util.compile(fs.getPath("/path/to/foo"),
-        "goog.provide('foo');",
-        "foo.Bar = class {};");
+    util.compile(fs.getPath("/path/to/foo"), "goog.provide('foo');", "foo.Bar = class {};");
 
     Comment comment = parser.parseComment("A link to {@link foo.Bar\nfoo}.", linkFactory);
     assertEquals(1, comment.getTokenCount());
-    assertHtmlText(comment.getToken(0),
-        "<p>A link to <a href=\"foo.Bar.html\"><code>foo</code></a>.</p>");
+    assertHtmlText(
+        comment.getToken(0), "<p>A link to <a href=\"foo.Bar.html\"><code>foo</code></a>.</p>");
   }
 
   @Test
   public void parseCommentWithTypeLinkWithTextSpanningMultipleLines() {
-    util.compile(fs.getPath("/path/to/foo"),
-        "goog.provide('foo');",
-        "foo.Bar = class {};");
+    util.compile(fs.getPath("/path/to/foo"), "goog.provide('foo');", "foo.Bar = class {};");
 
     Comment comment = parser.parseComment("A link to {@link foo.Bar foo\nbar}.", linkFactory);
     assertEquals(1, comment.getTokenCount());
-    assertHtmlText(comment.getToken(0),
+    assertHtmlText(
+        comment.getToken(0),
         "<p>A link to <a href=\"foo.Bar.html\"><code>foo\nbar</code></a>.</p>");
   }
 
   @Test
   public void parseCommentWithPlainTypeLinks() {
-    util.compile(fs.getPath("/path/to/foo"),
-        "goog.provide('foo');",
-        "foo.Bar = class {};");
+    util.compile(fs.getPath("/path/to/foo"), "goog.provide('foo');", "foo.Bar = class {};");
 
     Comment comment = parser.parseComment("A link to {@linkplain foo.Bar foo}.", linkFactory);
     assertEquals(1, comment.getTokenCount());
-    assertHtmlText(comment.getToken(0),
-        "<p>A link to <a href=\"foo.Bar.html\">foo</a>.</p>");
+    assertHtmlText(comment.getToken(0), "<p>A link to <a href=\"foo.Bar.html\">foo</a>.</p>");
   }
 
   @Test
   public void parseCommentWithPropertyLink() {
-    util.compile(fs.getPath("/path/to/foo"),
-        "goog.provide('foo');",
-        "foo.Bar = class {baz(){}};");
+    util.compile(fs.getPath("/path/to/foo"), "goog.provide('foo');", "foo.Bar = class {baz(){}};");
 
     Comment comment = parser.parseComment("A link to {@linkplain foo.Bar#baz baz}.", linkFactory);
     assertEquals(1, comment.getTokenCount());
-    assertHtmlText(comment.getToken(0),
-        "<p>A link to <a href=\"foo.Bar.html#baz\">baz</a>.</p>");
+    assertHtmlText(comment.getToken(0), "<p>A link to <a href=\"foo.Bar.html#baz\">baz</a>.</p>");
   }
 
   @Test
   public void doesNotTreatUnderscoresWithinAWordAsEmphasisBlocks() {
-    Comment comment = parser.parseComment(
-        "Description references CONSTANT_ENUM_VALUE.", linkFactory);
+    Comment comment =
+        parser.parseComment("Description references CONSTANT_ENUM_VALUE.", linkFactory);
     assertEquals(1, comment.getTokenCount());
     assertHtmlText(comment.getToken(0), "<p>Description references CONSTANT_ENUM_VALUE.</p>");
   }
@@ -221,18 +211,17 @@ public class CommentParserTest {
         "foo.Bar = function() {};");
 
     NominalType type = checkNotNull(typeRegistry.getType("foo.Bar"));
-    Comment comment = parser.parseComment(
-        type.getJsDoc().getBlockComment(),
-        linkFactory);
+    Comment comment = parser.parseComment(type.getJsDoc().getBlockComment(), linkFactory);
     assertEquals(1, comment.getTokenCount());
-    assertHtmlText(comment.getToken(0),
-        "<p>This is a class comment.</p>\n" +
-            "<ul>" +
-            "<li>with\nlist</li>" +
-            "<li>items</li>" +
-            "</ul>\n<p>And a</p>\n" +
-            "<pre><code> code block\n" +
-            "</code></pre>");
+    assertHtmlText(
+        comment.getToken(0),
+        "<p>This is a class comment.</p>\n"
+            + "<ul>"
+            + "<li>with\nlist</li>"
+            + "<li>items</li>"
+            + "</ul>\n<p>And a</p>\n"
+            + "<pre><code> code block\n"
+            + "</code></pre>");
   }
 
   @Test
@@ -255,18 +244,17 @@ public class CommentParserTest {
         "foo.Bar = function() {};");
 
     NominalType type = checkNotNull(typeRegistry.getType("foo.Bar"));
-    Comment comment = parser.parseComment(
-        type.getJsDoc().getBlockComment(),
-        linkFactory);
+    Comment comment = parser.parseComment(type.getJsDoc().getBlockComment(), linkFactory);
     assertEquals(1, comment.getTokenCount());
-    assertHtmlText(comment.getToken(0),
-        "<p>This is a class comment.</p>\n" +
-            "<ul>" +
-            "<li>This is a list item</li>" +
-            "</ul>\n" +
-            "<p>and this</p>\n" +
-            "<pre><code>is a code block\n" +
-            "</code></pre>");
+    assertHtmlText(
+        comment.getToken(0),
+        "<p>This is a class comment.</p>\n"
+            + "<ul>"
+            + "<li>This is a list item</li>"
+            + "</ul>\n"
+            + "<p>and this</p>\n"
+            + "<pre><code>is a code block\n"
+            + "</code></pre>");
   }
 
   @Test
@@ -285,40 +273,42 @@ public class CommentParserTest {
 
   @Test
   public void requiresBlankLineBetweenParagraphsBeforeOpeningACodeBlock() {
-    Comment comment = parser.parseComment(
-        "A promise for a\n    file path.\n\n    code now", linkFactory);
+    Comment comment =
+        parser.parseComment("A promise for a\n    file path.\n\n    code now", linkFactory);
     assertEquals(1, comment.getTokenCount());
-    assertHtmlText(comment.getToken(0),
-        "<p>A promise for a\nfile path.</p>\n" +
-            "<pre><code>code now\n" +
-            "</code></pre>");
+    assertHtmlText(
+        comment.getToken(0),
+        "<p>A promise for a\nfile path.</p>\n" + "<pre><code>code now\n" + "</code></pre>");
   }
 
   @Test
   public void parsesCommentWithMarkdownTable() {
-    Comment comment = parser.parseComment(
-        "Leading paragraph.\n" +
-            "\n" +
-            "|  a  |  b  |  c  |\n" +
-            "| --- | --- | --- |\n" +
-            "|  d  |  e  |  f  |\n",
-        linkFactory);
+    Comment comment =
+        parser.parseComment(
+            "Leading paragraph.\n"
+                + "\n"
+                + "|  a  |  b  |  c  |\n"
+                + "| --- | --- | --- |\n"
+                + "|  d  |  e  |  f  |\n",
+            linkFactory);
     assertEquals(1, comment.getTokenCount());
-    assertHtmlText(comment.getToken(0),
-        "<p>Leading paragraph.</p>\n" +
-            "<table>" +
-            "<thead>" +
-            "<tr><th>a</th><th>b</th><th>c</th></tr>" +
-            "</thead>" +
-            "<tbody>" +
-            "<tr><td>d</td><td>e</td><td>f</td></tr>" +
-            "</tbody>" +
-            "</table>");
+    assertHtmlText(
+        comment.getToken(0),
+        "<p>Leading paragraph.</p>\n"
+            + "<table>"
+            + "<thead>"
+            + "<tr><th>a</th><th>b</th><th>c</th></tr>"
+            + "</thead>"
+            + "<tbody>"
+            + "<tr><td>d</td><td>e</td><td>f</td></tr>"
+            + "</tbody>"
+            + "</table>");
   }
 
   @Test
   public void parseCommentInContextOfASpecificType() {
-    util.compile(fs.getPath("one.js"),
+    util.compile(
+        fs.getPath("one.js"),
         "goog.provide('a.b.c.d');",
         "goog.scope(function() {",
         "  const abcd = a.b.c.d;",
@@ -329,18 +319,19 @@ public class CommentParserTest {
         "  abcd.Clazz = class extends abcd.IFace {};",
         "});");
     NominalType type = typeRegistry.getType("a.b.c.d.Clazz");
-    Comment comment = parser.parseComment(
-        type.getJsDoc().getBlockComment(),
-        linkFactory.withTypeContext(type));
+    Comment comment =
+        parser.parseComment(type.getJsDoc().getBlockComment(), linkFactory.withTypeContext(type));
     assertEquals(1, comment.getTokenCount());
-    assertHtmlText(comment.getToken(0),
+    assertHtmlText(
+        comment.getToken(0),
         "<p>A <a href=\"a.b.c.d.IFace.html\"><code>abcd.IFace</code></a> implementation.</p>");
   }
 
   @Test
   @Bug(48)
   public void parseCommentWithMarkdownList() {
-    util.compile(fs.getPath("one.js"),
+    util.compile(
+        fs.getPath("one.js"),
         "/**",
         " * * One",
         " * * Two",
@@ -349,9 +340,8 @@ public class CommentParserTest {
         " */",
         "var One = function() {};");
     NominalType type = typeRegistry.getType("One");
-    Comment comment = parser.parseComment(
-        type.getJsDoc().getBlockComment(),
-        linkFactory.withTypeContext(type));
+    Comment comment =
+        parser.parseComment(type.getJsDoc().getBlockComment(), linkFactory.withTypeContext(type));
     assertEquals(1, comment.getTokenCount());
     assertHtmlText(comment.getToken(0), "<ul><li>One</li><li>Two</li></ul>");
   }
