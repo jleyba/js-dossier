@@ -89,20 +89,20 @@ maven_jar(
 
 maven_jar(
     name = "dossier_guice",
-    artifact = "com.google.inject:guice:3.0",
-    sha1 = "9d84f15fe35e2c716a02979fb62f50a29f38aefa",
+    artifact = "com.google.inject:guice:4.1.0",
+    sha1 = "eeb69005da379a10071aa4948c48d89250febb07",
 )
 
 maven_jar(
     name = "dossier_guice_assistedinject",
-    artifact = "com.google.inject.extensions:guice-assistedinject:3.0",
-    sha1 = "544449ddb19f088dcde44f055d30a08835a954a7",
+    artifact = "com.google.inject.extensions:guice-assistedinject:4.1.0",
+    sha1 = "af799dd7e23e6fe8c988da12314582072b07edcb",
 )
 
 maven_jar(
     name = "dossier_guice_multibindings",
-    artifact = "com.google.inject.extensions:guice-multibindings:3.0",
-    sha1 = "5e670615a927571234df68a8b1fe1a16272be555",
+    artifact = "com.google.inject.extensions:guice-multibindings:4.1.0",
+    sha1 = "3b27257997ac51b0f8d19676f1ea170427e86d51",
 )
 
 maven_jar(

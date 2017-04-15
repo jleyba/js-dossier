@@ -1,3 +1,12 @@
+# v.next
+
+## Changes
+
+-  Upgraded dependencies:
+   +  com.google.inject:guice:4.1.0
+   +  com.google.inject.extensions:guice-assistedinject:4.1.0
+   +  com.google.inject.extensions:guice-multibindings:4.1.0
+
 # v0.11.1
 
 ## Changes
