@@ -35,8 +35,8 @@ maven_jar(
 
 maven_jar(
     name = "dossier_auto_common",
-    artifact = "com.google.auto:auto-common:0.5",
-    sha1 = "27185563ca9551183fa5379807c3034c0012c8c4",
+    artifact = "com.google.auto:auto-common:0.8",
+    sha1 = "c6f7af0e57b9d69d81b05434ef9f3c5610d498c4",
 )
 
 maven_jar(
@@ -47,8 +47,8 @@ maven_jar(
 
 maven_jar(
     name = "dossier_auto_value",
-    artifact = "com.google.auto.value:auto-value:1.1",
-    sha1 = "f6951c141ea3e89c0f8b01da16834880a1ebf162",
+    artifact = "com.google.auto.value:auto-value:1.4.1",
+    sha1 = "8172ebbd7970188aff304c8a420b9f17168f6f48",
 )
 
 maven_jar(
