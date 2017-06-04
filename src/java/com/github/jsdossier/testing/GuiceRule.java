@@ -18,7 +18,6 @@ package com.github.jsdossier.testing;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import com.github.jsdossier.CompilerModule;
 import com.github.jsdossier.MarkdownPage;
 import com.github.jsdossier.ModuleNamingConvention;
 import com.github.jsdossier.annotations.DocumentationScoped;
@@ -32,6 +31,7 @@ import com.github.jsdossier.annotations.SourcePrefix;
 import com.github.jsdossier.annotations.SourceUrlTemplate;
 import com.github.jsdossier.annotations.Stderr;
 import com.github.jsdossier.annotations.TypeFilter;
+import com.github.jsdossier.jscomp.CompilerModule;
 import com.github.jsdossier.soy.DossierSoyModule;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;

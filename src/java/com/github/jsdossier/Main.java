@@ -27,6 +27,7 @@ import static java.util.stream.Collectors.toList;
 
 import com.github.jsdossier.Annotations.PostRenderingTasks;
 import com.github.jsdossier.Annotations.RenderingTasks;
+import com.github.jsdossier.jscomp.CompilerModule;
 import com.github.jsdossier.jscomp.DossierCommandLineRunner;
 import com.github.jsdossier.jscomp.DossierCompiler;
 import com.github.jsdossier.jscomp.TypeRegistry;

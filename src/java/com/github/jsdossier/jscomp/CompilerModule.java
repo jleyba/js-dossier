@@ -14,14 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.github.jsdossier;
+package com.github.jsdossier.jscomp;
 
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.Modules;
-import com.github.jsdossier.jscomp.AliasTransformListener;
-import com.github.jsdossier.jscomp.DossierCompiler;
-import com.github.jsdossier.jscomp.ProvidedSymbolPass;
-import com.github.jsdossier.jscomp.TypeCollectionPass;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
@@ -40,7 +36,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 /** Defines the bindings for the compiler. */
-public class CompilerModule extends AbstractModule {
+public final class CompilerModule extends AbstractModule {
 
   @Override
   protected void configure() {
