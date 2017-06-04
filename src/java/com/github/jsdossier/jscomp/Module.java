@@ -30,9 +30,9 @@ public abstract class Module {
   /** Returns a new builder. */
   public static Builder builder() {
     return new AutoValue_Module.Builder()
-        .setExportedDocs(ImmutableMap.<String, JSDocInfo>of())
-        .setExportedNames(ImmutableMap.<String, String>of())
-        .setInternalVarDocs(ImmutableMap.<String, JSDocInfo>of())
+        .setExportedDocs(ImmutableMap.of())
+        .setExportedNames(ImmutableMap.of())
+        .setInternalVarDocs(ImmutableMap.of())
         .setHasLegacyNamespace(false);
   }
 
