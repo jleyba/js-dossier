@@ -5,6 +5,7 @@ java_library(
     deps = [
         "//lib/maven:auto_value",
         "//lib/maven:closure_compiler",
+        "//lib/maven:closure_templates",
         "//lib/maven:guava",
         "//lib/maven:guice",
         "//lib/maven:inject",
