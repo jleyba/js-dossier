@@ -133,12 +133,12 @@ final class TypeExpressionParser {
 
       if (Module.Type.NODE.isModuleId(name)) {
         String id = Module.Type.NODE.stripModulePrefix(name);
-        if (nodeLibrary.isModuleId(id)) {
+        if (nodeLibrary.canRequireId(id)) {
           return com.github.jsdossier.proto.NamedType.newBuilder().setName(id);
         }
 
         int index = id.indexOf('.');
-        if (index != 1 && nodeLibrary.isModuleId(id.substring(0, index))) {
+        if (index != 1 && nodeLibrary.canRequireId(id.substring(0, index))) {
           return com.github.jsdossier.proto.NamedType.newBuilder().setName(id);
         }
       }

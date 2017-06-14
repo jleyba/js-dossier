@@ -16,6 +16,8 @@ limitations under the License.
 
 package com.github.jsdossier.jscomp;
 
+import static com.github.jsdossier.jscomp.Module.Type.ES6;
+import static com.github.jsdossier.jscomp.Module.Type.NODE;
 import static com.github.jsdossier.jscomp.Types.getModuleId;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
@@ -42,8 +44,6 @@ import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfoBuilder;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.Token;
-import java.io.IOException;
-import java.io.StringWriter;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -94,7 +94,7 @@ import javax.inject.Inject;
  *   foo$$module$bar.sayHi();
  * </code></pre>
  */
-class NodeModulePass {
+final class NodeModulePass implements DossierCompilerPass {
 
   // NB: The following errors are forbid situations that complicate type checking.
 
@@ -113,6 +113,7 @@ class NodeModulePass {
   private final ImmutableSet<Path> modulePaths;
   private final NodeLibrary nodeLibrary;
 
+  // TODO(jleyba): Use Module.Id.
   private String currentModule = null;
 
   @Inject
@@ -127,22 +128,14 @@ class NodeModulePass {
     this.nodeLibrary = nodeLibrary;
   }
 
-  public void process(DossierCompiler compiler, List<Node> roots) {
-    for (Node root : roots) {
-      CommonJsModuleCallback callback = new CommonJsModuleCallback();
-      traverseEs6(compiler, root, callback);
+  @Override
+  public void process(DossierCompiler compiler, Node root) {
+    if (root.isFromExterns()) {
+      return;
     }
-  }
-
-  @SuppressWarnings("unused")
-  private void printTree(Node n) {
-    StringWriter sw = new StringWriter();
-    try {
-      n.appendStringTree(sw);
-      System.err.println(sw.toString());
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    
+    CommonJsModuleCallback callback = new CommonJsModuleCallback();
+    traverseEs6(compiler, root, callback);
   }
 
   /** Main traversal callback for processing the AST of a CommonJS module. */
@@ -166,7 +159,7 @@ class NodeModulePass {
         if (nodeLibrary.isModulePath(sourceName)) {
           currentModule = nodeLibrary.getIdFromPath(sourceName);
         } else {
-          currentModule = getModuleId(path);
+          currentModule = ES6.newId(path).getCompiledName();
         }
 
         traverseEs6(t.getCompiler(), n, new SplitRequireDeclarations());
@@ -225,7 +218,7 @@ class NodeModulePass {
       googRequireExpr.clear();
       currentModule = null;
 
-      t.getCompiler().reportCodeChange();
+      t.reportCodeChange();
     }
 
     private Node createModuleBody() {
@@ -250,16 +243,25 @@ class NodeModulePass {
       }
 
       for (Node ref : moduleExportRefs) {
-        ref.getParent().replaceChild(ref, name("exports").srcrefTree(ref));
+        Node parent = ref.getParent();
+        if (parent != null) {
+          parent.replaceChild(ref, name("exports").srcrefTree(ref));
+        }
       }
     }
 
     private boolean isTopLevelAssign(Node n) {
-      return n.isAssign() && n.getParent().isExprResult() && n.getParent().getParent().isScript();
+      return n.isAssign()
+          && n.getParent() != null
+          && n.getParent().isExprResult()
+          && n.getGrandparent() != null
+          && n.getGrandparent().isScript();
     }
 
     private boolean isTopLevelAssignLhs(Node n) {
-      return n == n.getParent().getFirstChild() && isTopLevelAssign(n.getParent());
+      return n.getParent() != null
+          && n == n.getParent().getFirstChild()
+          && isTopLevelAssign(n.getParent());
     }
 
     private void visitRequireCall(NodeTraversal t, Node require, Node parent) {
@@ -282,10 +284,10 @@ class NodeModulePass {
                 && !Files.exists(moduleFile.resolveSibling(moduleFile.getFileName() + ".js"))) {
           moduleFile = moduleFile.resolve("index.js");
         }
-        moduleId = getModuleId(moduleFile);
+        moduleId = NODE.newId(moduleFile).getOriginalName();
 
-      } else if (nodeLibrary.isModuleId(modulePath)) {
-        moduleId = nodeLibrary.normalizeModuleId(modulePath);
+      } else if (nodeLibrary.canRequireId(modulePath)) {
+        moduleId = nodeLibrary.normalizeRequireId(modulePath);
       }
 
       if (moduleId != null) {
@@ -302,6 +304,13 @@ class NodeModulePass {
           // compensate, if we have a require statement that is not at the top level, we introduce
           // a hidden variable at the top level that does the actual require. The compiler should
           // always inline the require making this effectively a no-op.
+          //
+          // Example:
+          //    var Foo = require('./foo').Foo;
+          //
+          // Becomes:
+          //    var _some_hidden_name = require('./foo');
+          //    var Foo = _some_hidden_name.Foo;
           if (!parent.isName()) {
             String hiddenName = Types.toInternalVar(moduleId);
 
@@ -322,7 +331,7 @@ class NodeModulePass {
           parent.replaceChild(require, name("module$exports$" + moduleId).srcrefTree(require));
         }
 
-        t.getCompiler().reportCodeChange();
+        t.reportCodeChange();
       }
 
       // Else we have an unrecognized module ID. Do nothing, leaving it to the
@@ -348,20 +357,22 @@ class NodeModulePass {
     }
 
     @Override
-    public void visit(NodeTraversal t, Node n, Node parent) {
+    public void visit(NodeTraversal t, final Node n, final Node parent) {
       if (NodeUtil.isNameDeclaration(n)) {
         RequireDetector detector = new RequireDetector();
         traverseEs6(t.getCompiler(), n, detector);
 
         if (detector.foundRequire) {
           Node addAfter = n;
-          for (Node last = n.getLastChild(); last != n.getFirstChild(); last = n.getLastChild()) {
+          for (Node last = n.getLastChild();
+               last != null && last != n.getFirstChild();
+               last = n.getLastChild()) {
             n.removeChild(last);
 
             Node newDecl = declaration(last, n.getToken()).srcrefTree(last);
-            n.getParent().addChildAfter(newDecl, addAfter);
+            parent.addChildAfter(newDecl, addAfter);
             addAfter = newDecl;
-            t.getCompiler().reportCodeChange();
+            t.reportCodeChange();
           }
         }
       }
@@ -486,8 +497,8 @@ class NodeModulePass {
   }
 
   private static boolean isCall(Node n, String name) {
-    return n.isCall()
-        && n.getFirstChild().matchesQualifiedName(name)
+    return Nodes.isCall(n, name)
+        && n.getSecondChild() != null
         && n.getSecondChild().isString();
   }
 }

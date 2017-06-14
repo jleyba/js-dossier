@@ -62,7 +62,7 @@ public class TypeExpressionParserTest {
           .setSourcePrefix("source")
           .setModulePrefix("source/modules")
           .setModules("one.js", "two.js", "three.js")
-          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
+          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT_2015)
           .build();
 
   @Inject @Input private FileSystem fs;
@@ -234,17 +234,16 @@ public class TypeExpressionParserTest {
   public void moduleContextWillHideGlobalTypeNames() {
     util.compile(
         createSourceFile(fs.getPath("source/global.js"), "class Person {}"),
-        createSourceFile(fs.getPath("source/modules/one.js"), "export class Foo {}"),
         createSourceFile(
-            fs.getPath("source/modules/two.js"),
-            "import {Foo as Person} from './one';",
+            fs.getPath("source/modules/one.js"),
+            "export class Person {}",
             "/**",
             " * @param {!Person} a A person.",
             " * @constructor",
             " */",
             "export function Greeter(a) {}"));
 
-    NominalType type = typeRegistry.getType("module$source$modules$two.Greeter");
+    NominalType type = typeRegistry.getType("module$source$modules$one.Greeter");
     TypeExpressionParser parser =
         parserFactory.create(linkFactoryBuilder.create(type).withTypeContext(type));
 
@@ -253,14 +252,8 @@ public class TypeExpressionParserTest {
     assertThat(expression)
         .isEqualTo(
             TypeExpression.newBuilder()
-                .setNamedType(namedType("Foo", "one.Foo", "one_exports_Foo.html"))
+                .setNamedType(namedType("Person", "one.Person", "one_exports_Person.html"))
                 .build());
-
-    parser = parserFactory.create(linkFactoryBuilder.create(typeRegistry.getType("Person")));
-    expression = parser.parse(jsType);
-    assertThat(expression)
-        .isEqualTo(
-            TypeExpression.newBuilder().setNamedType(namedType("Person", "Person.html")).build());
   }
 
   @Test

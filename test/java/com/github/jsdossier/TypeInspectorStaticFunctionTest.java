@@ -26,6 +26,9 @@ import com.github.jsdossier.proto.Function;
 import com.github.jsdossier.proto.Function.Detail;
 import com.github.jsdossier.proto.Tags;
 import com.github.jsdossier.proto.TypeExpression;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -479,12 +482,13 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
   @Test
   public void doesNotRecordConstructorCallAsStaticFunction() {
     compile(
+        DEFINE_INHERITS,
         "/** @constructor */",
         "var One = function () {};",
         "",
         "/** @constructor @extends {One} */",
         "var Two = function() { One.call(this); };",
-        "goog.inherits(Two, One);");
+        "inherits(Two, One);");
 
     NominalType type = typeRegistry.getType("One");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
@@ -495,24 +499,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
   }
 
   @Test
-  public void doesNotRecordConstructorCallAsStaticFunction_es6_1() {
-    compile(
-        "class One {}",
-        "",
-        "/** @constructor @extends {One} */",
-        "var Two = function() { One.call(this); };",
-        "goog.inherits(Two, One);");
-
-    NominalType type = typeRegistry.getType("One");
-    TypeInspector typeInspector = typeInspectorFactory.create(type);
-    TypeInspector.Report report = typeInspector.inspectType();
-    assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getCompilerConstants()).isEmpty();
-    assertThat(report.getFunctions()).isEmpty();
-  }
-
-  @Test
-  public void doesNotRecordConstructorCallAsStaticFunction_es6_2() {
+  public void doesNotRecordConstructorCallAsStaticFunction_es6() {
     compile(
         "class One {}",
         "",
@@ -538,7 +525,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         "/** Hello, world! */",
         "function greet() {}",
         "exports.greet = greet");
-    NominalType type = typeRegistry.getType("module$exports$module$$src$modules$foo$bar");
+    NominalType type = typeRegistry.getType("module$exports$module$src$modules$foo$bar");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getProperties()).isEmpty();
@@ -549,7 +536,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setBase(
                     BaseProperty.newBuilder()
                         .setName("greet")
-                        .setSource(sourceFile("../../source/modules/foo/bar.js.src.html", 3))
+                        .setSource(sourceFile("../../source/modules/foo/bar.js.src.html", 2))
                         .setDescription(htmlComment("<p>Hello, world!</p>\n")))
                 .build());
   }
@@ -561,7 +548,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         "/** Hello, world! */",
         "function greet() {}",
         "export {greet}");
-    NominalType type = typeRegistry.getType("module$$src$modules$foo$bar");
+    NominalType type = typeRegistry.getType("module$src$modules$foo$bar");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getProperties()).isEmpty();
@@ -593,7 +580,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
             "const greet = require('./bar').greet;",
             "exports.greeting2 = greet;"));
 
-    NominalType type = typeRegistry.getType("module$exports$module$$src$modules$foo$baz");
+    NominalType type = typeRegistry.getType("module$exports$module$src$modules$foo$baz");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getProperties()).isEmpty();
@@ -612,7 +599,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setBase(
                     BaseProperty.newBuilder()
                         .setName("greeting2")
-                        .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 5))
+                        .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 4))
                         .setDescription(htmlComment("<p>Hello, world!</p>\n")))
                 .build());
   }
@@ -631,7 +618,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
             "/** Greet a {@link Person}. */",
             "exports.greet = function() {};"));
 
-    NominalType type = typeRegistry.getType("module$exports$module$$src$modules$foo$bar");
+    NominalType type = typeRegistry.getType("module$exports$module$src$modules$foo$bar");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getProperties()).isEmpty();
@@ -727,7 +714,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         "}",
         "exports.Person = Person;");
 
-    NominalType type = typeRegistry.getType("module$exports$module$$src$modules$foo$bar.Person");
+    NominalType type = typeRegistry.getType("module$exports$module$src$modules$foo$bar.Person");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getProperties()).isEmpty();
@@ -773,7 +760,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         "}",
         "export {Person};");
 
-    NominalType type = typeRegistry.getType("module$$src$modules$foo$bar.Person");
+    NominalType type = typeRegistry.getType("module$src$modules$foo$bar.Person");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getProperties()).isEmpty();
@@ -809,7 +796,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
             "/** @param {./bar.X} x an object. */",
             "export function go(x) {}"));
 
-    NominalType type = typeRegistry.getType("module$$src$modules$foo$baz");
+    NominalType type = typeRegistry.getType("module$src$modules$foo$baz");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getProperties()).isEmpty();
@@ -832,7 +819,8 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
   }
 
   @Test
-  public void typeExpressionsCanReferToAnotherModuleByRelativePath_nodeModules() {
+  public void typeExpressionsCanReferToAnotherModuleByRelativePath_nodeModules()
+      throws IOException {
     util.compile(
         createSourceFile(fs.getPath("/src/modules/foo/bar.js"), "exports.X = class {}"),
         createSourceFile(
@@ -840,7 +828,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
             "/** @param {!./bar.X} x an object. */",
             "exports.go = function(x) {};"));
 
-    NominalType type = typeRegistry.getType("module$exports$module$$src$modules$foo$baz");
+    NominalType type = typeRegistry.getType("module$exports$module$src$modules$foo$baz");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getProperties()).isEmpty();
@@ -868,7 +856,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         "export class X { static go() {}}",
         "export class Y extends X {}");
 
-    NominalType type = typeRegistry.getType("module$$src$modules$foo$baz.Y");
+    NominalType type = typeRegistry.getType("module$src$modules$foo$baz.Y");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions())
@@ -894,7 +882,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         "}",
         "export class Y extends X {}");
 
-    NominalType type = typeRegistry.getType("module$$src$modules$foo$baz.Y");
+    NominalType type = typeRegistry.getType("module$src$modules$foo$baz.Y");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions())
@@ -917,7 +905,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         "/** Hello, world! */",
         "export default function go() {}");
 
-    NominalType type = typeRegistry.getType("module$$src$modules$foo$baz");
+    NominalType type = typeRegistry.getType("module$src$modules$foo$baz");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions())
@@ -961,7 +949,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         "/** Hello, world! */",
         "exports.default = function go() {}");
 
-    NominalType type = typeRegistry.getType("module$exports$module$$src$modules$foo$baz");
+    NominalType type = typeRegistry.getType("module$exports$module$src$modules$foo$baz");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions())
@@ -1054,7 +1042,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setBase(
                     BaseProperty.newBuilder()
                         .setName("go")
-                        .setSource(sourceFile("source/foo/bar.js.src.html", 8))
+                        .setSource(sourceFile("source/foo/bar.js.src.html", 7))
                         .setDescription(htmlComment("<p>Hello, world!</p>\n")))
                 .addParameter(
                     Detail.newBuilder()

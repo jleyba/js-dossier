@@ -479,7 +479,8 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
         " * @constructor",
         " * @implements {D}",
         " */",
-        "function E() {}");
+        "function E() {}",
+        "/** @override */ E.prototype.then = function() {};");
 
     NamedType thenable =
         namedType("IThenable")
@@ -542,7 +543,6 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
 
     NominalType a = typeRegistry.getType("A");
     NominalType b = typeRegistry.getType("B");
-    NominalType c = typeRegistry.getType("C");
     NominalType d = typeRegistry.getType("D");
 
     assertImplementedTypes(a).isEmpty();
@@ -586,11 +586,11 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
         " * @constructor",
         " * @implements {B<!C>}",
         " */",
-        "function D() {}");
+        "function D() {}",
+        "/** @override */D.prototype.then = function() {};");
 
     NominalType a = typeRegistry.getType("A");
     NominalType b = typeRegistry.getType("B");
-    NominalType c = typeRegistry.getType("C");
     NominalType d = typeRegistry.getType("D");
 
     NamedType thenable = namedType("IThenable").toBuilder().setExtern(true).build();
@@ -1018,7 +1018,7 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
             "import {A} from './one';",
             "export class B extends A {}"));
 
-    NominalType a = typeRegistry.getType("module$$src$modules$one.A");
+    NominalType a = typeRegistry.getType("module$src$modules$one.A");
     assertSubtypes(a)
         .containsExactly(
             TYPE_B

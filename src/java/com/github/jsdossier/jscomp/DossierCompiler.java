@@ -18,23 +18,18 @@ package com.github.jsdossier.jscomp;
 
 import static com.google.common.base.Preconditions.checkState;
 
-import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.annotations.Stderr;
+import com.github.jsdossier.jscomp.Annotations.Internal;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.Compiler;
-import com.google.javascript.jscomp.CompilerInput;
 import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.Result;
 import com.google.javascript.jscomp.SourceFile;
-import com.google.javascript.rhino.Node;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.file.FileSystem;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -44,11 +39,8 @@ import javax.inject.Inject;
  */
 public final class DossierCompiler extends Compiler {
 
-  private final TypeRegistry typeRegistry;
-  private final FileSystem inputFs;
   private final ImmutableSet<Path> modulePaths;
-  private final Es6ModulePassFactory modulePassFactory;
-  private final FileVisibilityPassFactory fileVisibilityPassFactory;
+  private final ImmutableList<DossierCompilerPass> passes;
   private final NodeLibrary nodeLibrary;
 
   private boolean hasParsed = false;
@@ -56,18 +48,12 @@ public final class DossierCompiler extends Compiler {
   @Inject
   DossierCompiler(
       @Stderr PrintStream stream,
-      TypeRegistry typeRegistry,
-      @Input FileSystem inputFs,
       @Modules ImmutableSet<Path> modulePaths,
-      Es6ModulePassFactory modulePassFactory,
-      FileVisibilityPassFactory fileVisibilityPassFactory,
+      @Internal ImmutableList<DossierCompilerPass> passes,
       NodeLibrary nodeLibrary) {
     super(stream);
-    this.typeRegistry = typeRegistry;
-    this.inputFs = inputFs;
     this.modulePaths = modulePaths;
-    this.modulePassFactory = modulePassFactory;
-    this.fileVisibilityPassFactory = fileVisibilityPassFactory;
+    this.passes = passes;
     this.nodeLibrary = nodeLibrary;
   }
 
@@ -93,66 +79,23 @@ public final class DossierCompiler extends Compiler {
   }
 
   @Override
-  public void parse() {
+  public void parseForCompilation() {
     checkState(
         !hasParsed,
         "%s can only parse its inputs once! Create a new instance if you must re-parse",
         getClass());
     hasParsed = true;
+    
+    getInputsById().values()
+        .stream()
+        .map(input -> input.getAstRoot(this))
+        .filter(input -> input != null)
+        .forEach(node -> {
+          for (DossierCompilerPass pass : passes) {
+            pass.process(this, node);
+          }
+        });
 
-    collectFileVisibilities();
-
-    // Look for ES6 modules before we do anything else. This is necessary since the compiler
-    // transpiles modules to ES5.
-    processEs6Modules();
-
-    // First we transform the CommonJS modules. This ensures input sources are properly re-ordered
-    // based on the goog.provide/require statements we generate for the modules. This is necessary
-    // since the compiler does its final input ordering before invoking any custom passes
-    // (otherwise, we could just process the modules as a custom pass).
-    if (!modulePaths.isEmpty()) {
-      processCommonJsModules();
-    }
-
-    // Now we can proceed with the normal parsing.
-    super.parse();
-  }
-
-  private void collectFileVisibilities() {
-    CompilerPass pass = fileVisibilityPassFactory.create(this);
-    for (CompilerInput input : getInputsById().values()) {
-      Node root = input.getAstRoot(this);
-      if (root != null) {
-        pass.process(null, root);
-      }
-    }
-  }
-
-  private void processEs6Modules() {
-    Es6ModulePass modulePass = modulePassFactory.create(this);
-    for (CompilerInput input : getInputsById().values()) {
-      Node root = input.getAstRoot(this);
-      if (root != null) {
-        modulePass.process(null, root);
-      }
-    }
-  }
-
-  private void processCommonJsModules() {
-    List<Node> roots = new ArrayList<>();
-    for (CompilerInput input : getInputsById().values()) {
-      if (input.isExtern()) {
-        continue;
-      }
-
-      Node root = input.getAstRoot(this);
-      if (root == null) {
-        continue;
-      }
-      roots.add(root);
-    }
-
-    NodeModulePass processor = new NodeModulePass(typeRegistry, inputFs, modulePaths, nodeLibrary);
-    processor.process(this, roots);
+    super.parseForCompilation();
   }
 }

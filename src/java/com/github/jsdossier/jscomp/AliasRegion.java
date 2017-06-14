@@ -51,7 +51,7 @@ public abstract class AliasRegion implements CompilerOptions.AliasTransformation
    * @return the new AliasRegion.
    */
   public static AliasRegion forFile(Path path) {
-    return AliasRegion.builder().setPath(path).setRange(Range.<Position>all()).build();
+    return AliasRegion.builder().setPath(path).setRange(Range.all()).build();
   }
 
   // Package-private to prevent extensions.

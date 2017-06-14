@@ -19,11 +19,13 @@ package com.github.jsdossier;
 import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
+import com.github.jsdossier.jscomp.Types;
 import com.google.common.io.Files;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
@@ -31,7 +33,7 @@ import javax.inject.Inject;
 
 /**
  * Defines a context in which type names may be defined. For instance, consider:
- *
+ * <p>
  * <pre><code>
  *   goog.provide('foo');
  *   goog.provide('bar');
@@ -56,7 +58,7 @@ import javax.inject.Inject;
  *     };
  *   });
  * </code></pre>
- *
+ * <p>
  * <p>In this example, for the context {@code foo.Two}, the type name {@code ns.One} will resolve to
  * {@code foo.One}, whereas for {@code bar.Two} it will resolve to {@code bar.One}.
  */
@@ -92,7 +94,9 @@ final class TypeContext {
     this.context = context;
   }
 
-  /** Returns the root context that resolves types against the global scope. */
+  /**
+   * Returns the root context that resolves types against the global scope.
+   */
   public TypeContext clearContext() {
     if (context.isPresent()) {
       return new TypeContext(
@@ -101,7 +105,9 @@ final class TypeContext {
     return this;
   }
 
-  /** Creates a new context focused on the given type. */
+  /**
+   * Creates a new context focused on the given type.
+   */
   public TypeContext changeContext(@Nullable NominalType context) {
     return new TypeContext(
         typeRegistry, jsTypeRegistry, dfs, moduleNamingConvention, Optional.ofNullable(context));
@@ -111,7 +117,9 @@ final class TypeContext {
     return !context.isPresent();
   }
 
-  /** Returns the type type names or are resolved against, or null if using the global scope. */
+  /**
+   * Returns the type type names or are resolved against, or null if using the global scope.
+   */
   @Nullable
   public NominalType getContextType() {
     return context.orElse(null);
@@ -134,6 +142,26 @@ final class TypeContext {
 
     String def = typeRegistry.resolveAlias(context.get(), name);
     if (def != null) {
+      // If we resolved the name to a module's internal variable, then check if the variable is
+      // defined in the global scope. If not, then the compiler decided he internal variable could
+      // be inlined. If this is the case, we know dossier encountered `name` within the context
+      // type's module, so we can see if the internal variable was exported from the module
+      // (which would be our resolved type).
+      if (Types.isModuleContentsVar(def)) {
+        NominalType type = resolve(jsTypeRegistry.getType(def));
+        if (type != null) {
+          return type;
+        }
+
+        if (context.isPresent() && context.get().getModule().isPresent()) {
+          Module module = context.get().getModule().get();
+          type = resolveExportByInternalName(module, def);
+          if (type != null) {
+            return type;
+          }
+        }
+      }
+
       name = def;
     } else {
       for (int index = name.indexOf('.'); index != -1; ) {
@@ -160,6 +188,27 @@ final class TypeContext {
     }
 
     return resolveGlobalType(name);
+  }
+
+  @Nullable
+  @CheckReturnValue
+  private NominalType resolveExportByInternalName(Module module, String internalName) {
+    Optional<Map.Entry<String, String>> exportEntry =
+        module.getExportedNames().entrySet().stream()
+            .filter(
+                e ->
+                    internalName.equals(e.getValue())
+                        || internalName.equals(module.getAliases().resolveAlias(e.getValue())))
+            .findAny();
+    if (exportEntry.isPresent()) {
+      String qualifiedName =
+          context.get().getModule().get().getId().getCompiledName()
+              + "." + exportEntry.get().getKey();
+      if (typeRegistry.isType(qualifiedName)) {
+        return typeRegistry.getType(qualifiedName);
+      }
+    }
+    return null;
   }
 
   @Nullable
@@ -228,17 +277,27 @@ final class TypeContext {
       return typeRegistry.getType(name);
     }
 
-    JSType type = jsTypeRegistry.getType(name);
+    NominalType type = resolve(jsTypeRegistry.getType(name));
     if (type != null) {
-      Collection<NominalType> types = typeRegistry.findTypes(type);
-      if (types.isEmpty() && type.isInstanceType()) {
-        types = typeRegistry.findTypes(type.toObjectType().getConstructor());
-      }
-      if (!types.isEmpty()) {
-        return types.iterator().next();
-      }
+      return type;
     }
 
     return resolveModuleType(name);
+  }
+
+  @Nullable
+  @CheckReturnValue
+  private NominalType resolve(@Nullable JSType type) {
+    if (type == null) {
+      return null;
+    }
+    Collection<NominalType> types = typeRegistry.findTypes(type);
+    if (types.isEmpty() && type.isInstanceType()) {
+      types = typeRegistry.findTypes(type.toObjectType().getConstructor());
+    }
+    if (!types.isEmpty()) {
+      return types.iterator().next();
+    }
+    return null;
   }
 }

@@ -31,20 +31,27 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for tracking types defined within a node module. */
+/**
+ * Tests for tracking types defined within a node module.
+ */
 @RunWith(JUnit4.class)
 public class NodeAliasDetectionTest {
   @Rule
   public GuiceRule guice =
       GuiceRule.builder(this)
-          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
+          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT_2015)
           .setModulePrefix("/modules")
           .setModules("/modules/one.js", "/modules/two.js", "/modules.three.js")
+          .setUseNodeLibrary(false)
           .build();
 
-  @Inject @Input private FileSystem inputFs;
-  @Inject private TypeRegistry typeRegistry;
-  @Inject private CompilerUtil util;
+  @Inject
+  @Input
+  private FileSystem inputFs;
+  @Inject
+  private TypeRegistry typeRegistry;
+  @Inject
+  private CompilerUtil util;
 
   private NominalType context;
 
@@ -66,15 +73,15 @@ public class NodeAliasDetectionTest {
             "var {One, Two, Three} = require('./one');",
             "var {X, Y} = require('./one').Four;"));
 
-    NominalType type = typeRegistry.getType("module$exports$module$$modules$two");
+    NominalType type = typeRegistry.getType("module$exports$module$modules$two");
     setContext(type);
-    assertThat("a").isAliasFor("module$exports$module$$modules$one");
-    assertThat("b").isAliasFor("module$exports$module$$modules$one.One");
-    assertThat("One").isAliasFor("module$exports$module$$modules$one.One");
-    assertThat("Two").isAliasFor("module$exports$module$$modules$one.Two");
-    assertThat("Three").isAliasFor("module$exports$module$$modules$one.Three");
-    assertThat("X").isAliasFor("module$exports$module$$modules$one.Four.X");
-    assertThat("Y").isAliasFor("module$exports$module$$modules$one.Four.Y");
+    assertThat("a").isAliasFor("module$exports$module$modules$one");
+    assertThat("b").isAliasFor("module$exports$module$modules$one.One");
+    assertThat("One").isAliasFor("module$exports$module$modules$one.One");
+    assertThat("Two").isAliasFor("module$exports$module$modules$one.Two");
+    assertThat("Three").isAliasFor("module$exports$module$modules$one.Three");
+    assertThat("X").isAliasFor("module$exports$module$modules$one.Four.X");
+    assertThat("Y").isAliasFor("module$exports$module$modules$one.Four.Y");
   }
 
   @Test
@@ -83,8 +90,8 @@ public class NodeAliasDetectionTest {
         createSourceFile(
             inputFs.getPath("/modules/one.js"), "class X {}", "exports.A = class {};"));
 
-    setContext(typeRegistry.getType("module$exports$module$$modules$one.A"));
-    assertThat("X").isAliasFor("module$contents$module$$modules$one_X");
+    setContext(typeRegistry.getType("module$exports$module$modules$one.A"));
+    assertThat("X").isAliasFor("module$contents$module$modules$one_X");
   }
 
   @Test
@@ -97,22 +104,39 @@ public class NodeAliasDetectionTest {
             "exports.Three = class {};",
             "class X {}",
             "class Y {}",
-            "exports.Four = {X, Y};"),
+            "/** @constructor */",
+            "var Z = function() {}",
+            "exports.Four = Z;"),
         createSourceFile(
             inputFs.getPath("/modules/two.js"),
             "var a = require('./one');",
             "var b = require('./one').One;",
             "var {One, Two, Three} = require('./one');"));
 
-    setContext(typeRegistry.getType("module$exports$module$$modules$two"));
-    assertThat("module$contents$module$$modules$two_a")
-        .isAliasFor("module$exports$module$$modules$one");
-    assertThat("module$contents$module$$modules$two_b")
-        .isAliasFor("module$exports$module$$modules$one.One");
-    assertThat("module$contents$module$$modules$two_One")
-        .isAliasFor("module$exports$module$$modules$one.One");
-    assertThat("module$contents$module$$modules$two_Two")
-        .isAliasFor("module$exports$module$$modules$one.Two");
+    setContext(typeRegistry.getType("module$exports$module$modules$one"));
+    assertThat("X").isAliasFor("module$contents$module$modules$one_X");
+    assertThat("Y").isAliasFor("module$contents$module$modules$one_Y");
+    assertThat("Z").isAliasFor("module$contents$module$modules$one_Z");
+
+    setContext(typeRegistry.getType("module$exports$module$modules$one.One"));
+    assertThat("X").isAliasFor("module$contents$module$modules$one_X");
+    assertThat("Y").isAliasFor("module$contents$module$modules$one_Y");
+    assertThat("Z").isAliasFor("module$contents$module$modules$one_Z");
+
+    setContext(typeRegistry.getType("module$exports$module$modules$one.Four"));
+    assertThat("X").isAliasFor("module$contents$module$modules$one_X");
+    assertThat("Y").isAliasFor("module$contents$module$modules$one_Y");
+    assertThat("Z").isAliasFor("module$contents$module$modules$one_Z");
+
+    setContext(typeRegistry.getType("module$exports$module$modules$two"));
+    assertThat("module$contents$module$modules$two_a")
+        .isAliasFor("module$exports$module$modules$one");
+    assertThat("module$contents$module$modules$two_b")
+        .isAliasFor("module$exports$module$modules$one.One");
+    assertThat("module$contents$module$modules$two_One")
+        .isAliasFor("module$exports$module$modules$one.One");
+    assertThat("module$contents$module$modules$two_Two")
+        .isAliasFor("module$exports$module$modules$one.Two");
   }
 
   @Test
@@ -129,24 +153,44 @@ public class NodeAliasDetectionTest {
             "const Three = c.One;",
             "exports.Two = One;"));
 
-    NominalType type = typeRegistry.getType("module$exports$module$$modules$two");
+    NominalType type = typeRegistry.getType("module$exports$module$modules$two");
     setContext(type);
-    assertThat("module$contents$module$$modules$two_a")
-        .isAliasFor("module$exports$module$$modules$one");
-    assertThat("module$contents$module$$modules$two_a")
-        .isAliasFor("module$exports$module$$modules$one");
-    assertThat("module$contents$module$$modules$two_b")
-        .isAliasFor("module$exports$module$$modules$one");
-    assertThat("module$contents$module$$modules$two_c")
-        .isAliasFor("module$exports$module$$modules$one");
-    assertThat("module$contents$module$$modules$two_One")
-        .isAliasFor("module$exports$module$$modules$one.One");
-    assertThat("module$contents$module$$modules$two_Two")
-        .isAliasFor("module$exports$module$$modules$one.One");
-    assertThat("module$contents$module$$modules$two_Three")
-        .isAliasFor("module$exports$module$$modules$one.One");
+    assertThat("module$contents$module$modules$two_a")
+        .isAliasFor("module$exports$module$modules$one");
+    assertThat("module$contents$module$modules$two_a")
+        .isAliasFor("module$exports$module$modules$one");
+    assertThat("module$contents$module$modules$two_b")
+        .isAliasFor("module$exports$module$modules$one");
+    assertThat("module$contents$module$modules$two_c")
+        .isAliasFor("module$exports$module$modules$one");
+    assertThat("module$contents$module$modules$two_One")
+        .isAliasFor("module$exports$module$modules$one.One");
+    assertThat("module$contents$module$modules$two_Two")
+        .isAliasFor("module$exports$module$modules$one.One");
+    assertThat("module$contents$module$modules$two_Three")
+        .isAliasFor("module$exports$module$modules$one.One");
   }
 
+  @Test
+  public void canResolveHiddenVarAliases() {
+    util.compile(
+        createSourceFile(
+            inputFs.getPath("/modules/one.js"), "class One {}", "module.exports = {One};"),
+        createSourceFile(
+            inputFs.getPath("/modules/two.js"),
+            "var One = require('./one').One;"));
+
+    NominalType one = typeRegistry.getType("module$exports$module$modules$one");
+    setContext(one);
+    assertThat("One").isAliasFor("module$contents$module$modules$one_One");
+    
+    NominalType two = typeRegistry.getType("module$exports$module$modules$two");
+    setContext(two);
+    assertThat("One").isAliasFor("module$exports$module$modules$one.One");
+    assertThat("module$contents$module$modules$two_One")
+        .isAliasFor("module$exports$module$modules$one.One");
+  }
+ 
   private void setContext(NominalType type) {
     context = checkNotNull(type);
   }

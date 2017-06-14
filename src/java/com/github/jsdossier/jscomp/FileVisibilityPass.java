@@ -19,34 +19,29 @@ package com.github.jsdossier.jscomp;
 import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
 
 import com.github.jsdossier.annotations.Input;
-import com.google.auto.factory.AutoFactory;
-import com.google.auto.factory.Provided;
-import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.rhino.JSDocInfo.Visibility;
 import com.google.javascript.rhino.Node;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
+import javax.inject.Inject;
 
 /** A special compiler pass that collects the default visibility settings for each file. */
-@AutoFactory
-final class FileVisibilityPass implements CompilerPass {
+final class FileVisibilityPass implements DossierCompilerPass {
 
   private final TypeRegistry typeRegistry;
   private final FileSystem inputFs;
-  private final DossierCompiler compiler;
 
+  @Inject
   FileVisibilityPass(
-      @Provided TypeRegistry typeRegistry,
-      @Provided @Input FileSystem inputFs,
-      DossierCompiler compiler) {
+      TypeRegistry typeRegistry,
+      @Input FileSystem inputFs) {
     this.typeRegistry = typeRegistry;
     this.inputFs = inputFs;
-    this.compiler = compiler;
   }
 
   @Override
-  public void process(Node externs, Node root) {
+  public void process(DossierCompiler compiler, Node root) {
     traverseEs6(
         compiler,
         root,

@@ -8,6 +8,8 @@
    +  com.google.inject:guice:4.1.0
    +  com.google.inject.extensions:guice-assistedinject:4.1.0
    +  com.google.inject.extensions:guice-multibindings:4.1.0
+   +  com.google.javascript:closure-compiler-externs:v20170521
+   +  com.google.javascript:closure-compiler-unshaded:v20170521
 
 # v0.11.1
 

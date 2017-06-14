@@ -45,7 +45,8 @@ public class Es6ModuleTest {
       GuiceRule.builder(this)
           .setModulePrefix("/modules")
           .setModules("foo/bar.js")
-          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
+          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT_2015)
+          .setUseNodeLibrary(false)
           .build();
 
   @Inject @Input private FileSystem fs;
@@ -56,7 +57,7 @@ public class Es6ModuleTest {
   public void collectsJsDocForModuleInternalVars() {
     util.compile(
         fs.getPath("module.js"),
-        "export default function () {};", // Trigger ES6 identificatio.
+        "export default function () {};", // Trigger ES6 identification.
         "",
         "function fnDeclNoDocs() {}",
         "/** Has docs. */ function fnDeclDocs() {}",
@@ -189,7 +190,7 @@ public class Es6ModuleTest {
       assertThat(expected.getMessage())
           .contains("required \"module$does_not_exist\" namespace never provided one.js:1");
       assertThat(expected.getMessage())
-          .contains("Failed to load module \"./does_not_exist.js\" null:-1");
+          .contains("Failed to load module \"./does_not_exist.js\" one.js:1");
     }
   }
 
@@ -202,14 +203,14 @@ public class Es6ModuleTest {
     } catch (CompilerUtil.CompileFailureException expected) {
       assertThat(expected.getMessage())
           .contains("required \"module$two\" namespace never provided one.js:1");
-      assertThat(expected.getMessage()).contains("Failed to load module \"./two.js\" null:-1");
+      assertThat(expected.getMessage()).contains("Failed to load module \"./two.js\" one.js:1");
     }
   }
 
   @Test
   public void identifiesModulesWithAbsolutePaths() {
     util.compile(fs.getPath("/one/two.js"), "export default function() {}");
-    assertThat(typeRegistry.isModule("module$$one$two")).isTrue();
+    assertThat(typeRegistry.isModule("module$one$two")).isTrue();
   }
 
   @Test
@@ -243,7 +244,7 @@ public class Es6ModuleTest {
         "/** Function one. */ export function one() {}",
         "export /** Function one (a) */ function oneA() {}");
 
-    Module module = typeRegistry.getModule("module$$one$two");
+    Module module = typeRegistry.getModule("module$one$two");
 
     assertThat(module.getInternalVarDocs().keySet())
         .containsExactly("One", "OneA", "Two", "TwoA", "one", "oneA");
@@ -270,15 +271,18 @@ public class Es6ModuleTest {
 
     util.compile(
         createSourceFile(fs.getPath("/globals/foo.js"), "class Foo {}"),
-        createSourceFile(fs.getPath("/modules/bar.js"), "class Bar {}", "export default Bar;"),
+        createSourceFile(fs.getPath("/modules/bar.js"), "export class Bar {}"),
         createSourceFile(
-            fs.getPath("/modules/baz.js"), "import Bar from './bar';", "class Baz extends Bar {}"));
+            fs.getPath("/modules/baz.js"),
+            "import {Bar} from './bar';",
+            "class Baz extends Bar {}",
+            "export {Baz}"));
 
-    Module bar = typeRegistry.getModule("module$$modules$bar");
-    assertThat(bar.getType()).isEqualTo(Module.Type.ES6);
+    Module bar = typeRegistry.getModule("module$modules$bar");
+    assertThat(bar.getId().getType()).isEqualTo(Module.Type.ES6);
 
-    Module baz = typeRegistry.getModule("module$$modules$baz");
-    assertThat(baz.getType()).isEqualTo(Module.Type.ES6);
+    Module baz = typeRegistry.getModule("module$modules$baz");
+    assertThat(baz.getId().getType()).isEqualTo(Module.Type.ES6);
   }
 
   @Test
@@ -293,15 +297,17 @@ public class Es6ModuleTest {
 
     util.compile(
         createSourceFile(fs.getPath("/globals/foo.js"), "class Foo {}"),
-        createSourceFile(fs.getPath("/modules/bar.js"), "class Bar {}", "export default Bar;"),
+        createSourceFile(fs.getPath("/modules/bar.js"), "export class Bar {}"),
         createSourceFile(
-            fs.getPath("/modules/baz.js"), "import Bar from './bar';", "class Baz extends Bar {}"));
+            fs.getPath("/modules/baz.js"),
+            "import {Bar} from './bar';",
+            "export class Baz extends Bar {}"));
 
-    Module bar = typeRegistry.getModule("module$$modules$bar");
-    assertThat(bar.getType()).isEqualTo(Module.Type.ES6);
+    Module bar = typeRegistry.getModule("module$modules$bar");
+    assertThat(bar.getId().getType()).isEqualTo(Module.Type.ES6);
 
-    Module baz = typeRegistry.getModule("module$$modules$baz");
-    assertThat(baz.getType()).isEqualTo(Module.Type.ES6);
+    Module baz = typeRegistry.getModule("module$modules$baz");
+    assertThat(baz.getId().getType()).isEqualTo(Module.Type.ES6);
   }
 
   @Test
@@ -313,7 +319,7 @@ public class Es6ModuleTest {
         "/** Class does should not be used. */",
         "export class A {}");
 
-    Module module = typeRegistry.getModule("module$$one$two");
+    Module module = typeRegistry.getModule("module$one$two");
 
     assertThat(module.getJsDoc().getBlockComment())
         .isEqualTo("The file overview comment should be used for module docs.");
@@ -324,7 +330,7 @@ public class Es6ModuleTest {
     util.compile(
         fs.getPath("/one/two.js"), "/** Class does should not be used. */", "export class A {}");
 
-    Module module = typeRegistry.getModule("module$$one$two");
+    Module module = typeRegistry.getModule("module$one$two");
     assertThat(module.getJsDoc().getBlockComment()).isEmpty();
   }
 
@@ -336,7 +342,7 @@ public class Es6ModuleTest {
         "/** This class is the default export */",
         "export default class A {}");
 
-    Module module = typeRegistry.getModule("module$$one$two");
+    Module module = typeRegistry.getModule("module$one$two");
     assertThat(module.getJsDoc().getBlockComment())
         .isEqualTo("This fileoverview should be used even when there is a default export");
   }

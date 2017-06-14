@@ -19,6 +19,7 @@ package com.github.jsdossier;
 import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
+import static org.junit.Assume.assumeNoException;
 
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.jscomp.NominalType;
@@ -50,7 +51,8 @@ public class LinkFactoryTest {
           .setSourcePrefix("source")
           .setModulePrefix("source/modules")
           .setModules("one.js", "two.js", "three.js")
-          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
+          .setUseNodeLibrary(false)
+          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT_2015)
           .build();
 
   @Inject @Input private FileSystem fs;
@@ -1039,7 +1041,7 @@ public class LinkFactoryTest {
         createSourceFile(
             fs.getPath("source/modules/two.js"),
             "import * as a from './one';",
-            "export class Two extends One {}"));
+            "export class Two extends a.One {}"));
 
     NominalType ref = typeRegistry.getType("module$source$modules$two");
     LinkFactory factory = createFactory(ref).withTypeContext(ref);
@@ -1118,12 +1120,22 @@ public class LinkFactoryTest {
 
   @Test
   public void createAliasedNamedType_importRenamedEs6ModuleDefault() {
-    util.compile(
-        createSourceFile(fs.getPath("source/modules/one.js"), "export default class {}"),
-        createSourceFile(
-            fs.getPath("source/modules/two.js"),
-            "import {default as X} from './one';",
-            "export class Three extends X {}"));
+    try {
+      util.compile(
+          createSourceFile(fs.getPath("source/modules/one.js"), "export default class {}"),
+          createSourceFile(
+              fs.getPath("source/modules/two.js"),
+              "import {default as X} from './one';",
+              "export class Three extends X {}"));
+    } catch (CompilerUtil.CompileFailureException e) {
+      if (e.getMessage()
+          .contains(
+              "Bad type annotation. Unknown type "
+                  + "module$source$modules$one.default source/modules/two.js:-1")) {
+        assumeNoException("compiler no longer handles default exports!", e);
+      }
+      throw e;
+    }
 
     NominalType ref = typeRegistry.getType("module$source$modules$two");
     LinkFactory factory = createFactory(ref).withTypeContext(ref);
@@ -1748,6 +1760,8 @@ public class LinkFactoryTest {
 
   @Test
   public void createLinkForExternalModule_1() {
+    guice.toBuilder().setUseNodeLibrary(true).build().createInjector().injectMembers(this);
+
     util.compile(
         createSourceFile(
             fs.getPath("source/modules/one.js"), "let fs = require('fs');", "exports.fs = fs;"));
@@ -1764,6 +1778,8 @@ public class LinkFactoryTest {
 
   @Test
   public void createLinkForExternalModule_2() {
+    guice.toBuilder().setUseNodeLibrary(true).build().createInjector().injectMembers(this);
+
     util.compile(
         createSourceFile(
             fs.getPath("source/modules/one.js"),

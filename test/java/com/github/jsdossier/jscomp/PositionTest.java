@@ -25,8 +25,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-//import com.google.common.testing.EqualsTester;
-
 /** Unit tests for {@link Position}. */
 @RunWith(JUnit4.class)
 public class PositionTest {

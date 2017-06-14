@@ -23,7 +23,6 @@ import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Multimaps.filterKeys;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -50,6 +49,7 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
@@ -61,8 +61,10 @@ public final class TypeRegistry {
 
   private final Set<String> providedSymbols = new HashSet<>();
   private final Set<String> implicitNamespaces = new HashSet<>();
-  private final Map<String, Module> modulesById = new HashMap<>();
+
+  private final Map<Module.Id, Module> modulesById = new HashMap<>();
   private final Map<Path, Module> modulesByPath = new HashMap<>();
+
   private final Map<Path, JSDocInfo.Visibility> defaultVisibilities = new HashMap<>();
   private final Multimap<Path, AliasRegion> aliasRegions =
       MultimapBuilder.hashKeys().linkedHashSetValues().build();
@@ -105,14 +107,14 @@ public final class TypeRegistry {
    */
   public void collectModuleContentAliases(JSTypeRegistry jsRegistry) {
     for (Module module : getAllModules()) {
-      if (module.getType() == Module.Type.ES6) {
+      if (module.getId().getType() == Module.Type.ES6) {
         continue;
       }
 
       AliasRegion aliasRegion = module.getAliases();
       for (String alias : aliasRegion.getAliases()) {
+        String name = aliasRegion.resolveAlias(alias);
         if (Types.isModuleContentsVar(alias)) {
-          String name = aliasRegion.resolveAlias(alias);
           if (isType(name)) {
             resolvedModuleContentAliases.put(alias, getType(name));
           } else {
@@ -181,17 +183,24 @@ public final class TypeRegistry {
 
   /** Registers a new module. */
   public void addModule(Module module) {
-    if (module.getType() == Module.Type.CLOSURE && module.getHasLegacyNamespace()) {
-      recordImplicitProvide(module.getOriginalName());
+    if (module.getId().getType() == Module.Type.CLOSURE && module.getHasLegacyNamespace()) {
+      recordImplicitProvide(module.getId().getOriginalName());
     }
     modulesById.put(module.getId(), module);
-    modulesByPath.put(module.getPath(), module);
+    modulesByPath.put(module.getId().getPath(), module);
     addAliasRegion(module.getAliases());
   }
 
   /** Returns whether there is a module registered with the given ID. */
   public boolean isModule(String id) {
-    return modulesById.containsKey(id);
+    return findModule(id).isPresent();
+  }
+
+  private Optional<Map.Entry<Module.Id, Module>> findModule(String id) {
+    return modulesById.entrySet()
+        .stream()
+        .filter(e -> e.getKey().getCompiledName().equals(id))
+        .findFirst();
   }
 
   /** Returns whether the given path defines a module. */
@@ -215,8 +224,9 @@ public final class TypeRegistry {
    * @throws IllegalArgumentException if there is no such module.
    */
   public Module getModule(String id) {
-    checkArgument(isModule(id), "No such module: %s", id);
-    return modulesById.get(id);
+    return findModule(id)
+        .orElseThrow(() -> new IllegalArgumentException("no such module: " + id))
+        .getValue();
   }
 
   /**
@@ -295,6 +305,16 @@ public final class TypeRegistry {
     return typesByName.containsKey(name) || resolvedModuleContentAliases.containsKey(name);
   }
 
+  /** Returns all of type names in the registry. */
+  public Set<String> getTypeNames() {
+    return Collections.unmodifiableSet(typesByName.keySet());
+  }
+  
+  /** Returns the nominal type representing the exports object for the specified module. */
+  public NominalType getType(Module.Id id) {
+    return getType(id.getCompiledName());
+  }
+
   /**
    * Returns the nominal type with the given name.
    *
@@ -322,8 +342,8 @@ public final class TypeRegistry {
    * JSType.
    */
   public Collection<NominalType> findTypes(final JSType type) {
-    Predicate<JSType> predicate = input -> typesEqual(type, input);
-    Multimap<JSType, NominalType> filtered = filterKeys(typesByJsType, predicate);
+    Multimap<JSType, NominalType> filtered =
+        filterKeys(typesByJsType, input -> typesEqual(type, input));
     return Collections.unmodifiableCollection(filtered.values());
   }
 

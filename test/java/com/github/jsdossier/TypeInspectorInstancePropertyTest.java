@@ -90,6 +90,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
   @Test
   public void collectsPropertiesDefinedOnParentTypePrototype_googInherits() {
     compile(
+        DEFINE_INHERITS,
         "/** @constructor */",
         "function Person() {",
         "  /**",
@@ -101,7 +102,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         "",
         "/** @constructor @extends {Person} */",
         "function Character() {}",
-        "goog.inherits(Character, Person);");
+        "inherits(Character, Person);");
 
     NominalType character = typeRegistry.getType("Character");
     TypeInspector typeInspector = typeInspectorFactory.create(character);
@@ -113,7 +114,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setBase(
                     BaseProperty.newBuilder()
                         .setName("age")
-                        .setSource(sourceFile("source/foo.js.src.html", 7))
+                        .setSource(sourceFile("source/foo.js.src.html", 13))
                         .setDescription(htmlComment("<p>This person&#39;s age.</p>\n"))
                         .setDefinedBy(namedType("Person", "Person.html#age")))
                 .setType(numberTypeExpression())
@@ -123,6 +124,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
   @Test
   public void collectsPropertiesDefinedInParentTypeConstructor() {
     compile(
+        DEFINE_INHERITS,
         "/** @constructor */",
         "function Person() {",
         "  /**",
@@ -134,7 +136,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         "",
         "/** @constructor @extends {Person} */",
         "function Character() {}",
-        "goog.inherits(Character, Person);");
+        "inherits(Character, Person);");
 
     NominalType character = typeRegistry.getType("Character");
     TypeInspector typeInspector = typeInspectorFactory.create(character);
@@ -146,7 +148,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setBase(
                     BaseProperty.newBuilder()
                         .setName("age")
-                        .setSource(sourceFile("source/foo.js.src.html", 7))
+                        .setSource(sourceFile("source/foo.js.src.html", 13))
                         .setDescription(htmlComment("<p>This person&#39;s age.</p>\n"))
                         .setDefinedBy(namedType("Person", "Person.html#age")))
                 .setType(numberTypeExpression())
@@ -157,6 +159,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
   @Test
   public void prototypePropertyOverridesDoNotRegisterAsOverridden() {
     compile(
+        DEFINE_INHERITS,
         "/** @constructor */",
         "var A = function() {};",
         "/**",
@@ -167,7 +170,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         "",
         "/** @constructor @extends {A} */",
         "var B = function() {};",
-        "goog.inherits(B, A);",
+        "inherits(B, A);",
         "",
         "/**",
         " * Custom comment.",
@@ -185,7 +188,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setBase(
                     BaseProperty.newBuilder()
                         .setName("a")
-                        .setSource(sourceFile("source/foo.js.src.html", 7))
+                        .setSource(sourceFile("source/foo.js.src.html", 13))
                         .setDescription(htmlComment("<p>Original comment.</p>\n"))
                         .setDefinedBy(namedType("A", "A.html#a")))
                 .setType(numberTypeExpression())
@@ -246,7 +249,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         " * Comment on interface B.",
         " * @type {number}",
         " */",
-        "B.prototype.a = 123;",
+        "B.prototype.a;",
         "",
         "/** @constructor @extends {A} @implements {B} */",
         "var C = function() {",
@@ -320,7 +323,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
             "}",
             "export {Person}"));
 
-    NominalType type = typeRegistry.getType("module$$src$modules$foo$bar.Person");
+    NominalType type = typeRegistry.getType("module$src$modules$foo$bar.Person");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -381,7 +384,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setType(nullableNamedTypeExpression("Person", "Person.html"))
                 .build());
 
-    type = typeRegistry.getType("module$$src$modules$foo$bar.CustomGreeter");
+    type = typeRegistry.getType("module$src$modules$foo$bar.CustomGreeter");
     typeInspector = typeInspectorFactory.create(type);
     report = typeInspector.inspectInstanceType();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -424,7 +427,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
             "  constructor() { this.p = new Person; }",
             "}"));
 
-    NominalType type = typeRegistry.getType("module$$src$modules$foo$bar.CustomGreeter");
+    NominalType type = typeRegistry.getType("module$src$modules$foo$bar.CustomGreeter");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getCompilerConstants()).isEmpty();

@@ -32,6 +32,7 @@ import com.github.jsdossier.proto.Tags;
 import com.github.jsdossier.proto.TypeExpression;
 import com.github.jsdossier.proto.Visibility;
 import com.github.jsdossier.testing.Bug;
+import com.google.common.collect.ImmutableSet;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.FunctionType;
 import org.junit.Test;
@@ -312,41 +313,6 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                     BaseProperty.newBuilder()
                         .setName("add")
                         .setSource(sourceFile("source/foo.js.src.html", 3))
-                        .setDescription(Comment.getDefaultInstance()))
-                .addParameter(
-                    Detail.newBuilder()
-                        .setName("x")
-                        .setType(TypeExpression.newBuilder().setUnknownType(true)))
-                .addParameter(
-                    Detail.newBuilder()
-                        .setName("y")
-                        .setType(TypeExpression.newBuilder().setUnknownType(true)))
-                .build());
-  }
-
-  @Test
-  public void jsDocOnlySpecifiesParameterTypesIsSameAsNoDocsAtAll() {
-    compile(
-        "/** @constructor */",
-        "var Clazz = function() {};",
-        "",
-        "/**",
-        " * @param {number}",
-        " * @param {number}",
-        " */",
-        "Clazz.prototype.add = function(x, y) { return x + y; };");
-
-    NominalType type = typeRegistry.getType("Clazz");
-    TypeInspector typeInspector = typeInspectorFactory.create(type);
-    TypeInspector.Report report = typeInspector.inspectInstanceType();
-    assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions())
-        .containsExactly(
-            Function.newBuilder()
-                .setBase(
-                    BaseProperty.newBuilder()
-                        .setName("add")
-                        .setSource(sourceFile("source/foo.js.src.html", 8))
                         .setDescription(Comment.getDefaultInstance()))
                 .addParameter(
                     Detail.newBuilder()
@@ -1000,7 +966,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         "/**",
         " * @override",
         " */",
-        "B.prototype.record = noOpFunc;");
+        "B.prototype.record = function() {};");
 
     NominalType type = typeRegistry.getType("B");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
@@ -1284,6 +1250,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         "  value() {}",
         "}",
         "",
+        "/** @interface */",
         "class B extends A {}");
 
     NominalType type = typeRegistry.getType("B");
@@ -1382,7 +1349,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         "  /** @return {TYPE} The return value. */",
         "  value() {}",
         "}",
-        "/** @extends {A<string>} */",
+        "/** @interface @extends {A<string>} */",
         "class B extends A {}");
 
     NominalType type = typeRegistry.getType("B");
@@ -1483,7 +1450,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         "  /** @return {TYPE} The return value. */",
         "  value() {}",
         "}",
-        "/** @extends {A<BTYPE>} @template BTYPE */",
+        "/** @interface @extends {A<BTYPE>} @template BTYPE */",
         "class B extends A {}");
 
     NominalType type = typeRegistry.getType("B");
@@ -1541,77 +1508,6 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                     Detail.newBuilder()
                         .setType(stringTypeExpression())
                         .setDescription(htmlComment("<p>Return from B.</p>\n")))
-                .build());
-  }
-
-  @Test
-  public void canNarrowParameterDefinedOnSuperType() {
-    compile(
-        DEFINE_ABSTRACT_METHOD,
-        "/** @constructor */",
-        "var Person = function() {};",
-        "",
-        "/** @constructor @extends {Person} */",
-        "var Student = function() {};",
-        "",
-        "/** @interface */",
-        "var Greeter = function() {};",
-        "",
-        "/**",
-        " * @param {!Person} person The person to greet.",
-        " */",
-        "Greeter.prototype.greet = abstractMethod;",
-        "",
-        "/**",
-        " * @constructor",
-        " * @implements {Greeter}",
-        " */",
-        "var StudentGreeter = function() {};",
-        "",
-        "/**",
-        " * @param {!Student} student The student to greet.",
-        " * @override",
-        " */",
-        "StudentGreeter.prototype.greet = function(student) {};");
-
-    NominalType type = typeRegistry.getType("StudentGreeter");
-    TypeInspector typeInspector = typeInspectorFactory.create(type);
-    TypeInspector.Report report = typeInspector.inspectInstanceType();
-    assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions())
-        .containsExactly(
-            Function.newBuilder()
-                .setBase(
-                    BaseProperty.newBuilder()
-                        .setName("greet")
-                        .setSource(sourceFile("source/foo.js.src.html", 26))
-                        .setDescription(Comment.getDefaultInstance())
-                        .addSpecifiedBy(namedType("Greeter", "Greeter.html#greet")))
-                .addParameter(
-                    Detail.newBuilder()
-                        .setName("student")
-                        .setType(namedTypeExpression("Student", "Student.html"))
-                        .setDescription(htmlComment("<p>The student to greet.</p>\n")))
-                .build());
-
-    // Sanity check the interface specification.
-    type = typeRegistry.getType("Greeter");
-    typeInspector = typeInspectorFactory.create(type);
-    report = typeInspector.inspectInstanceType();
-    assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions())
-        .containsExactly(
-            Function.newBuilder()
-                .setBase(
-                    BaseProperty.newBuilder()
-                        .setName("greet")
-                        .setSource(sourceFile("source/foo.js.src.html", 14))
-                        .setDescription(Comment.getDefaultInstance()))
-                .addParameter(
-                    Detail.newBuilder()
-                        .setName("person")
-                        .setType(namedTypeExpression("Person", "Person.html"))
-                        .setDescription(htmlComment("<p>The person to greet.</p>\n")))
                 .build());
   }
 
@@ -1821,6 +1717,12 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
   @Test
   @Bug(30)
   public void abstractMethodInheritsDocsFromInterfaceSpecification() {
+    guice.toBuilder()
+        .setModules(ImmutableSet.of())
+        .build()
+        .createInjector()
+        .injectMembers(this);
+    
     compile(
         DEFINE_ABSTRACT_METHOD,
         "/**",
@@ -2080,7 +1982,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
             "  greet() {}",
             "}"));
 
-    NominalType type = typeRegistry.getType("module$$src$modules$two.CustomGreeter");
+    NominalType type = typeRegistry.getType("module$src$modules$two.CustomGreeter");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
@@ -2117,7 +2019,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
             "import {Z} from './a/b/c';",
             "export class B extends Z {}"));
 
-    NominalType type = typeRegistry.getType("module$$src$modules$one.B");
+    NominalType type = typeRegistry.getType("module$src$modules$one.B");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
@@ -2261,7 +2163,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
             "  getEmployees() {}",
             "}"));
 
-    NominalType type = typeRegistry.getType("module$$src$modules$company.Company");
+    NominalType type = typeRegistry.getType("module$src$modules$company.Company");
     TypeInspector inspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = inspector.inspectInstanceType();
     assertThat(report.getFunctions())
@@ -2306,7 +2208,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
             "}",
             "module.exports = {Company};"));
 
-    NominalType type = typeRegistry.getType("module$exports$module$$src$modules$foo$baz.Company");
+    NominalType type = typeRegistry.getType("module$exports$module$src$modules$foo$baz.Company");
     TypeInspector inspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = inspector.inspectInstanceType();
     assertThat(report.getFunctions())
@@ -2398,7 +2300,16 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
             "var bar = require('./bar');",
             "exports.Baz = bar.Bar;"));
 
-    NominalType type = typeRegistry.getType("module$exports$module$$src$modules$baz.Baz");
+    assertThat(typeRegistry.getTypeNames())
+        .containsExactly(
+            "module$exports$module$src$modules$foo",
+            "module$exports$module$src$modules$foo.Foo",
+            "module$exports$module$src$modules$bar",
+            "module$exports$module$src$modules$bar.Bar",
+            "module$exports$module$src$modules$baz",
+            "module$exports$module$src$modules$baz.Baz");
+
+    NominalType type = typeRegistry.getType("module$exports$module$src$modules$baz.Baz");
     TypeInspector inspector = typeInspectorFactory.create(type);
 
     Node fakeNode = fakeNodeForType(type);

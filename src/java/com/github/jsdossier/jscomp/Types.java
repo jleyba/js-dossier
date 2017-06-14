@@ -16,6 +16,8 @@ limitations under the License.
 
 package com.github.jsdossier.jscomp;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.javascript.jscomp.deps.ModuleNames;
 import com.google.javascript.rhino.JSDocInfo.Marker;
 import com.google.javascript.rhino.JSTypeExpression;
@@ -103,6 +105,16 @@ public final class Types {
   /** Returns whether the name is for an internal variable created by dossier. */
   static boolean isInternalVar(String name) {
     return name.startsWith(DOSSIER_INTERNAL_VAR_PREFIX);
+  }
+  
+  static String extractOriginalModuleName(String name) {
+    checkArgument(isInternalVar(name), "not an internal module variable: %s", name);
+    name = name.substring(DOSSIER_INTERNAL_VAR_PREFIX.length());
+    int index = name.indexOf('.');
+    if (index != -1) {
+      name = name.substring(0, index);
+    }
+    return name;
   }
 
   /**

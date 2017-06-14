@@ -53,14 +53,14 @@ maven_jar(
 
 maven_jar(
     name = "dossier_closure_compiler",
-    artifact = "com.google.javascript:closure-compiler-unshaded:v20160911",
-    sha1 = "96ac7a8c32377690555ac93310498bebea3e26ef",
+    artifact = "com.google.javascript:closure-compiler-unshaded:v20170521",
+    sha1 = "8987aa201a79141369f8bfba77492093512f9dc4",
 )
 
 maven_jar(
     name = "dossier_closure_compiler_externs",
-    artifact = "com.google.javascript:closure-compiler-externs:v20160911",
-    sha1 = "3186e2c9a2018bb49547947d2919b0e6998a1fe2",
+    artifact = "com.google.javascript:closure-compiler-externs:v20170521",
+    sha1 = "d838c1b40a31efac71687aa197ce559f5459f983",
 )
 
 maven_jar(

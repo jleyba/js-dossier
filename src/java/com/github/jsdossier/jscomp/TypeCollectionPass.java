@@ -106,10 +106,11 @@ public final class TypeCollectionPass implements CompilerPass {
       if (modulePathFilter.test(module.getPath())) {
         continue;
       }
-      if (module.getType() != Module.Type.CLOSURE && !typeRegistry.isType(module.getId())) {
+      if (module.getType() != Module.Type.CLOSURE
+          && !typeRegistry.isType(module.getId().getCompiledName())) {
         typeRegistry.addType(
             NominalType.builder()
-                .setName(module.getId())
+                .setName(module.getId().getCompiledName())
                 .setType(compiler.getTypeRegistry().getNativeType(JSTypeNative.VOID_TYPE))
                 .setSourceFile(module.getPath())
                 .setSourcePosition(Position.of(0, 0))
@@ -245,7 +246,7 @@ public final class TypeCollectionPass implements CompilerPass {
     }
   }
 
-  private class TypeCollector implements Visitor<Void> {
+  private final  class TypeCollector implements Visitor<Void> {
 
     private final Node externsRoot;
     private final Set<JSType> externTypes = new HashSet<>();
@@ -293,7 +294,7 @@ public final class TypeCollectionPass implements CompilerPass {
             && nodeLibrary.isModulePath(node.getSourceFileName())) {
           if (name.startsWith(MODULE_ID_PREFIX)) {
             String id = name.substring(MODULE_ID_PREFIX.length());
-            if (nodeLibrary.isModuleId(id)) {
+            if (nodeLibrary.canRequireId(id)) {
               logfmt("Recording core node module as an extern: %s", id);
               externTypes.add(node.getJSType());
               continue;
@@ -356,7 +357,7 @@ public final class TypeCollectionPass implements CompilerPass {
         if (nodeLibrary.isModulePath(node.getSourceFileName())) {
           if (name.startsWith(MODULE_ID_PREFIX)) {
             String id = name.substring(MODULE_ID_PREFIX.length());
-            if (nodeLibrary.isModuleId(id)) {
+            if (nodeLibrary.canRequireId(id)) {
               logfmt("Recording core node module as an extern: %s", id);
               externTypes.add(node.getJSType());
               continue;
@@ -377,7 +378,7 @@ public final class TypeCollectionPass implements CompilerPass {
         if (typeRegistry.isModule(file) && name.startsWith(MODULE_CONTENTS_PREFIX)) {
           Module module = typeRegistry.getModule(file);
           if (module.getType() != Type.ES6) {
-            String id = module.getId();
+            String id = module.getId().getCompiledName();
             if (id.startsWith(MODULE_ID_PREFIX)) {
               id = id.substring(MODULE_ID_PREFIX.length());
             }
@@ -488,12 +489,16 @@ public final class TypeCollectionPass implements CompilerPass {
             module.getType() == Type.CLOSURE,
             "legacy namespace on non-closure module: %s",
             module.getOriginalName());
-        verify(module.getOriginalName().equals(module.getId()));
+        verify(
+            module.getOriginalName().equals(module.getId().getCompiledName()),
+            "expect legacy module to use original name for compiled name: %s != %s",
+            module.getId().getCompiledName(),
+            module.getOriginalName());
         return Optional.of(module);
       }
 
       if (typeRegistry.isImplicitNamespace(typeName)) {
-        verify(!typeName.equals(module.getId()));
+        verify(!typeName.equals(module.getId().getCompiledName()));
         return Optional.empty();
       }
       return Optional.of(module);
@@ -578,23 +583,32 @@ public final class TypeCollectionPass implements CompilerPass {
         return;
       }
 
-      NominalType parent = types.peek();
+      final NominalType parent = types.peek();
+      final String name = parent.getName() + "." + property.getName();
+      final Node node = property.getNode();
 
-      Node node = property.getNode();
-      JSDocInfo info = property.getJSDocInfo();
-      if (shouldUsePropertyTypeDocs(parent, property)) {
-        info = property.getType().getJSDocInfo();
-      }
-      JsDoc jsdoc = JsDoc.from(info);
-
-      if (jsdoc.isTypedef()) {
-        String name = parent.getName() + "." + property.getName();
-
-        Optional<Module> module = getModule(name, node);
-        if (module.isPresent() && modulePathFilter.test(module.get().getPath())) {
+      JsDoc jsdoc = null;
+      final Optional<Module> module = getModule(name, node);
+      if (module.isPresent()) {
+        Module m = module.get();
+        if (modulePathFilter.test(m.getPath())) {
           return;
         }
 
+        if (parent.isModuleExports() && m.getExportedDocs().containsKey(property.getName())) {
+          jsdoc = JsDoc.from(m.getExportedDocs().get(property.getName()));
+        }
+      }
+      
+      if (jsdoc == null) {
+        JSDocInfo info = property.getJSDocInfo();
+        if (shouldUsePropertyTypeDocs(parent, property)) {
+          info = property.getType().getJSDocInfo();
+        }
+        jsdoc = JsDoc.from(info);
+      }
+
+      if (jsdoc.isTypedef()) {
         addType(
             NominalType.builder()
                 .setName(name)
@@ -617,12 +631,6 @@ public final class TypeCollectionPass implements CompilerPass {
         if (ctor != null && parent.getType().equals(ctor)) {
           propertyType = ctor;
         }
-      }
-
-      String name = parent.getName() + "." + property.getName();
-      Optional<Module> module = getModule(name, node);
-      if (module.isPresent() && modulePathFilter.test(module.get().getPath())) {
-        return;
       }
 
       NominalType nt =

@@ -70,7 +70,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.file.FileSystem;
@@ -84,8 +83,10 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -821,8 +822,8 @@ abstract class Config {
     ES3(LanguageMode.ECMASCRIPT3),
     ES5(LanguageMode.ECMASCRIPT5),
     ES5_STRICT(LanguageMode.ECMASCRIPT5_STRICT),
-    ES6(LanguageMode.ECMASCRIPT6),
-    ES6_STRICT(LanguageMode.ECMASCRIPT6_STRICT),
+    ES6(LanguageMode.ECMASCRIPT_2015),
+    ES6_STRICT(LanguageMode.ECMASCRIPT_2015),
     ;
 
     private final LanguageMode mode;
@@ -891,15 +892,15 @@ abstract class Config {
       Config.Builder config = Config.builder().setFileSystem(fs);
 
       JsonObject jsonObject = json.getAsJsonObject();
-      for (Method getter : Config.class.getDeclaredMethods()) {
-        Description description = getter.getAnnotation(Description.class);
-        if (description == null || !jsonObject.has(description.name())) {
+      for (Map.Entry<Description, AccessorSetterPair> entry :
+          getAccessorSetterPairs(config.getClass()).entrySet()) {
+        if (!jsonObject.has(entry.getKey().name())) {
           continue;
         }
 
-        Type genericType = getter.getGenericReturnType();
+        Description description = entry.getKey();
+        Type genericType = entry.getValue().getter().getGenericReturnType();
         Object value;
-
         Type pathSetType = new TypeToken<ImmutableSet<Path>>() {}.getType();
         if (genericType.equals(pathSetType)) {
           ImmutablePathSetDeserializer deserializer =
@@ -911,35 +912,52 @@ abstract class Config {
           value = context.deserialize(jsonObject.get(description.name()), genericType);
         }
 
-        String setterName;
-        if (getter.getName().startsWith("get")) {
-          setterName = "set" + getter.getName().substring("get".length());
-        } else {
-          verify(getter.getName().startsWith("is"));
-          setterName = "set" + getter.getName().substring("is".length());
-        }
-
-        Class<? extends Config.Builder> clazz = config.getClass();
         try {
-          Class<?> basicType;
-          if (genericType instanceof Class) {
-            basicType = (Class<?>) genericType;
-          } else if (genericType instanceof ParameterizedType) {
-            basicType = (Class<?>) ((ParameterizedType) genericType).getRawType();
-          } else {
-            throw new AssertionError();
-          }
-          Method setterMethod = clazz.getMethod(setterName, basicType);
-          setterMethod.invoke(config, value);
-        } catch (NoSuchMethodException
-            | InvocationTargetException
-            | IllegalAccessException
-            | RuntimeException e) {
+          entry.getValue().setter().invoke(config, value);
+        } catch (IllegalAccessException | InvocationTargetException e) {
           throw new JsonParseException(e);
         }
       }
       return config.build();
     }
+  }
+
+  private static Map<Description, AccessorSetterPair> getAccessorSetterPairs(
+      Class<? extends Config.Builder> builderClass) {
+    Map<String, Method> setters = new HashMap<>();
+    for (Method method : builderClass.getDeclaredMethods()) {
+      if (method.getName().startsWith("set")) {
+        setters.put(method.getName(), method);
+      }
+    }
+
+    Map<Description, AccessorSetterPair> pairs = new HashMap<>();
+    for (Method getter : Config.class.getDeclaredMethods()) {
+      Description description = getter.getAnnotation(Description.class);
+      if (description == null) {
+        continue;
+      }
+
+      String setterName;
+      if (getter.getName().startsWith("get")) {
+        setterName = "set" + getter.getName().substring("get".length());
+      } else {
+        verify(getter.getName().startsWith("is"));
+        setterName = "set" + getter.getName().substring("is".length());
+      }
+
+      Method setter = setters.get(setterName);
+      verify(setter != null, "failed to resolve setter for %s", getter.getName());
+      pairs.put(description, new AutoValue_Config_AccessorSetterPair(getter, setter));
+    }
+    return pairs;
+  }
+
+  @AutoValue
+  abstract static class AccessorSetterPair {
+    abstract Method getter();
+
+    abstract Method setter();
   }
 
   private static class MarkdownPageSerializer implements JsonSerializer<MarkdownPage> {

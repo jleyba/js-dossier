@@ -127,21 +127,6 @@ public class JsDocTest {
   }
 
   @Test
-  @Bug(43)
-  public void parseParamsWithTypesOnly() {
-    JsDoc doc =
-        getClassJsDoc(
-            "/**",
-            " * @param {number}",
-            " * @param {number}",
-            " * @constructor",
-            " */",
-            "function Foo(x, y) {}");
-    List<Parameter> parameters = doc.getParameters();
-    assertThat(parameters).isEmpty();
-  }
-
-  @Test
   public void parsesParamDescriptions() {
     JsDoc doc =
         getClassJsDoc(

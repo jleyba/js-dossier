@@ -9,6 +9,7 @@ java_library(
         "//lib/maven:guice",
         "//lib/maven:inject",
         "//lib/maven:jimfs",
+        "//lib/maven:jsr305",
         "//lib/maven:junit",
         "//src/java/com/github/jsdossier",
         "//src/java/com/github/jsdossier/annotations",

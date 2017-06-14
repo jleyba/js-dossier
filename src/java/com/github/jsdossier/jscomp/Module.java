@@ -17,6 +17,7 @@ limitations under the License.
 package com.github.jsdossier.jscomp;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.javascript.jscomp.deps.ModuleNames.fileToModuleName;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
@@ -27,23 +28,24 @@ import java.nio.file.Path;
 @AutoValue
 public abstract class Module {
 
+  /** See {@link com.google.javascript.jscomp.ClosureRewriteModule} */
+  private static final String MODULE_EXPORTS_PREFIX = "module$exports$";
+
+  /** See {@link com.google.javascript.jscomp.ClosureRewriteModule} */
+  private static final String MODULE_CONTENTS_PREFIX = "module$contents$";
+
   /** Returns a new builder. */
   public static Builder builder() {
-    return new AutoValue_Module.Builder()
-        .setExportedDocs(ImmutableMap.of())
-        .setExportedNames(ImmutableMap.of())
-        .setInternalVarDocs(ImmutableMap.of())
-        .setHasLegacyNamespace(false);
+    return new AutoValue_Module.Builder().setHasLegacyNamespace(false);
   }
 
   // Package private to prevent extensions.
   Module() {}
 
   /**
-   * Returns this module's original name before the compiler applied any code transformations. For
-   * Node and
+   * Returns the ID for this module.
    */
-  public abstract String getOriginalName();
+  public abstract Id getId();
 
   /**
    * Returns the ID used to reference this module in code after any transformations applied by the
@@ -51,13 +53,19 @@ public abstract class Module {
    * declaration. For Node and ES6 modules, this will be derived by the compiler from the module's
    * file path.
    */
-  public abstract String getId();
+  public final String getOriginalName() {
+    return getId().getOriginalName();
+  }
 
   /** Returns the input file that defines this module. */
-  public abstract Path getPath();
+  public final Path getPath() {
+    return getId().getPath();
+  }
 
   /** Returns which syntactic type of module this is. */
-  public abstract Type getType();
+  public Type getType() {
+    return getId().getType();
+  }
 
   /** Returns the file-level JSDoc for this module. */
   public abstract JsDoc getJsDoc();
@@ -97,13 +105,25 @@ public abstract class Module {
     CLOSURE() {
       @Override
       public boolean isModuleId(String name) {
-        return name.startsWith("module$exports$");
+        return name.startsWith(MODULE_EXPORTS_PREFIX);
       }
 
       @Override
       public String stripModulePrefix(String name) {
         checkArgument(isModuleId(name), "not a module ID: %s", name);
-        return name.substring("module$exports$".length());
+        return name.substring(MODULE_EXPORTS_PREFIX.length());
+      }
+
+      @Override
+      public Id newId(Path path) {
+        throw new UnsupportedOperationException(
+            "cannot create a closure module ID from just the file path");
+      }
+
+      @Override
+      public Id newId(String name, Path path) {
+        return new AutoValue_Module_Id(
+            MODULE_EXPORTS_PREFIX + name.replace('.', '$'), name, path, this);
       }
     },
 
@@ -117,6 +137,18 @@ public abstract class Module {
       @Override
       public String stripModulePrefix(String name) {
         return name;
+      }
+
+      @Override
+      public Id newId(Path path) {
+        return new AutoValue_Module_Id(
+            fileToModuleName(path.normalize().toString()), path.toString(), path, this);
+      }
+
+      @Override
+      public Id newId(String ignored, Path path) {
+        throw new UnsupportedOperationException(
+            "can only create and ES6 module ID from the file path");
       }
     },
 
@@ -133,6 +165,18 @@ public abstract class Module {
       public String stripModulePrefix(String name) {
         return CLOSURE.stripModulePrefix(name);
       }
+
+      @Override
+      public Id newId(Path path) {
+        Id es6 = ES6.newId(path);
+        return newId(es6.getCompiledName(), path);
+      }
+
+      @Override
+      public Id newId(String name, Path path) {
+        return new AutoValue_Module_Id(
+            MODULE_EXPORTS_PREFIX + name.replace('.', '$'), name, path, this);
+      }
     };
 
     /** Returns whether the given variable name could be ID for this type of module. */
@@ -143,31 +187,91 @@ public abstract class Module {
      * identifier. In the case of ES6 modules, the initial value will always be returned unchanged.
      */
     public abstract String stripModulePrefix(String name);
+
+    /**
+     * Creates a new ID from the path to a module file.
+     */
+    public abstract Id newId(Path path);
+
+    /**
+     * Creates a new ID for this type of module.
+     */
+    public abstract Id newId(String name, Path path);
+  }
+
+  /**
+   * An identifier for a JavaScript module.
+   */
+  @AutoValue
+  public static abstract class Id {
+    Id() {}
+    
+    @Override
+    public String toString() {
+      return getCompiledName();
+    }
+    
+    String getContentsVar(String name) {
+      String base = getCompiledName();
+      if (base.startsWith(MODULE_EXPORTS_PREFIX)) {
+        base = base.substring(MODULE_EXPORTS_PREFIX.length());
+      } else {
+        base = base.replace('.', '$');
+      }
+      return MODULE_CONTENTS_PREFIX + base + "_" + name;
+    }
+    
+    Id toLegacyId() {
+      checkArgument(getType() == Type.CLOSURE,
+          "A legacy ID may only be created for a closure module: %s", getOriginalName());
+      return new AutoValue_Module_Id(
+          getOriginalName(), getOriginalName(), getPath(), getType());
+    }
+
+    /**
+     * Returns the module ID as it will appear in code generated by the Closure Compiler.
+     */
+    public abstract String getCompiledName();
+
+    /**
+     * Returns the module's original name. For a closure module, this will be the string provided
+     * in the call to {@code goog.module()}. For a node or ES6 module, this will be the module file's
+     * path.
+     */
+    public abstract String getOriginalName();
+
+    /**
+     * Returns the path to the file that declared this module.
+     */
+    public abstract Path getPath();
+
+    /**
+     * Returns the type of module this is an ID for.
+     */
+    public abstract Type getType();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder setOriginalName(String name);
+    public abstract Builder setId(Id id);
 
-    public abstract String getOriginalName();
+    public abstract Id getId();
 
-    public abstract Builder setId(String id);
-
-    public abstract String getId();
-
-    public abstract Builder setPath(Path path);
-
-    public abstract Path getPath();
-
-    public abstract Builder setType(Type type);
-
-    public abstract Type getType();
+    public Type getType() {
+      return getId().getType();
+    }
 
     public abstract Builder setJsDoc(JsDoc doc);
+    
+    public abstract ImmutableMap.Builder<String, String> exportedNamesBuilder();
 
     public abstract Builder setExportedNames(ImmutableMap<String, String> names);
+    
+    public abstract ImmutableMap.Builder<String, JSDocInfo> exportedDocsBuilder();
 
     public abstract Builder setExportedDocs(ImmutableMap<String, JSDocInfo> docs);
+    
+    public abstract ImmutableMap.Builder<String, JSDocInfo> internalVarDocsBuilder();
 
     public abstract Builder setInternalVarDocs(ImmutableMap<String, JSDocInfo> docs);
 
@@ -176,24 +280,21 @@ public abstract class Module {
     public abstract AliasRegion getAliases();
 
     public abstract Builder setHasLegacyNamespace(boolean legacy);
+    
+    public abstract boolean getHasLegacyNamespace();
 
     abstract Module autoBuild();
 
     public Module build() {
       Module m = autoBuild();
       checkArgument(
-          m.getPath().equals(m.getAliases().getPath()),
+          m.getId().getPath().equals(m.getAliases().getPath()),
           "Module path does not match alias region path: %s != %s",
-          m.getPath(),
+          m.getId().getPath(),
           m.getAliases().getPath());
       checkArgument(
           !m.getHasLegacyNamespace() || m.getType() == Type.CLOSURE,
           "Only Closure modules may have a legacy namespace: %s",
-          m.getId());
-      checkArgument(
-          !m.getHasLegacyNamespace() || m.getId().equals(m.getOriginalName()),
-          "Module ID and legacy namespace must be the same: %s != %s",
-          m.getOriginalName(),
           m.getId());
       return m;
     }

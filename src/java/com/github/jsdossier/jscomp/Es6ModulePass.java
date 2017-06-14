@@ -16,84 +16,67 @@ limitations under the License.
 
 package com.github.jsdossier.jscomp;
 
+import static com.github.jsdossier.jscomp.Module.Type.ES6;
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.collect.Iterables.getFirst;
+import static com.google.common.base.Verify.verify;
 import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
 
 import com.github.jsdossier.annotations.Input;
-import com.google.auto.factory.AutoFactory;
-import com.google.auto.factory.Provided;
-import com.google.common.collect.ImmutableMap;
-import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.jscomp.deps.ModuleNames;
-import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.Token;
-import java.io.IOException;
-import java.io.StringWriter;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Logger;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 
 /** Pass responsible for processing ES6 modules. */
-@AutoFactory
-final class Es6ModulePass implements CompilerPass {
-
-  private static final Logger log = Logger.getLogger(Es6ModulePass.class.getName());
+final class Es6ModulePass implements DossierCompilerPass {
 
   private static final String DEFAULT = "default";
 
-  private final DossierCompiler compiler;
   private final TypeRegistry typeRegistry;
   private final FileSystem inputFs;
 
-  Es6ModulePass(
-      @Provided TypeRegistry typeRegistry,
-      @Provided @Input FileSystem inputFs,
-      DossierCompiler compiler) {
+  @Inject
+  Es6ModulePass(TypeRegistry typeRegistry, @Input FileSystem inputFs) {
     this.typeRegistry = typeRegistry;
     this.inputFs = inputFs;
-    this.compiler = compiler;
   }
 
   @Override
-  public void process(Node externs, Node root) {
+  public void process(DossierCompiler compiler, Node root) {
     traverseEs6(compiler, root, new Es6ModuleTraversal());
   }
 
-  @SuppressWarnings("unused")
-  private static void printTree(Node n) {
-    StringWriter sw = new StringWriter();
-    try {
-      n.appendStringTree(sw);
-      System.err.println(sw.toString());
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
+  private class Es6ModuleTraversal implements NodeTraversal.Callback {
 
-  private class Es6ModuleTraversal extends NodeTraversal.AbstractShallowCallback {
-
-    private final Set<Node> imports = new HashSet<>();
-    private final Map<String, JSDocInfo> exportedDocs = new HashMap<>();
-    private final Map<String, String> exportedNames = new HashMap<>();
-    private final Map<String, JSDocInfo> internalDocs = new HashMap<>();
-    private JsDoc moduleDocs;
+    private boolean isEs6Module;
     private Module.Builder module;
+
+    @Override
+    public boolean shouldTraverse(NodeTraversal nodeTraversal, Node n, Node parent) {
+      if (n.isScript()) {
+        Path path = inputFs.getPath(n.getSourceFileName());
+        module = Module.builder()
+            .setId(ES6.newId(path))
+            .setJsDoc(JsDoc.from(n.getJSDocInfo()))
+            .setAliases(AliasRegion.forFile(path));
+
+        // Start building the module. It won't be finalized unless we see an export statement.
+        isEs6Module = false;
+      }
+      return parent == null || !parent.isFunction() || n == parent.getFirstChild();
+    }
 
     @Override
     public void visit(NodeTraversal t, Node n, Node parent) {
       if (n.isScript()) {
-        visitScript(n);
+        visitScript();
         return;
       }
 
@@ -126,44 +109,41 @@ final class Es6ModulePass implements CompilerPass {
 
       if (parent.isScript()) {
         if (n.getJSDocInfo() != null) {
-          internalDocs.put(name, n.getJSDocInfo());
+          module.internalVarDocsBuilder().put(name, n.getJSDocInfo());
         }
 
       } else if (parent.isExport()) {
         if (parent.getBooleanProp(Node.EXPORT_DEFAULT)) {
-          exportedNames.put(DEFAULT, name);
+          module.exportedNamesBuilder().put(DEFAULT, name);
         } else {
-          exportedNames.put(name, name);
+          module.exportedNamesBuilder().put(name, name);
         }
         if (parent.getJSDocInfo() != null) {
-          exportedDocs.put(name, parent.getJSDocInfo());
+          module.exportedDocsBuilder().put(name, parent.getJSDocInfo());
         }
 
         if (n.getJSDocInfo() != null) {
-          internalDocs.put(name, n.getJSDocInfo());
+          module.internalVarDocsBuilder().put(name, n.getJSDocInfo());
         } else if (parent.getJSDocInfo() != null) {
-          internalDocs.put(name, parent.getJSDocInfo());
+          module.internalVarDocsBuilder().put(name, parent.getJSDocInfo());
         }
       }
     }
 
     private void visitExport(Node n) {
-      if (module == null) {
-        initModule(n);
-        module.setType(Module.Type.ES6);
-      }
+      isEs6Module = true;
 
       // Case: export name;
       // Will the second child ever be non-null here?
       if (n.getFirstChild().isName() && n.getFirstChild().getNext() == null) {
         String name = n.getFirstChild().getQualifiedName();
         if (n.getBooleanProp(Node.EXPORT_DEFAULT)) {
-          exportedNames.put(DEFAULT, name);
+          module.exportedNamesBuilder().put(DEFAULT, name);
         } else {
-          exportedNames.put(name, name);
+          module.exportedNamesBuilder().put(name, name);
         }
         if (n.getJSDocInfo() != null) {
-          exportedDocs.put(name, n.getJSDocInfo());
+          module.exportedDocsBuilder().put(name, n.getJSDocInfo());
         }
         return;
       }
@@ -189,7 +169,7 @@ final class Es6ModulePass implements CompilerPass {
 
           Node second = firstNonNull(first.getNext(), first);
 
-          exportedNames.put(second.getQualifiedName(), trueName);
+          module.exportedNamesBuilder().put(second.getQualifiedName(), trueName);
 
           if (!DEFAULT.equals(first.getQualifiedName())) {
             module.getAliases().addAlias(first.getQualifiedName(), trueName);
@@ -198,73 +178,25 @@ final class Es6ModulePass implements CompilerPass {
       }
     }
 
-    private void visitImport(Node n) {
-      imports.add(n);
-      if (module == null) {
-        initModule(n);
+    private void visitScript() {
+      if (isEs6Module) {
+        verify(module != null);
+        typeRegistry.addModule(module.build());
       }
-    }
-
-    private void initModule(Node n) {
-      if (module != null) {
-        return;
-      }
-
-      Path path = inputFs.getPath(n.getSourceFileName());
-      module =
-          Module.builder()
-              .setId(Types.getModuleId(path))
-              .setOriginalName(path.toString())
-              .setPath(path)
-              .setAliases(AliasRegion.forFile(path))
-              .setType(Module.Type.ES6);
-      log.fine(String.format("Found ES6 module: %s (%s)", path, module.getId()));
-
-      if (n.getJSDocInfo() != null && n.getBooleanProp(Node.EXPORT_DEFAULT)) {
-        moduleDocs = JsDoc.from(n.getJSDocInfo());
-        module.setJsDoc(moduleDocs);
-      }
-
-      // The compiler does not generate alias notifications when it rewrites an ES6 module,
-      // so we register a region here.
-      typeRegistry.addAliasRegion(module.getAliases());
-    }
-
-    private void visitScript(Node script) {
-      if (module == null) {
-        return;
-      }
-
-      if (moduleDocs == null) {
-        module.setJsDoc(JsDoc.from(script.getJSDocInfo()));
-      }
-
-      module
-          .setExportedDocs(ImmutableMap.copyOf(exportedDocs))
-          .setExportedNames(ImmutableMap.copyOf(exportedNames))
-          .setInternalVarDocs(ImmutableMap.copyOf(internalDocs));
-
-      typeRegistry.addModule(module.build());
-      exportedDocs.clear();
-      exportedNames.clear();
-      internalDocs.clear();
+      isEs6Module = false;
       module = null;
-      moduleDocs = null;
-
-      imports.forEach(this::processImportStatement);
-      imports.clear();
     }
 
-    private void processImportStatement(Node n) {
+    private void visitImport(Node n) {
       checkArgument(n.isImport());
+      isEs6Module = true;
 
-      Path path = inputFs.getPath(n.getSourceFileName());
-      AliasRegion aliasRegion = getAliasRegion(path);
+      AliasRegion aliasRegion = module.getAliases();
 
       Node first = n.getFirstChild();
       Node second = first.getNext();
 
-      String def = extractModuleId(path, second.getNext());
+      String def = extractModuleId(module.getId().getPath(), second.getNext());
       if (def == null) {
         return;
       }
@@ -285,14 +217,6 @@ final class Es6ModulePass implements CompilerPass {
           aliasRegion.addAlias(alias, def + "." + imported);
         }
       }
-    }
-
-    private AliasRegion getAliasRegion(Path path) {
-      AliasRegion aliasRegion = getFirst(typeRegistry.getAliasRegions(path), null);
-      if (aliasRegion == null) {
-        throw new AssertionError();
-      }
-      return aliasRegion;
     }
 
     @Nullable

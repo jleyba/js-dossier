@@ -16,6 +16,10 @@ limitations under the License.
 
 package com.github.jsdossier.testing;
 
+import static java.nio.file.Files.createDirectories;
+import static java.nio.file.Files.createFile;
+import static java.nio.file.Files.exists;
+
 import com.github.jsdossier.jscomp.DossierCompiler;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.google.common.base.Joiner;
@@ -112,7 +116,7 @@ public class CompilerUtil {
     return BUILTIN_EXTERN_CACHE.get(environment);
   }
 
-  private static void assertCompiled(Result result) {
+  private  void assertCompiled(Result result) {
     if (result.errors.length > 0 || result.warnings.length > 0) {
       List<String> errors = Lists.newLinkedList();
       errors.add("Failed to compile!");
@@ -121,6 +125,10 @@ public class CompilerUtil {
 
       errors.add("Compiler warnings");
       appendErrors(errors, result.warnings);
+      
+      if (result.errors.length == 0) {
+        System.out.println(toSource());
+      }
 
       throw new CompileFailureException(Joiner.on("\n").join(errors));
     }
@@ -133,6 +141,16 @@ public class CompilerUtil {
   }
 
   public static SourceFile createSourceFile(Path path, String... lines) {
+    if (!exists(path)) {
+      try {
+        if (path.getParent() != null) {
+          createDirectories(path.getParent());
+        }
+        createFile(path);
+      } catch (IOException e) {
+        throw new AssertionError("unexpected IO error", e);
+      }
+    }
     return SourceFile.fromCode(path.toString(), Joiner.on("\n").join(lines));
   }
 

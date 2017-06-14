@@ -47,7 +47,7 @@ public class CommentParserTest {
           .setSourcePrefix("source")
           .setModulePrefix("source/modules")
           .setModules("one.js", "two.js", "three.js", "sub/index.js", "sub/foo.js")
-          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
+          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT_2015)
           .build();
 
   @Inject @Input FileSystem fs;

@@ -15,6 +15,7 @@
       <sourceFolder url="file://$MODULE_DIR$/third_party" type="java-resource" relativeOutputPath="third_party" />
       <sourceFolder url="file://$MODULE_DIR$/bazel-genfiles/src" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/java/com/github/jsdossier/jscomp/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/bazel-bin/src" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
       <excludeFolder url="file://$MODULE_DIR$/bazel-bin/lib" />
       <excludeFolder url="file://$MODULE_DIR$/bazel-bin/src/java" />
@@ -31,7 +32,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="args4j:args4j:2.0.26" level="project" />
-    <orderEntry type="library" name="com.atlassian.commonmark:commonmark:0.9.0" level="project" />
+    <orderEntry type="library" name="com.atlassian.commonmark:commonmark:0.5.0" level="project" />
     <orderEntry type="library" name="com.google.auto:auto-common:0.8" level="project" />
     <orderEntry type="library" name="com.google.auto.factory:auto-factory:1.0-beta3" level="project" />
     <orderEntry type="library" name="com.google.auto.value:auto-value:1.4.1" level="project" />
@@ -42,11 +43,10 @@
     <orderEntry type="library" name="com.google.inject:guice:4.1.0" level="project" />
     <orderEntry type="library" name="com.google.inject.extensions:guice-assistedinject:4.1.0" level="project" />
     <orderEntry type="library" name="com.google.inject.extensions:guice-multibindings:4.1.0" level="project" />
-    <orderEntry type="library" name="com.google.javascript:closure-compiler-unshaded:v20160911" level="project" />
+    <orderEntry type="library" name="com.google.javascript:closure-compiler-unshaded:v20170521" level="project" />
     <orderEntry type="library" name="com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:r239" level="project" />
     <orderEntry type="library" name="com.google.protobuf:protobuf-java:3.1.0" level="project" />
     <orderEntry type="library" name="com.google.template:soy:2016-08-25" level="project" />
-    <orderEntry type="library" name="com.squareup:javapoet:1.7.0" level="project" />
     <orderEntry type="library" name="com.squareup:javawriter:2.5.1" level="project" />
     <orderEntry type="library" name="javax.inject:javax.inject:1" level="project" />
     <orderEntry type="library" name="joda-time:joda-time:2.3" level="project" />

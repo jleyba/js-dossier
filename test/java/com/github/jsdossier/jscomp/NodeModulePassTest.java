@@ -296,7 +296,10 @@ public class NodeModulePassTest {
 
   @Test
   public void handlesRequireNodeCoreModule() {
-    CompilerUtil compiler = createCompiler(path("foo/module.js"));
+    CompilerUtil compiler = createCompiler(
+        ImmutableSet.of(),
+        ImmutableSet.of(path("foo/module.js")),
+        false);
 
     compiler.compile(
         createSourceFile(path("foo/module.js"), "var p = require('path');", "p.join('a', 'b');"));
@@ -310,7 +313,10 @@ public class NodeModulePassTest {
 
   @Test
   public void canReferToClassesExportedByNodeCoreModule() {
-    CompilerUtil compiler = createCompiler(path("foo/module.js"));
+    CompilerUtil compiler = createCompiler(
+        ImmutableSet.of(),
+        ImmutableSet.of(path("foo/module.js")),
+        false);
 
     compiler.compile(
         createSourceFile(
@@ -329,7 +335,10 @@ public class NodeModulePassTest {
 
   @Test
   public void leavesRequireStatementsForUnrecognizedModuleIds() {
-    CompilerUtil compiler = createCompiler(path("foo/module.js"));
+    CompilerUtil compiler = createCompiler(
+        ImmutableSet.of(),
+        ImmutableSet.of(path("foo/module.js")),
+        false);
 
     compiler.compile(
         createSourceFile(path("foo/module.js"), "var foo = require('foo');", "foo.doSomething();"));
@@ -423,7 +432,7 @@ public class NodeModulePassTest {
     assertThat(compiler.toSource())
         .contains(
             lines(
-                "var module$exports$module$$absolute$foo$baz$one = {};",
+                "var module$exports$module$absolute$foo$baz$one = {};",
                 "var module$exports$module$foo$bar$two = {};"));
   }
 
@@ -446,10 +455,9 @@ public class NodeModulePassTest {
         .contains(
             lines(
                 "var module$exports$module$foo$two = {};",
-                "var module$contents$module$foo$two_go = function() {",
+                "module$exports$module$foo$two.go = function() {",
                 "  var x = module$exports$module$foo$three;",
                 "};",
-                "module$exports$module$foo$two.go = module$contents$module$foo$two_go;",
                 "var module$exports$module$foo$one = {};",
                 "module$exports$module$foo$two.go();",
                 "var module$exports$module$foo$three = {};"));
@@ -666,7 +674,7 @@ public class NodeModulePassTest {
     assertTrue(type.isConstructor());
 
     type = type.toObjectType().getTypeOfThis();
-    assertEquals("module$contents$module$foo_Builder", type.toString());
+    assertEquals("module$exports$module$foo.Builder", type.toString());
 
     type = type.toObjectType().getPropertyType("returnThis");
     assertTrue(type.toString(), type.isFunctionType());
@@ -679,7 +687,7 @@ public class NodeModulePassTest {
 
     node = node.getFirstChild();
     assertTrue(node.isString());
-    assertEquals("module$contents$module$foo_Builder", node.getString());
+    assertEquals("module$exports$module$foo.Builder", node.getString());
     assertEquals("Builder", node.getProp(Node.ORIGINALNAME_PROP));
   }
 
@@ -945,12 +953,12 @@ public class NodeModulePassTest {
     assertThat(util.toSource())
         .contains(
             lines(
-                "var module$exports$module$$src$modules$foo$bar = {};",
-                "module$exports$module$$src$modules$foo$bar.Baz = function() {",
+                "var module$exports$module$src$modules$foo$bar = {};",
+                "module$exports$module$src$modules$foo$bar.Baz = function() {",
                 "};",
-                "var module$exports$module$$src$modules$foo$baz = {};",
-                "module$exports$module$$src$modules$foo$baz.AliasedBaz"
-                    + " = module$exports$module$$src$modules$foo$bar.Baz"));
+                "var module$exports$module$src$modules$foo$baz = {};",
+                "module$exports$module$src$modules$foo$baz.AliasedBaz"
+                    + " = module$exports$module$src$modules$foo$bar.Baz"));
   }
 
   @Test
@@ -1072,7 +1080,7 @@ public class NodeModulePassTest {
                 "module.exports = xml;")
             .getBytes(StandardCharsets.UTF_8));
 
-    CompilerUtil compiler = createCompiler(ImmutableSet.of(extern), ImmutableSet.of(module));
+    CompilerUtil compiler = createCompiler(ImmutableSet.of(extern), ImmutableSet.of(module), false);
     compiler.compile(module, "var xml = require('xml');", "xml.parse('abc');");
 
     assertThat(compiler.toSource())
@@ -1104,17 +1112,17 @@ public class NodeModulePassTest {
     assertThat(util.toSource())
         .contains(
             lines(
-                "var module$exports$module$$src$modules$foo$bar = {};",
-                "module$exports$module$$src$modules$foo$bar.Bar = function() {",
+                "var module$exports$module$src$modules$foo$bar = {};",
+                "module$exports$module$src$modules$foo$bar.Bar = function() {",
                 "};",
-                "var module$exports$module$$src$modules$foo$baz = {};",
-                "module$exports$module$$src$modules$foo$baz.Baz = function() {",
+                "var module$exports$module$src$modules$foo$baz = {};",
+                "module$exports$module$src$modules$foo$baz.Baz = function() {",
                 "};",
-                "var module$exports$module$$src$modules$foo$index = {};",
-                "module$exports$module$$src$modules$foo$index.bar ="
-                    + " module$exports$module$$src$modules$foo$bar;",
-                "module$exports$module$$src$modules$foo$index.baz ="
-                    + " module$exports$module$$src$modules$foo$baz;"));
+                "var module$exports$module$src$modules$foo$index = {};",
+                "module$exports$module$src$modules$foo$index.bar ="
+                    + " module$exports$module$src$modules$foo$bar;",
+                "module$exports$module$src$modules$foo$index.baz ="
+                    + " module$exports$module$src$modules$foo$baz;"));
   }
 
   @Test
@@ -1139,17 +1147,17 @@ public class NodeModulePassTest {
     assertThat(util.toSource())
         .contains(
             lines(
-                "var module$exports$module$$src$modules$foo$bar = {};",
-                "module$exports$module$$src$modules$foo$bar.Bar = function() {",
+                "var module$exports$module$src$modules$foo$bar = {};",
+                "module$exports$module$src$modules$foo$bar.Bar = function() {",
                 "};",
-                "var module$exports$module$$src$modules$foo$baz = {};",
-                "module$exports$module$$src$modules$foo$baz.Baz = function() {",
+                "var module$exports$module$src$modules$foo$baz = {};",
+                "module$exports$module$src$modules$foo$baz.Baz = function() {",
                 "};",
-                "var module$exports$module$$src$modules$foo$index = {};",
-                "module$exports$module$$src$modules$foo$index.bar ="
-                    + " module$exports$module$$src$modules$foo$bar;",
-                "module$exports$module$$src$modules$foo$index.baz ="
-                    + " module$exports$module$$src$modules$foo$baz;"));
+                "var module$exports$module$src$modules$foo$index = {};",
+                "module$exports$module$src$modules$foo$index.bar ="
+                    + " module$exports$module$src$modules$foo$bar;",
+                "module$exports$module$src$modules$foo$index.baz ="
+                    + " module$exports$module$src$modules$foo$baz;"));
   }
 
   @Test
@@ -1173,19 +1181,17 @@ public class NodeModulePassTest {
     assertThat(util.toSource())
         .contains(
             lines(
-                "var module$exports$module$$src$modules$foo$bar = {};",
-                "module$exports$module$$src$modules$foo$bar.Bar = function() {",
+                "var module$exports$module$src$modules$foo$bar = {};",
+                "module$exports$module$src$modules$foo$bar.Bar = function() {",
                 "};",
-                "var module$exports$module$$src$modules$foo$baz = {};",
-                "module$exports$module$$src$modules$foo$baz.Baz = function() {",
+                "var module$exports$module$src$modules$foo$baz = {};",
+                "module$exports$module$src$modules$foo$baz.Baz = function() {",
                 "};",
-                "var module$exports$module$$src$modules$foo$index = {};",
-                "var module$contents$module$$src$modules$foo$index_Bar ="
-                    + " module$exports$module$$src$modules$foo$bar.Bar;",
-                "module$exports$module$$src$modules$foo$index.Bar ="
-                    + " module$contents$module$$src$modules$foo$index_Bar;",
-                "module$exports$module$$src$modules$foo$index.baz ="
-                    + " module$exports$module$$src$modules$foo$baz;"));
+                "var module$exports$module$src$modules$foo$index = {};",
+                "module$exports$module$src$modules$foo$index.Bar ="
+                    + " module$exports$module$src$modules$foo$bar.Bar;",
+                "module$exports$module$src$modules$foo$index.baz ="
+                    + " module$exports$module$src$modules$foo$baz;"));
   }
 
   @Test
@@ -1206,14 +1212,14 @@ public class NodeModulePassTest {
     assertThat(util.toSource())
         .contains(
             lines(
-                "var module$exports$module$$src$modules$foo$bar = {};",
-                "module$exports$module$$src$modules$foo$bar.Bar = function() {",
+                "var module$exports$module$src$modules$foo$bar = {};",
+                "module$exports$module$src$modules$foo$bar.Bar = function() {",
                 "};",
-                "var module$exports$module$$src$modules$foo$index = {};",
-                "var module$contents$module$$src$modules$foo$index_Bar = "
-                    + "module$exports$module$$src$modules$foo$bar.Bar;",
-                "module$exports$module$$src$modules$foo$index.createBar = function() {",
-                "  return new module$contents$module$$src$modules$foo$index_Bar;",
+                "var module$exports$module$src$modules$foo$index = {};",
+                "var module$contents$module$src$modules$foo$index_Bar = "
+                    + "module$exports$module$src$modules$foo$bar.Bar;",
+                "module$exports$module$src$modules$foo$index.createBar = function() {",
+                "  return new module$contents$module$src$modules$foo$index_Bar;",
                 "};"));
   }
 
@@ -1239,17 +1245,17 @@ public class NodeModulePassTest {
     assertThat(util.toSource())
         .contains(
             lines(
-                "var module$exports$module$$src$modules$foo$bar = {};",
-                "module$exports$module$$src$modules$foo$bar.Bar = function() {",
+                "var module$exports$module$src$modules$foo$bar = {};",
+                "module$exports$module$src$modules$foo$bar.Bar = function() {",
                 "};",
-                "var module$exports$module$$src$modules$foo$index = {};",
-                "var module$contents$module$$src$modules$foo$index_Bar = "
-                    + "module$exports$module$$src$modules$foo$bar.Bar;",
-                "module$exports$module$$src$modules$foo$index.newBar = function() {",
-                "  return new module$exports$module$$src$modules$foo$bar.Bar;",
+                "var module$exports$module$src$modules$foo$index = {};",
+                "var module$contents$module$src$modules$foo$index_Bar = "
+                    + "module$exports$module$src$modules$foo$bar.Bar;",
+                "module$exports$module$src$modules$foo$index.newBar = function() {",
+                "  return new module$exports$module$src$modules$foo$bar.Bar;",
                 "};",
-                "module$exports$module$$src$modules$foo$index.createBar = function() {",
-                "  return new module$contents$module$$src$modules$foo$index_Bar;",
+                "module$exports$module$src$modules$foo$index.createBar = function() {",
+                "  return new module$contents$module$src$modules$foo$index_Bar;",
                 "};"));
   }
 
@@ -1260,10 +1266,15 @@ public class NodeModulePassTest {
   }
 
   private CompilerUtil createCompiler(final Path... modules) {
-    return createCompiler(ImmutableSet.<Path>of(), ImmutableSet.copyOf(modules));
+    return createCompiler(ImmutableSet.of(), ImmutableSet.copyOf(modules));
   }
 
   private CompilerUtil createCompiler(ImmutableSet<Path> externs, ImmutableSet<Path> modules) {
+    return createCompiler(externs, modules, true);
+  }
+
+  private CompilerUtil createCompiler(
+      ImmutableSet<Path> externs, ImmutableSet<Path> modules, boolean excludeNodeExterns) {
     for (Path path : concat(externs, modules)) {
       Path parent = path.getParent();
       if (parent != null) {
@@ -1279,7 +1290,8 @@ public class NodeModulePassTest {
             .setInputFs(fs)
             .setModuleExterns(externs)
             .setModules(modules)
-            .setLanguageIn(LanguageMode.ECMASCRIPT6_STRICT)
+            .setLanguageIn(LanguageMode.ECMASCRIPT_2015)
+            .setUseNodeLibrary(!excludeNodeExterns)
             .build()
             .createInjector();
     injector.injectMembers(this);

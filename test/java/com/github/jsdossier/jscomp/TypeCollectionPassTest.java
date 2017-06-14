@@ -38,17 +38,23 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for {@link TypeCollectionPass}. */
+/**
+ * Tests for {@link TypeCollectionPass}.
+ */
 @RunWith(JUnit4.class)
 public class TypeCollectionPassTest {
 
   @Rule
   public GuiceRule guice =
-      GuiceRule.builder(this).setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6).build();
+      GuiceRule.builder(this).setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT_2015).build();
 
-  @Inject @Input private FileSystem fs;
-  @Inject private CompilerUtil util;
-  @Inject private TypeRegistry typeRegistry;
+  @Inject
+  @Input
+  private FileSystem fs;
+  @Inject
+  private CompilerUtil util;
+  @Inject
+  private TypeRegistry typeRegistry;
 
   @Test
   public void collectsGlobalClasses_functionDeclaration() {
@@ -686,8 +692,8 @@ public class TypeCollectionPassTest {
 
     NominalType three = typeRegistry.getType("foo.three");
     assertWithMessage(
-            "Even though foo.three duck-types to foo.one, the"
-                + " compiler should detect that foo.three.a.b != foo.one.a.b")
+        "Even though foo.three duck-types to foo.one, the"
+            + " compiler should detect that foo.three.a.b != foo.one.a.b")
         .that(typeRegistry.getTypes(three.getType()))
         .containsExactly(three);
 
@@ -893,7 +899,7 @@ public class TypeCollectionPassTest {
     NominalType type = typeRegistry.getType("module$exports$foo.Person");
     assertConstructor(type);
     assertPath(type, "modules/foo/bar.js");
-    assertPosition(type, 4, 0);
+    assertPosition(type, 3, 0);
     assertThat(type.getJsDoc().getBlockComment()).isEqualTo("A person.");
   }
 
@@ -910,7 +916,7 @@ public class TypeCollectionPassTest {
     NominalType type = typeRegistry.getType("module$exports$module$modules$foo$bar.Person");
     assertConstructor(type);
     assertPath(type, "modules/foo/bar.js");
-    assertPosition(type, 3, 0);
+    assertPosition(type, 2, 0);
     assertThat(type.getJsDoc().getBlockComment()).isEqualTo("A person.");
   }
 
@@ -944,7 +950,7 @@ public class TypeCollectionPassTest {
     NominalType type = typeRegistry.getType("module$exports$foo.Person");
     assertConstructor(type);
     assertPath(type, "modules/foo/bar.js");
-    assertPosition(type, 5, 0);
+    assertPosition(type, 3, 0);
     assertThat(type.getJsDoc().getBlockComment()).isEqualTo("An exported person.");
   }
 
@@ -962,7 +968,7 @@ public class TypeCollectionPassTest {
     NominalType type = typeRegistry.getType("module$exports$module$modules$foo$bar.Person");
     assertConstructor(type);
     assertPath(type, "modules/foo/bar.js");
-    assertPosition(type, 4, 0);
+    assertPosition(type, 2, 0);
     assertThat(type.getJsDoc().getBlockComment()).isEqualTo("An exported person.");
   }
 
@@ -1010,13 +1016,13 @@ public class TypeCollectionPassTest {
     NominalType type = typeRegistry.getType("module$exports$module$modules$foo$bar.Person");
     assertConstructor(type);
     assertPath(type, "modules/foo/bar.js");
-    assertPosition(type, 6, 18);
+    assertPosition(type, 2, 0);
     assertThat(type.getJsDoc().getBlockComment()).isEqualTo("A person.");
 
     type = typeRegistry.getType("module$exports$module$modules$foo$bar.HappyPerson");
     assertConstructor(type);
     assertPath(type, "modules/foo/bar.js");
-    assertPosition(type, 6, 26);
+    assertPosition(type, 4, 0);
     assertThat(type.getJsDoc().getBlockComment()).isEqualTo("A happy person.");
   }
 
@@ -1037,13 +1043,13 @@ public class TypeCollectionPassTest {
     NominalType type = typeRegistry.getType("module$exports$foo.Person");
     assertConstructor(type);
     assertPath(type, "modules/foo/bar.js");
-    assertPosition(type, 8, 11);
+    assertPosition(type, 4, 0);
     assertThat(type.getJsDoc().getBlockComment()).isEqualTo("A person.");
 
     type = typeRegistry.getType("module$exports$foo.HappyPerson");
     assertConstructor(type);
     assertPath(type, "modules/foo/bar.js");
-    assertPosition(type, 8, 19);
+    assertPosition(type, 6, 0);
     assertThat(type.getJsDoc().getBlockComment()).isEqualTo("A happy person.");
   }
 
@@ -1144,7 +1150,7 @@ public class TypeCollectionPassTest {
         .containsExactly(typeRegistry.getType("module$exports$module$modules$one"));
 
     NodeLibrary library = injector.getInstance(NodeLibrary.class);
-    assertThat(library.isModuleId("two")).isTrue();
+    assertThat(library.canRequireId("two")).isTrue();
   }
 
   private void defineInputModules(String prefix, String... modules) {
@@ -1206,7 +1212,7 @@ public class TypeCollectionPassTest {
       NominalType type, Module.Type moduleType, String id, String path) {
     Module module = type.getModule().get();
     assertThat(module.getType()).isEqualTo(moduleType);
-    assertThat(module.getId()).isEqualTo(id);
+    assertThat(module.getId().getCompiledName()).isEqualTo(id);
     assertThat(module.getPath().toString()).isEqualTo(path);
   }
 }

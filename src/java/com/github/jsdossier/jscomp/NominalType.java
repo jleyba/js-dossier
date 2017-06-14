@@ -59,7 +59,7 @@ public abstract class NominalType {
 
   /** Returns whether this is the main exports object for this type's containing module. */
   public boolean isModuleExports() {
-    return getModule().isPresent() && getModule().get().getId().equals(getName());
+    return getModule().isPresent() && getModule().get().getId().getCompiledName().equals(getName());
   }
 
   /**

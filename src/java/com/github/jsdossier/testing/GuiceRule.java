@@ -17,6 +17,7 @@ limitations under the License.
 package com.github.jsdossier.testing;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 
 import com.github.jsdossier.MarkdownPage;
 import com.github.jsdossier.ModuleNamingConvention;
@@ -32,6 +33,7 @@ import com.github.jsdossier.annotations.SourceUrlTemplate;
 import com.github.jsdossier.annotations.Stderr;
 import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.jscomp.CompilerModule;
+import com.github.jsdossier.jscomp.NodeLibrary;
 import com.github.jsdossier.soy.DossierSoyModule;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
@@ -46,12 +48,14 @@ import com.google.inject.Provides;
 import com.google.inject.Scopes;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
+import com.google.template.soy.exprtree.NullNode;
 import java.io.PrintStream;
 import java.lang.annotation.Annotation;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -110,6 +114,9 @@ public abstract class GuiceRule implements TestRule {
 
   abstract Optional<Path> getOutputDir();
 
+  @Nullable
+  abstract Class<? extends NodeLibrary> getNodeLibrary();
+
   public abstract Builder toBuilder();
 
   @Override
@@ -139,8 +146,11 @@ public abstract class GuiceRule implements TestRule {
                     bind(Path.class, Output.class, getOutputDir());
                     bindScope(DocumentationScoped.class, Scopes.NO_SCOPE);
                     bind(ModuleNamingConvention.class).toInstance(getModuleNamingConvention());
-                    bind(new Key<ImmutableSet<MarkdownPage>>() {})
-                        .toInstance(ImmutableSet.<MarkdownPage>of());
+                    bind(new Key<ImmutableSet<MarkdownPage>>() {}).toInstance(ImmutableSet.of());
+
+                    if (getNodeLibrary() != null) {
+                      bind(NodeLibrary.class).to(getNodeLibrary());
+                    }
                   }
 
                   @Provides
@@ -283,7 +293,18 @@ public abstract class GuiceRule implements TestRule {
     public Builder setOutputDir(String path) {
       return setOutputDir(Optional.of(getOutputFs().getPath(path)));
     }
+    
+    public Builder setUseNodeLibrary(boolean useLibrary) {
+      if (useLibrary) {
+        return setNodeLibrary(null);
+      }
+      return setNodeLibrary(NullNodeLibrary.class);
+    }
+
+    public abstract Builder setNodeLibrary(@Nullable Class<? extends NodeLibrary> library);
 
     public abstract GuiceRule build();
   }
+
+  private static final class NullNodeLibrary implements NodeLibrary {}
 }

@@ -179,7 +179,7 @@ final class TypeInspector {
 
     if (type.getModule().isPresent() && !type.isModuleExports()) {
       Module module = type.getModule().get();
-      String exportedName = type.getName().substring(module.getId().length() + 1);
+      String exportedName = type.getName().substring(module.getId().toString().length() + 1);
       String internalName = module.getExportedNames().get(exportedName);
       if (!isNullOrEmpty(internalName)) {
         JSDocInfo info = module.getInternalVarDocs().get(internalName);
@@ -1248,7 +1248,7 @@ final class TypeInspector {
   }
 
   private void resolveNames(Node node) {
-    if (node.getToken() == Token.NAME || node.getToken() == Token.STRING) {
+    if (node.isName() || node.isString()) {
       String name = node.getString();
       if (registry.isType(name)) {
         NominalType nominalType = registry.getType(name);

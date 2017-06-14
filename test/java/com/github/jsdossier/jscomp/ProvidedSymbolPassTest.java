@@ -37,7 +37,8 @@ public class ProvidedSymbolPassTest {
   @Rule
   public GuiceRule guiceRule =
       GuiceRule.builder(this)
-          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
+          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT_2015)
+          .setUseNodeLibrary(false)
           .build();
 
   @Inject @Input private FileSystem fs;
@@ -101,8 +102,8 @@ public class ProvidedSymbolPassTest {
 
     Module module = typeRegistry.getModule(nameToId("sample.module"));
     assertThat(module.getHasLegacyNamespace()).isFalse();
-    assertThat(module.getPath().toString()).isEqualTo("/foo/bar/module.js");
-    assertThat(module.getType()).isEqualTo(Module.Type.CLOSURE);
+    assertThat(module.getId().getPath().toString()).isEqualTo("/foo/bar/module.js");
+    assertThat(module.getId().getType()).isEqualTo(Module.Type.CLOSURE);
   }
 
   @Test
@@ -200,7 +201,7 @@ public class ProvidedSymbolPassTest {
         "var varNoDocs;",
         "let letNoDocs;");
 
-    Module module = typeRegistry.getModule(nameToId("module$$modules$foo$bar"));
+    Module module = typeRegistry.getModule(nameToId("module$modules$foo$bar"));
     assertThat(module.getInternalVarDocs().keySet())
         .containsExactly(
             "fnDeclDocs",
@@ -342,7 +343,7 @@ public class ProvidedSymbolPassTest {
     assertThat(typeRegistry.getProvidedSymbols()).isEmpty();
     assertThat(typeRegistry.getImplicitNamespaces()).isEmpty();
 
-    Module module = typeRegistry.getModule(nameToId("module$$modules$foo$bar"));
+    Module module = typeRegistry.getModule(nameToId("module$modules$foo$bar"));
     assertThat(module.getPath().toString()).isEqualTo("/modules/foo/bar.js");
     assertThat(module.getType()).isEqualTo(Module.Type.NODE);
     assertThat(module.getExportedNames().keySet())
@@ -376,7 +377,7 @@ public class ProvidedSymbolPassTest {
     assertThat(typeRegistry.getProvidedSymbols()).isEmpty();
     assertThat(typeRegistry.getImplicitNamespaces()).isEmpty();
 
-    Module module = typeRegistry.getModule(nameToId("module$$modules$foo$bar"));
+    Module module = typeRegistry.getModule(nameToId("module$modules$foo$bar"));
     assertThat(module.getPath().toString()).isEqualTo("/modules/foo/bar.js");
     assertThat(module.getType()).isEqualTo(Module.Type.NODE);
     assertThat(module.getExportedNames().keySet())

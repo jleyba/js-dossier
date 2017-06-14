@@ -50,7 +50,7 @@ public class DossierFileSystemTest {
           .setModules("one.js", "two.js", "foo/bar.js", "foo/bar/index.js")
           .setOutputDir("/out")
           .setModuleNamingConvention(ModuleNamingConvention.ES6)
-          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
+          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT_2015)
           .build();
 
   @Inject @Input private FileSystem fs;
@@ -141,7 +141,7 @@ public class DossierFileSystemTest {
   public void canGetThePathToAModuleExportedType() {
     util.compile(fs.getPath("/input/module/foo/bar.js"), "exports.Clazz = class {};");
 
-    NominalType type = typeRegistry.getType("module$exports$module$$input$module$foo$bar.Clazz");
+    NominalType type = typeRegistry.getType("module$exports$module$input$module$foo$bar.Clazz");
     Path path = sut.getPath(type);
     assertThat(path.toString())
         .isEqualTo(outputRoot.resolve("module/foo/bar_exports_Clazz.html").toString());
@@ -152,7 +152,7 @@ public class DossierFileSystemTest {
     util.compile(fs.getPath("/input/module/foo/bar/index.js"), "exports.Clazz = class {};");
 
     NominalType type =
-        typeRegistry.getType("module$exports$module$$input$module$foo$bar$index.Clazz");
+        typeRegistry.getType("module$exports$module$input$module$foo$bar$index.Clazz");
     Path path = sut.getPath(type);
     assertThat(path.toString())
         .isEqualTo(outputRoot.resolve("module/foo/bar/index_exports_Clazz.html").toString());
@@ -261,7 +261,7 @@ public class DossierFileSystemTest {
     Path path = fs.getPath("/input/module/foo/bar.js");
     util.compile(path, "export class Foo {}");
 
-    NominalType type = typeRegistry.getType("module$$input$module$foo$bar.Foo");
+    NominalType type = typeRegistry.getType("module$input$module$foo$bar.Foo");
     assertThat(sut.getDisplayName(type)).isEqualTo("Foo");
   }
 
@@ -270,7 +270,7 @@ public class DossierFileSystemTest {
     Path path = fs.getPath("/input/module/foo/bar.js");
     util.compile(path, "exports.Foo = class {};");
 
-    NominalType type = typeRegistry.getType("module$exports$module$$input$module$foo$bar.Foo");
+    NominalType type = typeRegistry.getType("module$exports$module$input$module$foo$bar.Foo");
     assertThat(sut.getDisplayName(type)).isEqualTo("Foo");
   }
 
@@ -304,7 +304,7 @@ public class DossierFileSystemTest {
   @Test
   public void getRelativePath_fromModuleType() {
     util.compile(fs.getPath("/input/module/foo/bar/baz.js"), "export class Baz {}");
-    NominalType type = typeRegistry.getType("module$$input$module$foo$bar$baz.Baz");
+    NominalType type = typeRegistry.getType("module$input$module$foo$bar$baz.Baz");
     Path path = sut.getPath(srcPrefix.resolve("foo/bar/baz.js"));
     assertThat(sut.getRelativePath(type, path).toString())
         .isEqualTo("../../../source/foo/bar/baz.js.src.html");
@@ -314,8 +314,8 @@ public class DossierFileSystemTest {
   public void getRelativePath_betweenTypesExportedByTheSameModule() {
     util.compile(
         fs.getPath("/input/module/foo/bar/baz.js"), "export class One {}", "export class Two {}");
-    NominalType a = typeRegistry.getType("module$$input$module$foo$bar$baz.One");
-    NominalType b = typeRegistry.getType("module$$input$module$foo$bar$baz.Two");
+    NominalType a = typeRegistry.getType("module$input$module$foo$bar$baz.One");
+    NominalType b = typeRegistry.getType("module$input$module$foo$bar$baz.Two");
     assertThat(sut.getRelativePath(a, b).toString()).isEqualTo("baz_exports_Two.html");
     assertThat(sut.getRelativePath(b, a).toString()).isEqualTo("baz_exports_One.html");
   }
@@ -326,8 +326,8 @@ public class DossierFileSystemTest {
         createSourceFile(fs.getPath("/input/module/one.js"), "export class One {}"),
         createSourceFile(fs.getPath("/input/module/two.js"), "export class Two {}"));
 
-    NominalType a = typeRegistry.getType("module$$input$module$one.One");
-    NominalType b = typeRegistry.getType("module$$input$module$two.Two");
+    NominalType a = typeRegistry.getType("module$input$module$one.One");
+    NominalType b = typeRegistry.getType("module$input$module$two.Two");
     assertThat(sut.getRelativePath(a, b).toString()).isEqualTo("two_exports_Two.html");
     assertThat(sut.getRelativePath(b, a).toString()).isEqualTo("one_exports_One.html");
   }
@@ -338,8 +338,8 @@ public class DossierFileSystemTest {
         createSourceFile(fs.getPath("/input/module/one.js"), "export class One {}"),
         createSourceFile(fs.getPath("/input/module/bar/two.js"), "export class Two {}"));
 
-    NominalType a = typeRegistry.getType("module$$input$module$one.One");
-    NominalType b = typeRegistry.getType("module$$input$module$bar$two.Two");
+    NominalType a = typeRegistry.getType("module$input$module$one.One");
+    NominalType b = typeRegistry.getType("module$input$module$bar$two.Two");
     assertThat(sut.getRelativePath(a, b).toString()).isEqualTo("bar/two_exports_Two.html");
     assertThat(sut.getRelativePath(b, a).toString()).isEqualTo("../one_exports_One.html");
   }
@@ -372,7 +372,7 @@ public class DossierFileSystemTest {
   @Test
   public void getQualifiedDisplayName_nodeModuleType() {
     util.compile(fs.getPath("/input/module/foo/bar.js"), "exports.Three = class {};");
-    NominalType type = typeRegistry.getType("module$exports$module$$input$module$foo$bar.Three");
+    NominalType type = typeRegistry.getType("module$exports$module$input$module$foo$bar.Three");
     assertThat(sut.getDisplayName(type)).isEqualTo("Three");
     assertThat(sut.getQualifiedDisplayName(type)).isEqualTo("foo/bar.Three");
   }
@@ -383,7 +383,7 @@ public class DossierFileSystemTest {
 
     util.compile(fs.getPath("/input/module/foo/bar/index.js"), "exports.Three = class {};");
     NominalType type =
-        typeRegistry.getType("module$exports$module$$input$module$foo$bar$index.Three");
+        typeRegistry.getType("module$exports$module$input$module$foo$bar$index.Three");
     assertThat(sut.getDisplayName(type)).isEqualTo("Three");
     assertThat(sut.getQualifiedDisplayName(type)).isEqualTo("foo/bar.Three");
   }
@@ -391,7 +391,7 @@ public class DossierFileSystemTest {
   @Test
   public void getQualifiedDisplayName_es6ModuleType() {
     util.compile(fs.getPath("/input/module/foo/bar.js"), "export class Three {}");
-    NominalType type = typeRegistry.getType("module$$input$module$foo$bar.Three");
+    NominalType type = typeRegistry.getType("module$input$module$foo$bar.Three");
     assertThat(sut.getDisplayName(type)).isEqualTo("Three");
     assertThat(sut.getQualifiedDisplayName(type)).isEqualTo("foo/bar.Three");
   }
@@ -399,7 +399,7 @@ public class DossierFileSystemTest {
   @Test
   public void getQualifiedDisplayName_es6IndexModuleType() {
     util.compile(fs.getPath("/input/module/foo/bar/index.js"), "export class Three {}");
-    NominalType type = typeRegistry.getType("module$$input$module$foo$bar$index.Three");
+    NominalType type = typeRegistry.getType("module$input$module$foo$bar$index.Three");
     assertThat(sut.getDisplayName(type)).isEqualTo("Three");
     assertThat(sut.getQualifiedDisplayName(type)).isEqualTo("foo/bar/index.Three");
   }
@@ -407,7 +407,7 @@ public class DossierFileSystemTest {
   @Test
   public void moduleExportDefault_hasOtherName() {
     util.compile(modulePrefix.resolve("a/b/c.js"), "export default class Foo {}");
-    NominalType type = typeRegistry.getType("module$$input$module$a$b$c.default");
+    NominalType type = typeRegistry.getType("module$input$module$a$b$c.default");
     Module module = type.getModule().get();
     assertThat(module.getExportedNames()).containsEntry("default", "Foo");
 
@@ -420,7 +420,7 @@ public class DossierFileSystemTest {
   @Test
   public void moduleExportDefault_isInternalSymbol1() {
     util.compile(modulePrefix.resolve("a/b/c.js"), "class Foo {}", "export default Foo");
-    NominalType type = typeRegistry.getType("module$$input$module$a$b$c.default");
+    NominalType type = typeRegistry.getType("module$input$module$a$b$c.default");
     Module module = type.getModule().get();
     assertThat(module.getExportedNames()).containsEntry("default", "Foo");
 
@@ -433,7 +433,7 @@ public class DossierFileSystemTest {
   @Test
   public void moduleExportDefault_isInternalSymbol2() {
     util.compile(modulePrefix.resolve("a/b/c.js"), "class Foo {}", "export {Foo as default}");
-    NominalType type = typeRegistry.getType("module$$input$module$a$b$c.default");
+    NominalType type = typeRegistry.getType("module$input$module$a$b$c.default");
     Module module = type.getModule().get();
     assertThat(module.getExportedNames()).containsEntry("default", "Foo");
 
@@ -446,7 +446,7 @@ public class DossierFileSystemTest {
   @Test
   public void moduleExportDefault_isAnonymousClass() {
     util.compile(modulePrefix.resolve("a/b/c.js"), "export default class {}");
-    NominalType type = typeRegistry.getType("module$$input$module$a$b$c.default");
+    NominalType type = typeRegistry.getType("module$input$module$a$b$c.default");
     Module module = type.getModule().get();
     assertThat(module.getExportedNames()).isEmpty();
 

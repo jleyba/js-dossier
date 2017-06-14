@@ -33,6 +33,7 @@ import com.github.jsdossier.proto.UnionType;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.html.types.testing.HtmlConversions;
+import com.google.common.jimfs.Jimfs;
 import com.google.common.truth.FailureStrategy;
 import com.google.common.truth.Subject;
 import com.google.common.truth.SubjectFactory;
@@ -41,14 +42,22 @@ import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.util.Arrays;
 import javax.inject.Inject;
 import org.junit.Rule;
 
 /** Abstract base class for tests for {@link com.github.jsdossier.TypeInspector}. */
 public abstract class AbstractTypeInspectorTest {
+
+  protected static final String DEFINE_INHERITS =
+      "function inherits(/** !Function */ childCtor, /** !Function */ parentCtor) {"
+          + "  /** @constructor */ function tempCtor() {}\n"
+          + "  tempCtor.prototype = parentCtor.prototype;\n"
+          + "  childCtor.prototype = new tempCtor();\n"
+          + "  /** @override */ childCtor.prototype.constructor = childCtor;\n"
+          + "}\n";
+  
+  private static final FileSystem FILE_SYSTEM = Jimfs.newFileSystem();
 
   @Rule
   public GuiceRule guice =
@@ -57,7 +66,7 @@ public abstract class AbstractTypeInspectorTest {
           .setModules("foo/bar.js", "foo/baz.js")
           .setSourcePrefix("/src")
           .setOutputDir("/out")
-          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
+          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT_2015)
           .build();
 
   @Inject protected CompilerUtil util;
@@ -67,11 +76,7 @@ public abstract class AbstractTypeInspectorTest {
   @Inject protected TypeInspectorFactory typeInspectorFactory;
 
   protected void compile(String... lines) {
-    util.compile(path("/src/foo.js"), lines);
-  }
-
-  private static Path path(String first, String... remaining) {
-    return FileSystems.getDefault().getPath(first, remaining);
+    util.compile(FILE_SYSTEM.getPath(("/src/foo.js")), lines);
   }
 
   protected static SourceLink sourceFile(String path, int line) {

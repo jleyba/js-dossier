@@ -1324,7 +1324,6 @@
       [],
       [
         "add",
-        "getValue",
         "name",
         "value"
       ],

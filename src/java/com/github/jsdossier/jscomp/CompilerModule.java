@@ -18,6 +18,7 @@ package com.github.jsdossier.jscomp;
 
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.Modules;
+import com.github.jsdossier.jscomp.Annotations.Internal;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
@@ -34,6 +35,7 @@ import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.StaticTypedScope;
 import java.io.IOException;
 import java.nio.file.Path;
+import javax.inject.Provider;
 
 /** Defines the bindings for the compiler. */
 public final class CompilerModule extends AbstractModule {
@@ -52,10 +54,32 @@ public final class CompilerModule extends AbstractModule {
   JSTypeRegistry provideJsTypeRegistry(DossierCompiler compiler) {
     return compiler.getTypeRegistry();
   }
+  
+  @Provides
+  @Internal
+  ImmutableList<DossierCompilerPass> providePasses(
+      FileVisibilityPass visibilityPass,
+      Es6ModulePass es6ModulePass,
+      @Modules ImmutableSet<Path> modulePaths,
+      Provider<NodeModulePass> nodeModulePassProvider) {
+    ImmutableList.Builder<DossierCompilerPass> passes =
+        ImmutableList.<DossierCompilerPass>builder()
+            .add(visibilityPass)
+            .add(es6ModulePass);
+
+    // Transform CommonJS style node modules into Closure's goog.module syntax.
+    // TODO(jleyba): do we still need to control this transformation?
+    if (!modulePaths.isEmpty()) {
+      passes.add(nodeModulePassProvider.get());
+    }
+
+    return passes.build();
+  }
 
   @Provides
   CompilerOptions provideCompilerOptions(
       AliasTransformListener transformListener,
+      ModuleCollectionPass moduleCollectionPass,
       ProvidedSymbolPass providedSymbolPass,
       TypeCollectionPass typeCollectionPass,
       @Input LanguageMode mode,
@@ -88,6 +112,7 @@ public final class CompilerModule extends AbstractModule {
 
     options.setAliasTransformationHandler(transformListener);
 
+    options.addCustomPass(CustomPassExecutionTime.BEFORE_CHECKS, moduleCollectionPass);
     options.addCustomPass(CustomPassExecutionTime.BEFORE_CHECKS, providedSymbolPass);
     options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS, typeCollectionPass);
 

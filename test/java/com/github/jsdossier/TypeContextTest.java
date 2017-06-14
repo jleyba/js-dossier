@@ -43,7 +43,7 @@ public class TypeContextTest {
           .setOutputDir("out")
           .setSourcePrefix("src")
           .setModulePrefix("src/modules")
-          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
+          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT_2015)
           .build();
 
   @Inject @Input private FileSystem fs;

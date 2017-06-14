@@ -467,12 +467,12 @@ final class LinkFactory {
     if (Module.Type.NODE.isModuleId(name)) {
       final String externId = Module.Type.NODE.stripModulePrefix(name);
 
-      if (nodeLibrary.isModuleId(externId)) {
+      if (nodeLibrary.canRequireId(externId)) {
         return NamedType.newBuilder().setName(externId).build();
       }
 
       int index = externId.indexOf('.');
-      if (index != -1 && nodeLibrary.isModuleId(externId.substring(0, index))) {
+      if (index != -1 && nodeLibrary.canRequireId(externId.substring(0, index))) {
         return NamedType.newBuilder().setName(externId).build();
       }
     }

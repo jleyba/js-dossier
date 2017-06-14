@@ -247,7 +247,7 @@ final class DossierFileSystem {
         return getDisplayName(module);
       }
       try {
-        return type.getName().substring(module.getId().length() + 1);
+        return type.getName().substring(module.getId().getCompiledName().length() + 1);
       } catch (RuntimeException e) {
         throw new RuntimeException("For " + type.getName() + "\n   " + module.getId(), e);
       }
