@@ -35,6 +35,7 @@ import com.google.javascript.jscomp.CompilerOptions;
 import java.nio.file.FileSystem;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -650,7 +651,8 @@ public class LinkFactoryTest {
     checkLink(link, "AString", "../.globals.html#AString");
   }
 
-  // TODO: @Test
+  @Ignore
+  @Test
   public void generateLinkToGlobalCompilerConstant_fromGlobalScope() {
     util.compile(fs.getPath("foo.js"), "/** @define {boolean} */", "var DEBUG=true;");
 
@@ -660,7 +662,8 @@ public class LinkFactoryTest {
     checkLink(link, "DEBUG", ".globals.html#DEBUG");
   }
 
-  // TODO: @Test
+  @Ignore
+  @Test
   public void generateLinkToGlobalCompilerConstant_fromEs6Modules() {
     util.compile(
         createSourceFile(fs.getPath("foo.js"), "/** @define {boolean} */", "var DEBUG=true;"),
