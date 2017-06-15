@@ -19,6 +19,7 @@ import static com.google.common.collect.Iterables.concat;
 import static com.google.common.io.Files.getFileExtension;
 import static com.google.common.util.concurrent.Futures.allAsList;
 import static com.google.common.util.concurrent.Futures.transform;
+import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
 import static com.google.common.util.concurrent.MoreExecutors.listeningDecorator;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.createDirectories;
@@ -132,7 +133,10 @@ final class Main {
     @SuppressWarnings("unchecked") // Safe by the contract of invokeAll().
     List<ListenableFuture<List<Path>>> stage1 = (List) executor.invokeAll(tasks);
     ListenableFuture<List<List<Path>>> stage2 = allAsList(stage1);
-    return transform(stage2, lists -> lists.stream().flatMap(List::stream).collect(toList()));
+    return transform(
+        stage2,
+        lists -> lists.stream().flatMap(List::stream).collect(toList()),
+        directExecutor());
   }
 
   private static int run(Flags flags, Config config, Path outputDir) throws IOException {
