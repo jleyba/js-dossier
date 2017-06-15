@@ -62,9 +62,19 @@ public abstract class Module {
     return getId().getPath();
   }
 
-  /** Returns which syntactic type of module this is. */
-  public Type getType() {
-    return getId().getType();
+  /** Returns whether this is a Closure module. */
+  public boolean isClosure() {
+    return getId().getType() == Type.CLOSURE;
+  }
+
+  /** Returns whether this is an ES6 module. */
+  public boolean isEs6() {
+    return getId().getType() == Type.ES6;
+  }
+
+  /** Returns whether this is a node-style commonjs module. */
+  public boolean isNode() {
+    return getId().getType() == Type.NODE;
   }
 
   /** Returns the file-level JSDoc for this module. */
@@ -264,24 +274,16 @@ public abstract class Module {
     public abstract Builder setJsDoc(JsDoc doc);
     
     public abstract ImmutableMap.Builder<String, String> exportedNamesBuilder();
-
-    public abstract Builder setExportedNames(ImmutableMap<String, String> names);
     
     public abstract ImmutableMap.Builder<String, JSDocInfo> exportedDocsBuilder();
-
-    public abstract Builder setExportedDocs(ImmutableMap<String, JSDocInfo> docs);
     
     public abstract ImmutableMap.Builder<String, JSDocInfo> internalVarDocsBuilder();
-
-    public abstract Builder setInternalVarDocs(ImmutableMap<String, JSDocInfo> docs);
 
     public abstract Builder setAliases(AliasRegion region);
 
     public abstract AliasRegion getAliases();
 
     public abstract Builder setHasLegacyNamespace(boolean legacy);
-    
-    public abstract boolean getHasLegacyNamespace();
 
     abstract Module autoBuild();
 
@@ -293,7 +295,7 @@ public abstract class Module {
           m.getId().getPath(),
           m.getAliases().getPath());
       checkArgument(
-          !m.getHasLegacyNamespace() || m.getType() == Type.CLOSURE,
+          !m.getHasLegacyNamespace() || m.isClosure(),
           "Only Closure modules may have a legacy namespace: %s",
           m.getId());
       return m;

@@ -106,8 +106,7 @@ public final class TypeCollectionPass implements CompilerPass {
       if (modulePathFilter.test(module.getPath())) {
         continue;
       }
-      if (module.getType() != Module.Type.CLOSURE
-          && !typeRegistry.isType(module.getId().getCompiledName())) {
+      if (!module.isClosure() && !typeRegistry.isType(module.getId().getCompiledName())) {
         typeRegistry.addType(
             NominalType.builder()
                 .setName(module.getId().getCompiledName())
@@ -377,7 +376,7 @@ public final class TypeCollectionPass implements CompilerPass {
 
         if (typeRegistry.isModule(file) && name.startsWith(MODULE_CONTENTS_PREFIX)) {
           Module module = typeRegistry.getModule(file);
-          if (module.getType() != Type.ES6) {
+          if (!module.isEs6()) {
             String id = module.getId().getCompiledName();
             if (id.startsWith(MODULE_ID_PREFIX)) {
               id = id.substring(MODULE_ID_PREFIX.length());
@@ -486,7 +485,7 @@ public final class TypeCollectionPass implements CompilerPass {
       Module module = typeRegistry.getModule(path);
       if (module.getHasLegacyNamespace()) {
         verify(
-            module.getType() == Type.CLOSURE,
+            module.isClosure(),
             "legacy namespace on non-closure module: %s",
             module.getOriginalName());
         verify(
@@ -515,7 +514,7 @@ public final class TypeCollectionPass implements CompilerPass {
         String id = type.getName().substring(index + 2);
         if (typeRegistry.isModule(id)) {
           Module module = typeRegistry.getModule(id);
-          if (module.getType() == Module.Type.ES6) {
+          if (module.isEs6()) {
             for (AliasRegion region : typeRegistry.getAliasRegions(type.getSourceFile())) {
               if (region.getRange().contains(type.getSourcePosition())) {
                 String alias = type.getName().substring(0, index);
@@ -573,7 +572,7 @@ public final class TypeCollectionPass implements CompilerPass {
       JSDocInfo info = property.getJSDocInfo();
       return (info == null && !isTheObjectType(property.getType()))
           || (parent.isModuleExports()
-              && parent.getModule().get().getType() != Module.Type.ES6
+              && !parent.getModule().get().isEs6()
               && (info == null || isNullOrEmpty(info.getOriginalCommentString())));
     }
 

@@ -1102,7 +1102,7 @@ final class TypeInspector {
     if ("default".equals(name)
         && docs.getContextType() == inspectedType
         && inspectedType.isModuleExports()
-        && inspectedType.getModule().get().getType() == Module.Type.ES6) {
+        && inspectedType.getModule().get().isEs6()) {
       builder.getTagsBuilder().setIsDefault(true);
     }
 

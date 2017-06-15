@@ -163,7 +163,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
     }
 
     private IndexBuilder.IndexReference updateTypeIndex(IndexBuilder typeIndex) {
-      if (type.getModule().isPresent() && type.getModule().get().getType() != Module.Type.CLOSURE) {
+      if (type.getModule().isPresent() && !type.getModule().get().isClosure()) {
         if (type.isModuleExports()) {
           return typeIndex.addModule(type);
         }
@@ -241,7 +241,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
     }
 
     private void addParentLink(JsType.Builder spec) {
-      if (type.isModuleExports() && !Module.Type.CLOSURE.equals(type.getModule().get().getType())) {
+      if (type.isModuleExports() && !type.getModule().get().isClosure()) {
         return;
       }
 
@@ -276,22 +276,15 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
         JsType.Declaration.Builder metadata = spec.getDeclarationBuilder();
         metadata.setType(linkFactory.createTypeReference(declaringType));
         if (declaringType.getModule().isPresent()) {
-          switch (declaringType.getModule().get().getType()) {
-            case CLOSURE:
-              if (declaringType == type) {
-                verify(declaringType.isModuleExports());
-                metadata.setGoogModule(true);
-              } else {
-                metadata.setModuleExport(true);
-              }
-              break;
-            case ES6:
-            case NODE:
+          if (declaringType.getModule().get().isClosure()) {
+            if (declaringType == type) {
+              verify(declaringType.isModuleExports());
+              metadata.setGoogModule(true);
+            } else {
               metadata.setModuleExport(true);
-              break;
-            default:
-              throw new AssertionError(
-                  "unexpected module type: " + declaringType.getModule().get().getType());
+            }
+          } else {
+            metadata.setModuleExport(true);
           }
         } else if (typeRegistry.isProvided(declaringType.getName())) {
           metadata.setGoogProvide(true);

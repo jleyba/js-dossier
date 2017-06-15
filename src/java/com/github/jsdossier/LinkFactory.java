@@ -401,7 +401,7 @@ final class LinkFactory {
         && property.isEmpty()
         && typeContext.getContextType() != null
         && typeContext.getContextType().getModule().isPresent()
-        && typeContext.getContextType().getModule().get().getType() == Module.Type.ES6) {
+        && typeContext.getContextType().getModule().get().isEs6()) {
       Module module = typeContext.getContextType().getModule().get();
       NamedType link =
           maybeCreateExportedPropertyLink(typeRegistry.getType(module.getId()), typeName);

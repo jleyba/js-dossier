@@ -1262,7 +1262,7 @@ public class NodeModulePassTest {
   private void assertIsNodeModule(String id, String path) {
     Module module = typeRegistry.getModule(id);
     assertThat(module.getPath().toString()).isEqualTo(path);
-    assertThat(module.getType()).isEqualTo(Module.Type.NODE);
+    assertThat(module.getId().getType()).isEqualTo(Module.Type.NODE);
   }
 
   private CompilerUtil createCompiler(final Path... modules) {

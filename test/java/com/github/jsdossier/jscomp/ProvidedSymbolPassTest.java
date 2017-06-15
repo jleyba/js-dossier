@@ -128,7 +128,7 @@ public class ProvidedSymbolPassTest {
     Module module = typeRegistry.getModule("sample.module");
     assertThat(module.getHasLegacyNamespace()).isTrue();
     assertThat(module.getPath().toString()).isEqualTo("/foo/bar/module.js");
-    assertThat(module.getType()).isEqualTo(Module.Type.CLOSURE);
+    assertThat(module.getId().getType()).isEqualTo(Module.Type.CLOSURE);
   }
 
   @Test
@@ -345,7 +345,7 @@ public class ProvidedSymbolPassTest {
 
     Module module = typeRegistry.getModule(nameToId("module$modules$foo$bar"));
     assertThat(module.getPath().toString()).isEqualTo("/modules/foo/bar.js");
-    assertThat(module.getType()).isEqualTo(Module.Type.NODE);
+    assertThat(module.getId().getType()).isEqualTo(Module.Type.NODE);
     assertThat(module.getExportedNames().keySet())
         .containsExactly("publicFunction1", "publicFunction2", "publicX");
     assertThat(module.getExportedNames()).containsEntry("publicFunction1", "internalFunction1");
@@ -379,7 +379,7 @@ public class ProvidedSymbolPassTest {
 
     Module module = typeRegistry.getModule(nameToId("module$modules$foo$bar"));
     assertThat(module.getPath().toString()).isEqualTo("/modules/foo/bar.js");
-    assertThat(module.getType()).isEqualTo(Module.Type.NODE);
+    assertThat(module.getId().getType()).isEqualTo(Module.Type.NODE);
     assertThat(module.getExportedNames().keySet())
         .containsExactly("publicFunction1", "publicFunction2", "publicX", "publicB");
     assertThat(module.getExportedNames()).containsEntry("publicFunction1", "internalFunction1");

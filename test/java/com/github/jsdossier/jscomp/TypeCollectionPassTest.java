@@ -464,7 +464,7 @@ public class TypeCollectionPassTest {
     assertThat(typeRegistry.getAllTypes()).hasSize(2);
 
     Module module = typeRegistry.getModule("module$modules$foo$bar");
-    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getId().getType()).isEqualTo(Module.Type.ES6);
     assertThat(module.getExportedNames()).hasSize(1);
     assertThat(module.getExportedNames()).containsEntry("default", "InternalClass");
   }
@@ -482,7 +482,7 @@ public class TypeCollectionPassTest {
     assertThat(typeRegistry.getAllTypes()).hasSize(2);
 
     Module module = typeRegistry.getModule("module$modules$foo$bar");
-    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getId().getType()).isEqualTo(Module.Type.ES6);
     assertThat(module.getExportedNames()).hasSize(1);
     assertThat(module.getExportedNames()).containsEntry("default", "InternalClass");
   }
@@ -497,7 +497,7 @@ public class TypeCollectionPassTest {
     assertThat(typeRegistry.getAllTypes()).hasSize(2);
 
     Module module = typeRegistry.getModule("module$modules$foo$bar");
-    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getId().getType()).isEqualTo(Module.Type.ES6);
     assertThat(module.getExportedNames()).isEmpty();
   }
 
@@ -514,7 +514,7 @@ public class TypeCollectionPassTest {
     assertThat(typeRegistry.getAllTypes()).hasSize(2);
 
     Module module = typeRegistry.getModule("module$modules$foo$bar");
-    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getId().getType()).isEqualTo(Module.Type.ES6);
     assertThat(module.getExportedNames()).hasSize(1);
     assertThat(module.getExportedNames()).containsEntry("default", "InternalClass");
   }
@@ -529,7 +529,7 @@ public class TypeCollectionPassTest {
     assertThat(typeRegistry.getAllTypes()).hasSize(1);
 
     Module module = typeRegistry.getModule("module$modules$foo$bar");
-    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getId().getType()).isEqualTo(Module.Type.ES6);
     assertThat(module.getExportedNames()).hasSize(1);
     assertThat(module.getExportedNames()).containsEntry("default", "internal");
   }
@@ -544,7 +544,7 @@ public class TypeCollectionPassTest {
     assertThat(typeRegistry.getAllTypes()).hasSize(1);
 
     Module module = typeRegistry.getModule("module$modules$foo$bar");
-    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getId().getType()).isEqualTo(Module.Type.ES6);
     assertThat(module.getExportedNames()).hasSize(1);
     assertThat(module.getExportedNames()).containsEntry("default", "internal");
   }
@@ -558,7 +558,7 @@ public class TypeCollectionPassTest {
     assertThat(typeRegistry.getAllTypes()).hasSize(1);
 
     Module module = typeRegistry.getModule("module$modules$foo$bar");
-    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getId().getType()).isEqualTo(Module.Type.ES6);
     assertThat(module.getExportedNames()).hasSize(1);
     assertThat(module.getExportedNames()).containsEntry("default", "internal");
   }
@@ -572,7 +572,7 @@ public class TypeCollectionPassTest {
     assertThat(typeRegistry.getAllTypes()).hasSize(1);
 
     Module module = typeRegistry.getModule("module$modules$foo$bar");
-    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getId().getType()).isEqualTo(Module.Type.ES6);
     assertThat(module.getExportedNames()).isEmpty();
   }
 
@@ -585,7 +585,7 @@ public class TypeCollectionPassTest {
     assertThat(typeRegistry.getAllTypes()).hasSize(1);
 
     Module module = typeRegistry.getModule("module$modules$foo$bar");
-    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getId().getType()).isEqualTo(Module.Type.ES6);
     assertThat(module.getExportedNames()).isEmpty();
   }
 
@@ -598,7 +598,7 @@ public class TypeCollectionPassTest {
     assertThat(typeRegistry.getAllTypes()).hasSize(1);
 
     Module module = typeRegistry.getModule("module$modules$foo$bar");
-    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getId().getType()).isEqualTo(Module.Type.ES6);
     assertThat(module.getExportedNames()).isEmpty();
   }
 
@@ -611,7 +611,7 @@ public class TypeCollectionPassTest {
     assertThat(typeRegistry.getAllTypes()).hasSize(1);
 
     Module module = typeRegistry.getModule("module$modules$foo$bar");
-    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getId().getType()).isEqualTo(Module.Type.ES6);
     assertThat(module.getExportedNames()).isEmpty();
   }
 
@@ -624,7 +624,7 @@ public class TypeCollectionPassTest {
     assertThat(typeRegistry.getAllTypes()).hasSize(1);
 
     Module module = typeRegistry.getModule("module$modules$foo$bar");
-    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getId().getType()).isEqualTo(Module.Type.ES6);
     assertThat(module.getExportedNames()).hasSize(1);
     assertThat(module.getExportedNames()).containsEntry("default", "x");
   }
@@ -1211,7 +1211,7 @@ public class TypeCollectionPassTest {
   private static void assertModule(
       NominalType type, Module.Type moduleType, String id, String path) {
     Module module = type.getModule().get();
-    assertThat(module.getType()).isEqualTo(moduleType);
+    assertThat(module.getId().getType()).isEqualTo(moduleType);
     assertThat(module.getId().getCompiledName()).isEqualTo(id);
     assertThat(module.getPath().toString()).isEqualTo(path);
   }

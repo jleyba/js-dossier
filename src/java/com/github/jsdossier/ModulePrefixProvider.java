@@ -86,7 +86,7 @@ final class ModulePrefixProvider implements Provider<Path> {
     return typeRegistry
         .getAllModules()
         .stream()
-        .filter(module -> module.getType() != Module.Type.CLOSURE)
+        .filter(module -> !module.isClosure())
         .map(Module::getPath)
         .collect(toImmutableSet());
   }

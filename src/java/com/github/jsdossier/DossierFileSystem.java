@@ -198,7 +198,7 @@ final class DossierFileSystem {
     Module module = type.getModule().orElse(null);
     if (module == null) {
       return outputRoot.resolve(type.getName() + ".html");
-    } else if (module.getType() == Module.Type.CLOSURE) {
+    } else if (module.isClosure()) {
       return outputRoot.resolve(getQualifiedDisplayName(type) + ".html");
     }
 
@@ -218,7 +218,7 @@ final class DossierFileSystem {
 
   /** Returns the path to the generated documentation for the given {@code module}. */
   public Path getPath(Module module) {
-    if (module.getType() == Type.CLOSURE) {
+    if (module.isClosure()) {
       return outputRoot.resolve(getDisplayName(module) + ".html");
     }
     Path path = stripExtension(modulePrefix.relativize(module.getPath()));
@@ -257,7 +257,7 @@ final class DossierFileSystem {
 
   /** Returns the display name for the given module. */
   public String getDisplayName(Module module) {
-    if (module.getType() == Module.Type.CLOSURE) {
+    if (module.isClosure()) {
       return module.getOriginalName();
     }
 
