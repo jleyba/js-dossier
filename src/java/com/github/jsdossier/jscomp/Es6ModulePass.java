@@ -171,7 +171,7 @@ final class Es6ModulePass implements DossierCompilerPass {
 
           module.exportedNamesBuilder().put(second.getQualifiedName(), trueName);
 
-          if (!DEFAULT.equals(first.getQualifiedName())) {
+          if (!first.matchesQualifiedName(DEFAULT)) {
             module.getAliases().addAlias(first.getQualifiedName(), trueName);
           }
         }
@@ -206,11 +206,11 @@ final class Es6ModulePass implements DossierCompilerPass {
         aliasRegion.addAlias(alias, def + "." + DEFAULT);
       }
 
-      if (second.getToken() == Token.IMPORT_STAR) {
+      if (second.isImportStar()) {
         String alias = second.getString();
         aliasRegion.addAlias(alias, def);
 
-      } else if (second.getToken() == Token.IMPORT_SPECS) {
+      } else if (second.isImportSpecs()) {
         for (Node spec = second.getFirstChild(); spec != null; spec = spec.getNext()) {
           String imported = spec.getFirstChild().getQualifiedName();
           String alias = spec.getLastChild().getQualifiedName();

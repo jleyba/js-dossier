@@ -178,7 +178,7 @@ final class NodeModulePass implements DossierCompilerPass {
         visitRequireCall(t, n, parent);
       }
 
-      if (n.isGetProp() && "module.exports".equals(n.getQualifiedName())) {
+      if (n.isGetProp() && n.matchesQualifiedName("module.exports")) {
         if (t.getScope().getVar("module") == null) {
           moduleExportRefs.add(n);
         }
@@ -267,7 +267,7 @@ final class NodeModulePass implements DossierCompilerPass {
     private void visitRequireCall(NodeTraversal t, Node require, Node parent) {
       Path currentFile = inputFs.getPath(t.getSourceName());
 
-      String modulePath = require.getChildAtIndex(1).getString();
+      String modulePath = require.getSecondChild().getString();
 
       if (modulePath.isEmpty()) {
         t.report(require, REQUIRE_INVALID_MODULE_ID);

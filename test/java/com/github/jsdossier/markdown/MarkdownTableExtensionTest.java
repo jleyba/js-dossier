@@ -20,7 +20,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
-import java.util.List;
 import org.commonmark.Extension;
 import org.commonmark.html.HtmlRenderer;
 import org.commonmark.node.Node;
@@ -32,7 +31,7 @@ import org.junit.runners.JUnit4;
 /** Tests for {@link MarkdownTableExtension}. */
 @RunWith(JUnit4.class)
 public class MarkdownTableExtensionTest {
-  private static final List<? extends Extension> EXTENSIONS =
+  private static final ImmutableList<? extends Extension> EXTENSIONS =
       ImmutableList.of(new MarkdownTableExtension());
   private static final Parser PARSER = Parser.builder().extensions(EXTENSIONS).build();
   private static final HtmlRenderer RENDERER =

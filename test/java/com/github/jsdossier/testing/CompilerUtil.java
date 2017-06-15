@@ -41,7 +41,7 @@ import javax.inject.Inject;
 
 public class CompilerUtil {
 
-  private static final List<SourceFile> NO_EXTERNS = ImmutableList.of();
+  private static final ImmutableList<SourceFile> NO_EXTERNS = ImmutableList.of();
 
   private static final ImmutableListMultimap<Environment, SourceFile> BUILTIN_EXTERN_CACHE =
       loadBuiltinExterns();
