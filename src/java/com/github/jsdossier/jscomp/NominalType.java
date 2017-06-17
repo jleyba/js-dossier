@@ -93,9 +93,7 @@ public abstract class NominalType {
 
     public abstract Builder setModule(Optional<Module> module);
 
-    public Builder setModule(@Nullable Module module) {
-      return setModule(Optional.ofNullable(module));
-    }
+    public abstract Builder setModule(Module module);
 
     public abstract NominalType build();
   }
