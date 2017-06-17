@@ -1,4 +1,5 @@
 load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_binary", "closure_js_library")
+load("/build_tools/closure", "closure_js_binary_set")
 
 genrule(
     name = "gen_soy_js",
@@ -27,9 +28,8 @@ closure_js_library(
     ],
 )
 
-closure_js_binary(
+closure_js_binary_set(
     name = "dossier",
-    compilation_level = "ADVANCED",
     defs = [
         "--jscomp_error=accessControls",
         "--jscomp_error=ambiguousFunctionDecl",
@@ -71,9 +71,8 @@ closure_js_library(
     deps = ["@io_bazel_rules_closure//closure/library"],
 )
 
-closure_js_binary(
+closure_js_binary_set(
     name = "serviceworker",
-    compilation_level = "ADVANCED",
     defs = [
         "--jscomp_error=accessControls",
         "--jscomp_error=ambiguousFunctionDecl",
