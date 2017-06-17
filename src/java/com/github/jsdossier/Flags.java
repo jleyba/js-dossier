@@ -201,17 +201,6 @@ final class Flags {
   }
 
   @Option(
-    name = "--language",
-    usage =
-        "Which version of ECMAScript the input sources conform to."
-            + " Must be one of {ES3, ES5, ES5_STRICT, ES6, ES6_STRICT};"
-            + " Defaults to ES6_STRICT"
-  )
-  private void setLanguage(Config.Language language) {
-    jsonConfig.addProperty("language", language.name());
-  }
-
-  @Option(
     name = "--module_naming_convention",
     usage =
         "The module naming convention to use; refer to --help_json for more information."

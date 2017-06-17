@@ -83,10 +83,6 @@ __Configuration Options__
     compiler. These  files are used to satisfy references to external types,
     but are excluded when generating  API documentation.
 
- * `language` Specifies which version of ECMAScript the input sources conform
-    to. Defaults to ES6_STRICT. Must be one of {ES3, ES5, ES5_STRICT, ES6,
-    ES6_STRICT}
-
  * `moduleFilters` List of regular expressions for modules that should be
     excluded from generated documentation, even if found in the type graph. The
     provided expressions will be to the _absolute_ path of the source file for

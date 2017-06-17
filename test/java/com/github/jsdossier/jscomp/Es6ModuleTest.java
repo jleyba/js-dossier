@@ -26,7 +26,6 @@ import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
-import com.google.javascript.jscomp.CompilerOptions;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
@@ -45,7 +44,6 @@ public class Es6ModuleTest {
       GuiceRule.builder(this)
           .setModulePrefix("/modules")
           .setModules("foo/bar.js")
-          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT_2015)
           .setUseNodeLibrary(false)
           .build();
 

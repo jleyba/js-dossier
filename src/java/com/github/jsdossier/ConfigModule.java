@@ -122,12 +122,6 @@ final class ConfigModule extends AbstractModule {
   }
 
   @Provides
-  @Input
-  CompilerOptions.LanguageMode provideInputLanguage() {
-    return config.getLanguage().toMode();
-  }
-
-  @Provides
   @StrictMode
   boolean provideStrictMode() {
     return config.isStrict();

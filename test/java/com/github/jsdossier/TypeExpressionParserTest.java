@@ -37,7 +37,6 @@ import com.github.jsdossier.proto.UnionType;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.collect.ImmutableList;
-import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
@@ -62,7 +61,6 @@ public class TypeExpressionParserTest {
           .setSourcePrefix("source")
           .setModulePrefix("source/modules")
           .setModules("one.js", "two.js", "three.js")
-          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT_2015)
           .build();
 
   @Inject @Input private FileSystem fs;

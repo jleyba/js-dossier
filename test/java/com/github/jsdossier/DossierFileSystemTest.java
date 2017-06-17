@@ -28,7 +28,6 @@ import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.base.Joiner;
-import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.SourceFile;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
@@ -50,7 +49,6 @@ public class DossierFileSystemTest {
           .setModules("one.js", "two.js", "foo/bar.js", "foo/bar/index.js")
           .setOutputDir("/out")
           .setModuleNamingConvention(ModuleNamingConvention.ES6)
-          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT_2015)
           .build();
 
   @Inject @Input private FileSystem fs;

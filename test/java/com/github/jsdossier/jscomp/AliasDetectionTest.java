@@ -23,7 +23,6 @@ import static org.junit.Assume.assumeNoException;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
-import com.google.javascript.jscomp.CompilerOptions;
 import java.nio.file.FileSystem;
 import javax.inject.Inject;
 import org.junit.Rule;
@@ -36,11 +35,7 @@ import org.junit.runners.JUnit4;
 public class AliasDetectionTest {
 
   @Rule
-  public GuiceRule guice =
-      GuiceRule.builder(this)
-          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT_2015)
-          .setUseNodeLibrary(false)
-          .build();
+  public GuiceRule guice = GuiceRule.builder(this).setUseNodeLibrary(false).build();
 
   @Inject @Input private FileSystem inputFs;
   @Inject private TypeRegistry typeRegistry;

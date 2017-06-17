@@ -68,7 +68,6 @@ public abstract class GuiceRule implements TestRule {
     Builder builder = new AutoValue_GuiceRule.Builder();
     return builder
         .setTarget(target)
-        .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT5)
         .setModuleNamingConvention(ModuleNamingConvention.ES6)
         .setNewTypeInference(false)
         .setGuiceModules(ImmutableList.copyOf(modules))
@@ -105,8 +104,6 @@ public abstract class GuiceRule implements TestRule {
   abstract Optional<String> getSourceUrlTemplate();
 
   abstract ModuleNamingConvention getModuleNamingConvention();
-
-  abstract CompilerOptions.LanguageMode getLanguageIn();
 
   abstract boolean getNewTypeInference();
 
@@ -151,12 +148,6 @@ public abstract class GuiceRule implements TestRule {
                     if (getNodeLibrary() != null) {
                       bind(NodeLibrary.class).to(getNodeLibrary());
                     }
-                  }
-
-                  @Provides
-                  @Input
-                  LanguageMode provideInputLanguage() {
-                    return getLanguageIn();
                   }
 
                   @Provides
@@ -236,8 +227,6 @@ public abstract class GuiceRule implements TestRule {
     public abstract Builder setNewTypeInference(boolean set);
 
     public abstract Builder setModuleNamingConvention(ModuleNamingConvention convention);
-
-    public abstract Builder setLanguageIn(CompilerOptions.LanguageMode languageIn);
 
     public abstract Builder setModulePathFilter(Predicate<Path> filter);
 

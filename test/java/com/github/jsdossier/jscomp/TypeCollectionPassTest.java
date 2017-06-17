@@ -25,7 +25,6 @@ import com.github.jsdossier.testing.Bug;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.inject.Injector;
-import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.rhino.jstype.JSType;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -45,8 +44,7 @@ import org.junit.runners.JUnit4;
 public class TypeCollectionPassTest {
 
   @Rule
-  public GuiceRule guice =
-      GuiceRule.builder(this).setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT_2015).build();
+  public GuiceRule guice = GuiceRule.builder(this).build();
 
   @Inject
   @Input

@@ -66,7 +66,6 @@ public abstract class AbstractTypeInspectorTest {
           .setModules("foo/bar.js", "foo/baz.js")
           .setSourcePrefix("/src")
           .setOutputDir("/out")
-          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT_2015)
           .build();
 
   @Inject protected CompilerUtil util;

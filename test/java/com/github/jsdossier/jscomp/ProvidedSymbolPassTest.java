@@ -22,7 +22,6 @@ import static com.google.common.truth.Truth.assertThat;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
-import com.google.javascript.jscomp.CompilerOptions;
 import java.nio.file.FileSystem;
 import javax.inject.Inject;
 import org.junit.Rule;
@@ -35,11 +34,7 @@ import org.junit.runners.JUnit4;
 public class ProvidedSymbolPassTest {
 
   @Rule
-  public GuiceRule guiceRule =
-      GuiceRule.builder(this)
-          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT_2015)
-          .setUseNodeLibrary(false)
-          .build();
+  public GuiceRule guiceRule = GuiceRule.builder(this).setUseNodeLibrary(false).build();
 
   @Inject @Input private FileSystem fs;
   @Inject private TypeRegistry typeRegistry;

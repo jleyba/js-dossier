@@ -36,7 +36,6 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.jimfs.Jimfs;
 import com.google.inject.Injector;
-import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import com.google.javascript.jscomp.Scope;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.Var;
@@ -1290,7 +1289,6 @@ public class NodeModulePassTest {
             .setInputFs(fs)
             .setModuleExterns(externs)
             .setModules(modules)
-            .setLanguageIn(LanguageMode.ECMASCRIPT_2015)
             .setUseNodeLibrary(!excludeNodeExterns)
             .build()
             .createInjector();

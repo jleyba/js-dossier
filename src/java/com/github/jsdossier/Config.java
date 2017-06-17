@@ -266,14 +266,6 @@ abstract class Config {
   abstract boolean isStrict();
 
   @Description(
-    name = "language",
-    desc =
-        "Specifies which version of ECMAScript the input sources conform to. Defaults "
-            + "to ES6_STRICT. Must be one of {ES3, ES5, ES5_STRICT, ES6, ES6_STRICT}"
-  )
-  abstract Language getLanguage();
-
-  @Description(
     name = "moduleNamingConvention",
     desc =
         "The module naming convention to use. If set to `NODE`, modules with a basename"
@@ -361,7 +353,6 @@ abstract class Config {
         .setReadme(Optional.empty())
         .setCustomPages(ImmutableSet.of())
         .setStrict(false)
-        .setLanguage(Language.ES6_STRICT)
         .setModuleNamingConvention(ModuleNamingConvention.ES6)
         .setSourceUrlTemplate(Optional.empty())
         .setTypeFilters(ImmutableSet.of())
@@ -433,8 +424,6 @@ abstract class Config {
     abstract Builder setSourceUrlTemplate(Optional<String> template);
 
     abstract Builder setStrict(boolean strict);
-
-    abstract Builder setLanguage(Language lang);
 
     abstract Builder setModuleNamingConvention(ModuleNamingConvention convention);
 
@@ -816,25 +805,6 @@ abstract class Config {
     String desc();
 
     boolean expandPaths() default false;
-  }
-
-  enum Language {
-    ES3(LanguageMode.ECMASCRIPT3),
-    ES5(LanguageMode.ECMASCRIPT5),
-    ES5_STRICT(LanguageMode.ECMASCRIPT5_STRICT),
-    ES6(LanguageMode.ECMASCRIPT_2015),
-    ES6_STRICT(LanguageMode.ECMASCRIPT_2015),
-    ;
-
-    private final LanguageMode mode;
-
-    Language(LanguageMode mode) {
-      this.mode = mode;
-    }
-
-    public LanguageMode toMode() {
-      return mode;
-    }
   }
 
   private static class ConfigMarshaller

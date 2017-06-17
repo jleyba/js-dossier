@@ -25,7 +25,6 @@ import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
-import com.google.javascript.jscomp.CompilerOptions;
 import java.nio.file.FileSystem;
 import javax.inject.Inject;
 import org.junit.Rule;
@@ -43,7 +42,6 @@ public class TypeContextTest {
           .setOutputDir("out")
           .setSourcePrefix("src")
           .setModulePrefix("src/modules")
-          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT_2015)
           .build();
 
   @Inject @Input private FileSystem fs;

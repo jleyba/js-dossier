@@ -620,10 +620,6 @@ public class EndToEndTest {
       json.add("modules", modules);
     }
 
-    void setLanguage(String language) {
-      json.addProperty("language", language);
-    }
-
     @Override
     public String toString() {
       return json.toString();
@@ -795,8 +791,6 @@ public class EndToEndTest {
             output.toString(),
             "--readme",
             srcDir.resolve("SimpleReadme.md").toString(),
-            "--language",
-            "ES6_STRICT",
             "--custom_page",
             "Custom Page:" + srcDir.resolve("Custom.md"),
             "--module_naming_convention",
@@ -832,7 +826,6 @@ public class EndToEndTest {
               {
                 setOutput(output);
                 setReadme(srcDir.resolve("SimpleReadme.md"));
-                setLanguage("ES6_STRICT");
 
                 addCustomPage("Custom Page", srcDir.resolve("Custom.md"));
 

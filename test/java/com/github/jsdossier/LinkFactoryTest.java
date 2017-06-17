@@ -31,7 +31,6 @@ import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.html.types.SafeUrls;
 import com.google.common.html.types.testing.HtmlConversions;
-import com.google.javascript.jscomp.CompilerOptions;
 import java.nio.file.FileSystem;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -53,7 +52,6 @@ public class LinkFactoryTest {
           .setModulePrefix("source/modules")
           .setModules("one.js", "two.js", "three.js")
           .setUseNodeLibrary(false)
-          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT_2015)
           .build();
 
   @Inject @Input private FileSystem fs;

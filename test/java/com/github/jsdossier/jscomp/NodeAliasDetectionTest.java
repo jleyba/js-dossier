@@ -23,7 +23,6 @@ import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.truth.Truth;
-import com.google.javascript.jscomp.CompilerOptions;
 import java.nio.file.FileSystem;
 import javax.inject.Inject;
 import org.junit.Rule;
@@ -39,7 +38,6 @@ public class NodeAliasDetectionTest {
   @Rule
   public GuiceRule guice =
       GuiceRule.builder(this)
-          .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT_2015)
           .setModulePrefix("/modules")
           .setModules("/modules/one.js", "/modules/two.js", "/modules.three.js")
           .setUseNodeLibrary(false)

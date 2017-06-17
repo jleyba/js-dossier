@@ -82,7 +82,6 @@ public final class CompilerModule extends AbstractModule {
       ModuleCollectionPass moduleCollectionPass,
       ProvidedSymbolPass providedSymbolPass,
       TypeCollectionPass typeCollectionPass,
-      @Input LanguageMode mode,
       @Modules ImmutableSet<Path> modulePaths)
       throws IOException {
     CompilerOptions options = new CompilerOptions();
@@ -94,7 +93,7 @@ public final class CompilerModule extends AbstractModule {
 
     options.setModuleRoots(ImmutableList.<String>of());
 
-    options.setLanguageIn(mode);
+    options.setLanguageIn(LanguageMode.ECMASCRIPT_2015);
     options.setLanguageOut(LanguageMode.ECMASCRIPT5);
 
     options.setCodingConvention(new ClosureCodingConvention());
