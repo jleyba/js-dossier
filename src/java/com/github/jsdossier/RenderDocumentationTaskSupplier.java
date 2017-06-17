@@ -16,13 +16,13 @@ limitations under the License.
 
 package com.github.jsdossier;
 
-import static com.github.jsdossier.GuavaCollections.toImmutableList;
 import static com.github.jsdossier.TypeInspector.fakeNodeForType;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Suppliers.memoize;
 import static com.google.common.base.Verify.verify;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Iterables.skip;
 import static com.google.common.collect.Lists.transform;
 import static java.util.stream.Collectors.toList;

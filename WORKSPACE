@@ -83,8 +83,8 @@ maven_jar(
 
 maven_jar(
     name = "dossier_guava",
-    artifact = "com.google.guava:guava:20.0",
-    sha1 = "89507701249388e1ed5ddcf8c41f4ce1be7831ef",
+    artifact = "com.google.guava:guava:22.0",
+    sha1 = "3564ef3803de51fb0530a8377ec6100b33b0d073",
 )
 
 maven_jar(

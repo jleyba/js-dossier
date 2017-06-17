@@ -21,6 +21,7 @@ import static com.github.jsdossier.Paths.notIn;
 import static com.github.jsdossier.Paths.toNormalizedAbsolutePath;
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.base.Verify.verify;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Sets.intersection;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -92,6 +93,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
 
 /** Describes the runtime configuration for the app. */
 @AutoValue
@@ -366,19 +368,11 @@ abstract class Config {
     public abstract ImmutableSet<Path> getSources();
 
     public abstract Builder setSources(ImmutableSet<Path> paths);
-
-    public Builder setSources(Set<Path> paths) {
-      return setSources(ImmutableSet.copyOf(paths));
-    }
-
+    
     public abstract ImmutableSet<Path> getModules();
 
     public abstract Builder setModules(ImmutableSet<Path> paths);
-
-    public Builder setModules(Set<Path> paths) {
-      return setModules(ImmutableSet.copyOf(paths));
-    }
-
+    
     public abstract Optional<Path> getSourcePrefix();
 
     public abstract Builder setSourcePrefix(Path path);
@@ -432,7 +426,7 @@ abstract class Config {
     private Builder duplicate() {
       return autoBuild().toBuilder();
     }
-
+    
     private Builder normalize() {
       ImmutableSet<Path> excludes = getExcludes();
 
@@ -440,8 +434,8 @@ abstract class Config {
         @SuppressWarnings("unchecked")
         Predicate<Path> filter = path -> notIn(excludes).test(path) && notHidden().test(path);
 
-        setSources(getSources().stream().filter(filter).collect(toSet()));
-        setModules(getModules().stream().filter(filter).collect(toSet()));
+        setSources(getSources().stream().filter(filter).collect(toImmutableSet()));
+        setModules(getModules().stream().filter(filter).collect(toImmutableSet()));
       }
 
       if (getClosureLibraryDir().isPresent()) {

@@ -7,6 +7,7 @@
 -  Upgraded dependencies:
    +  com.google.auto:auto-common:0.8
    +  com.google.auto.value:auto-value:1.4.1
+   +  com.google.guava:guava:22.0
    +  com.google.inject:guice:4.1.0
    +  com.google.inject.extensions:guice-assistedinject:4.1.0
    +  com.google.inject.extensions:guice-multibindings:4.1.0

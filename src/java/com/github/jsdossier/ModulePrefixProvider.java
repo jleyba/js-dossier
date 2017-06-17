@@ -16,10 +16,10 @@ limitations under the License.
 
 package com.github.jsdossier;
 
-import static com.github.jsdossier.GuavaCollections.toImmutableSet;
 import static com.github.jsdossier.Paths.getCommonPrefix;
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static java.nio.file.Files.isDirectory;
 
 import com.github.jsdossier.annotations.Input;

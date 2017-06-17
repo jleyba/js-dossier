@@ -16,12 +16,12 @@ limitations under the License.
 
 package com.github.jsdossier;
 
-import static com.github.jsdossier.GuavaCollections.toImmutableList;
-import static com.github.jsdossier.GuavaCollections.toImmutableSet;
 import static com.github.jsdossier.jscomp.Types.isBuiltInFunctionProperty;
 import static com.github.jsdossier.jscomp.Types.isConstructorTypeDefinition;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.Iterables.getFirst;
 import static java.util.stream.Collectors.toList;
 
@@ -363,11 +363,11 @@ final class TypeInspector {
    */
   public Report inspectType() {
     List<Property> properties = getProperties(inspectedType);
-    Collections.sort(properties, new PropertyNameComparator());
     if (properties.isEmpty()) {
       return new Report();
     }
 
+    Collections.sort(properties, new PropertyNameComparator());
     Report report = new Report();
 
     for (Property property : properties) {
