@@ -6,6 +6,7 @@ set -e
 
 readonly ROOT="$(cd $(dirname $0) && pwd)"
 readonly RESOURCES="${ROOT}/src/java/com/github/jsdossier/resources"
+readonly GOOGLE_JAVA_FORMAT="${ROOT}/third_party/java/google_java_format/google-java-format-1.3-all-deps.jar"
 
 usage() {
   cat <<EOF
@@ -17,6 +18,7 @@ builds a new release (-r).
 OPTIONS:
   -h       Print this help message and exit
   -d       Refresh the project's readme documentation
+  -f       Format all java code
   -j       Run the Closure Compiler on dossier.js
   -l       Run lessc on dossier.less
   -r       Build a release
@@ -89,6 +91,11 @@ update_readme() {
   bazel build :readme && cp bazel-genfiles/README.md README.md
 }
 
+format_java() {
+  cd "${ROOT}"
+  java -jar "${GOOGLE_JAVA_FORMAT}" -i $(find src test -name *.java)
+}
+
 main() {
   local no_options=1
   local js=0
@@ -98,7 +105,7 @@ main() {
   local sample=0
   local test=0
 
-  while getopts "dhjlprst" option
+  while getopts "dfhjlprst" option
   do
     case $option in
       h)
@@ -107,6 +114,9 @@ main() {
         ;;
       d)
         no_options=0; readme=1
+        ;;
+      f)
+        no_options=0; format=1
         ;;
       j)
         no_options=0; js=1
@@ -128,6 +138,10 @@ main() {
 
   if (( $no_options )); then
     release=1
+  fi
+
+  if (( $format )); then
+    format_java
   fi
 
   if (( $readme )); then
