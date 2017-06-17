@@ -364,11 +364,11 @@ final class TypeInspector {
   public Report inspectType() {
     List<Property> properties = getProperties(inspectedType);
     if (properties.isEmpty()) {
-      return new Report();
+      return Report.empty();
     }
 
     Collections.sort(properties, new PropertyNameComparator());
-    Report report = new Report();
+    Report.Builder report = Report.builder();
 
     for (Property property : properties) {
       String name = property.getName();
@@ -391,20 +391,20 @@ final class TypeInspector {
 
       if (jsdoc.isDefine()) {
         name = dfs.getQualifiedDisplayName(inspectedType) + "." + property.getName();
-        report.addCompilerConstant(
+        report.compilerConstantsBuilder().add(
             getPropertyData(name, property.getType(), property.getNode(), docs));
 
       } else if (property.getType().isFunctionType()) {
-        report.addFunction(
+        report.functionsBuilder().add(
             getFunctionData(
                 name, property.getType().toMaybeFunctionType(), property.getNode(), docs));
 
       } else if (!property.getType().isEnumElementType()) {
-        report.addProperty(getPropertyData(name, property.getType(), property.getNode(), docs));
+        report.propertiesBuilder().add(getPropertyData(name, property.getType(), property.getNode(), docs));
       }
     }
 
-    return report;
+    return report.build();
   }
 
   private PropertyDocs findStaticPropertyJsDoc(NominalType ownerType, Property property) {
@@ -520,10 +520,10 @@ final class TypeInspector {
    */
   public Report inspectInstanceType() {
     if (!inspectedType.getType().isConstructor() && !inspectedType.getType().isInterface()) {
-      return new Report();
+      return Report.empty();
     }
 
-    Report report = new Report();
+    Report.Builder report = Report.builder();
     Multimap<String, InstanceProperty> properties =
         MultimapBuilder.treeKeys().linkedHashSetValues().build();
 
@@ -556,7 +556,7 @@ final class TypeInspector {
       }
 
       if (propertyType.isFunctionType()) {
-        report.addFunction(
+        report.functionsBuilder().add(
             getFunctionData(
                 property.getName(),
                 propertyType.toMaybeFunctionType(),
@@ -565,7 +565,7 @@ final class TypeInspector {
                 definedBy,
                 definitions));
       } else {
-        report.addProperty(
+        report.propertiesBuilder().add(
             getPropertyData(
                 property.getName(),
                 propertyType,
@@ -576,7 +576,7 @@ final class TypeInspector {
       }
     }
 
-    return report;
+    return report.build();
   }
 
   private JSType findPropertyType(Iterable<InstanceProperty> definitions) {
@@ -1318,33 +1318,27 @@ final class TypeInspector {
     return type;
   }
 
-  public static final class Report {
-    private List<com.github.jsdossier.proto.Function> functions = new ArrayList<>();
-    private List<com.github.jsdossier.proto.Property> properties = new ArrayList<>();
-    private List<com.github.jsdossier.proto.Property> compilerConstants = new ArrayList<>();
+  @AutoValue
+  public abstract static class Report {
+    Report() {}
 
-    private void addFunction(com.github.jsdossier.proto.Function function) {
-      functions.add(function);
+    public static Report.Builder builder() {
+      return new AutoValue_TypeInspector_Report.Builder();
     }
-
-    private void addProperty(com.github.jsdossier.proto.Property property) {
-      properties.add(property);
+    public static Report empty() {
+      return builder().build();
     }
-
-    private void addCompilerConstant(com.github.jsdossier.proto.Property property) {
-      compilerConstants.add(property);
-    }
-
-    public List<com.github.jsdossier.proto.Function> getFunctions() {
-      return functions;
-    }
-
-    public List<com.github.jsdossier.proto.Property> getProperties() {
-      return properties;
-    }
-
-    public List<com.github.jsdossier.proto.Property> getCompilerConstants() {
-      return compilerConstants;
+    
+    public abstract ImmutableList<com.github.jsdossier.proto.Function> getFunctions();
+    public abstract ImmutableList<com.github.jsdossier.proto.Property> getProperties();
+    public abstract ImmutableList<com.github.jsdossier.proto.Property> getCompilerConstants();
+    
+    @AutoValue.Builder
+    public abstract static class Builder {
+      public abstract ImmutableList.Builder<com.github.jsdossier.proto.Function> functionsBuilder();
+      public abstract ImmutableList.Builder<com.github.jsdossier.proto.Property> propertiesBuilder();
+      public abstract ImmutableList.Builder<com.github.jsdossier.proto.Property> compilerConstantsBuilder();
+      public abstract Report build();
     }
   }
 
