@@ -38,7 +38,6 @@ import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -455,7 +454,7 @@ public class ConfigTest {
                     closure.resolve("array/array.js"),
                     closure.resolve("dom/dom.js"),
                     source))
-            .setClosureLibraryDir(Optional.of(closure))
+            .setClosureLibraryDir(closure)
             .build();
     assertThat(config).isEqualTo(expected);
   }

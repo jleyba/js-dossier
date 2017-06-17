@@ -51,7 +51,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import com.google.javascript.jscomp.ErrorManager;
 import com.google.javascript.jscomp.PrintStreamErrorManager;
 import com.google.javascript.jscomp.SourceFile;
@@ -341,99 +340,92 @@ abstract class Config {
 
   public static Builder builder() {
     return new AutoValue_Config.Builder()
-        .setClosureLibraryDir(Optional.empty())
         .setClosureDepFiles(ImmutableSet.of())
         .setSources(ImmutableSet.of())
         .setModules(ImmutableSet.of())
-        .setSourcePrefix(Optional.empty())
-        .setModulePrefix(Optional.empty())
         .setExterns(ImmutableSet.of())
         .setExternModules(ImmutableSet.of())
         .setExcludes(ImmutableSet.of())
-        .setReadme(Optional.empty())
         .setCustomPages(ImmutableSet.of())
         .setStrict(false)
         .setModuleNamingConvention(ModuleNamingConvention.ES6)
-        .setSourceUrlTemplate(Optional.empty())
         .setTypeFilters(ImmutableSet.of())
         .setModuleFilters(ImmutableSet.of());
   }
 
   @AutoValue.Builder
   abstract static class Builder {
-    abstract Optional<Path> getClosureLibraryDir();
+    public abstract Optional<Path> getClosureLibraryDir();
 
-    abstract Builder setClosureLibraryDir(Optional<Path> path);
+    public abstract Builder setClosureLibraryDir(Path path);
 
-    abstract ImmutableSet<Path> getClosureDepFiles();
+    public abstract ImmutableSet<Path> getClosureDepFiles();
 
-    abstract Builder setClosureDepFiles(ImmutableSet<Path> file);
+    public abstract Builder setClosureDepFiles(ImmutableSet<Path> file);
 
-    abstract ImmutableSet<Path> getSources();
+    public abstract ImmutableSet<Path> getSources();
 
-    abstract Builder setSources(ImmutableSet<Path> paths);
+    public abstract Builder setSources(ImmutableSet<Path> paths);
 
-    Builder setSources(Set<Path> paths) {
+    public Builder setSources(Set<Path> paths) {
       return setSources(ImmutableSet.copyOf(paths));
     }
 
-    abstract ImmutableSet<Path> getModules();
+    public abstract ImmutableSet<Path> getModules();
 
-    abstract Builder setModules(ImmutableSet<Path> paths);
+    public abstract Builder setModules(ImmutableSet<Path> paths);
 
-    Builder setModules(Set<Path> paths) {
+    public Builder setModules(Set<Path> paths) {
       return setModules(ImmutableSet.copyOf(paths));
     }
 
-    abstract Optional<Path> getSourcePrefix();
+    public abstract Optional<Path> getSourcePrefix();
 
-    abstract Builder setSourcePrefix(Optional<Path> path);
+    public abstract Builder setSourcePrefix(Path path);
 
-    abstract Builder setModulePrefix(Optional<Path> path);
+    public abstract Builder setModulePrefix(Path path);
 
-    abstract ImmutableSet<Path> getExterns();
+    public abstract ImmutableSet<Path> getExterns();
 
-    abstract Builder setExterns(ImmutableSet<Path> paths);
+    public abstract Builder setExterns(ImmutableSet<Path> paths);
 
-    abstract ImmutableSet<Path> getExternModules();
+    public abstract ImmutableSet<Path> getExternModules();
 
-    abstract Builder setExternModules(ImmutableSet<Path> paths);
+    public abstract Builder setExternModules(ImmutableSet<Path> paths);
 
-    abstract ImmutableSet<Path> getExcludes();
+    public abstract ImmutableSet<Path> getExcludes();
 
-    abstract Builder setExcludes(ImmutableSet<Path> paths);
+    public abstract Builder setExcludes(ImmutableSet<Path> paths);
 
-    abstract Path getOutput();
+    public abstract Path getOutput();
 
-    abstract Builder setOutput(Path path);
+    public abstract Builder setOutput(Path path);
 
-    abstract Optional<Path> getReadme();
+    public abstract Optional<Path> getReadme();
 
-    abstract Builder setReadme(Optional<Path> path);
+    public abstract Builder setReadme(Optional<Path> path);
 
-    public Builder setReadme(Path path) {
-      return setReadme(Optional.of(path));
-    }
+    public abstract Builder setReadme(Path path);
 
-    abstract ImmutableSet<MarkdownPage> getCustomPages();
+    public abstract ImmutableSet<MarkdownPage> getCustomPages();
 
-    abstract Builder setCustomPages(ImmutableSet<MarkdownPage> pages);
+    public abstract Builder setCustomPages(ImmutableSet<MarkdownPage> pages);
 
-    abstract Optional<String> getSourceUrlTemplate();
+    public abstract Optional<String> getSourceUrlTemplate();
 
-    abstract Builder setSourceUrlTemplate(Optional<String> template);
+    public abstract Builder setSourceUrlTemplate(String template);
 
-    abstract Builder setStrict(boolean strict);
+    public abstract Builder setStrict(boolean strict);
 
-    abstract Builder setModuleNamingConvention(ModuleNamingConvention convention);
+    public abstract Builder setModuleNamingConvention(ModuleNamingConvention convention);
 
-    abstract Builder setTypeFilters(ImmutableSet<Pattern> filters);
+    public abstract Builder setTypeFilters(ImmutableSet<Pattern> filters);
 
-    abstract Builder setModuleFilters(ImmutableSet<Pattern> filters);
+    public abstract Builder setModuleFilters(ImmutableSet<Pattern> filters);
 
-    abstract FileSystem getFileSystem();
+    public abstract FileSystem getFileSystem();
 
-    abstract Builder setFileSystem(FileSystem fs);
+    public abstract Builder setFileSystem(FileSystem fs);
 
     abstract Config autoBuild();
 
@@ -558,8 +550,7 @@ abstract class Config {
           }
         }
       } else {
-        setSourcePrefix(
-            Optional.of(getSourcePrefixPath(getFileSystem(), getSources(), getModules())));
+        setSourcePrefix(getSourcePrefixPath(getFileSystem(), getSources(), getModules()));
       }
     }
 
@@ -881,6 +872,13 @@ abstract class Config {
         } else {
           value = context.deserialize(jsonObject.get(description.name()), genericType);
         }
+        
+        Method setter = entry.getValue().setter();
+        if (value instanceof Optional
+            && setter.getParameterTypes().length > 0
+            && !Optional.class.equals(setter.getParameterTypes()[0])) {
+          value = ((Optional<?>) value).get();
+        }
 
         try {
           entry.getValue().setter().invoke(config, value);
@@ -918,6 +916,9 @@ abstract class Config {
 
       Method setter = setters.get(setterName);
       verify(setter != null, "failed to resolve setter for %s", getter.getName());
+      verify(
+          setter.getParameterTypes().length == 1,
+          "expected setter to accept one parameter for %s", getter.getName());
       pairs.put(description, new AutoValue_Config_AccessorSetterPair(getter, setter));
     }
     return pairs;
