@@ -37,7 +37,6 @@ import com.google.common.jimfs.Jimfs;
 import com.google.common.truth.FailureStrategy;
 import com.google.common.truth.Subject;
 import com.google.common.truth.SubjectFactory;
-import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
@@ -56,7 +55,7 @@ public abstract class AbstractTypeInspectorTest {
           + "  childCtor.prototype = new tempCtor();\n"
           + "  /** @override */ childCtor.prototype.constructor = childCtor;\n"
           + "}\n";
-  
+
   private static final FileSystem FILE_SYSTEM = Jimfs.newFileSystem();
 
   @Rule

@@ -197,7 +197,8 @@ public final class TypeRegistry {
   }
 
   private Optional<Map.Entry<Module.Id, Module>> findModule(String id) {
-    return modulesById.entrySet()
+    return modulesById
+        .entrySet()
         .stream()
         .filter(e -> e.getKey().getCompiledName().equals(id))
         .findFirst();
@@ -309,7 +310,7 @@ public final class TypeRegistry {
   public Set<String> getTypeNames() {
     return Collections.unmodifiableSet(typesByName.keySet());
   }
-  
+
   /** Returns the nominal type representing the exports object for the specified module. */
   public NominalType getType(Module.Id id) {
     return getType(id.getCompiledName());

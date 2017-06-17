@@ -16,7 +16,6 @@ limitations under the License.
 
 package com.github.jsdossier.jscomp;
 
-import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.jscomp.Annotations.Internal;
 import com.google.common.collect.ImmutableList;
@@ -54,7 +53,7 @@ public final class CompilerModule extends AbstractModule {
   JSTypeRegistry provideJsTypeRegistry(DossierCompiler compiler) {
     return compiler.getTypeRegistry();
   }
-  
+
   @Provides
   @Internal
   ImmutableList<DossierCompilerPass> providePasses(
@@ -63,9 +62,7 @@ public final class CompilerModule extends AbstractModule {
       @Modules ImmutableSet<Path> modulePaths,
       Provider<NodeModulePass> nodeModulePassProvider) {
     ImmutableList.Builder<DossierCompilerPass> passes =
-        ImmutableList.<DossierCompilerPass>builder()
-            .add(visibilityPass)
-            .add(es6ModulePass);
+        ImmutableList.<DossierCompilerPass>builder().add(visibilityPass).add(es6ModulePass);
 
     // Transform CommonJS style node modules into Closure's goog.module syntax.
     // TODO(jleyba): do we still need to control this transformation?

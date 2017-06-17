@@ -30,9 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Tests for tracking types defined within a node module.
- */
+/** Tests for tracking types defined within a node module. */
 @RunWith(JUnit4.class)
 public class NodeAliasDetectionTest {
   @Rule
@@ -43,13 +41,9 @@ public class NodeAliasDetectionTest {
           .setUseNodeLibrary(false)
           .build();
 
-  @Inject
-  @Input
-  private FileSystem inputFs;
-  @Inject
-  private TypeRegistry typeRegistry;
-  @Inject
-  private CompilerUtil util;
+  @Inject @Input private FileSystem inputFs;
+  @Inject private TypeRegistry typeRegistry;
+  @Inject private CompilerUtil util;
 
   private NominalType context;
 
@@ -174,21 +168,19 @@ public class NodeAliasDetectionTest {
     util.compile(
         createSourceFile(
             inputFs.getPath("/modules/one.js"), "class One {}", "module.exports = {One};"),
-        createSourceFile(
-            inputFs.getPath("/modules/two.js"),
-            "var One = require('./one').One;"));
+        createSourceFile(inputFs.getPath("/modules/two.js"), "var One = require('./one').One;"));
 
     NominalType one = typeRegistry.getType("module$exports$module$modules$one");
     setContext(one);
     assertThat("One").isAliasFor("module$contents$module$modules$one_One");
-    
+
     NominalType two = typeRegistry.getType("module$exports$module$modules$two");
     setContext(two);
     assertThat("One").isAliasFor("module$exports$module$modules$one.One");
     assertThat("module$contents$module$modules$two_One")
         .isAliasFor("module$exports$module$modules$one.One");
   }
- 
+
   private void setContext(NominalType type) {
     context = checkNotNull(type);
   }

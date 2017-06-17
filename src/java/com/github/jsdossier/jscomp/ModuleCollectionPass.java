@@ -45,9 +45,7 @@ import java.util.logging.Logger;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
-/**
- * Process scripts containing a module body.
- */
+/** Process scripts containing a module body. */
 final class ModuleCollectionPass implements CompilerPass {
 
   private static final Logger log = Logger.getLogger(ModuleCollectionPass.class.getName());
@@ -230,9 +228,11 @@ final class ModuleCollectionPass implements CompilerPass {
 
             // Special case: var X = function() {}.
             if (lhs.isName() && rhs != null && rhs.isFunction()) {
-              module.getAliases().addAlias(
-                  lhs.getQualifiedName(),
-                  module.getId().getContentsVar(lhs.getQualifiedName()));
+              module
+                  .getAliases()
+                  .addAlias(
+                      lhs.getQualifiedName(),
+                      module.getId().getContentsVar(lhs.getQualifiedName()));
               return;
             }
 
@@ -255,9 +255,12 @@ final class ModuleCollectionPass implements CompilerPass {
 
           private void recordAlias(String alias, String name) {
             if (Types.isInternalVar(name)) {
-              verify(module.getType() == NODE,
+              verify(
+                  module.getType() == NODE,
                   "encountered internal var %s for module %s of type %s",
-                  name, module.getId(), module.getType());
+                  name,
+                  module.getId(),
+                  module.getType());
               String originalModuleName = Types.extractOriginalModuleName(name);
               String compiledName =
                   NODE.newId(originalModuleName, module.getId().getPath()).getCompiledName();

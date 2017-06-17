@@ -1717,12 +1717,8 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
   @Test
   @Bug(30)
   public void abstractMethodInheritsDocsFromInterfaceSpecification() {
-    guice.toBuilder()
-        .setModules(ImmutableSet.of())
-        .build()
-        .createInjector()
-        .injectMembers(this);
-    
+    guice.toBuilder().setModules(ImmutableSet.of()).build().createInjector().injectMembers(this);
+
     compile(
         DEFINE_ABSTRACT_METHOD,
         "/**",

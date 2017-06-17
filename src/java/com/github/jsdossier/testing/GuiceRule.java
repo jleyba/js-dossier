@@ -17,7 +17,6 @@ limitations under the License.
 package com.github.jsdossier.testing;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
 
 import com.github.jsdossier.MarkdownPage;
 import com.github.jsdossier.ModuleNamingConvention;
@@ -46,9 +45,6 @@ import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Scopes;
-import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
-import com.google.template.soy.exprtree.NullNode;
 import java.io.PrintStream;
 import java.lang.annotation.Annotation;
 import java.nio.file.FileSystem;
@@ -282,7 +278,7 @@ public abstract class GuiceRule implements TestRule {
     public Builder setOutputDir(String path) {
       return setOutputDir(Optional.of(getOutputFs().getPath(path)));
     }
-    
+
     public Builder setUseNodeLibrary(boolean useLibrary) {
       if (useLibrary) {
         return setNodeLibrary(null);

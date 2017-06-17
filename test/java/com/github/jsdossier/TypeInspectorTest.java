@@ -365,8 +365,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
         createSourceFile(
             fs.getPath("/src/modules/foo/baz.js"), "exports.AliasedBaz = require('./bar').Baz;"));
 
-    NominalType type =
-        typeRegistry.getType("module$exports$module$src$modules$foo$baz.AliasedBaz");
+    NominalType type = typeRegistry.getType("module$exports$module$src$modules$foo$baz.AliasedBaz");
     TypeInspector inspector = typeInspectorFactory.create(type);
     assertThat(inspector.getTypeDescription())
         .isEqualTo(htmlComment("<p>This is a comment on a type.</p>\n"));
@@ -469,8 +468,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
     TypeInspector inspector = typeInspectorFactory.create(type);
     assertThat(inspector.getTypeDescription())
         .isEqualTo(
-            htmlComment(
-                "<p>Exports <a href=\"bar_exports_A.html\"><code>A</code></a>.</p>\n"));
+            htmlComment("<p>Exports <a href=\"bar_exports_A.html\"><code>A</code></a>.</p>\n"));
   }
 
   @Test

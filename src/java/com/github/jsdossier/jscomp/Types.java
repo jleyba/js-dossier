@@ -106,7 +106,7 @@ public final class Types {
   static boolean isInternalVar(String name) {
     return name.startsWith(DOSSIER_INTERNAL_VAR_PREFIX);
   }
-  
+
   static String extractOriginalModuleName(String name) {
     checkArgument(isInternalVar(name), "not an internal module variable: %s", name);
     name = name.substring(DOSSIER_INTERNAL_VAR_PREFIX.length());

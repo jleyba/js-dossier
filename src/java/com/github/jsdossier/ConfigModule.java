@@ -39,7 +39,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.google.inject.Scope;
-import com.google.javascript.jscomp.CompilerOptions;
 import java.io.PrintStream;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;

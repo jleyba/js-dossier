@@ -62,10 +62,11 @@ final class Es6ModulePass implements DossierCompilerPass {
     public boolean shouldTraverse(NodeTraversal nodeTraversal, Node n, Node parent) {
       if (n.isScript()) {
         Path path = inputFs.getPath(n.getSourceFileName());
-        module = Module.builder()
-            .setId(ES6.newId(path))
-            .setJsDoc(JsDoc.from(n.getJSDocInfo()))
-            .setAliases(AliasRegion.forFile(path));
+        module =
+            Module.builder()
+                .setId(ES6.newId(path))
+                .setJsDoc(JsDoc.from(n.getJSDocInfo()))
+                .setAliases(AliasRegion.forFile(path));
 
         // Start building the module. It won't be finalized unless we see an export statement.
         isEs6Module = false;

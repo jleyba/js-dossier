@@ -116,7 +116,7 @@ public class CompilerUtil {
     return BUILTIN_EXTERN_CACHE.get(environment);
   }
 
-  private  void assertCompiled(Result result) {
+  private void assertCompiled(Result result) {
     if (result.errors.length > 0 || result.warnings.length > 0) {
       List<String> errors = Lists.newLinkedList();
       errors.add("Failed to compile!");
@@ -125,7 +125,7 @@ public class CompilerUtil {
 
       errors.add("Compiler warnings");
       appendErrors(errors, result.warnings);
-      
+
       if (result.errors.length == 0) {
         System.out.println(toSource());
       }

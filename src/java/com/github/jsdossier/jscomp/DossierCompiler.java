@@ -85,16 +85,18 @@ public final class DossierCompiler extends Compiler {
         "%s can only parse its inputs once! Create a new instance if you must re-parse",
         getClass());
     hasParsed = true;
-    
-    getInputsById().values()
+
+    getInputsById()
+        .values()
         .stream()
         .map(input -> input.getAstRoot(this))
         .filter(input -> input != null)
-        .forEach(node -> {
-          for (DossierCompilerPass pass : passes) {
-            pass.process(this, node);
-          }
-        });
+        .forEach(
+            node -> {
+              for (DossierCompilerPass pass : passes) {
+                pass.process(this, node);
+              }
+            });
 
     super.parseForCompilation();
   }

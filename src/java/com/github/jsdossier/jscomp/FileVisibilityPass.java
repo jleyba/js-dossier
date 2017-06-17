@@ -33,9 +33,7 @@ final class FileVisibilityPass implements DossierCompilerPass {
   private final FileSystem inputFs;
 
   @Inject
-  FileVisibilityPass(
-      TypeRegistry typeRegistry,
-      @Input FileSystem inputFs) {
+  FileVisibilityPass(TypeRegistry typeRegistry, @Input FileSystem inputFs) {
     this.typeRegistry = typeRegistry;
     this.inputFs = inputFs;
   }

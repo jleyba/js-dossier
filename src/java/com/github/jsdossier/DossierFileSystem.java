@@ -24,7 +24,6 @@ import com.github.jsdossier.annotations.ModulePrefix;
 import com.github.jsdossier.annotations.Output;
 import com.github.jsdossier.annotations.SourcePrefix;
 import com.github.jsdossier.jscomp.Module;
-import com.github.jsdossier.jscomp.Module.Type;
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.Resources;

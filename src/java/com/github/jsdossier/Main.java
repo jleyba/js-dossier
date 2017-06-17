@@ -134,9 +134,7 @@ final class Main {
     List<ListenableFuture<List<Path>>> stage1 = (List) executor.invokeAll(tasks);
     ListenableFuture<List<List<Path>>> stage2 = allAsList(stage1);
     return transform(
-        stage2,
-        lists -> lists.stream().flatMap(List::stream).collect(toList()),
-        directExecutor());
+        stage2, lists -> lists.stream().flatMap(List::stream).collect(toList()), directExecutor());
   }
 
   private static int run(Flags flags, Config config, Path outputDir) throws IOException {

@@ -93,7 +93,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import java.util.stream.Collector;
 
 /** Describes the runtime configuration for the app. */
 @AutoValue
@@ -368,11 +367,11 @@ abstract class Config {
     public abstract ImmutableSet<Path> getSources();
 
     public abstract Builder setSources(ImmutableSet<Path> paths);
-    
+
     public abstract ImmutableSet<Path> getModules();
 
     public abstract Builder setModules(ImmutableSet<Path> paths);
-    
+
     public abstract Optional<Path> getSourcePrefix();
 
     public abstract Builder setSourcePrefix(Path path);
@@ -426,7 +425,7 @@ abstract class Config {
     private Builder duplicate() {
       return autoBuild().toBuilder();
     }
-    
+
     private Builder normalize() {
       ImmutableSet<Path> excludes = getExcludes();
 
@@ -866,7 +865,7 @@ abstract class Config {
         } else {
           value = context.deserialize(jsonObject.get(description.name()), genericType);
         }
-        
+
         Method setter = entry.getValue().setter();
         if (value instanceof Optional
             && setter.getParameterTypes().length > 0
@@ -912,7 +911,8 @@ abstract class Config {
       verify(setter != null, "failed to resolve setter for %s", getter.getName());
       verify(
           setter.getParameterTypes().length == 1,
-          "expected setter to accept one parameter for %s", getter.getName());
+          "expected setter to accept one parameter for %s",
+          getter.getName());
       pairs.put(description, new AutoValue_Config_AccessorSetterPair(getter, setter));
     }
     return pairs;

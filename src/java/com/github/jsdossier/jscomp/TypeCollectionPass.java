@@ -26,7 +26,6 @@ import static com.google.common.base.Verify.verify;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.ModuleFilter;
 import com.github.jsdossier.annotations.TypeFilter;
-import com.github.jsdossier.jscomp.Module.Type;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.TypedScope;
 import com.google.javascript.jscomp.TypedVar;
@@ -245,7 +244,7 @@ public final class TypeCollectionPass implements CompilerPass {
     }
   }
 
-  private final  class TypeCollector implements Visitor<Void> {
+  private final class TypeCollector implements Visitor<Void> {
 
     private final Node externsRoot;
     private final Set<JSType> externTypes = new HashSet<>();
@@ -598,7 +597,7 @@ public final class TypeCollectionPass implements CompilerPass {
           jsdoc = JsDoc.from(m.getExportedDocs().get(property.getName()));
         }
       }
-      
+
       if (jsdoc == null) {
         JSDocInfo info = property.getJSDocInfo();
         if (shouldUsePropertyTypeDocs(parent, property)) {

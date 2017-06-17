@@ -133,7 +133,7 @@ final class NodeModulePass implements DossierCompilerPass {
     if (root.isFromExterns()) {
       return;
     }
-    
+
     CommonJsModuleCallback callback = new CommonJsModuleCallback();
     traverseEs6(compiler, root, callback);
   }
@@ -365,8 +365,8 @@ final class NodeModulePass implements DossierCompilerPass {
         if (detector.foundRequire) {
           Node addAfter = n;
           for (Node last = n.getLastChild();
-               last != null && last != n.getFirstChild();
-               last = n.getLastChild()) {
+              last != null && last != n.getFirstChild();
+              last = n.getLastChild()) {
             n.removeChild(last);
 
             Node newDecl = declaration(last, n.getToken()).srcrefTree(last);
@@ -497,8 +497,6 @@ final class NodeModulePass implements DossierCompilerPass {
   }
 
   private static boolean isCall(Node n, String name) {
-    return Nodes.isCall(n, name)
-        && n.getSecondChild() != null
-        && n.getSecondChild().isString();
+    return Nodes.isCall(n, name) && n.getSecondChild() != null && n.getSecondChild().isString();
   }
 }

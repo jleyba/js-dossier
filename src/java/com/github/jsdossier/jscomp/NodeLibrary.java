@@ -22,16 +22,14 @@ import com.google.inject.ImplementedBy;
 import com.google.javascript.jscomp.SourceFile;
 import java.io.IOException;
 
-/**
- * Manages externs for node modules.
- */
+/** Manages externs for node modules. */
 @ImplementedBy(NodeLibraryImpl.class)
 public interface NodeLibrary {
 
   /**
    * Returns the list of source files that define globals for this library. The files returned in
-   * this list are not themselves modules. This collection will be disjoint with
-   * {@link #getExternModules()}.
+   * this list are not themselves modules. This collection will be disjoint with {@link
+   * #getExternModules()}.
    */
   default ImmutableList<SourceFile> getExternFiles() throws IOException {
     return ImmutableList.of();
@@ -45,9 +43,7 @@ public interface NodeLibrary {
     return ImmutableList.of();
   }
 
-  /**
-   * Returns whether the provided {@code id} may be used to require a module in this library.
-   */
+  /** Returns whether the provided {@code id} may be used to require a module in this library. */
   default boolean canRequireId(String id) {
     return false;
   }
@@ -61,8 +57,8 @@ public interface NodeLibrary {
   }
 
   /**
-   * Returns whether the given {@code path} references a module in this library.
-   * The default implementation always returns false.
+   * Returns whether the given {@code path} references a module in this library. The default
+   * implementation always returns false.
    */
   default boolean isModulePath(String path) {
     return false;

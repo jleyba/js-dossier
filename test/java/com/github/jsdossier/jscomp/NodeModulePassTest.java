@@ -295,10 +295,8 @@ public class NodeModulePassTest {
 
   @Test
   public void handlesRequireNodeCoreModule() {
-    CompilerUtil compiler = createCompiler(
-        ImmutableSet.of(),
-        ImmutableSet.of(path("foo/module.js")),
-        false);
+    CompilerUtil compiler =
+        createCompiler(ImmutableSet.of(), ImmutableSet.of(path("foo/module.js")), false);
 
     compiler.compile(
         createSourceFile(path("foo/module.js"), "var p = require('path');", "p.join('a', 'b');"));
@@ -312,10 +310,8 @@ public class NodeModulePassTest {
 
   @Test
   public void canReferToClassesExportedByNodeCoreModule() {
-    CompilerUtil compiler = createCompiler(
-        ImmutableSet.of(),
-        ImmutableSet.of(path("foo/module.js")),
-        false);
+    CompilerUtil compiler =
+        createCompiler(ImmutableSet.of(), ImmutableSet.of(path("foo/module.js")), false);
 
     compiler.compile(
         createSourceFile(
@@ -334,10 +330,8 @@ public class NodeModulePassTest {
 
   @Test
   public void leavesRequireStatementsForUnrecognizedModuleIds() {
-    CompilerUtil compiler = createCompiler(
-        ImmutableSet.of(),
-        ImmutableSet.of(path("foo/module.js")),
-        false);
+    CompilerUtil compiler =
+        createCompiler(ImmutableSet.of(), ImmutableSet.of(path("foo/module.js")), false);
 
     compiler.compile(
         createSourceFile(path("foo/module.js"), "var foo = require('foo');", "foo.doSomething();"));

@@ -27,8 +27,6 @@ import com.github.jsdossier.proto.Function.Detail;
 import com.github.jsdossier.proto.Tags;
 import com.github.jsdossier.proto.TypeExpression;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

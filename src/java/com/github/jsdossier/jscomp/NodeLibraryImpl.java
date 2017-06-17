@@ -57,7 +57,9 @@ final class NodeLibraryImpl implements NodeLibrary {
   private static final Logger log = Logger.getLogger(NodeLibraryImpl.class.getName());
 
   private static final String NODE_EXTERNS_RESOURCE_DIRECTORY =
-      "/" + NodeLibraryImpl.class.getPackage().getName().replace('.', '/') + "/resources/externs/node";
+      "/"
+          + NodeLibraryImpl.class.getPackage().getName().replace('.', '/')
+          + "/resources/externs/node";
   private static final String FILE_NAME_PREFIX = "dossier//node-externs.zip//";
 
   private static final Supplier<ExternCollection> NODE_EXTERNS =
@@ -198,9 +200,13 @@ final class NodeLibraryImpl implements NodeLibrary {
             if (file.getFileName().toString().endsWith(".js")) {
               String id = getNameWithoutExtension(file.getFileName().toString());
               if ("globals".equals(id)) {
-                builder.filesBuilder().add(
-                    SourceFile.fromInputStream(
-                        FILE_NAME_PREFIX + file.getFileName(), Files.newInputStream(file), UTF_8));
+                builder
+                    .filesBuilder()
+                    .add(
+                        SourceFile.fromInputStream(
+                            FILE_NAME_PREFIX + file.getFileName(),
+                            Files.newInputStream(file),
+                            UTF_8));
               } else {
                 builder.add(id, loadSource(file, true));
               }
@@ -242,8 +248,7 @@ final class NodeLibraryImpl implements NodeLibrary {
 
   @AutoValue
   abstract static class ExternCollection {
-    ExternCollection() {
-    }
+    ExternCollection() {}
 
     static Builder builder() {
       return new AutoValue_NodeLibraryImpl_ExternCollection.Builder();
@@ -274,8 +279,7 @@ final class NodeLibraryImpl implements NodeLibrary {
 
     @AutoValue.Builder
     abstract static class Builder {
-      Builder() {
-      }
+      Builder() {}
 
       abstract ImmutableSet.Builder<String> requireIdsBuilder();
 

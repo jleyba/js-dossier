@@ -37,22 +37,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Tests for {@link TypeCollectionPass}.
- */
+/** Tests for {@link TypeCollectionPass}. */
 @RunWith(JUnit4.class)
 public class TypeCollectionPassTest {
 
-  @Rule
-  public GuiceRule guice = GuiceRule.builder(this).build();
+  @Rule public GuiceRule guice = GuiceRule.builder(this).build();
 
-  @Inject
-  @Input
-  private FileSystem fs;
-  @Inject
-  private CompilerUtil util;
-  @Inject
-  private TypeRegistry typeRegistry;
+  @Inject @Input private FileSystem fs;
+  @Inject private CompilerUtil util;
+  @Inject private TypeRegistry typeRegistry;
 
   @Test
   public void collectsGlobalClasses_functionDeclaration() {
@@ -690,8 +683,8 @@ public class TypeCollectionPassTest {
 
     NominalType three = typeRegistry.getType("foo.three");
     assertWithMessage(
-        "Even though foo.three duck-types to foo.one, the"
-            + " compiler should detect that foo.three.a.b != foo.one.a.b")
+            "Even though foo.three duck-types to foo.one, the"
+                + " compiler should detect that foo.three.a.b != foo.one.a.b")
         .that(typeRegistry.getTypes(three.getType()))
         .containsExactly(three);
 

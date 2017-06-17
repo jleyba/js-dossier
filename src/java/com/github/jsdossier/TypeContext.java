@@ -33,7 +33,7 @@ import javax.inject.Inject;
 
 /**
  * Defines a context in which type names may be defined. For instance, consider:
- * <p>
+ *
  * <pre><code>
  *   goog.provide('foo');
  *   goog.provide('bar');
@@ -58,7 +58,7 @@ import javax.inject.Inject;
  *     };
  *   });
  * </code></pre>
- * <p>
+ *
  * <p>In this example, for the context {@code foo.Two}, the type name {@code ns.One} will resolve to
  * {@code foo.One}, whereas for {@code bar.Two} it will resolve to {@code bar.One}.
  */
@@ -94,9 +94,7 @@ final class TypeContext {
     this.context = context;
   }
 
-  /**
-   * Returns the root context that resolves types against the global scope.
-   */
+  /** Returns the root context that resolves types against the global scope. */
   public TypeContext clearContext() {
     if (context.isPresent()) {
       return new TypeContext(
@@ -105,9 +103,7 @@ final class TypeContext {
     return this;
   }
 
-  /**
-   * Creates a new context focused on the given type.
-   */
+  /** Creates a new context focused on the given type. */
   public TypeContext changeContext(@Nullable NominalType context) {
     return new TypeContext(
         typeRegistry, jsTypeRegistry, dfs, moduleNamingConvention, Optional.ofNullable(context));
@@ -117,9 +113,7 @@ final class TypeContext {
     return !context.isPresent();
   }
 
-  /**
-   * Returns the type type names or are resolved against, or null if using the global scope.
-   */
+  /** Returns the type type names or are resolved against, or null if using the global scope. */
   @Nullable
   public NominalType getContextType() {
     return context.orElse(null);
@@ -194,7 +188,10 @@ final class TypeContext {
   @CheckReturnValue
   private NominalType resolveExportByInternalName(Module module, String internalName) {
     Optional<Map.Entry<String, String>> exportEntry =
-        module.getExportedNames().entrySet().stream()
+        module
+            .getExportedNames()
+            .entrySet()
+            .stream()
             .filter(
                 e ->
                     internalName.equals(e.getValue())
@@ -203,7 +200,8 @@ final class TypeContext {
     if (exportEntry.isPresent()) {
       String qualifiedName =
           context.get().getModule().get().getId().getCompiledName()
-              + "." + exportEntry.get().getKey();
+              + "."
+              + exportEntry.get().getKey();
       if (typeRegistry.isType(qualifiedName)) {
         return typeRegistry.getType(qualifiedName);
       }

@@ -33,8 +33,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class ProvidedSymbolPassTest {
 
-  @Rule
-  public GuiceRule guiceRule = GuiceRule.builder(this).setUseNodeLibrary(false).build();
+  @Rule public GuiceRule guiceRule = GuiceRule.builder(this).setUseNodeLibrary(false).build();
 
   @Inject @Input private FileSystem fs;
   @Inject private TypeRegistry typeRegistry;

@@ -28,7 +28,6 @@ import com.github.jsdossier.testing.Bug;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.collect.Iterables;
-import com.google.javascript.jscomp.CompilerOptions;
 import java.nio.file.FileSystem;
 import javax.inject.Inject;
 import org.junit.Before;

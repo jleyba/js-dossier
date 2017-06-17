@@ -34,8 +34,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class AliasDetectionTest {
 
-  @Rule
-  public GuiceRule guice = GuiceRule.builder(this).setUseNodeLibrary(false).build();
+  @Rule public GuiceRule guice = GuiceRule.builder(this).setUseNodeLibrary(false).build();
 
   @Inject @Input private FileSystem inputFs;
   @Inject private TypeRegistry typeRegistry;

@@ -391,16 +391,21 @@ final class TypeInspector {
 
       if (jsdoc.isDefine()) {
         name = dfs.getQualifiedDisplayName(inspectedType) + "." + property.getName();
-        report.compilerConstantsBuilder().add(
-            getPropertyData(name, property.getType(), property.getNode(), docs));
+        report
+            .compilerConstantsBuilder()
+            .add(getPropertyData(name, property.getType(), property.getNode(), docs));
 
       } else if (property.getType().isFunctionType()) {
-        report.functionsBuilder().add(
-            getFunctionData(
-                name, property.getType().toMaybeFunctionType(), property.getNode(), docs));
+        report
+            .functionsBuilder()
+            .add(
+                getFunctionData(
+                    name, property.getType().toMaybeFunctionType(), property.getNode(), docs));
 
       } else if (!property.getType().isEnumElementType()) {
-        report.propertiesBuilder().add(getPropertyData(name, property.getType(), property.getNode(), docs));
+        report
+            .propertiesBuilder()
+            .add(getPropertyData(name, property.getType(), property.getNode(), docs));
       }
     }
 
@@ -556,23 +561,27 @@ final class TypeInspector {
       }
 
       if (propertyType.isFunctionType()) {
-        report.functionsBuilder().add(
-            getFunctionData(
-                property.getName(),
-                propertyType.toMaybeFunctionType(),
-                property.getNode(),
-                PropertyDocs.create(ownerType, property.getJsDoc()),
-                definedBy,
-                definitions));
+        report
+            .functionsBuilder()
+            .add(
+                getFunctionData(
+                    property.getName(),
+                    propertyType.toMaybeFunctionType(),
+                    property.getNode(),
+                    PropertyDocs.create(ownerType, property.getJsDoc()),
+                    definedBy,
+                    definitions));
       } else {
-        report.propertiesBuilder().add(
-            getPropertyData(
-                property.getName(),
-                propertyType,
-                property.getNode(),
-                PropertyDocs.create(ownerType, property.getJsDoc()),
-                definedBy,
-                definitions));
+        report
+            .propertiesBuilder()
+            .add(
+                getPropertyData(
+                    property.getName(),
+                    propertyType,
+                    property.getNode(),
+                    PropertyDocs.create(ownerType, property.getJsDoc()),
+                    definedBy,
+                    definitions));
       }
     }
 
@@ -962,7 +971,7 @@ final class TypeInspector {
 
     return null;
   }
-  
+
   private static Node getParamList(Node node) {
     verify(node.isFunction(), "not a function: %s", node);
 
@@ -1333,19 +1342,27 @@ final class TypeInspector {
     public static Report.Builder builder() {
       return new AutoValue_TypeInspector_Report.Builder();
     }
+
     public static Report empty() {
       return builder().build();
     }
-    
+
     public abstract ImmutableList<com.github.jsdossier.proto.Function> getFunctions();
+
     public abstract ImmutableList<com.github.jsdossier.proto.Property> getProperties();
+
     public abstract ImmutableList<com.github.jsdossier.proto.Property> getCompilerConstants();
-    
+
     @AutoValue.Builder
     public abstract static class Builder {
       public abstract ImmutableList.Builder<com.github.jsdossier.proto.Function> functionsBuilder();
-      public abstract ImmutableList.Builder<com.github.jsdossier.proto.Property> propertiesBuilder();
-      public abstract ImmutableList.Builder<com.github.jsdossier.proto.Property> compilerConstantsBuilder();
+
+      public abstract ImmutableList.Builder<com.github.jsdossier.proto.Property>
+          propertiesBuilder();
+
+      public abstract ImmutableList.Builder<com.github.jsdossier.proto.Property>
+          compilerConstantsBuilder();
+
       public abstract Report build();
     }
   }
