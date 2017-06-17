@@ -938,30 +938,38 @@ final class TypeInspector {
 
   @Nullable
   private static Node findParamList(Node src) {
-    if (src.isName() && src.getParent().isFunction()) {
-      verify(src.getNext().isParamList());
-      return src.getNext();
+    if (src.isName() && src.getParent() != null && src.getParent().isFunction()) {
+      return getParamList(src.getParent());
     }
 
     if (src.isGetProp()
         && src.getParent().isAssign()
-        && src.getParent().getFirstChild() != null
-        && src.getParent().getFirstChild().getNext().isFunction()) {
-      src = src.getParent().getFirstChild().getNext();
-      return src.getFirstChild().getNext();
+        && src.getParent().getSecondChild() != null
+        && src.getParent().getSecondChild().isFunction()) {
+      return getParamList(src.getParent().getSecondChild());
     }
 
-    if (!src.isFunction() && src.getFirstChild() != null && src.getFirstChild().isFunction()) {
-      src = src.getFirstChild();
+    if (!src.isFunction()) {
+      Node first = src.getFirstChild();
+      if (first != null && first.isFunction()) {
+        src = first;
+      }
     }
 
     if (src.isFunction()) {
-      Node node = src.getFirstChild().getNext();
-      verify(node.isParamList());
-      return node;
+      return getParamList(src);
     }
 
     return null;
+  }
+  
+  private static Node getParamList(Node node) {
+    verify(node.isFunction(), "not a function: %s", node);
+
+    Node list = node.getSecondChild();
+    verify(list != null && list.isParamList(), "not a param list: %s", list);
+
+    return list;
   }
 
   private Iterable<Function.Detail> buildThrowsData(final NominalType context, JsDoc jsDoc) {
