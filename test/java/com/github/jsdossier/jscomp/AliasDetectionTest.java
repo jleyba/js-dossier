@@ -187,7 +187,7 @@ public class AliasDetectionTest {
         createSourceFile(inputFs.getPath("module/a/foo.js"), "export class X {}"),
         createSourceFile(
             inputFs.getPath("module/a/bar.js"),
-            "import {X} from './foo';",
+            "import {X} from './foo.js';",
             "export class Y extends X {}"));
 
     NominalType type = typeRegistry.getType("module$module$a$bar.Y");
@@ -201,7 +201,7 @@ public class AliasDetectionTest {
             inputFs.getPath("module/a/foo.js"), "export class X {}", "export class Y {}"),
         createSourceFile(
             inputFs.getPath("module/a/bar.js"),
-            "import {X, Y} from './foo';",
+            "import {X, Y} from './foo.js';",
             "export class Z extends Y {}"));
 
     NominalType type = typeRegistry.getType("module$module$a$bar.Z");
@@ -215,7 +215,7 @@ public class AliasDetectionTest {
         createSourceFile(inputFs.getPath("module/a/foo.js"), "export class X {}"),
         createSourceFile(
             inputFs.getPath("module/a/bar.js"),
-            "import {X as A} from './foo';",
+            "import {X as A} from './foo.js';",
             "export class Y extends A {}"));
 
     NominalType type = typeRegistry.getType("module$module$a$bar.Y");
@@ -229,7 +229,7 @@ public class AliasDetectionTest {
             inputFs.getPath("module/a/foo.js"), "export class X {}", "export class Y {}"),
         createSourceFile(
             inputFs.getPath("module/a/bar.js"),
-            "import {X as A, Y as B} from './foo';",
+            "import {X as A, Y as B} from './foo.js';",
             "export class Y extends A {}"));
 
     NominalType type = typeRegistry.getType("module$module$a$bar.Y");

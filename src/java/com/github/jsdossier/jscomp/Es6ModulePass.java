@@ -25,6 +25,7 @@ import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
 
 import com.github.jsdossier.annotations.Input;
 import com.google.javascript.jscomp.NodeTraversal;
+import com.google.javascript.jscomp.NodeUtil;
 import com.google.javascript.jscomp.deps.ModuleNames;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.Token;
@@ -50,7 +51,9 @@ final class Es6ModulePass implements DossierCompilerPass {
 
   @Override
   public void process(DossierCompiler compiler, Node root) {
-    traverseEs6(compiler, root, new Es6ModuleTraversal());
+    if (!root.isFromExterns()) {
+      traverseEs6(compiler, root, new Es6ModuleTraversal());
+    }
   }
 
   private class Es6ModuleTraversal implements NodeTraversal.Callback {
@@ -81,15 +84,7 @@ final class Es6ModulePass implements DossierCompilerPass {
         return;
       }
 
-      if (n.isClass()) {
-        visitInternalNameDefinition(n, parent);
-      }
-
-      if (n.isFunction()) {
-        visitInternalNameDefinition(n, parent);
-      }
-
-      if ((n.isConst() || n.isLet() || n.isVar())) {
+      if (n.isClass() || n.isFunction() || NodeUtil.isNameDeclaration(n)) {
         visitInternalNameDefinition(n, parent);
       }
 
@@ -108,7 +103,7 @@ final class Es6ModulePass implements DossierCompilerPass {
         return;
       }
 
-      if (parent.isScript()) {
+      if (parent.isModuleBody()) {
         if (n.getJSDocInfo() != null) {
           module.internalVarDocsBuilder().put(name, n.getJSDocInfo());
         }

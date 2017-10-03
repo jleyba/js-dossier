@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 import javax.inject.Inject;
 
 /**
@@ -90,7 +91,7 @@ public final class DossierCompiler extends Compiler {
         .values()
         .stream()
         .map(input -> input.getAstRoot(this))
-        .filter(input -> input != null)
+        .filter(Objects::nonNull)
         .forEach(
             node -> {
               for (DossierCompilerPass pass : passes) {

@@ -856,7 +856,7 @@ public class TypeCollectionPassTest {
   public void fillsInMissingModuleTypesForModulesWithNoExports() {
     util.compile(
         createSourceFile(fs.getPath("foo.js"), "export class Foo {}"),
-        createSourceFile(fs.getPath("bar.js"), "import * as foo from './foo';"));
+        createSourceFile(fs.getPath("bar.js"), "import * as foo from './foo.js';"));
 
     Module bar = typeRegistry.getModule(fs.getPath("bar.js"));
     NominalType type = typeRegistry.getType(bar.getId());
@@ -1081,7 +1081,7 @@ public class TypeCollectionPassTest {
     util.compile(
         createSourceFile(fs.getPath("modules/one.js"), "export class One {}"),
         createSourceFile(
-            fs.getPath("modules/two.js"), "import * as one from './one';", "export {one};"));
+            fs.getPath("modules/two.js"), "import * as one from './one.js';", "export {one};"));
 
     assertThat(typeRegistry.getAllTypes())
         .containsExactly(

@@ -28,6 +28,7 @@ import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import com.google.javascript.jscomp.CustomPassExecutionTime;
+import com.google.javascript.jscomp.deps.ModuleLoader;
 import com.google.javascript.jscomp.parsing.Config;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
@@ -83,12 +84,15 @@ public final class CompilerModule extends AbstractModule {
       throws IOException {
     CompilerOptions options = new CompilerOptions();
 
-    if (!modulePaths.isEmpty()) {
-      // Prevents browser-specific externs from being loaded.
+    if (modulePaths.isEmpty()) {
+      options.setEnvironment(CompilerOptions.Environment.BROWSER);
+      options.setModuleResolutionMode(ModuleLoader.ResolutionMode.BROWSER);
+    } else {
       options.setEnvironment(CompilerOptions.Environment.CUSTOM);
+      options.setModuleResolutionMode(ModuleLoader.ResolutionMode.NODE);
     }
 
-    options.setModuleRoots(ImmutableList.<String>of());
+    options.setModuleRoots(ImmutableList.of());
 
     options.setLanguageIn(LanguageMode.ECMASCRIPT_2015);
     options.setLanguageOut(LanguageMode.ECMASCRIPT5);

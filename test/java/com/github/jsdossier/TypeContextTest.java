@@ -152,9 +152,9 @@ public class TypeContextTest {
             "export {A as B, B as default}"),
         createSourceFile(
             fs.getPath("src/modules/bar.js"),
-            "import Foo from './foo';",
-            "import {default as Bar} from './foo';",
-            "import Baz, {B, B as C} from './foo';",
+            "import Foo from './foo.js';",
+            "import {default as Bar} from './foo.js';",
+            "import Baz, {B, B as C} from './foo.js';",
             "",
             "export default class {}"));
 
@@ -178,8 +178,8 @@ public class TypeContextTest {
         createSourceFile(fs.getPath("src/modules/bar.js"), "export default function() {}"),
         createSourceFile(
             fs.getPath("src/modules/baz.js"),
-            "import foo from './foo';",
-            "import bar from './bar';",
+            "import foo from './foo.js';",
+            "import bar from './bar.js';",
             "export default class {}"));
 
     NominalType module = typeRegistry.getType("module$src$modules$baz");
@@ -195,10 +195,10 @@ public class TypeContextTest {
         createSourceFile(
             fs.getPath("src/modules/foo.js"), "export default class {}", "export class A {}"),
         createSourceFile(
-            fs.getPath("src/modules/bar.js"), "export {default as B, A as C} from './foo';"),
+            fs.getPath("src/modules/bar.js"), "export {default as B, A as C} from './foo.js';"),
         createSourceFile(
             fs.getPath("src/modules/baz.js"),
-            "import {B, C} from './bar';",
+            "import {B, C} from './bar.js';",
             "export default class {}"));
 
     NominalType fooA = typeRegistry.getType("module$src$modules$foo.A");

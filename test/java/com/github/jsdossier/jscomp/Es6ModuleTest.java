@@ -182,7 +182,7 @@ public class Es6ModuleTest {
     assertThat(Files.exists(fs.getPath("does_not_exist.js"))).isFalse();
     try {
       util.compile(
-          createSourceFile(fs.getPath("one.js"), "import * as dne from './does_not_exist';"));
+          createSourceFile(fs.getPath("one.js"), "import * as dne from './does_not_exist.js';"));
       fail("should fail to compile!");
     } catch (CompilerUtil.CompileFailureException expected) {
       assertThat(expected.getMessage())
@@ -196,7 +196,7 @@ public class Es6ModuleTest {
   public void reportsACompilerErrorIfImportedModuleIsNotACompilerInput() throws IOException {
     Files.createFile(fs.getPath("two.js"));
     try {
-      util.compile(createSourceFile(fs.getPath("one.js"), "import * as dne from './two';"));
+      util.compile(createSourceFile(fs.getPath("one.js"), "import * as dne from './two.js';"));
       fail("should fail to compile!");
     } catch (CompilerUtil.CompileFailureException expected) {
       assertThat(expected.getMessage())

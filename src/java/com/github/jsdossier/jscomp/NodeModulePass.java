@@ -210,6 +210,7 @@ final class NodeModulePass implements DossierCompilerPass {
         moduleBody.addChildrenToBack(script.removeChildren());
       }
       script.addChildToBack(moduleBody);
+      script.putBooleanProp(Node.GOOG_MODULE, true);
 
       t.getInput().addProvide(currentModule);
 
