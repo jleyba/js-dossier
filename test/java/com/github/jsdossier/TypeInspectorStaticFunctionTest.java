@@ -1171,7 +1171,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                     Detail.newBuilder()
                         .setType(
                             TypeExpression.newBuilder()
-                            .setNamedType(namedType("Promise").toBuilder().setExtern(true)))
+                                .setNamedType(namedType("Promise").toBuilder().setExtern(true)))
                         .setDescription(htmlComment("<p>the sum.</p>\n")))
                 .build());
   }
