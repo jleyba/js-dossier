@@ -3,7 +3,7 @@
 ## Changes
 
 -  Removed the `language` input option; Dossier now always sets the input
-   language to ES6.
+   language to ECMASCRIPT_2017.
 -  Upgraded dependencies:
    +  com.google.auto:auto-common:0.8
    +  com.google.auto.value:auto-value:1.4.1

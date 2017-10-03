@@ -17,7 +17,9 @@ limitations under the License.
 package com.github.jsdossier;
 
 import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
+import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
+import static org.junit.Assert.fail;
 
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.proto.BaseProperty;
@@ -1135,5 +1137,96 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                         .setType(numberTypeExpression().toBuilder().setIsVarargs(true))
                         .setDescription(htmlComment("<p>The numbers to add.</p>\n")))
                 .build());
+  }
+
+  @Test
+  public void asyncStaticFunction_withReturnJsDoc() {
+    compile(
+        "class Worker {",
+        "  /**",
+        "   * @param {...number} numbers The numbers to add. ",
+        "   * @return {!Promise} the sum.",
+        "   */",
+        "  static async add(...numbers) {",
+        "  }",
+        "}");
+
+    NominalType type = typeRegistry.getType("Worker");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertThat(getOnlyElement(report.getFunctions()))
+        .isEqualTo(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("Worker.add")
+                        .setSource(sourceFile("source/foo.js.src.html", 6))
+                        .setDescription(Comment.getDefaultInstance()))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("numbers")
+                        .setType(numberTypeExpression().toBuilder().setIsVarargs(true))
+                        .setDescription(htmlComment("<p>The numbers to add.</p>\n")))
+                .setReturn(
+                    Detail.newBuilder()
+                        .setType(
+                            TypeExpression.newBuilder()
+                            .setNamedType(namedType("Promise").toBuilder().setExtern(true)))
+                        .setDescription(htmlComment("<p>the sum.</p>\n")))
+                .build());
+  }
+
+  @Test
+  public void asyncStaticFunction_noReturnJsDoc() {
+    compile(
+        "class Worker {",
+        "  /**",
+        "   * @param {...number} numbers The numbers to add. ",
+        "   */",
+        "  static async add(...numbers) {",
+        "  }",
+        "}");
+
+    NominalType type = typeRegistry.getType("Worker");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    try {
+      assertThat(getOnlyElement(report.getFunctions()))
+          .isEqualTo(
+              Function.newBuilder()
+                  .setBase(
+                      BaseProperty.newBuilder()
+                          .setName("Worker.add")
+                          .setSource(sourceFile("source/foo.js.src.html", 5))
+                          .setDescription(Comment.getDefaultInstance()))
+                  .addParameter(
+                      Detail.newBuilder()
+                          .setName("numbers")
+                          .setType(numberTypeExpression().toBuilder().setIsVarargs(true))
+                          .setDescription(htmlComment("<p>The numbers to add.</p>\n")))
+                  .setReturn(
+                      Detail.newBuilder()
+                          .setType(
+                              TypeExpression.newBuilder()
+                                  .setNamedType(namedType("Promise").toBuilder().setExtern(true))))
+                  .build());
+      fail("test needs to be updated to remove try-catch!");
+    } catch (AssertionError expected) {
+      // TODO(jleyba): should know that async functions return a promise.
+      assertThat(getOnlyElement(report.getFunctions()))
+          .isEqualTo(
+              Function.newBuilder()
+                  .setBase(
+                      BaseProperty.newBuilder()
+                          .setName("Worker.add")
+                          .setSource(sourceFile("source/foo.js.src.html", 5))
+                          .setDescription(Comment.getDefaultInstance()))
+                  .addParameter(
+                      Detail.newBuilder()
+                          .setName("numbers")
+                          .setType(numberTypeExpression().toBuilder().setIsVarargs(true))
+                          .setDescription(htmlComment("<p>The numbers to add.</p>\n")))
+                  .build());
+    }
   }
 }
