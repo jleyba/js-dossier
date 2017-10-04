@@ -1,3 +1,11 @@
+# v.next
+
+## Bug Fixes
+
+- Fixed initialization when using CommonJS modules so the extern definitions
+  for Node's core library are properly loaded.
+
+
 # v0.12.0
 
 ## Changes

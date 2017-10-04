@@ -16,6 +16,7 @@ limitations under the License.
 
 package com.github.jsdossier.jscomp;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.github.jsdossier.annotations.Modules;
@@ -25,7 +26,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.jscomp.Result;
+import com.google.javascript.jscomp.JSModule;
 import com.google.javascript.jscomp.SourceFile;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -59,19 +60,21 @@ public final class DossierCompiler extends Compiler {
   }
 
   @Override
-  public <T1 extends SourceFile, T2 extends SourceFile> Result compile(
-      List<T1> externs, List<T2> inputs, CompilerOptions options) {
+  public <T extends SourceFile> void initModules(
+      List<T> externs, List<JSModule> modules, CompilerOptions options) {
+    checkArgument(modules.size() == 1, "only expecting 1 module, but got %s", modules.size());
     List<? extends SourceFile> externList = externs;
-    List<? extends SourceFile> inputList = inputs;
     if (!modulePaths.isEmpty()) {
       try {
         externList = concat(externs, nodeLibrary.getExternFiles());
-        inputList = concat(inputs, nodeLibrary.getExternModules());
+        
+        JSModule module = modules.iterator().next();
+        nodeLibrary.getExternModules().forEach(module::add);
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
     }
-    return super.compile(externList, inputList, options);
+    super.initModules(externList, modules, options);
   }
 
   private ImmutableList<SourceFile> concat(
