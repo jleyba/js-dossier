@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="libjava_proto">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/bazel-bin/src/proto/libjava_proto.jar!/" />
-      <root url="jar://$PROJECT_DIR$/bazel-bin/third_party/webutil/html/types/proto/libjava_proto.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bazel-bin/src/proto/libproto-speed.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bazel-bin/third_party/webutil/html/types/proto/libproto-speed.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/bazel-genfiles/third_party/webutil/html/types/proto/java_proto_src.srcjar!/" />
-      <root url="jar://$PROJECT_DIR$/bazel-genfiles/src/proto/java_proto_src.srcjar!/" />
+      <root url="jar://$PROJECT_DIR$/bazel-genfiles/src/proto/proto-speed-src.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bazel-genfiles/third_party/webutil/html/types/proto/proto-speed-src.jar!/" />
     </SOURCES>
   </library>
 </component>

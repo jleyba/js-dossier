@@ -3,6 +3,8 @@
 ## Changes
 
 -  Upgraded dependencies:
+   +  com.google.javascript:closure-compiler-unshaded:v20180101
+   +  com.google.javascript:closure-compiler-externs:v20180101
    +  com.google.protobuf:protobuf-java:3.5.0
 
 

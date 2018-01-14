@@ -340,7 +340,7 @@ public class TypeCollectionPassTest {
     NominalType type = typeRegistry.getType("module$foo$bar");
     assertNamespace(type);
     assertPath(type, "foo/bar.js");
-    assertPosition(type, 1, 1);
+    assertPosition(type, 1, 0);
     assertModule(type, Module.Type.ES6, "module$foo$bar", "foo/bar.js");
   }
 
@@ -352,7 +352,7 @@ public class TypeCollectionPassTest {
     NominalType type = typeRegistry.getType("module$modules$foo$bar");
     assertNamespace(type);
     assertPath(type, "modules/foo/bar.js");
-    assertPosition(type, 1, 1);
+    assertPosition(type, 1, 0);
     assertModule(type, Module.Type.ES6, "module$modules$foo$bar", "modules/foo/bar.js");
   }
 
