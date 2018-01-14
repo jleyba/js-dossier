@@ -1,0 +1,25 @@
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+closure_js_library(
+    name = "jspb",
+    srcs = [
+        "binary/arith.js",
+        "binary/constants.js",
+        "binary/decoder.js",
+        "binary/encoder.js",
+        "binary/reader.js",
+        "binary/utils.js",
+        "binary/writer.js",
+        "debug.js",
+        "map.js",
+        "message.js",
+    ],
+    suppress = [
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_NULLABLE_RETURN_WITH_NAME",
+        "JSC_OPTIONAL_PARAM_NOT_MARKED_OPTIONAL",
+        "JSC_UNKNOWN_EXPR_TYPE",
+    ],
+    visibility = ["//visibility:public"],
+    deps = ["@dossier_closure_library//:closure"],
+)

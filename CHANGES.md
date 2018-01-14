@@ -1,3 +1,11 @@
+# v.next
+
+## Changes
+
+-  Upgraded dependencies:
+   +  com.google.protobuf:protobuf-java:3.5.0
+
+
 # v0.12.1
 
 ## Bug Fixes

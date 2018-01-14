@@ -28,11 +28,11 @@ function globalScope() {
 }
 
 
-self.addEventListener('install', function(event) {
+self.addEventListener('install', function(/** !ExtendableEvent */event) {
   event.waitUntil(globalScope().skipWaiting());
 });
 
-self.addEventListener('activate', function(event) {
+self.addEventListener('activate', function(/** !ExtendableEvent */event) {
   event.waitUntil(
       self.caches.keys()
           .then(keys => {
@@ -41,7 +41,7 @@ self.addEventListener('activate', function(event) {
           .then(() => globalScope().clients.claim()));
 });
 
-self.addEventListener('fetch', function(event) {
+self.addEventListener('fetch', function(/** !FetchEvent */event) {
   event.respondWith(
       self.caches.match(event.request).then(cacheHit => {
         let fetchResponse = fetch(event.request).then(response => {

@@ -19,17 +19,12 @@ goog.module('dossier.page');
 const array = goog.require('goog.array');
 
 
-/**
- * The base path on the server or the directory containing the main dossier
- * script. It is assumed that all resources are served from this directory or
- * one of its descendants.
- *
- * @const {string}
- */
-const BASE_PATH = (function() {
-  var scripts = document.querySelectorAll('script');
-  var dirPath = '';
-  var thisFile = 'dossier.js';
+/** @return {string} */
+function computeBasePath() {
+  const scripts = /** @type {!NodeList<!HTMLElement>} */(
+      document.querySelectorAll('script'));
+  /** @type {string} */let dirPath = '';
+  const thisFile = 'dossier.js';
   array.find(scripts, function(script) {
     var src = script.getAttribute('src');
     if (!src) {
@@ -52,7 +47,17 @@ const BASE_PATH = (function() {
     basePath += '/';
   }
   return basePath;
-})();
+}
+
+
+/**
+ * The base path on the server or the directory containing the main dossier
+ * script. It is assumed that all resources are served from this directory or
+ * one of its descendants.
+ *
+ * @const {string}
+ */
+const BASE_PATH = computeBasePath();
 
 
 // PUBLIC API

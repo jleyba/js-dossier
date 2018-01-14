@@ -79,7 +79,7 @@ exports.getExternLink = function(type) {
 
 /**
  * @param {!goog.soy.data.SanitizedContent} arg The arg to wrap in sanitized content.
- * @return {!soydata.SanitizedHtml} The sanitized content.
+ * @return {!goog.soy.data.SanitizedHtml} The sanitized content.
  */
 exports.sanitizeHtml = function(arg) {
   return ordainSanitizedHtml(arg.toString());

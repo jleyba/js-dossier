@@ -150,6 +150,7 @@ class AutoCompleteMatcher {
    * @private
    */
   damerauLevenshteinDistance_(a, b) {
+    /** @type {!Array<!Array<number>>} */
     let d = [];
 
     for (let i = 0; i <= a.length; i++) {
@@ -216,21 +217,19 @@ function createAutoComplete(data, input) {
 
 /**
  * Describes a selection made in the search box.
+ * @final
  */
-exports.SelectionEvent = class {
+class SelectionEvent {
   /**
    * @param {string} uri The URI for the selected item.
    */
   constructor(uri) {
-    /** @const */ this.type = this.constructor.TYPE;
+    /** @const {string} */ this.type = SelectionEvent.TYPE;
     /** @const */ this.uri = uri;
   }
-
-  /** @return {string} The name of this event type. */
-  static get TYPE() {
-    return 'select';
-  }
-};
+}
+/** @const {string} */ SelectionEvent.TYPE = 'select';
+exports.SelectionEvent = SelectionEvent;
 
 
 /**
@@ -245,12 +244,12 @@ class SearchBox extends EventTarget {
   constructor(nameToUri, formEl) {
     super();
 
-    let inputEl = /** @type {!Element} */(formEl.querySelector('input'));
+    let inputEl = /** @type {!HTMLInputElement} */(formEl.querySelector('input'));
 
     /** @private {!Map<string, string>} */
     this.nameToUri_ = nameToUri;
 
-    /** @private {!Element} */
+    /** @private {!HTMLInputElement} */
     this.inputEl_ = inputEl;
 
     events.listen(formEl, 'submit', this.onUpdate_, false, this);
@@ -295,8 +294,9 @@ class SearchBox extends EventTarget {
 
   /**
    * @return {boolean} Whether the search box is currently focused.
+   * @suppress {reportUnknownTypes}  Compiler doesn't like `ownerDocument.activeElement`
    */
-  get isActive() {
+  isActive() {
     return this.inputEl_.ownerDocument.activeElement === this.inputEl_;
   }
 }

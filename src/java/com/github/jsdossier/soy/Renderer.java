@@ -181,7 +181,17 @@ public class Renderer {
         "\n/** @suppress {extraRequire} */\n"
             + "goog.require('dossier.soyplugins');\n"
             + "/** @suppress {extraRequire} */\n"
-            + "goog.require('goog.soy.data.SanitizedContent');\n";
+            + "goog.require('goog.soy.data.SanitizedContent');\n"
+            + "/** @suppress {extraRequire} */\n"
+            + "goog.require('goog.soy.data.SanitizedHtml');\n"
+            + "/** @suppress {extraRequire} */\n"
+            + "goog.require('goog.soy.data.SanitizedHtmlAttribute');"
+            + "/** @suppress {extraRequire} */\n"
+            + "goog.require('goog.soy.data.UnsanitizedText');"
+            + "\n";
+
+    Pattern htmlAttributePattern = Pattern.compile(
+        "soydata\\.((?:UnsanitizedText|SanitizedHtml(?:Attribute)?))");
 
     Iterator<Path> files =
         ImmutableList.of(
@@ -193,6 +203,11 @@ public class Renderer {
       Matcher matcher = googModulePattern.matcher(string);
       if (matcher.find()) {
         string = matcher.replaceFirst("$1\n" + missingContent);
+      }
+
+      matcher = htmlAttributePattern.matcher(string);
+      if (matcher.find()) {
+        string = matcher.replaceAll("goog.soy.data.$1");
       }
 
       Path file = files.next();

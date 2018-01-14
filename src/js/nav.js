@@ -16,11 +16,11 @@
 
 goog.module('dossier.nav');
 
-const Arrays = goog.require('goog.array');
 const Index = goog.require('proto.dossier.Index');
 const KeyCodes = goog.require('goog.events.KeyCodes');
 const Message = goog.require('jspb.Message');
 const NamedType = goog.require('proto.dossier.expression.NamedType');
+const arrays = goog.require('goog.array');
 const dom = goog.require('goog.dom');
 const events = goog.require('goog.events');
 const page = goog.require('dossier.page');
@@ -63,7 +63,7 @@ function buildTree(entries, opt_modules) {
 
   const delimiter = opt_modules ? '/' : '.';
   let roots = [];
-  let stack = [];
+  /** @type {!Array<!Index.Entry>} */let stack = [];
   let allEntries = new Set;
 
   /**
@@ -74,8 +74,12 @@ function buildTree(entries, opt_modules) {
   let fakeEntries = [];
   let entriesToResort = /** !Set<!Index.Entry> */new Set;
 
-  function recordEntry(/** !Index.Entry */entry) {
-    let last = Arrays.peek(stack);
+  /**
+   * @param {!Index.Entry} entry
+   * @return {number}
+   */
+  function recordEntry(entry) {
+    let last = arrays.peek(stack);
     allEntries.add(entry.getType().getQualifiedName());
 
     if (entry.getIsNamespace()) {
@@ -99,7 +103,7 @@ function buildTree(entries, opt_modules) {
     fakeEntry.getType().setName(name);
     fakeEntry.getType().setQualifiedName(qualifiedName);
 
-    let parent = Arrays.peek(stack);
+    let parent = arrays.peek(stack);
     let childIndex = recordEntry(fakeEntry);
     fakeEntries.push({parent, fakeEntry, childIndex});
   }
@@ -108,7 +112,7 @@ function buildTree(entries, opt_modules) {
     for (let index = name.indexOf(delimiter, 1);
          index != -1;
          index = name.indexOf(delimiter)) {
-      let parent = Arrays.peek(stack);
+      let parent = arrays.peek(stack);
       let fakeName = name.slice(0, index);
       let fakeQualifiedName = parent
           ? `${parent.getType().getQualifiedName()}${opt_modules ? '' : '.'}${fakeName}`
@@ -128,7 +132,7 @@ function buildTree(entries, opt_modules) {
 
   entries.forEach(entry => {
     while (stack.length) {
-      let last = Arrays.peek(stack);
+      let last = arrays.peek(stack);
       let parentName = last.getType().getQualifiedName();
       let childName = entry.getType().getQualifiedName();
 
@@ -244,12 +248,12 @@ class NavDrawer {
   }
 
   /** @return {!Element} The main element for this nav drawer. */
-  get element() {
+  element() {
     return this.navEl_;
   }
 
   /** @return {boolean} Whether the nav drawer is currently open. */
-  get isOpen() {
+  isOpen() {
     return this.navEl_.classList.contains('visible');
   }
 
@@ -297,7 +301,7 @@ class NavDrawer {
    * Toggle the visibility of the nav drawer.
    */
   toggleVisibility() {
-    if (this.isOpen) {
+    if (this.isOpen()) {
       this.hide();
     } else {
       this.show();
@@ -310,15 +314,15 @@ class NavDrawer {
    * @param {!events.BrowserEvent} e The browser event.
    */
   handleKeyEvent(e) {
-    if (!this.isOpen || e.type !== 'keydown') {
+    if (!this.isOpen() || e.type !== 'keydown') {
       return;
     }
 
     if ((e.keyCode === KeyCodes.LEFT || e.keyCode === KeyCodes.RIGHT)
         && !e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey
         && e.target
-        && e.target.classList
-        && e.target.classList.contains('item')) {
+        && /** @type {!HTMLElement} */(e.target).classList
+        && /** @type {!HTMLElement} */(e.target).classList.contains('item')) {
       let parent = e.target.parentNode;
       if (!isToggle(parent) && parent) {
         parent = parent.parentNode;
@@ -333,13 +337,18 @@ class NavDrawer {
 
     if (e.keyCode === KeyCodes.TAB && !e.shiftKey) {
       let allItems = this.navEl_.querySelectorAll('span.item, a');
-      if (e.target === Arrays.peek(allItems)) {
+      if (e.target === arrays.peek(allItems)) {
         this.hide();
       }
     }
 
+    /**
+     * @param {?Node} n
+     * @return {boolean}
+     */
     function isToggle(n) {
-      return n && n.classList && n.classList.contains('toggle');
+      const e = /** @type {?HTMLElement} */(n);
+      return !!e && e.classList && e.classList.contains('toggle');
     }
   }
 
@@ -350,14 +359,20 @@ class NavDrawer {
    * @private
    */
   onClick_(e) {
-    let el = dom.getAncestor(e.target, function(node) {
-      return node
-          && node.classList
-          && node.classList.contains('toggle');
-    }, true, /*maxSteps=*/4);
+    /**
+     * @param {?Node} node
+     * @return {boolean}
+     */
+    function checkNode(node) {
+      const e = /** @type {?HTMLElement} */(node);
+      return !!e && e.classList && e.classList.contains('toggle');
+    }
+
+    let el = /** @type {?HTMLElement} */(
+        dom.getAncestor(e.target, checkNode, true, /*maxSteps=*/4));
 
     if (el && el.classList.contains('toggle')) {
-      updateControl(/** @type {!Element} */(el));
+      updateControl(/** @type {!HTMLElement} */(el));
     }
   }
 }
@@ -387,7 +402,7 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
 
   const drawer = new NavDrawer(navButton, navEl);
   events.listen(mask, 'click', drawer.toggleVisibility, false, drawer);
-  events.listen(mask, 'touchmove', e => e.preventDefault());
+  events.listen(mask, 'touchmove', (/** !events.BrowserEvent */e) => e.preventDefault());
   events.listen(navButton, 'click', drawer.toggleVisibility, false, drawer);
   events.listen(navEl, 'click', drawer.onClick_, false, drawer);
 
@@ -400,7 +415,7 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
 
   // Normalize all links to be relative to dossier's root. This ensures links
   // work consistently as we change the URL during content swaps.
-  Arrays.forEach(navEl.querySelectorAll('a[href]'), function(link) {
+  arrays.forEach(navEl.querySelectorAll('a[href]'), function(link) {
     let href = link.getAttribute('href');
     if (href.startsWith('../')) {
       let index = href.lastIndexOf('../');
@@ -420,7 +435,7 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
   let current = navEl.querySelector('.current');
   if (!current) {
     let titles = navEl.querySelectorAll('a.title[href]');
-    current = Arrays.find(titles, function(el) {
+    current = arrays.find(titles, function(el) {
       // Use the actual attribute, not the resolved href property.
       return el.getAttribute('href') === currentFile;
     });

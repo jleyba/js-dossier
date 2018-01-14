@@ -30,8 +30,8 @@ exports.get = function(url) {
     let request = XmlHttp();
     try {
       request.open('GET', url, true);
-    } catch (ex) {
-      reject(Error('Error opening XHR: ' + ex.message));
+    } catch (/** @type {!Object} */ex) {
+      reject(Error('Error opening XHR: ' + ex));
     }
 
     request.onerror = function() {
@@ -50,9 +50,9 @@ exports.get = function(url) {
 
     try {
       request.send();
-    } catch (ex) {
+    } catch (/** @type {!Object} */ex) {
       request.onreadystatechange = goog.nullFunction;
-      reject(Error('Error sending XHR: ' + ex.message));
+      reject(Error('Error sending XHR: ' + ex));
     }
   });
 };

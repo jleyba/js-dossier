@@ -1,5 +1,5 @@
 load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_binary", "closure_js_library")
-load("/build_tools/closure", "closure_js_binary_set")
+load("//build_tools:closure.bzl", "closure_js_binary_set")
 
 genrule(
     name = "gen_soy_js",
@@ -13,18 +13,42 @@ genrule(
 )
 
 closure_js_library(
-    name = "app_lib",
-    srcs = glob(["*js"]) + [
+    name = "soy",
+    srcs = [
+        "soyplugins.js",
         ":gen_soy_js",
-        "//src/proto:js_proto",
-        "//third_party/webutil/html/types/proto:js_proto",
     ],
-    language = "ECMASCRIPT6_STRICT",
+    suppress = [
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_UNKNOWN_EXPR_TYPE",
+        "JSC_UNUSED_LOCAL_ASSIGNMENT",
+    ],
     visibility = ["//visibility:private"],
     deps = [
-        "@io_bazel_rules_closure//closure/library",
-        "@io_bazel_rules_closure//closure/protobuf:jspb",
-        "@io_bazel_rules_closure//closure/templates:soy_jssrc",
+        "//src/proto:jslib",
+        "@dossier_closure_library//:closure",
+        "@dossier_closure_templates_library//:soy",
+    ],
+)
+
+closure_js_library(
+    name = "app_lib",
+    srcs = [
+        "app.js",
+        "heap.js",
+        "main.js",
+        "nav.js",
+        "page.js",
+        "search.js",
+        "xhr.js",
+    ],
+    visibility = ["//visibility:private"],
+    deps = [
+        ":soy",
+        "//src/proto:jslib",
+        "@dossier_closure_library//:closure",
+        "@dossier_closure_templates_library//:soy",
+        "@dossier_jspb_library//:jspb",
     ],
 )
 
@@ -37,7 +61,8 @@ closure_js_binary_set(
         "--jscomp_error=checkTypes",
         "--jscomp_error=checkVars",
         "--jscomp_error=constantProperty",
-        "--jscomp_error=deprecated",
+        # Can't seem to suppress this in @dossier_closure_library//:closure
+        "--jscomp_warning=deprecated",
         "--jscomp_error=duplicateMessage",
         "--jscomp_error=es5Strict",
         "--jscomp_error=externsValidation",
@@ -49,7 +74,9 @@ closure_js_binary_set(
         "--jscomp_error=strictModuleDepCheck",
         "--jscomp_error=typeInvalidation",
         "--jscomp_error=undefinedVars",
-        "--jscomp_error=unknownDefines",
+        # closure_js_binary always sets some defines that we don't actually use the source for and
+        # the errors cannot be suppressed since the define is on the binary, not library.
+        "--jscomp_warning=unknownDefines",
         "--jscomp_error=uselessCode",
         "--jscomp_error=visibility",
         "--rewrite_polyfills=False",
@@ -58,7 +85,6 @@ closure_js_binary_set(
     entry_points = ["goog:dossier.main"],
     language = "ECMASCRIPT5_STRICT",
     output_wrapper = "(function(){%output%;}).call(this);",
-    pedantic = False,  # TODO: enable when es6 polyfills pass checks.
     visibility = ["//src/java/com/github/jsdossier:__pkg__"],
     deps = [":app_lib"],
 )
@@ -66,9 +92,7 @@ closure_js_binary_set(
 closure_js_library(
     name = "serviceworker_lib",
     srcs = ["serviceworker/main.js"],
-    language = "ECMASCRIPT6_STRICT",
     visibility = ["//visibility:private"],
-    deps = ["@io_bazel_rules_closure//closure/library"],
 )
 
 closure_js_binary_set(
@@ -92,7 +116,9 @@ closure_js_binary_set(
         "--jscomp_error=strictModuleDepCheck",
         "--jscomp_error=typeInvalidation",
         "--jscomp_error=undefinedVars",
-        "--jscomp_error=unknownDefines",
+        # closure_js_binary always sets some defines that we don't actually use the source for and
+        # the errors cannot be suppressed since the define is on the binary, not library.
+        "--jscomp_warning=unknownDefines",
         "--jscomp_error=uselessCode",
         "--jscomp_error=visibility",
         "--rewrite_polyfills=False",
@@ -100,7 +126,6 @@ closure_js_binary_set(
     dependency_mode = "STRICT",
     entry_points = ["goog:dossier.serviceworker.main"],
     language = "ECMASCRIPT5_STRICT",
-    pedantic = False,  # TODO: enable when es6 polyfills pass checks.
     visibility = ["//src/java/com/github/jsdossier:__pkg__"],
     deps = [":serviceworker_lib"],
 )

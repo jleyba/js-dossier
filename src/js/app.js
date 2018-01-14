@@ -19,6 +19,7 @@ goog.module('dossier.app');
 const EventTarget = goog.require('goog.events.EventTarget');
 const KeyCodes = goog.require('goog.events.KeyCodes');
 const Link = goog.require('proto.dossier.Link');
+const NodeType = goog.require('goog.dom.NodeType');
 const PageData = goog.require('proto.dossier.PageData');
 const PageSnapshot = goog.require('proto.dossier.state.PageSnapshot');
 const Promise = goog.require('goog.Promise');
@@ -41,13 +42,17 @@ const {mainPageContent, pageTitle} = goog.require('dossier.soy');
  * @param {!Event} e The click event.
  */
 function onCardHeaderClick(e) {
-  if (e.target.nodeName == 'A') {
+  if (/** @type {!Element} */(e.target).nodeName == 'A') {
     return;
   }
 
-  let prop = e.currentTarget.parentNode;
-  if (prop && prop.classList && prop.classList.contains('property')) {
-    prop.classList.toggle('open');
+  /** @type {?Node} */
+  const node = /** @type {!Element} */(e.currentTarget).parentNode;
+  if (node && node.nodeType === NodeType.ELEMENT) {
+    const card = /** @type {!Element} */(node);
+    if (card.classList && card.classList.contains('property')) {
+      card.classList.toggle('open');
+    }
   }
 }
 
@@ -174,7 +179,7 @@ class PopstateEvent {
   /** @param {!PageSnapshot} snapshot */
   constructor(snapshot) {
     /** @const */ this.snapshot = snapshot;
-    /** @const */ this.type = PopstateEvent.TYPE;
+    /** @const {string} */ this.type = PopstateEvent.TYPE;
   }
 }
 PopstateEvent.TYPE = 'popstate';
@@ -200,7 +205,7 @@ class HistoryService extends EventTarget {
 
   installPopstateListener() {
     window.onpopstate = (/** ?Event */ e) => {
-      let state = e ? e.state : null;
+      let state = e ? /** @type {!PopStateEvent} */(e).state : null;
       if (goog.isArray(state)) {
         let snapshot = new PageSnapshot(/** @type {!Array} */(state));
         if (array.peek(this.forwardStack_) === snapshot.getId()) {
@@ -294,7 +299,8 @@ class Application {
     events.listen(
         this.searchBox, 'focus', () => this.maybeHideNavDrawer());
     events.listen(
-        this.searchBox, search.SelectionEvent.TYPE, e => this.load(e.uri));
+        this.searchBox, search.SelectionEvent.TYPE,
+        (/** !search.SelectionEvent */e) => this.load(e.uri));
     events.listen(
         document.documentElement, 'keydown', this.onKeyDown, false, this);
     events.listen(window, 'hashchange', () => this.onhashchange_());
@@ -306,7 +312,7 @@ class Application {
 
     if (location.protocol.startsWith('http') && window.sessionStorage) {
       let captureClick = (/** !Event */e) => this.captureLinkClick_(e);
-      this.navDrawer.element.addEventListener('click', captureClick, true);
+      this.navDrawer.element().addEventListener('click', captureClick, true);
       this.mainEl.addEventListener('click', captureClick, true);
       this.historyService_.installPopstateListener();
       events.listen(
@@ -392,7 +398,7 @@ class Application {
   }
 
   onKeyDown(/** !events.BrowserEvent */e) {
-    if (this.searchBox.isActive) {
+    if (this.searchBox.isActive()) {
       return;
     }
 
@@ -412,7 +418,7 @@ class Application {
         break;
 
       default:
-        if (this.navDrawer.isOpen) {
+        if (this.navDrawer.isOpen()) {
           this.navDrawer.handleKeyEvent(e);
         }
         break;
@@ -420,7 +426,7 @@ class Application {
   }
 
   load(/** string */uri) {
-    if (this.navDrawer.isOpen && !page.useGutterNav()) {
+    if (this.navDrawer.isOpen() && !page.useGutterNav()) {
       this.navDrawer.hide();
     }
 
@@ -539,7 +545,7 @@ class Application {
   /**
    * Opens the current target in the main content element.
    *
-   * @param {boolean} opt_scroll Whether to also scroll the element into view.
+   * @param {boolean=} opt_scroll Whether to also scroll the element into view.
    */
   openCurrentTarget(opt_scroll) {
     let targetId = location.hash ? location.hash.substring(1) : null;
@@ -574,7 +580,7 @@ class Application {
       return;
     }
 
-    let target = e.target;
+    let target = /** @type {?Node} */(e.target);
     if (target.nodeName === 'CODE' && target.parentNode.nodeName === 'A') {
       target = target.parentNode;
     }
@@ -583,7 +589,7 @@ class Application {
       return;
     }
 
-    let link = target;
+    let link = /** @type {!HTMLAnchorElement} */(target);
     if (link.target) {
       return;
     }
@@ -596,7 +602,6 @@ class Application {
     e.preventDefault();
     e.stopPropagation();
     this.load(href);
-    return false;
   }
 
   /**
@@ -622,14 +627,15 @@ class Application {
    * sensitive match then the default view is left intact.
    */
   resolveAmbiguity() {
-    let articles = this.mainEl.parentElement.querySelectorAll('main > article');
+    let articles = /** @type {!NodeList<!HTMLElement>} */(
+        this.mainEl.parentElement.querySelectorAll('main > article'));
     if (articles.length < 2) {
       return;
     }
 
     const currentFile = array.peek(location.pathname.split(/\//));
     const article = array.find(articles, function(a) {
-      return a.dataset && a.dataset.filename === currentFile;
+      return a.dataset && a.dataset['filename'] === currentFile;
     });
 
     if (article) {
@@ -640,7 +646,7 @@ class Application {
         }
       });
       style.setElementShown(article, true);
-      document.title = article.dataset.name;
+      document.title = /** @type {!HTMLElement} */(article).dataset['name'];
     }
   }
 }
@@ -682,7 +688,7 @@ exports.run = function(typeIndex, searchBox, navDrawer) {
   typeIndex.getPageList().forEach(processLink);
   typeIndex.getSourceFileList().forEach(processLink);
 
-  let mainEl = /** @type {!Element} */(document.querySelector('main'));
+  let mainEl = /** @type {!HTMLElement} */(document.querySelector('main'));
   if (mainEl.dataset['pageData']) {
     let jsonData = JSON.parse(mainEl.dataset['pageData']);
     if (goog.isArray(jsonData)) {

@@ -1,4 +1,4 @@
-load("/build_tools/java_test_suite", "java_test_suite")
+load("//build_tools:java_test_suite.bzl", "java_test_suite")
 
 LIB_SRCS = [
     "AbstractTypeInspectorTest.java",

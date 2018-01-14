@@ -1,0 +1,20 @@
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+closure_js_library(
+    name = "soy",
+    srcs = [
+        "javascript/jspbconversions.js",
+        "javascript/soydata_converters.js",
+        "javascript/soyutils_usegoog.js",
+    ],
+    suppress = [
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_UNKNOWN_EXPR_TYPE",
+    ],
+    deps = [
+        "@dossier//third_party/webutil/html/types/proto:jslib",
+        "@dossier_closure_library//:closure",
+    ]
+)
