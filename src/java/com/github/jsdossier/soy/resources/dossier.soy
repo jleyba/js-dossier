@@ -121,7 +121,7 @@
  * Prints a notification that a descriptor is deprecated.
  */
 {template .deprecationNotice visibility="private"}
-  {@param deprecation: dossier.Comment}
+  {@param deprecation: dossier.Comment|null}
 
   {if $deprecation and length($deprecation.tokenList)}
     <table class="info deprecation">
@@ -644,21 +644,20 @@
     {call .tags}
       {param tags: $type.tags /}
       {param visibility: $type.enumeration ? $type.enumeration.visibility : null /}
+      {param typeTag kind="text"}
+        {if $type.mainFunction and $type.mainFunction.isConstructor}
+          class
+        {elseif $type.enumeration}
+          enum
+        {elseif not $type.tags or not ($type.tags.isModule
+                                       or $type.tags.isInterface
+                                       or $type.tags.isRecord)}
+          namespace
+        {/if}
+      {/param}
     {/call}
     <div>
-      {if $type.tags and $type.tags.isModule}
-        Module {$type.name}
-      {elseif $type.tags and $type.tags.isRecord}
-        Record {$type.name}
-      {elseif $type.tags and $type.tags.isInterface}
-        Interface {$type.name}
-      {elseif $type.mainFunction and $type.mainFunction.isConstructor}
-        Class {$type.name}
-      {elseif $type.enumeration}
-        Enumeration {$type.name}
-      {else}
-        Namespace {$type.name}
-      {/if}
+      {$type.name}
       {if $type.mainFunction and length($type.mainFunction.templateNameList)}
         {call .printTemplateNames}
           {param names: $type.mainFunction.templateNameList /}
@@ -676,14 +675,18 @@
   {@param? tags: dossier.Tags}
   {@param? visibility: dossier.Visibility}
   {@param? span: bool}
+  {@param? typeTag: string}
 
   {let $hasTags: $tags and ($tags.isDeprecated
                             or $tags.isConst
                             or $tags.isFinal
                             or $tags.isDict
-                            or $tags.isStruct) /}
+                            or $tags.isStruct
+                            or $tags.isModule
+                            or $tags.isInterface
+                            or $tags.isRecord) /}
 
-  {if $hasTags or ($visibility and not $visibility.public)}
+  {if $hasTags or ($visibility and not $visibility.public) or $typeTag}
     {if $span}<span class="tags">{else}<div class="tags">{/if}
       {if $tags and $tags.isDeprecated}<span class="deprecated"></span>{/if}
 
@@ -700,7 +703,11 @@
         {if $tags.isFinal}<span class="final"></span>{/if}
         {if $tags.isDict}<span class="dict"></span>{/if}
         {if $tags.isStruct}<span class="struct"></span>{/if}
+        {if $tags.isModule}<span class="module"></span>{/if}
+        {if $tags.isInterface and not $tags.isRecord}<span class="interface"></span>{/if}
+        {if $tags.isRecord}<span class="record"></span>{/if}
       {/if}
+      {if $typeTag}<span class="{$typeTag}"></span>{/if}
     {if $span}</span>{else}</div>{/if}
   {/if}
 {/template}
