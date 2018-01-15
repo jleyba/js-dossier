@@ -99,8 +99,8 @@ maven_jar(
 
 maven_jar(
     name = "dossier_closure_templates",
-    artifact = "com.google.template:soy:2016-08-25",
-    sha1 = "bb2a8a8b08f0668abc80e5b25eaffca000cecf57",
+    artifact = "com.google.template:soy:2018-01-03",
+    sha1 = "62089a55675f338bdfb41fba1b29fe610f654b4d",
 )
 
 maven_jar(

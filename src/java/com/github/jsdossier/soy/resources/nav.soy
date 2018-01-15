@@ -47,7 +47,7 @@
 /**
  * Renders a list of modules as a tree.
  */
-{template .moduleTree_ private="true"}
+{template .moduleTree_ visibility="private"}
   {@param modules: list<dossier.Index.Entry>}
   {if length($modules)}
     <ul class="tree">
@@ -65,7 +65,7 @@
 /**
  * Renders a list of types as a tree.
  */
-{template .typeTree_ private="true"}
+{template .typeTree_ visibility="private"}
   {@param types: list<dossier.Index.Entry>}
   {if length($types)}
     <ul class="tree">
@@ -80,7 +80,7 @@
 {/template}
 
 
-{template .treeItem_ private="true"}
+{template .treeItem_ visibility="private"}
   {@param type: dossier.Index.Entry}
   {@param? subTypes: list<dossier.Index.Entry>}
 

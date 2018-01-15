@@ -39,7 +39,7 @@
 /**
  * Renders a single card.
  */
-{template .renderCard private="true"}
+{template .renderCard visibility="private"}
   {@param className: string}
   {@param? id: string}
   {@param header: html}
@@ -70,7 +70,7 @@
 /**
  * Renders a single row in an info table.
  */
-{template .infoRow private="true"}
+{template .infoRow visibility="private"}
   {@param? title: html}
   {@param cell1: html}
   {@param? cell1Attributes: attributes}
@@ -92,7 +92,7 @@
 /**
  * Prints a list of type expressions in a table row.
  */
-{template .printTypeList private="true"}
+{template .printTypeList visibility="private"}
   {@param types: list<dossier.expression.NamedType>}
   {@param title: string}
   {@param? typeClass: string}
@@ -120,7 +120,7 @@
 /**
  * Prints a notification that a descriptor is deprecated.
  */
-{template .deprecationNotice private="true"}
+{template .deprecationNotice visibility="private"}
   {@param deprecation: dossier.Comment}
 
   {if $deprecation and length($deprecation.tokenList)}
@@ -141,7 +141,7 @@
 /**
  * Prints the values for the given enumeration.
  */
-{template .enumValues private="true"}
+{template .enumValues visibility="private"}
   {@param enumeration: dossier.Enumeration}
 
   {if length($enumeration.valueList)}
@@ -334,7 +334,7 @@
 
 
 /** Renders a function signature. */
-{template .functionSignature private="true"}
+{template .functionSignature visibility="private"}
   {@param fn: dossier.Function}
   {@param? instanceProperty: bool}
 
@@ -672,7 +672,7 @@
 /**
  * Renders a list of tags.
  */
-{template .tags private="true"}
+{template .tags visibility="private"}
   {@param? tags: dossier.Tags}
   {@param? visibility: dossier.Visibility}
   {@param? span: bool}
@@ -684,7 +684,7 @@
                             or $tags.isStruct) /}
 
   {if $hasTags or ($visibility and not $visibility.public)}
-    <{if $span}span{else}div{/if} class="tags">
+    {if $span}<span class="tags">{else}<div class="tags">{/if}
       {if $tags and $tags.isDeprecated}<span class="deprecated"></span>{/if}
 
       {if $visibility and $visibility.package}
@@ -701,14 +701,14 @@
         {if $tags.isDict}<span class="dict"></span>{/if}
         {if $tags.isStruct}<span class="struct"></span>{/if}
       {/if}
-    </{if $span}span{else}div{/if}>
+    {if $span}</span>{else}</div>{/if}
   {/if}
 {/template}
 
 /**
  * Renders a section for a list of types defined as a property of another type.
  */
-{template .nestedTypeSection private="true"}
+{template .nestedTypeSection visibility="private"}
   {@param title: string}                            // The section title.
   {@param isModule: bool}                           // Whether the types are exported by a module.
   {@param types: list<dossier.JsType.TypeSummary>}  // The nested types.
@@ -733,7 +733,7 @@
  * Generates an HTML page for displaying the documentation about a single
  * JavaScript type or namespace.
  */
-{template .typeFile private="true"}
+{template .typeFile visibility="private"}
   {@param types: list<dossier.JsType>}
   {if length($types) > 1}
     <article>
@@ -944,7 +944,7 @@
 /**
  * Renders a markdown document article.
  */
-{template .htmlFile private="true"}
+{template .htmlFile visibility="private"}
   {@param comment: dossier.Comment}
   <article class="page">
     {if length($comment.tokenList)}
@@ -959,7 +959,7 @@
 /**
  * Renders the content for a source file.
  */
-{template .sourceFile private="true"}
+{template .sourceFile visibility="private"}
   {@param file: dossier.SourceFile}
   <article class="srcfile">
     <h1 class="title">{$file.path}</h1>

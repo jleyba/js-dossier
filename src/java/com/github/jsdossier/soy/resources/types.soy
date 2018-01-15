@@ -67,7 +67,7 @@
 
 
 /** Render a yields delimiter. */
-{template .yields_ private="true"}
+{template .yields_ visibility="private"}
   {sp}<var class="yield">→</var>{sp}  // Or ⇒?
 {/template}
 
@@ -92,7 +92,7 @@
 /**
  * Renders a type expression.
  */
-{template .expression_ private="true"}
+{template .expression_ visibility="private"}
   {@param expression: dossier.expression.TypeExpression}
   {@param? undefinedAsVoid: bool}
 
@@ -116,7 +116,7 @@
 /**
  * Renders a function type.
  */
-{template .functionType private="true"}
+{template .functionType visibility="private"}
   {@param expression: dossier.expression.TypeExpression}
   {let $fn: $expression.functionType /}
 
@@ -148,7 +148,7 @@
 /**
  * Renders a named type reference.
  */
-{template .namedTypeReference private="true"}
+{template .namedTypeReference visibility="private"}
   {@param type: dossier.expression.NamedType}
   {@param? useQualifiedName: bool}
 
@@ -206,7 +206,7 @@
 /**
  * Renders a named type expression.
  */
-{template .namedTypeExpression private="true"}
+{template .namedTypeExpression visibility="private"}
   {@param expression: dossier.expression.TypeExpression}
   {call .namedTypeReference}
     {param type: $expression.namedType /}
@@ -217,7 +217,7 @@
 /**
  * Renders a record type expression.
  */
-{template .recordType private="true"}
+{template .recordType visibility="private"}
   {@param expression: dossier.expression.TypeExpression}
 
   {lb}
@@ -235,7 +235,7 @@
 /**
  * Renders a union type.
  */
-{template .unionType private="true"}
+{template .unionType visibility="private"}
   {@param expression: dossier.expression.TypeExpression}
 
   (

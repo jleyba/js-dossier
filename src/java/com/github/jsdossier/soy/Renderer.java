@@ -119,7 +119,7 @@ public class Renderer {
   }
 
   private SoyValue renderScripts(List<SafeUrlProto> urls) {
-    String template = "{namespace dossier.soy.dynamic}{template .scripts kind=\"html\"}";
+    String template = "{namespace dossier.soy.dynamic}{template .scripts}";
     for (SafeUrlProto proto : urls) {
       String url = SafeUrls.fromProto(proto).getSafeUrlString();
       template += "<script src=\"" + url + "\" defer></script>";
@@ -172,7 +172,7 @@ public class Renderer {
     options.setShouldProvideRequireSoyNamespaces(false);
     options.setShouldProvideRequireJsFunctions(false);
     options.setShouldProvideBothSoyNamespacesAndJsFunctions(false);
-    options.setShouldGenerateJsdoc(true);
+    options.setShouldAllowDeprecatedSyntax(false);
 
     options.setShouldGenerateGoogModules(true);
 
