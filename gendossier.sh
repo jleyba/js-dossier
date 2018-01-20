@@ -35,7 +35,7 @@ run_jsc() {
 run_lessc() {
   if type -P lessc >/dev/null; then
     lessc --clean-css="--s0 --advanced" --autoprefix="last 2 versions, edge > 12" \
-        src/js/dossier.less \
+        src/css/dossier.less \
         $RESOURCES/dossier.css
   else
     echo >&2 "[ERROR] lessc not found: install node from https://nodejs.org, then run:"
