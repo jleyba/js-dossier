@@ -15,6 +15,7 @@
  */
 
 @import "base";
+@import "grid";
 
 @menu_icon_width: 56px;
 @search_icon_width: 48px;
@@ -31,24 +32,23 @@ header {
               0 4px 8px rgba(0, 0, 0, .28);
   background: @banner_color;
 
+  display: grid;
+  grid-template-columns: 56px 1fr 56px;
+
   @input_height: 36px;
   @control_bg: rgba(255, 255, 255, 0.1);
 
   form {
-    height: @header_height;
-    display: flex;
-    flex-direction: row-reverse;
-    align-items: center;
-    justify-content: center;
-    margin: 0 @menu_icon_width;
+    .align-self(stretch);
+    .justify-self(stretch);
+
+    display: grid;
+    grid-template-columns: 1fr @search_icon_width minmax(@search_icon_width, @max_search_width) 1fr;
   }
 
   button.dossier-menu {
-    height: @header_height - 24px;
-    width: @menu_icon_width - 24px;
     margin: 12px;
 
-    float: left;
     color: #fff;
 
     transition: background .2s;
@@ -69,10 +69,6 @@ header {
     -o-appearance: none;
     appearance: none;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
     & .material-icons {
       padding: 0 4px;
     }
@@ -80,20 +76,20 @@ header {
 
   input {
     height: @input_height;
-    max-width: @max_search_width;
-    width: ~"calc(100% - " @search_icon_width ~")";
-
     font-size: 16px;
-
     padding: 0 10px 0 0;
     border: 0;
-
     border-radius: 0 3px 3px 0;
+
     -webkit-appearance: none;
     -moz-appearance: none;
     -ms-appearance: none;
     -o-appearance: none;
     appearance: none;
+
+    .grid-area(1, 3, 2, 4);
+    .align-self(center);
+    .justify-self(stretch);
 
     @placeholder_color: rgba(255, 255, 255, 0.75);
 
@@ -102,10 +98,11 @@ header {
     &:-ms-input-placeholder { color: @placeholder_color; }
 
     & + .material-icons {
-      width: @search_icon_width;
-      height: @input_height;
       padding: 6px 4px 6px 16px;
       border-radius: 3px 0 0 3px;
+      .grid-area(1, 2, 2, 3);
+      .align-self(center);
+      .justify-self(stretch);
     }
 
     &, & + .material-icons {

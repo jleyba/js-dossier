@@ -1,0 +1,17 @@
+.align-self(@val) {
+  -ms-grid-column-align: @val;
+  align-self: @val;
+}
+
+.justify-self(@val) {
+  -ms-grid-row-align: @val;
+  justify-self: @val;
+}
+
+.grid-area(@row_start, @col_start, @row_end, @col_end) {
+  -ms-grid-row: @row_start;
+  -ms-grid-row-span: @row_end - @row_start;
+  -ms-grid-column: @col_start;
+  -ms-grid-column-span: @col_end - @col_start;
+  grid-area: @row_start ~"/" @col_start ~"/" @row_end ~"/" @col_end;
+}
