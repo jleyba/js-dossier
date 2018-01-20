@@ -15,6 +15,7 @@
  */
 
 @import "base";
+@import "grid";
 
 footer {
   .loading & {
@@ -24,14 +25,13 @@ footer {
   font-size: 12px;
   position: relative;
 
-  div {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: @footer_height;
-  }
+  display: grid;
+  height: @footer_height;
 
   a {
+    .align-self(center);
+    .justify-self(center);
+
     &, &:visited {
       color: fade(@font_color, 50%) !important;
     }
