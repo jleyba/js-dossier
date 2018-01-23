@@ -149,9 +149,7 @@ html {
 }
 
 body {
-  min-height: 100vh;
-  height: 100%;
-  overflow: hidden;
+  min-height: 100%;
 
   background: @body_bg;
   color: @font_color;
@@ -161,17 +159,10 @@ body {
   font-size: 14px;
   line-height: 20px;
   -webkit-font-smoothing: subpixel-antialiased;
-}
 
-.content {
-  width: 100%;
-  height: ~"calc(100% - " @header_height ~")";
-  position: absolute;
-  top: @header_height;
-
-  display: flex;
-  flex-direction: column;
-  overflow: auto;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding-top: @header_height;
   -webkit-overflow-scrolling: touch;
 }
 

@@ -129,7 +129,7 @@ public class EndToEndTest {
       checkHeader(document);
       checkNav(document);
       compareWithGoldenFile(
-          querySelectorAll(document, "main ~ footer, main ~ script"), "source/subdir/footer.html");
+          querySelectorAll(document, "footer"), "source/subdir/footer.html");
     }
 
     @Test
@@ -448,12 +448,12 @@ public class EndToEndTest {
     }
 
     private void checkFooter(Document document) throws IOException {
-      Elements elements = querySelectorAll(document, "main ~ footer, main ~ script");
+      Elements elements = querySelectorAll(document, "footer");
       compareWithGoldenFile(elements, "footer.html");
     }
 
     private void checkModuleFooter(Document document) throws IOException {
-      Elements elements = querySelectorAll(document, "main ~ footer, main ~ script");
+      Elements elements = querySelectorAll(document, "footer");
       compareWithGoldenFile(elements, "module/example/footer.html");
     }
 

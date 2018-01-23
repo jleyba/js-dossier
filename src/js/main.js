@@ -41,8 +41,12 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.error('ServiceWorker registration failed: ' + err));
 }
 
-const typeIndex = new Index(/** @type {!Array} */(goog.global['TYPES']));
-app.run(
-    typeIndex,
-    search.createSearchBox(typeIndex),
-    nav.createNavDrawer(typeIndex, page.getCurrentFile(), page.getBasePath()));
+document.addEventListener('readystatechange', (e) => {
+  if (document.readyState === 'complete') {
+    const typeIndex = new Index(/** @type {!Array} */(goog.global['TYPES']));
+    app.run(
+        typeIndex,
+        search.createSearchBox(typeIndex),
+        nav.createNavDrawer(typeIndex, page.getCurrentFile(), page.getBasePath()));
+  }
+});

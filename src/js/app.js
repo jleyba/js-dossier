@@ -261,7 +261,7 @@ class Application {
       let snapshot = new PageSnapshot();
       snapshot.setId(id);
       snapshot.setTitle(document.title);
-      snapshot.setScroll(this.mainEl.parentElement.scrollTop);
+      snapshot.setScroll(this.scrollElement_().scrollTop);
       snapshot.setDataUri(
           this.dataService_.resolveDataUri(window.location.href) || '');
       snapshot.setOpenCardList(
@@ -383,18 +383,32 @@ class Application {
   }
 
   /**
+   * @return {!Element} The element that scrolls with the main body content.
+   * @private
+   */  
+  scrollElement_() {
+    return this.mainEl.ownerDocument.documentElement;
+  }
+
+  /**
    * Ensures the main content's container is scrolled so the given target is
    * in view. This method compensates for the fixed position header at the top
    * of the page.
    *
    * @param {!Element} target the target to scroll to.
+   * @return {!Promise<void>} when the scroll has been issued.
    */
   scrollTo(target) {
-    let position = target.getBoundingClientRect();
-    let offset = 64 - position.top;
-    if (offset != 0) {
-      this.mainEl.parentElement.scrollTop -= offset;
-    }
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        let position = target.getBoundingClientRect();
+        let offset = 64 - position.top;
+        if (offset != 0) {
+          this.scrollElement_().scrollTop -= offset;
+        }
+        resolve();
+      }, 0);
+    });
   }
 
   onKeyDown(/** !events.BrowserEvent */e) {
@@ -510,9 +524,9 @@ class Application {
           card.classList.add('open');
         }
       });
-      this.mainEl.parentElement.scrollTop = snapshot.getScroll();
+      this.scrollElement_().scrollTop = snapshot.getScroll();
     } else {
-      this.mainEl.parentElement.scrollTop = 0;
+      this.scrollElement_().scrollTop = 0;
     }
 
     if (opt_path) {
