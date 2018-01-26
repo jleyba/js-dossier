@@ -20,6 +20,19 @@
 @import "info";
 @import "nav";
 
+// Sizing for dossier-main and blocks scrolling when nav menu is open.
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+.dossier-main {
+  height: 100%;
+  overflow: auto;
+  display: grid;
+  grid-template-rows: 1fr auto;
+}
+
 main {
   .loading & {
     display: none;

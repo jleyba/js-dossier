@@ -387,7 +387,7 @@ class Application {
    * @private
    */  
   scrollElement_() {
-    return this.mainEl.ownerDocument.documentElement;
+    return /** @type {!Element} */(this.mainEl.parentElement);
   }
 
   /**
