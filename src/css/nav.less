@@ -15,6 +15,7 @@
  */
 
 @import "base";
+@import "grid";
 
 .dossier-nav {
   .loading & {
@@ -47,7 +48,7 @@
   }
 
   font-size: 13px;
-  background: #fff;
+  background: @nav_bg;
 
   transform: translateX(-@nav_width - 16px);
   will-change: transform, visibility;
@@ -73,23 +74,8 @@
     text-decoration: underline !important;
   }
 
-  .title {
-    color: @font_color;
-    font-size: 14px;
-    font-weight: 400;
-
-    display: inline-block;
-    padding: 12px 0;
-    width: 100%;
-
-    .item:hover {
-      color: @link_color;
-    }
-  }
-
   section {
     overflow: hidden;
-    margin: 4px 0 0 0;
     padding: 4px 0 0 16px;
 
     &:first-child {
@@ -97,49 +83,19 @@
       margin: 0;
       padding-top: 8px;
     }
-
-    &:last-child {
-      padding-bottom: 4px;
-      margin-bottom: (@footer_height * 1.5);
-    }
   }
 
   section + section {
     border-top: 1px solid @section_border_color;
+    padding-top: 3px;
+  }
+
+  & > section:last-child {
+    padding-bottom: 4px;
+    margin-bottom: @footer_height;
   }
 
   @item-height: 40px;
-
-  .toggle {
-    color: rgba(0, 0, 0, .54);
-    width: 100%;
-    height: @item-height;
-    cursor: pointer;
-
-    & .item {
-      float: left;
-      display: inline-block;
-      height: 24px;  // Match icon height.
-      line-height: 24px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: ~"calc(100% - 40px)";
-    }
-
-    & .material-icons {
-      float: right;
-      margin: 0 16px 0 0;
-      transition: transform @transition_ease_in_out;
-    }
-
-    &.open .material-icons {
-      transform: rotateX(180deg);
-    }
-  }
-
-  section > .toggle {
-    height: 48px;  // Top level toggles are slightly bigger.
-  }
 
   .disable-select();
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -157,10 +113,13 @@
     text-decoration: none !important;
   }
 
+  @tree_gutter: 8px;
+
   ul {
-    margin: 0 0 0 8px;
-    padding: 0;
+    margin: 0 0 0 @tree_gutter;
     position: relative;
+
+    transition: max-height @transition_ease_in_out;
 
     &:before {
       content: "";
@@ -180,51 +139,31 @@
     overflow: hidden;
     text-overflow: ellipsis;
 
-    width: 100%;
-    margin: 0;
-    padding: 0 0 0 12px;
+    padding: 0 0 0 (2 * @tree_gutter);
     position: relative;
+    & > ul { margin: 0; }
 
     &:before {
       content: "";
       display: block;
-      width: 8px;
+      width: @tree_gutter;
       border-top: 1px solid rgba(0, 0, 0, .3);
       position: absolute;
       left: 0;
       top: @item-height / 2;
     }
-
     &:last-child:before {
-      background: white;
+      background: @nav_bg;
       height: 100%;
-    }
-
-    & > a {
-      height: @item-height;
-      line-height: @item-height / 2;
-    }
-
-    & > a,
-    & > .toggle {
-      display: inline-block;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      width: 100%;
-      padding: 12px 0 12px 8px;
     }
   }
 
   section > ul {
     margin: 0;
     &:before {display: none}
-  }
-  section > ul > li {
-    padding: 0;
-    &:before {display: none}
-    & > ul {
-      margin-left: 16px;
+    & > li {
+      padding: 0;
+      &:before {display: none}
     }
   }
 
@@ -234,7 +173,45 @@
   }
 }
 
+.dossier-nav-title {
+  color: @font_color;
+  font-size: 14px;
+  font-weight: 400;
 
+  margin: 4px 0;
+
+  &:hover { color: @link_color; }
+}
+
+.dossier-nav-title,
+.toggle,
+.label {
+  min-height: 40px;
+  display: grid;
+  grid-template-rows: 1fr;
+
+  & > :first-child {
+    .align-self(center);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.toggle {
+  cursor: pointer;
+  grid-template-columns: 1fr 40px;
+
+  & > * { .align-self(center); }
+
+  & .material-icons {
+    color: @font_color;
+    transition: transform @transition_ease_in_out;
+  }
+
+  &.open .material-icons {
+    transform: rotateX(180deg);
+  }
+}
 
 .dossier-nav-mask {
   position: fixed;
@@ -275,7 +252,7 @@
 }
 
 @media screen and (min-width: 1112px) and (max-width: 1383px) {
-  .dossier-nav.visible ~ .content > main {
+  .dossier-nav.visible ~ main {
     left: 0;
     transform: translateX(@nav_width);
 

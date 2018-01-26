@@ -379,7 +379,7 @@ class NavDrawer {
 exports.NavDrawer = NavDrawer;  // For better documentation.
 
 
-const NAV_ITEM_HEIGHT = 45;
+const NAV_ITEM_HEIGHT = 40;
 
 
 /**
