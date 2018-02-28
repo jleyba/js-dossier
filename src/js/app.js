@@ -288,11 +288,6 @@ class Application {
 
     /** @type {!Element} */
     this.mainEl = mainEl;
-
-    /** @private {!Element} */
-    this.progressBar_ = document.createElement('progress');
-    document.body.appendChild(this.progressBar_);
-    this.hideProgressBar();
   }
 
   init() {
@@ -325,10 +320,6 @@ class Application {
   onhashchange_() {
     this.updateSourceHighlight();
     this.openCurrentTarget(true);
-  }
-
-  hideProgressBar() {
-    this.progressBar_.style.display = 'none';
   }
 
   /**
@@ -492,7 +483,6 @@ class Application {
         document.title, (location.pathname + location.search + location.hash));
 
     this.updatePageContent(data, null, uri);
-    this.hideProgressBar();
     this.resolveAmbiguity();
 
     // Scroll to the new page's target and re-save page state to capture that
