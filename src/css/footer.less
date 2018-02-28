@@ -17,11 +17,11 @@
 @import "base";
 @import "grid";
 
-footer {
-  .loading & {
-    display: none;
-  }
+.loading footer {
+  display: none;
+}
 
+footer {
   font-size: 12px;
   position: relative;
 
@@ -29,13 +29,14 @@ footer {
 
   display: grid;
   height: @footer_height;
+}
 
-  a {
-    .align-self(center);
-    .justify-self(center);
+footer a {
+  .align-self(center);
+  .justify-self(center);
+}
 
-    &, &:visited {
-      color: fade(@font_color, 50%) !important;
-    }
-  }
+footer a,
+footer a:visited {
+  color: fade(@font_color, 50%) !important;
 }

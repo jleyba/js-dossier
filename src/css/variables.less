@@ -1,0 +1,143 @@
+/*
+ Copyright 2013-2018 Jason Leyba
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
+
+@transition_ease_in_out: ease-in-out .2s;
+
+@large_screen_size: 960px;
+@medium_screen_size: 600px;
+@small_screen_size: 360px;
+
+@header_height: 56px;
+@header_input_height: 36px;
+
+@footer_height: 96px;
+
+@gutter_nav_z_index: 1;
+@footer_z_index: 2;
+@header_z_index: 3;
+@autocomplete_z_index: @header_z_index - 1;
+@nav_mask_z_index: 4;
+@nav_z_index: 5;
+@progress_z_index: 100;
+
+@main_desktop_width: 1000px;
+@max_main_width: 808px;
+@nav_width: 280px;
+@main_margin_width: 8px;
+
+@section_border_color: #e0e0e0;
+
+@main_column_color: #fff;
+@link_color: rgb(33, 150, 243);
+@font_color: #212121;
+@caption_color: #333;
+@kbd_color: #555;
+@header_border: #8f8f8f;
+@code_bg: #f8f8f8;
+@code_border: darken(@code_bg, 15%);
+@body_bg: #f8f8f8;
+@kbd_bg: #fcfcfc;
+@nav_bg: #fff;
+@header_input_placeholder_color: rgba(255, 255, 255, 0.75);
+
+@header_bg: #424242;
+@header_control_bg: rgba(255, 255, 255, 0.1);
+
+@body_font: "Roboto", "Helvetica", "Arial", sans-serif;
+@code_font: "Roboto Mono", "Menlo", monospace;
+
+@gutter_small_screen: 16px;
+@gutter_large_screen: 24px;
+
+@target_border_width: 3px;
+
+@card_radius: 2px;
+
+@menu_icon_width: 56px;
+@search_icon_width: 48px;
+@max_search_width: 480px - @search_icon_width;
+
+.card() {
+  border-radius: @card_radius;
+}
+
+.card-list-top() {
+  border-top-left-radius: @card_radius;
+  border-top-right-radius: @card_radius;
+}
+
+.card-list-bottom() {
+  border-bottom-left-radius: @card_radius;
+  border-bottom-right-radius: @card_radius;
+}
+
+.raise-1dp() {
+  .card();
+  box-shadow: 0 -1px 0 rgba(0, 0, 0, .05),
+              0 0 2px rgba(0, 0, 0, .12),
+              0 2px 4px rgba(0, 0, 0, .2);
+}
+
+.raise-2dp() {
+  .card();
+  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, .14),
+              0 1px 10px 0 rgba(0, 0, 0, .12),
+              0 2px 4px -1px rgba(0, 0, 0, .2);
+}
+
+.raise-4dp() {
+  .card();
+  box-shadow: 0 8px 10px 0 rgba(0, 0, 0, .14),
+              0 3px 14px 2px rgba(0, 0, 0, .12),
+              0 5px 5px -3px rgba(0, 0, 0, .2);
+}
+
+.disable-select() {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.set-font-size(@size) {
+  font-size: @size;
+
+  a[id], .property, .function {
+    padding-top: @header_height + @size;
+    margin-top: -@header_height - @size;
+  }
+  a[id] {display:inline-block}
+}
+
+.code-block() {
+  background: @code_bg;
+  border-radius: 3px;
+  border-left: 2px solid @code_border;
+  word-wrap: normal;
+}
+
+.target() {
+  border-left: @target_border_width solid fade(@link_color, 70%);
+}
+
+.clear-header() {
+  margin-top: @header_height / 2;
+}
+
+.material-icons {
+  .disable-select();
+}

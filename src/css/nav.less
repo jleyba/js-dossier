@@ -17,11 +17,11 @@
 @import "base";
 @import "grid";
 
-.dossier-nav {
-  .loading & {
-    display: none;
-  }
+.loading .dossier-nav {
+  display: none;
+}
 
+.dossier-nav {
   position: fixed;
   top: 0;
   left: 0;
@@ -225,10 +225,11 @@
   transition: background-color @transition_ease_in_out;
   visibility: hidden;
 
-  .dossier-nav.visible ~ & {
-    visibility: visible;
-    background: rgba(0, 0, 0, .5);
-  }
+}
+
+.dossier-nav.visible ~ .dossier-nav-mask {
+  visibility: visible;
+  background: rgba(0, 0, 0, .5);
 }
 
 
@@ -239,11 +240,11 @@
   .dossier-nav {
     box-shadow: none;
     z-index: @gutter_nav_z_index;
+  }
 
-    &,
-    li:last-child:before {
-      background: @body_bg;
-    }
+  .dossier-nav,
+  .dossier-nav li:last-child:before {
+    background: @body_bg;
   }
 
   .dossier-nav-mask {
@@ -255,21 +256,21 @@
   .dossier-nav.visible ~ .dossier-main > main {
     left: 0;
     transform: translateX(@nav_width);
+  }
 
-    html.webkit & {
-      // Ideally what we want is:
-      //     left: 0;
-      //     transform: translateX(@nav_width);
-      //
-      // The transitions for this look terrible in WebKit, so we have to
-      // approximate the position using only translations. The operations
-      // listed will place the main content at 288px when the screen
-      // is 1112px.
-      left: 50%;
-      transform: translateX(-50%)
-                 translateX(-@main_margin_width)
-                 translateX(@nav_width / 2);
-    }
+  html.webkit .dossier-nav.visible ~ .dossier-main > main {
+    // Ideally what we want is:
+    //     left: 0;
+    //     transform: translateX(@nav_width);
+    //
+    // The transitions for this look terrible in WebKit, so we have to
+    // approximate the position using only translations. The operations
+    // listed will place the main content at 288px when the screen
+    // is 1112px.
+    left: 50%;
+    transform: translateX(-50%)
+               translateX(-@main_margin_width)
+               translateX(@nav_width / 2);
   }
 }
 
