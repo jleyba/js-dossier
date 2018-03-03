@@ -32,6 +32,7 @@ import com.github.jsdossier.annotations.SourceUrlTemplate;
 import com.github.jsdossier.annotations.Stderr;
 import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.jscomp.CompilerModule;
+import com.github.jsdossier.jscomp.Environment;
 import com.github.jsdossier.jscomp.NodeLibrary;
 import com.github.jsdossier.soy.DossierSoyModule;
 import com.google.auto.value.AutoValue;
@@ -192,6 +193,11 @@ public abstract class GuiceRule implements TestRule {
                   @ModuleExterns
                   ImmutableSet<Path> provideModuleExterns() {
                     return getModuleExterns();
+                  }
+                  
+                  @Provides
+                  Environment provideEnvironment() {
+                    return getModules().isEmpty() ? Environment.BROWSER : Environment.NODE;
                   }
 
                   private <T> void bind(

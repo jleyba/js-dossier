@@ -33,7 +33,6 @@ import com.google.javascript.jscomp.parsing.Config;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.StaticTypedScope;
-import java.io.IOException;
 import java.nio.file.Path;
 import javax.inject.Provider;
 
@@ -80,15 +79,23 @@ public final class CompilerModule extends AbstractModule {
       ModuleCollectionPass moduleCollectionPass,
       ProvidedSymbolPass providedSymbolPass,
       TypeCollectionPass typeCollectionPass,
-      @Modules ImmutableSet<Path> modulePaths) {
+      @Modules ImmutableSet<Path> modulePaths,
+      Environment environment) {
     CompilerOptions options = new CompilerOptions();
 
-    if (modulePaths.isEmpty()) {
-      options.setEnvironment(CompilerOptions.Environment.BROWSER);
-      options.setModuleResolutionMode(ModuleLoader.ResolutionMode.BROWSER);
-    } else {
-      options.setEnvironment(CompilerOptions.Environment.CUSTOM);
-      options.setModuleResolutionMode(ModuleLoader.ResolutionMode.NODE);
+    switch (environment) {
+      case BROWSER:
+        options.setEnvironment(CompilerOptions.Environment.BROWSER);
+        options.setModuleResolutionMode(ModuleLoader.ResolutionMode.BROWSER);
+        break;
+
+      case NODE:
+        options.setEnvironment(CompilerOptions.Environment.CUSTOM);
+        options.setModuleResolutionMode(ModuleLoader.ResolutionMode.NODE);
+        break;
+
+      default:
+        throw new AssertionError("unexpected environment: " + environment);
     }
 
     options.setModuleRoots(ImmutableList.of());

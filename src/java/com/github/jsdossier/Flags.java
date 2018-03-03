@@ -17,6 +17,7 @@ package com.github.jsdossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import com.github.jsdossier.jscomp.Environment;
 import com.google.common.base.Splitter;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -190,6 +191,17 @@ final class Flags {
   )
   private void setReadme(String path) {
     jsonConfig.addProperty("readme", path);
+  }
+
+  @Option(
+    name = "--environment",
+    metaVar = "ENV",
+    usage =
+        "Sets the target script environment."
+            + " Must be one of {BROWSER, NODE}; defaults to BROWSER"
+  )
+  private void setEnvironment(Environment env) {
+    jsonConfig.addProperty("environment", env.name());
   }
 
   @Option(

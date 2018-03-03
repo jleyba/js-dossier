@@ -31,6 +31,7 @@ import com.github.jsdossier.annotations.Stderr;
 import com.github.jsdossier.annotations.Stdout;
 import com.github.jsdossier.annotations.StrictMode;
 import com.github.jsdossier.annotations.TypeFilter;
+import com.github.jsdossier.jscomp.Environment;
 import com.github.jsdossier.soy.DossierSoyModule;
 import com.github.jsdossier.soy.Renderer;
 import com.google.common.collect.ImmutableSet;
@@ -100,6 +101,11 @@ final class ConfigModule extends AbstractModule {
 
     bind(DocTemplate.class).to(DefaultDocTemplate.class).in(DocumentationScoped.class);
     bind(Renderer.class).in(DocumentationScoped.class);
+  }
+
+  @Provides
+  Environment provideEnvironment() {
+    return config.getEnvironment();
   }
 
   @Provides

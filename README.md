@@ -69,6 +69,10 @@ __Configuration Options__
     `path` is the path to the markdown file to use. Files will be included in
     the order listed, after the standard navigation items.
 
+ * `environment` The target environment for the analyzed scripts; dictates the
+    default set of externs and module naming convention. Must be one of
+    {BROWSER, NODE}; defaults to ES6
+
  * `excludes` A list of .js files to exclude from processing. If a directory is
     specified, all of the .js files under that directory will be excluded. A
     glob pattern may also be specified to exclude all of the paths under the

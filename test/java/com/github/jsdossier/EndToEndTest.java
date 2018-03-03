@@ -128,8 +128,7 @@ public class EndToEndTest {
       compareWithGoldenFile(extractPageData(document), "source/subdir/emptyenum.js.src.json");
       checkHeader(document);
       checkNav(document);
-      compareWithGoldenFile(
-          querySelectorAll(document, "footer"), "source/subdir/footer.html");
+      compareWithGoldenFile(querySelectorAll(document, "footer"), "source/subdir/footer.html");
     }
 
     @Test
@@ -617,6 +616,7 @@ public class EndToEndTest {
 
     void addModule(Path path) {
       modules.add(new JsonPrimitive(path.toString()));
+      json.addProperty("environment", "NODE");
       json.add("modules", modules);
     }
 
@@ -793,6 +793,7 @@ public class EndToEndTest {
             srcDir.resolve("SimpleReadme.md").toString(),
             "--custom_page",
             "Custom Page:" + srcDir.resolve("Custom.md"),
+            "--environment", "NODE",
             "--module_naming_convention",
             "NODE");
 
@@ -841,6 +842,7 @@ public class EndToEndTest {
                   addSource(source);
                 }
 
+                
                 for (Path module : modules) {
                   addModule(module);
                 }

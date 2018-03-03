@@ -34,6 +34,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 import com.github.jsdossier.jscomp.ClosureSortedDependencies;
+import com.github.jsdossier.jscomp.Environment;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
@@ -304,6 +305,14 @@ abstract class Config {
   )
   abstract ImmutableSet<Pattern> getModuleFilters();
 
+  @Description(
+    name = "environment",
+    desc =
+        "The target environment for the analyzed scripts; dictates the default set of externs "
+            + "and module naming convention. Must be one of {BROWSER, NODE}; defaults to ES6"
+  )
+  abstract Environment getEnvironment();
+
   abstract FileSystem getFileSystem();
 
   abstract Builder toBuilder();
@@ -348,6 +357,7 @@ abstract class Config {
         .setExternModules(ImmutableSet.of())
         .setExcludes(ImmutableSet.of())
         .setCustomPages(ImmutableSet.of())
+        .setEnvironment(Environment.BROWSER)
         .setStrict(false)
         .setModuleNamingConvention(ModuleNamingConvention.ES6)
         .setTypeFilters(ImmutableSet.of())
@@ -419,6 +429,8 @@ abstract class Config {
     public abstract FileSystem getFileSystem();
 
     public abstract Builder setFileSystem(FileSystem fs);
+
+    public abstract Builder setEnvironment(Environment env);
 
     abstract Config autoBuild();
 

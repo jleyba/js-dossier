@@ -2,6 +2,9 @@
 
 ## Changes
 
+-  Added the `environment` configuration option to allow specifying the target
+   script environment (`BROWSER` or `NODE`). Previously, the `NODE` environment
+   was automatically selected by specifying any CommonJS input files.
 -  Upgraded dependencies:
    +  com.google.javascript:closure-compiler-unshaded:v20180101
    +  com.google.javascript:closure-compiler-externs:v20180101
