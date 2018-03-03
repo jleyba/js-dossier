@@ -80,8 +80,7 @@ public final class CompilerModule extends AbstractModule {
       ModuleCollectionPass moduleCollectionPass,
       ProvidedSymbolPass providedSymbolPass,
       TypeCollectionPass typeCollectionPass,
-      @Modules ImmutableSet<Path> modulePaths)
-      throws IOException {
+      @Modules ImmutableSet<Path> modulePaths) {
     CompilerOptions options = new CompilerOptions();
 
     if (modulePaths.isEmpty()) {
