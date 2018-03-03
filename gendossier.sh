@@ -48,31 +48,6 @@ run_tests() {
   bazel test //test/...
 }
 
-write_deps() {
-  bazel build //src/java/com/github/jsdossier/tools:WriteDeps
-  bazel-bin/src/java/com/github/jsdossier/tools/WriteDeps \
-      -c "${ROOT}/third_party/js/closure_library/closure/goog/" \
-      -i "${ROOT}/bazel-genfiles/src/js/proto.dossier.js" \
-      -i "${ROOT}/bazel-genfiles/src/js/dossier.soy.js" \
-      -i "${ROOT}/bazel-genfiles/src/js/nav.soy.js" \
-      -i "${ROOT}/bazel-genfiles/src/js/types.soy.js" \
-      -i "${ROOT}/src/js/app.js" \
-      -i "${ROOT}/src/js/heap.js" \
-      -i "${ROOT}/src/js/main.js" \
-      -i "${ROOT}/src/js/nav.js" \
-      -i "${ROOT}/src/js/page.js" \
-      -i "${ROOT}/src/js/search.js" \
-      -i "${ROOT}/src/js/soyplugins.js" \
-      -i "${ROOT}/src/js/serviceworker/main.js" \
-      -i "${ROOT}/test/js/heap_test.js" \
-      -i "${ROOT}/test/js/nav_test.js" \
-      -i "${ROOT}/test/js/search_test.js" \
-      -i "${ROOT}/third_party/js/soy/jspbconversions.js" \
-      -i "${ROOT}/third_party/js/soy/soydata_converters.js" \
-      -i "${ROOT}/third_party/js/soy/soyutils_usegoog.js" \
-      -o "${ROOT}/test/js/deps.js"
-}
-
 build_release() {
   bazel clean && \
       bazel test //test/... && \
