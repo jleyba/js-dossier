@@ -61,7 +61,6 @@ public final class ModuleCollectionPassTest {
   public void identifiesNodeModules() {
     defineInputModules("module", "foo.js");
     util.compile(createSourceFile(inputFs.getPath("module/foo.js"), "exports.X = class {};"));
-    System.out.println(util.toSource());
     Module module = getOnlyElement(typeRegistry.getAllModules());
     assertThat(module.getOriginalName()).isEqualTo("module$module$foo");
     assertThat(module.isNode()).isTrue();

@@ -26,6 +26,7 @@ import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfo.Marker;
 import com.google.javascript.rhino.JSDocInfoBuilder;
 import com.google.javascript.rhino.JSTypeExpression;
+import com.google.javascript.rhino.Node;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -63,6 +64,10 @@ public class JsDoc {
 
   private JsDoc(JSDocInfo info) {
     this.info = info;
+  }
+  
+  public static JsDoc from(@Nullable Node node) {
+    return node == null ? DEFAULT : from(node.getJSDocInfo());
   }
 
   public static JsDoc from(@Nullable JSDocInfo info) {

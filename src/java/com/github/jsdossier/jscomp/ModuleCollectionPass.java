@@ -19,9 +19,16 @@ package com.github.jsdossier.jscomp;
 import static com.github.jsdossier.jscomp.Module.Type.CLOSURE;
 import static com.github.jsdossier.jscomp.Module.Type.NODE;
 import static com.github.jsdossier.jscomp.Nodes.isCall;
+import static com.github.jsdossier.jscomp.Nodes.isDestructuringLhs;
+import static com.github.jsdossier.jscomp.Nodes.isGetProp;
 import static com.github.jsdossier.jscomp.Nodes.isModuleBody;
+import static com.github.jsdossier.jscomp.Nodes.isName;
+import static com.github.jsdossier.jscomp.Nodes.isObjectLit;
+import static com.github.jsdossier.jscomp.Nodes.isObjectPattern;
+import static com.github.jsdossier.jscomp.Nodes.isString;
 import static com.github.jsdossier.jscomp.Nodes.isTopLevelAssign;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
 import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
@@ -41,14 +48,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 /** Process scripts containing a module body. */
 final class ModuleCollectionPass implements CompilerPass {
-
-  private static final Logger log = Logger.getLogger(ModuleCollectionPass.class.getName());
 
   private final DossierCompiler compiler;
   private final FileSystem inputFs;
@@ -82,9 +86,7 @@ final class ModuleCollectionPass implements CompilerPass {
         new NodeTraversal.AbstractShallowCallback() {
           @Override
           public void visit(NodeTraversal t, Node n, Node parent) {
-            if (isCall(n, "goog.module")
-                && n.getSecondChild() != null
-                && n.getSecondChild().isString()) {
+            if (isCall(n, "goog.module") && isString(n.getSecondChild())) {
               String name = n.getSecondChild().getString();
               Path path = inputFs.getPath(n.getSourceFileName());
               Module.Id id = (nodeModules.contains(path) ? NODE : CLOSURE).newId(name, path);
@@ -130,7 +132,7 @@ final class ModuleCollectionPass implements CompilerPass {
               return;
             }
 
-            if (isTopLevelAssign(n)) {
+            if (isTopLevelAssign(n) && n.getFirstChild() != null) {
               String name = n.getFirstChild().getQualifiedName();
               if (!isNullOrEmpty(name) && ("exports".equals(name) || name.startsWith("exports."))) {
                 visitExportAssignment(n);
@@ -162,8 +164,8 @@ final class ModuleCollectionPass implements CompilerPass {
           }
 
           private void visitExportAssignment(Node node) {
-            if (node.getLastChild().isObjectLit()) {
-              if (node.getFirstChild().isGetProp()) {
+            if (isObjectLit(node.getLastChild())) {
+              if (isGetProp(node.getFirstChild())) {
                 return; // Ignore: exports.NAME = {...}
               }
 
@@ -172,13 +174,13 @@ final class ModuleCollectionPass implements CompilerPass {
               return;
             }
 
-            String rhsName = node.getLastChild().getQualifiedName();
-            if (isNullOrEmpty(rhsName)) {
+            String rhsName = Nodes.getQualifiedName(node.getLastChild());
+            if (rhsName.isEmpty()) {
               return;
             }
 
-            String lhsName = node.getFirstChild().getQualifiedName();
-            if (isNullOrEmpty(lhsName)) {
+            String lhsName = Nodes.getQualifiedName(node.getFirstChild());
+            if (lhsName.isEmpty()) {
               return;
             }
 
@@ -198,7 +200,7 @@ final class ModuleCollectionPass implements CompilerPass {
           }
 
           private void visitModuleBody(Node node) {
-            module.setJsDoc(JsDoc.from(node.getParent().getJSDocInfo()));
+            module.setJsDoc(JsDoc.from(node.getParent()));
 
             Module m = module.build();
             typeRegistry.addAliasRegion(m.getAliases());
@@ -213,14 +215,14 @@ final class ModuleCollectionPass implements CompilerPass {
             Node lhs = decl.getFirstChild();
             Node rhs;
 
-            if (lhs.isName()) {
+            if (isName(lhs)) {
               rhs = lhs.getFirstChild();
 
               // While we're here, record the JSDocs for the lhs.
               if (decl.getJSDocInfo() != null) {
                 module.internalVarDocsBuilder().put(lhs.getString(), decl.getJSDocInfo());
               }
-            } else if (lhs.isDestructuringLhs() && lhs.getFirstChild().isObjectPattern()) {
+            } else if (isDestructuringLhs(lhs) && isObjectPattern(lhs.getFirstChild())) {
               rhs = lhs.getSecondChild();
             } else {
               return;
@@ -278,10 +280,12 @@ final class ModuleCollectionPass implements CompilerPass {
 
           private List<String> getNames(Node node) {
             if (node.isName()) {
-              return ImmutableList.of(node.getQualifiedName());
+              String name = getQualifiedName(node);
+              checkState(!isNullOrEmpty(name));
+              return ImmutableList.of(name);
             }
 
-            if (node.isDestructuringLhs() && node.getFirstChild().isObjectPattern()) {
+            if (isDestructuringLhs(node) && isObjectPattern(node.getFirstChild())) {
               ImmutableList.Builder<String> names = ImmutableList.builder();
               for (Node key = node.getFirstFirstChild(); key != null; key = key.getNext()) {
                 if (key.isStringKey()) {

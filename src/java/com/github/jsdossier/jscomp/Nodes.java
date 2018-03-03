@@ -16,6 +16,8 @@ limitations under the License.
 
 package com.github.jsdossier.jscomp;
 
+import static com.google.common.base.Strings.nullToEmpty;
+
 import com.google.javascript.rhino.Node;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -34,6 +36,10 @@ final class Nodes {
       e.printStackTrace();
     }
   }
+  
+  public static String getQualifiedName(@Nullable Node n) {
+    return n == null ? "" : nullToEmpty(n.getQualifiedName());
+  }
 
   public static boolean isCall(@Nullable Node n, String name) {
     return n != null
@@ -41,12 +47,40 @@ final class Nodes {
         && n.getFirstChild() != null
         && n.getFirstChild().matchesQualifiedName(name);
   }
+  
+  public static boolean isDestructuringLhs(@Nullable Node n) {
+    return n != null && n.isDestructuringLhs();
+  }
+
+  public static boolean isExprResult(@Nullable Node n) {
+    return n != null && n.isExprResult();
+  }
+
+  public static boolean isGetProp(@Nullable Node n) {
+    return n != null && n.isGetProp();
+  }
 
   public static boolean isModuleBody(@Nullable Node n) {
     return n != null && n.isModuleBody();
   }
 
+  public static boolean isName(@Nullable Node n) {
+    return n != null && n.isName();
+  }
+
+  public static boolean isObjectLit(@Nullable Node n) {
+    return n != null && n.isObjectLit();
+  }
+  
+  public static boolean isObjectPattern(@Nullable Node n) {
+    return n!= null && n.isObjectPattern();
+  }
+  
+  public static boolean isString(@Nullable Node n) {
+    return n != null && n.isString();
+  }
+
   public static boolean isTopLevelAssign(Node n) {
-    return n.isAssign() && n.getParent().isExprResult() && n.getGrandparent().isModuleBody();
+    return n.isAssign() && isExprResult(n.getParent()) && isModuleBody(n.getGrandparent());
   }
 }
