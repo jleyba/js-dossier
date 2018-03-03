@@ -67,7 +67,7 @@ public final class DossierCompiler extends Compiler {
     if (!modulePaths.isEmpty()) {
       try {
         externList = concat(externs, nodeLibrary.getExternFiles());
-        
+
         JSModule module = modules.iterator().next();
         nodeLibrary.getExternModules().forEach(module::add);
       } catch (IOException e) {

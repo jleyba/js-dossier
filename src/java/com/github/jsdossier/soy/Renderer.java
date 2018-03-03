@@ -190,8 +190,8 @@ public class Renderer {
             + "goog.require('goog.soy.data.UnsanitizedText');"
             + "\n";
 
-    Pattern htmlAttributePattern = Pattern.compile(
-        "soydata\\.((?:UnsanitizedText|SanitizedHtml(?:Attribute)?))");
+    Pattern htmlAttributePattern =
+        Pattern.compile("soydata\\.((?:UnsanitizedText|SanitizedHtml(?:Attribute)?))");
 
     Iterator<Path> files =
         ImmutableList.of(

@@ -793,7 +793,8 @@ public class EndToEndTest {
             srcDir.resolve("SimpleReadme.md").toString(),
             "--custom_page",
             "Custom Page:" + srcDir.resolve("Custom.md"),
-            "--environment", "NODE",
+            "--environment",
+            "NODE",
             "--module_naming_convention",
             "NODE");
 
@@ -842,7 +843,6 @@ public class EndToEndTest {
                   addSource(source);
                 }
 
-                
                 for (Path module : modules) {
                   addModule(module);
                 }

@@ -194,7 +194,7 @@ public abstract class GuiceRule implements TestRule {
                   ImmutableSet<Path> provideModuleExterns() {
                     return getModuleExterns();
                   }
-                  
+
                   @Provides
                   Environment provideEnvironment() {
                     return getModules().isEmpty() ? Environment.BROWSER : Environment.NODE;
