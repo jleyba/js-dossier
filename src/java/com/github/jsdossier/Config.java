@@ -33,7 +33,6 @@ import static java.nio.file.Files.write;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
-import com.github.jsdossier.jscomp.ClosureSortedDependencies;
 import com.github.jsdossier.jscomp.Environment;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
@@ -59,6 +58,7 @@ import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.deps.DependencyInfo;
 import com.google.javascript.jscomp.deps.DepsFileParser;
 import com.google.javascript.jscomp.deps.DepsGenerator;
+import com.google.javascript.jscomp.deps.Es6SortedDependencies;
 import com.google.javascript.jscomp.deps.ModuleLoader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -664,8 +664,8 @@ abstract class Config {
         allDeps.stream().filter(isInSources(sources, closureBase)).collect(toList());
 
     List<Path> sortedDeps =
-        new ClosureSortedDependencies<>(allDeps)
-            .getDependenciesOf(sourceDeps, true)
+        new Es6SortedDependencies<>(allDeps)
+            .getSortedDependenciesOf(sourceDeps)
             .stream()
             .map(toPath(closureBase))
             .collect(toList());
