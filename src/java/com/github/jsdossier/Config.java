@@ -73,6 +73,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
@@ -603,7 +604,8 @@ abstract class Config {
 
   @VisibleForTesting
   static Config fromJson(InputStream stream, FileSystem fileSystem) {
-    return createGsonParser(fileSystem).fromJson(new InputStreamReader(stream), Config.class);
+    return createGsonParser(fileSystem)
+        .fromJson(new InputStreamReader(stream, StandardCharsets.UTF_8), Config.class);
   }
 
   private static Config fromJson(JsonElement json, FileSystem fileSystem) {
