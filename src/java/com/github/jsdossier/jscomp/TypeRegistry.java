@@ -484,7 +484,7 @@ public final class TypeRegistry {
    * given global scope and JS registry.
    */
   public void computeTypeRelationships(
-      StaticTypedScope<JSType> globalScope, JSTypeRegistry jsRegistry) {
+      StaticTypedScope globalScope, JSTypeRegistry jsRegistry) {
     checkArgument(globalScope.getParentScope() == null, "not a global scope");
 
     knownImplementations.clear();
@@ -515,7 +515,7 @@ public final class TypeRegistry {
   }
 
   private void computeTypeHiearchy(
-      final FunctionType ctor, StaticTypedScope<JSType> globalScope, JSTypeRegistry jsRegistry) {
+      final FunctionType ctor, StaticTypedScope globalScope, JSTypeRegistry jsRegistry) {
     checkArgument(ctor.isConstructor());
 
     List<JSType> types = new ArrayList<>();
@@ -560,7 +560,7 @@ public final class TypeRegistry {
   private JSType getSuperInstance(
       ObjectType instance,
       FunctionType ctor,
-      StaticTypedScope<JSType> globalScope,
+      StaticTypedScope globalScope,
       JSTypeRegistry jsRegistry) {
     JSType superInstance;
     if (ctor.getJSDocInfo() != null && ctor.getJSDocInfo().getBaseType() != null) {

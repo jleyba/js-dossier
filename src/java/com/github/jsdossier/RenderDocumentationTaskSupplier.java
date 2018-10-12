@@ -132,7 +132,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
     private final CommentParser parser;
     private final TypeRegistry typeRegistry;
     private final JSTypeRegistry jsRegistry;
-    private final StaticTypedScope<JSType> globalScope;
+    private final StaticTypedScope globalScope;
     private final LinkFactory linkFactory;
     private final TypeExpressionParserFactory expressionParserFactory;
     private final TypeInspector typeInspector;
@@ -145,7 +145,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
         @Provided CommentParser parser,
         @Provided TypeRegistry typeRegistry,
         @Provided JSTypeRegistry jsTypeRegistry,
-        @Provided StaticTypedScope<JSType> globalScope,
+        @Provided StaticTypedScope globalScope,
         @Provided TypeExpressionParserFactory expressionParserFactory,
         @Provided TypeInspectorFactory typeInspectorFactory,
         @Provided IndexBuilder typeIndex,

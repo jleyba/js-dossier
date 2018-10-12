@@ -54,7 +54,7 @@ public final class CompilerModule extends AbstractModule {
   }
 
   @Provides
-  StaticTypedScope<JSType> provideGlobalScope(DossierCompiler compiler) {
+  StaticTypedScope provideGlobalScope(DossierCompiler compiler) {
     return compiler.getTopScope();
   }
 

@@ -19,8 +19,8 @@ package com.github.jsdossier.jscomp;
 import com.google.javascript.jscomp.deps.ModuleNames;
 import com.google.javascript.rhino.JSDocInfo.Marker;
 import com.google.javascript.rhino.JSTypeExpression;
-import com.google.javascript.rhino.TypeIRegistry;
 import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.StaticTypedScope;
 import java.nio.file.Path;
 import java.util.ConcurrentModificationException;
@@ -68,15 +68,14 @@ public final class Types {
   public static boolean isConstructorTypeDefinition(JSType type, JsDoc jsdoc) {
     return type.isConstructor()
         && (jsdoc.isConstructor()
-            || ( //jsdoc.isConst() &&
-            !hasTypeExpression(jsdoc.getMarker(JsDoc.Annotation.TYPE))
-                && !hasTypeExpression(jsdoc.getMarker(JsDoc.Annotation.PUBLIC))
-                && !hasTypeExpression(jsdoc.getMarker(JsDoc.Annotation.PROTECTED))
-                && !hasTypeExpression(jsdoc.getMarker(JsDoc.Annotation.PRIVATE))));
+            || (noTypeExpression(jsdoc.getMarker(JsDoc.Annotation.TYPE))
+                && noTypeExpression(jsdoc.getMarker(JsDoc.Annotation.PUBLIC))
+                && noTypeExpression(jsdoc.getMarker(JsDoc.Annotation.PROTECTED))
+                && noTypeExpression(jsdoc.getMarker(JsDoc.Annotation.PRIVATE))));
   }
 
-  private static boolean hasTypeExpression(Optional<Marker> marker) {
-    return marker.isPresent() && marker.get().getType() != null;
+  private static boolean noTypeExpression(Optional<Marker> marker) {
+    return !marker.isPresent() || marker.get().getType() == null;
   }
 
   /**
@@ -108,7 +107,7 @@ public final class Types {
    * @see "https://github.com/jleyba/js-dossier/issues/78"
    */
   public static JSType evaluate(
-      JSTypeExpression expression, StaticTypedScope<JSType> scope, TypeIRegistry registry) {
+      JSTypeExpression expression, StaticTypedScope scope, JSTypeRegistry registry) {
     synchronized (EVALUATION_LOCK) {
       return expression.evaluate(scope, registry);
     }

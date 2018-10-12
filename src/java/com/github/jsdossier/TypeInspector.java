@@ -110,7 +110,7 @@ final class TypeInspector {
   private final DossierFileSystem dfs;
   private final CommentParser parser;
   private final TypeRegistry registry;
-  private final StaticTypedScope<JSType> globalScope;
+  private final StaticTypedScope globalScope;
   private final JSTypeRegistry jsRegistry;
   private final Predicate<String> typeFilter;
   private final TypeExpressionParserFactory expressionParserFactory;
@@ -124,7 +124,7 @@ final class TypeInspector {
       @Provided DossierFileSystem dfs,
       @Provided CommentParser parser,
       @Provided TypeRegistry registry,
-      @Provided StaticTypedScope<JSType> globalScope,
+      @Provided StaticTypedScope globalScope,
       @Provided JSTypeRegistry jsRegistry,
       @Provided @TypeFilter Predicate<String> typeFilter,
       @Provided TypeExpressionParserFactory expressionParserFactory,
