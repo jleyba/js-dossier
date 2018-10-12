@@ -104,7 +104,7 @@ public class AliasDetectionTest {
           createSourceFile(inputFs.getPath("module/foo.js"), "class X {}", "export {X as Y};"),
           createSourceFile(
               inputFs.getPath("module/bar.js"),
-              "import * as f from './foo';",
+              "import * as f from './foo.js';",
               "export class Y extends f.Y {}"));
     } catch (CompilerUtil.CompileFailureException e) {
       if (e.getMessage()
@@ -125,7 +125,7 @@ public class AliasDetectionTest {
           createSourceFile(inputFs.getPath("module/foo.js"), "class X {}", "export {X};"),
           createSourceFile(
               inputFs.getPath("module/bar.js"),
-              "import * as f from './foo';",
+              "import * as f from './foo.js';",
               "export class Y extends f.X {}"));
     } catch (CompilerUtil.CompileFailureException e) {
       if (e.getMessage()
@@ -146,7 +146,7 @@ public class AliasDetectionTest {
           createSourceFile(inputFs.getPath("module/a/b/c.js"), "class X {}", "export {X};"),
           createSourceFile(
               inputFs.getPath("module/bar.js"),
-              "import * as f from './a/b/c';",
+              "import * as f from './a/b/c.js';",
               "export class Y extends f.X {}"));
     } catch (CompilerUtil.CompileFailureException e) {
       if (e.getMessage()
@@ -167,7 +167,7 @@ public class AliasDetectionTest {
           createSourceFile(inputFs.getPath("module/a/foo.js"), "class X {}", "export {X};"),
           createSourceFile(
               inputFs.getPath("module/a/b/c.js"),
-              "import * as f from '../foo';",
+              "import * as f from '../foo.js';",
               "export class Y extends f.X {}"));
     } catch (CompilerUtil.CompileFailureException e) {
       if (e.getMessage()
@@ -244,7 +244,7 @@ public class AliasDetectionTest {
           createSourceFile(inputFs.getPath("module/a/foo.js"), "export default class {}"),
           createSourceFile(
               inputFs.getPath("module/a/bar.js"),
-              "import A from './foo';",
+              "import A from './foo.js';",
               "export class Y extends A {}"));
     } catch (CompilerUtil.CompileFailureException e) {
       if (e.getMessage()
@@ -266,7 +266,7 @@ public class AliasDetectionTest {
           createSourceFile(inputFs.getPath("module/a/foo.js"), "export default class {}"),
           createSourceFile(
               inputFs.getPath("module/a/bar.js"),
-              "import {default as A} from './foo';",
+              "import {default as A} from './foo.js';",
               "export class Y extends A {}"));
     } catch (CompilerUtil.CompileFailureException e) {
       if (e.getMessage()
@@ -288,7 +288,7 @@ public class AliasDetectionTest {
           createSourceFile(inputFs.getPath("module/a/foo.js"), "export default class {}"),
           createSourceFile(
               inputFs.getPath("module/a/bar.js"),
-              "import A, {B as C} from './foo';",
+              "import A, {B as C} from './foo.js';",
               "export class Y extends A {}"));
     } catch (CompilerUtil.CompileFailureException e) {
       if (e.getMessage()
@@ -403,6 +403,7 @@ public class AliasDetectionTest {
         .isEqualTo("module$exports$one.One");
   }
 
+  @SuppressWarnings("SameParameterValue")
   private void defineInputModules(String prefix, String... modules) {
     guice
         .toBuilder()

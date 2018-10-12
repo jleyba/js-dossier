@@ -213,8 +213,15 @@ public class TypeContextTest {
     assertWithMessage("default is not a valid identifier")
         .that(context.resolveType("default"))
         .isNull();
-
-    assertThat(context.resolveType("A")).isSameAs(fooA);
+    assertWithMessage("A is not a valid reference name in module/bar")
+        .that(context.resolveType("A"))
+        .isNull();
+    assertWithMessage("in module/bar, B is a reference to foo.default")
+        .that(context.resolveType("B"))
+        .isSameAs(fooDefault);
+    assertWithMessage("in module/bar, C is a reference to foo.A")
+        .that(context.resolveType("C"))
+        .isSameAs(fooA);
 
     context = context.changeContext(moduleBaz);
     assertThat(context.resolveType("B")).isSameAs(barB);

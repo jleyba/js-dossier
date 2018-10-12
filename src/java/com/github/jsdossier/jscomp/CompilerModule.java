@@ -16,6 +16,7 @@ limitations under the License.
 
 package com.github.jsdossier.jscomp;
 
+import com.github.jsdossier.annotations.Global;
 import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.jscomp.Annotations.Internal;
 import com.google.common.collect.ImmutableList;
@@ -35,6 +36,7 @@ import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.StaticTypedScope;
 import java.nio.file.Path;
 import javax.inject.Provider;
+import javax.inject.Singleton;
 
 /** Defines the bindings for the compiler. */
 public final class CompilerModule extends AbstractModule {
@@ -42,6 +44,13 @@ public final class CompilerModule extends AbstractModule {
   @Override
   protected void configure() {
     bind(DossierCompiler.class).in(Scopes.SINGLETON);
+  }
+
+  @Provides
+  @Singleton
+  @Global
+  SymbolTable provideGlobalSymbolTable() {
+    return SymbolTable.createGlobalSymbolTable();
   }
 
   @Provides
@@ -57,12 +66,12 @@ public final class CompilerModule extends AbstractModule {
   @Provides
   @Internal
   ImmutableList<DossierCompilerPass> providePasses(
+      BuildSymbolTablePass symbolTablePass,
       FileVisibilityPass visibilityPass,
-      Es6ModulePass es6ModulePass,
       @Modules ImmutableSet<Path> modulePaths,
       Provider<NodeModulePass> nodeModulePassProvider) {
     ImmutableList.Builder<DossierCompilerPass> passes =
-        ImmutableList.<DossierCompilerPass>builder().add(visibilityPass).add(es6ModulePass);
+        ImmutableList.<DossierCompilerPass>builder().add(symbolTablePass, visibilityPass);
 
     // Transform CommonJS style node modules into Closure's goog.module syntax.
     // TODO(jleyba): do we still need to control this transformation?
@@ -75,8 +84,6 @@ public final class CompilerModule extends AbstractModule {
 
   @Provides
   CompilerOptions provideCompilerOptions(
-      AliasTransformListener transformListener,
-      ModuleCollectionPass moduleCollectionPass,
       ProvidedSymbolPass providedSymbolPass,
       TypeCollectionPass typeCollectionPass,
       @Modules ImmutableSet<Path> modulePaths,
@@ -116,9 +123,6 @@ public final class CompilerModule extends AbstractModule {
     // For easier debugging.
     options.setPrettyPrint(true);
 
-    options.setAliasTransformationHandler(transformListener);
-
-    options.addCustomPass(CustomPassExecutionTime.BEFORE_CHECKS, moduleCollectionPass);
     options.addCustomPass(CustomPassExecutionTime.BEFORE_CHECKS, providedSymbolPass);
     options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS, typeCollectionPass);
 

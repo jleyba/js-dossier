@@ -18,6 +18,7 @@ package com.github.jsdossier;
 
 import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NominalType;
+import com.github.jsdossier.jscomp.Symbol;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.jscomp.Types;
 import com.google.common.io.Files;
@@ -25,7 +26,6 @@ import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
@@ -94,15 +94,6 @@ final class TypeContext {
     this.context = context;
   }
 
-  /** Returns the root context that resolves types against the global scope. */
-  public TypeContext clearContext() {
-    if (context.isPresent()) {
-      return new TypeContext(
-          typeRegistry, jsTypeRegistry, dfs, moduleNamingConvention, Optional.empty());
-    }
-    return this;
-  }
-
   /** Creates a new context focused on the given type. */
   public TypeContext changeContext(@Nullable NominalType context) {
     return new TypeContext(
@@ -142,14 +133,14 @@ final class TypeContext {
       // type's module, so we can see if the internal variable was exported from the module
       // (which would be our resolved type).
       if (Types.isModuleContentsVar(def)) {
-        NominalType type = resolve(jsTypeRegistry.getType(def));
+        NominalType type = resolve(jsTypeRegistry.getGlobalType(def));
         if (type != null) {
           return type;
         }
 
-        if (context.isPresent() && context.get().getModule().isPresent()) {
+        if (context.get().getModule().isPresent()) {
           Module module = context.get().getModule().get();
-          type = resolveExportByInternalName(module, def);
+          type = resolveModuleContentVar(module, def);
           if (type != null) {
             return type;
           }
@@ -186,27 +177,29 @@ final class TypeContext {
 
   @Nullable
   @CheckReturnValue
-  private NominalType resolveExportByInternalName(Module module, String internalName) {
-    Optional<Map.Entry<String, String>> exportEntry =
-        module
-            .getExportedNames()
-            .entrySet()
-            .stream()
-            .filter(
-                e ->
-                    internalName.equals(e.getValue())
-                        || internalName.equals(module.getAliases().resolveAlias(e.getValue())))
-            .findAny();
-    if (exportEntry.isPresent()) {
-      String qualifiedName =
-          context.get().getModule().get().getId().getCompiledName()
-              + "."
-              + exportEntry.get().getKey();
-      if (typeRegistry.isType(qualifiedName)) {
-        return typeRegistry.getType(qualifiedName);
-      }
-    }
-    return null;
+  private NominalType resolveModuleContentVar(Module module, String compilerName) {
+    // Step 1: map the compiler's generated name to the original source name.
+    return module
+        .getInternalSymbolTable()
+        .getAllSymbols()
+        .stream()
+        .filter(s -> compilerName.equals(s.getReferencedSymbol()))
+        .map(Symbol::getName)
+        .findFirst()
+        // Step 2: find the module's export that maps to the internal name.
+        .flatMap(
+            internalName ->
+                module
+                    .getExportedNames()
+                    .entrySet()
+                    .stream()
+                    .filter(e -> internalName.equals(e.getValue()))
+                    .map(e -> module.getId() + "." + e.getKey())
+                    // Step 3: Double check it's a legit type and we didn't lose state somewhere.
+                    .filter(typeRegistry::isType)
+                    .map(typeRegistry::getType)
+                    .findFirst())
+        .orElse(null);
   }
 
   @Nullable
@@ -275,7 +268,7 @@ final class TypeContext {
       return typeRegistry.getType(name);
     }
 
-    NominalType type = resolve(jsTypeRegistry.getType(name));
+    NominalType type = resolve(jsTypeRegistry.getGlobalType(name));
     if (type != null) {
       return type;
     }

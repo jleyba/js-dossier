@@ -16,12 +16,12 @@ limitations under the License.
 
 package com.github.jsdossier.jscomp;
 
-import static com.github.jsdossier.jscomp.Module.Type.ES6;
 import static com.github.jsdossier.jscomp.Module.Type.NODE;
 import static com.github.jsdossier.jscomp.Types.getModuleId;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
+import static com.google.javascript.jscomp.NodeTraversal.traverse;
 import static com.google.javascript.rhino.IR.call;
 import static com.google.javascript.rhino.IR.declaration;
 import static com.google.javascript.rhino.IR.exprResult;
@@ -32,6 +32,7 @@ import static com.google.javascript.rhino.IR.var;
 import static java.nio.file.Files.exists;
 import static java.nio.file.Files.isDirectory;
 
+import com.github.jsdossier.annotations.Global;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.Modules;
 import com.google.common.annotations.VisibleForTesting;
@@ -40,6 +41,7 @@ import com.google.javascript.jscomp.DiagnosticType;
 import com.google.javascript.jscomp.Es6RewriteDestructuring;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.jscomp.NodeUtil;
+import com.google.javascript.jscomp.deps.DependencyInfo;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfoBuilder;
 import com.google.javascript.rhino.Node;
@@ -112,6 +114,7 @@ final class NodeModulePass implements DossierCompilerPass {
   private final FileSystem inputFs;
   private final ImmutableSet<Path> modulePaths;
   private final NodeLibrary nodeLibrary;
+  private final SymbolTable globalSymbolTable;
 
   // TODO(jleyba): Use Module.Id.
   private String currentModule = null;
@@ -121,10 +124,12 @@ final class NodeModulePass implements DossierCompilerPass {
       TypeRegistry typeRegistry,
       @Input FileSystem inputFs,
       @Modules ImmutableSet<Path> modulePaths,
+      @Global SymbolTable globalSymbolTable,
       NodeLibrary nodeLibrary) {
     this.typeRegistry = typeRegistry;
     this.inputFs = inputFs;
     this.modulePaths = modulePaths;
+    this.globalSymbolTable = globalSymbolTable;
     this.nodeLibrary = nodeLibrary;
   }
 
@@ -135,7 +140,7 @@ final class NodeModulePass implements DossierCompilerPass {
     }
 
     CommonJsModuleCallback callback = new CommonJsModuleCallback();
-    traverseEs6(compiler, root, callback);
+    traverse(compiler, root, callback);
   }
 
   /** Main traversal callback for processing the AST of a CommonJS module. */
@@ -151,19 +156,23 @@ final class NodeModulePass implements DossierCompilerPass {
 
         String sourceName = n.getSourceFileName();
         Path path = inputFs.getPath(n.getSourceFileName());
-        if (!nodeLibrary.isModulePath(sourceName)
-            && (typeRegistry.isModule(path) || !modulePaths.contains(path))) {
+        if (!nodeLibrary.isModulePath(sourceName) && !modulePaths.contains(path)) {
           return false;
         }
 
         if (nodeLibrary.isModulePath(sourceName)) {
           currentModule = nodeLibrary.getIdFromPath(sourceName);
         } else {
-          currentModule = ES6.newId(path).getCompiledName();
+          Module module = globalSymbolTable.getModule(path);
+          checkNotNull(module, "module not found: %s", path);
+          if (module.isEs6()) {
+            return false;
+          }
+          currentModule = module.getId().getOriginalName();
         }
 
-        traverseEs6(t.getCompiler(), n, new SplitRequireDeclarations());
-        traverseEs6(t.getCompiler(), n, new Es6RewriteDestructuring(t.getCompiler()));
+        traverse(t.getCompiler(), n, new SplitRequireDeclarations());
+        traverse(t.getCompiler(), n, new Es6RewriteDestructuring(t.getCompiler()));
       }
       return true;
     }
@@ -196,8 +205,7 @@ final class NodeModulePass implements DossierCompilerPass {
       Set<String> directives = script.getDirectives();
       if (directives != null && directives.contains("use strict")) {
         // Directives is likely an immutable collection, so we need to make a copy.
-        Set<String> newDirectives = new HashSet<>();
-        newDirectives.addAll(directives);
+        Set<String> newDirectives = new HashSet<>(directives);
         newDirectives.remove("use strict");
         script.setDirectives(newDirectives);
       }
@@ -214,7 +222,7 @@ final class NodeModulePass implements DossierCompilerPass {
 
       t.getInput().addProvide(currentModule);
 
-      traverseEs6(t.getCompiler(), script, new TypeCleanup());
+      traverse(t.getCompiler(), script, new TypeCleanup());
 
       googRequireExpr.clear();
       currentModule = null;
@@ -280,9 +288,9 @@ final class NodeModulePass implements DossierCompilerPass {
       if (modulePath.startsWith(".") || modulePath.startsWith("/")) {
         Path moduleFile = currentFile.getParent().resolve(modulePath).normalize();
         if (modulePath.endsWith("/")
-            || isDirectory(moduleFile)
+            || (isDirectory(moduleFile)
                 && !modulePath.endsWith(".js")
-                && !Files.exists(moduleFile.resolveSibling(moduleFile.getFileName() + ".js"))) {
+                && !Files.exists(moduleFile.resolveSibling(moduleFile.getFileName() + ".js")))) {
           moduleFile = moduleFile.resolve("index.js");
         }
         moduleId = NODE.newId(moduleFile).getOriginalName();
@@ -324,7 +332,7 @@ final class NodeModulePass implements DossierCompilerPass {
           }
 
           parent.replaceChild(require, googRequire.srcrefTree(require));
-          t.getInput().addRequire(moduleId);
+          t.getInput().addRequire(DependencyInfo.Require.googRequireSymbol(moduleId));
 
         } else {
           // For goog.module('foo'), ClosureRewriteModule produces module$exports$foo = {};, so
@@ -351,7 +359,7 @@ final class NodeModulePass implements DossierCompilerPass {
    *
    * <p>var a = require('a'); var b = require('b');
    */
-  private final class SplitRequireDeclarations implements NodeTraversal.Callback {
+  private static final class SplitRequireDeclarations implements NodeTraversal.Callback {
     @Override
     public boolean shouldTraverse(NodeTraversal nodeTraversal, Node n, Node parent) {
       return true;
@@ -361,7 +369,7 @@ final class NodeModulePass implements DossierCompilerPass {
     public void visit(NodeTraversal t, final Node n, final Node parent) {
       if (NodeUtil.isNameDeclaration(n)) {
         RequireDetector detector = new RequireDetector();
-        traverseEs6(t.getCompiler(), n, detector);
+        traverse(t.getCompiler(), n, detector);
 
         if (detector.foundRequire) {
           Node addAfter = n;

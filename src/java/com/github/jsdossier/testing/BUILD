@@ -12,6 +12,7 @@ java_library(
         "//lib/maven:jimfs",
         "//lib/maven:jsr305",
         "//lib/maven:junit",
+        "//lib/maven:truth",
         "//src/java/com/github/jsdossier",
         "//src/java/com/github/jsdossier/annotations",
         "//src/java/com/github/jsdossier/jscomp",

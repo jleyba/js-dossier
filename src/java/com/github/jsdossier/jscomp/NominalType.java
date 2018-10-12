@@ -18,6 +18,7 @@ package com.github.jsdossier.jscomp;
 
 import com.google.auto.value.AutoValue;
 import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
 import java.nio.file.Path;
 import java.util.Optional;
@@ -48,8 +49,13 @@ public abstract class NominalType {
   /** Returns the path to the file that defines this type. */
   public abstract Path getSourceFile();
 
+  /** Returns the node where this type is defined. */
+  public abstract Node getNode();
+
   /** Returns the position in the file where this type is defined. */
-  public abstract Position getSourcePosition();
+  public final Position getSourcePosition() {
+    return Position.of(getNode());
+  }
 
   /** Returns the JSDoc attached to this type. */
   public abstract JsDoc getJsDoc();
@@ -83,7 +89,7 @@ public abstract class NominalType {
 
     public abstract Builder setSourceFile(Path path);
 
-    public abstract Builder setSourcePosition(Position position);
+    public abstract Builder setNode(Node node);
 
     public abstract Builder setJsDoc(JsDoc docs);
 
@@ -93,7 +99,9 @@ public abstract class NominalType {
 
     public abstract Builder setModule(Optional<Module> module);
 
-    public abstract Builder setModule(Module module);
+    public Builder setModule(@Nullable Module module) {
+      return setModule(Optional.ofNullable(module));
+    }
 
     public abstract NominalType build();
   }

@@ -90,17 +90,14 @@ public final class DossierCompiler extends Compiler {
         getClass());
     hasParsed = true;
 
-    getInputsById()
-        .values()
-        .stream()
-        .map(input -> input.getAstRoot(this))
-        .filter(Objects::nonNull)
-        .forEach(
-            node -> {
-              for (DossierCompilerPass pass : passes) {
-                pass.process(this, node);
-              }
-            });
+    for (DossierCompilerPass pass : passes) {
+      getInputsById()
+          .values()
+          .stream()
+          .map(input -> input.getAstRoot(this))
+          .filter(Objects::nonNull)
+          .forEach(node -> pass.process(this, node));
+    }
 
     super.parseForCompilation();
   }

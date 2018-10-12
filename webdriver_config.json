@@ -1,0 +1,71 @@
+{
+  "output": "/Users/jleyba/Development/selenium/build/javascript/node/selenium-webdriver-docs",
+  "customPages": [
+    {
+      "name": "Changes",
+      "path": "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/CHANGES.md"
+    }
+  ],
+  "readme": "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/README.md",
+  "language": "ES6_STRICT",
+  "moduleNamingConvention": "NODE",
+  "modules": [
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/builder.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/chrome.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/edge.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/error.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/executors.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/ie.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/index.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/opera.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/phantomjs.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/proxy.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/safari.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/firefox/binary.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/firefox/extension.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/firefox/index.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/firefox/profile.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/http/index.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/http/util.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/io/exec.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/io/index.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/lib/actions.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/lib/by.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/lib/capabilities.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/lib/command.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/lib/devmode.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/lib/error.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/lib/events.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/lib/http.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/lib/input.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/lib/logging.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/lib/promise.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/lib/proxy.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/lib/session.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/lib/symbols.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/lib/until.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/lib/webdriver.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/net/index.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/net/portprober.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/remote/index.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/testing/assert.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/testing/index.js"
+  ],
+  "moduleFilters": [
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/lib/devmode.js",
+    "/Users/jleyba/Development/selenium/javascript/node/selenium-webdriver/lib/symbols.js"
+  ],
+  "externs": [
+    "/Users/jleyba/Development/selenium/javascript/node/externs/global.js"
+  ],
+  "externModules": [
+    "/Users/jleyba/Development/selenium/javascript/node/externs/adm-zip.js",
+    "/Users/jleyba/Development/selenium/javascript/node/externs/mocha.js",
+    "/Users/jleyba/Development/selenium/javascript/node/externs/rimraf.js",
+    "/Users/jleyba/Development/selenium/javascript/node/externs/tmp.js",
+    "/Users/jleyba/Development/selenium/javascript/node/externs/ws.js",
+    "/Users/jleyba/Development/selenium/javascript/node/externs/xml2js.js"
+  ],
+  "sourceUrlTemplate": "https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/%path%#L%line%",
+  "strict": true
+}

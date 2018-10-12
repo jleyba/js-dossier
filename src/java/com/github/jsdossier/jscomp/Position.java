@@ -17,6 +17,7 @@ limitations under the License.
 package com.github.jsdossier.jscomp;
 
 import com.google.auto.value.AutoValue;
+import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.SourcePosition;
 import javax.annotation.Nonnull;
 
@@ -36,6 +37,10 @@ public abstract class Position implements Comparable<Position> {
         .setLine(pos.getEndLine())
         .setOffset(pos.getPositionOnEndLine())
         .build();
+  }
+
+  public static Position of(Node n) {
+    return new AutoValue_Position.Builder().setLine(n.getLineno()).setOffset(n.getCharno()).build();
   }
 
   public static Position of(int line, int offset) {

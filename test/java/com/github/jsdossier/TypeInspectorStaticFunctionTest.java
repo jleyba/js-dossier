@@ -28,7 +28,9 @@ import com.github.jsdossier.proto.Function;
 import com.github.jsdossier.proto.Function.Detail;
 import com.github.jsdossier.proto.Tags;
 import com.github.jsdossier.proto.TypeExpression;
-import java.io.IOException;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -463,8 +465,8 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
-    assertThat(report.getFunctions())
-        .containsExactly(
+    assertThat(getOnlyElement(report.getFunctions()))
+        .isEqualTo(
             Function.newBuilder()
                 .setBase(
                     BaseProperty.newBuilder()
@@ -475,7 +477,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                     Detail.newBuilder()
                         .setDescription(htmlComment("<p>A new object.</p>\n"))
                         // This should not have a link b/c foo.One is filtered out.
-                        .setType(namedTypeExpression("foo.One")))
+                        .setType(namedTypeExpression("foo.One", "foo.One.html")))
                 .build());
   }
 
@@ -585,22 +587,31 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
-    assertThat(report.getFunctions())
-        .containsExactly(
+
+    List<Function> functions =
+        report
+            .getFunctions()
+            .stream()
+            .sorted(Comparator.comparing(fn -> fn.getBase().getName()))
+            .collect(Collectors.toList());
+    assertThat(functions).hasSize(2);
+    assertThat(functions.get(0))
+        .isEqualTo(
             Function.newBuilder()
                 .setBase(
                     BaseProperty.newBuilder()
                         .setName("greeting1")
                         .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 2))
-                        // Description not copied because local alias is not const.
-                        .setDescription(Comment.getDefaultInstance()))
-                .build(),
+                        .setDescription(htmlComment("<p>Hello, world!</p>\n")))
+                .build());
+    assertThat(functions.get(1))
+        .isEqualTo(
             Function.newBuilder()
                 .setBase(
                     BaseProperty.newBuilder()
                         .setName("greeting2")
                         .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 4))
-                        .setDescription(htmlComment("<p>Hello, world!</p>\n")))
+                        .setDescription(Comment.getDefaultInstance()))
                 .build());
   }
 
@@ -819,8 +830,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
   }
 
   @Test
-  public void typeExpressionsCanReferToAnotherModuleByRelativePath_nodeModules()
-      throws IOException {
+  public void typeExpressionsCanReferToAnotherModuleByRelativePath_nodeModules() {
     util.compile(
         createSourceFile(fs.getPath("/src/modules/foo/bar.js"), "exports.X = class {}"),
         createSourceFile(

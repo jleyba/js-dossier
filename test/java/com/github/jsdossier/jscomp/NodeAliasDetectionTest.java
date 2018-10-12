@@ -61,19 +61,14 @@ public class NodeAliasDetectionTest {
         createSourceFile(
             inputFs.getPath("/modules/two.js"),
             "var a = require('./one');",
-            "var b = require('./one').One;",
-            "var {One, Two, Three} = require('./one');",
-            "var {X, Y} = require('./one').Four;"));
+            "var {One, Two, Three} = require('./one');"));
 
     NominalType type = typeRegistry.getType("module$exports$module$modules$two");
     setContext(type);
     assertThat("a").isAliasFor("module$exports$module$modules$one");
-    assertThat("b").isAliasFor("module$exports$module$modules$one.One");
     assertThat("One").isAliasFor("module$exports$module$modules$one.One");
     assertThat("Two").isAliasFor("module$exports$module$modules$one.Two");
     assertThat("Three").isAliasFor("module$exports$module$modules$one.Three");
-    assertThat("X").isAliasFor("module$exports$module$modules$one.Four.X");
-    assertThat("Y").isAliasFor("module$exports$module$modules$one.Four.Y");
   }
 
   @Test
@@ -102,7 +97,6 @@ public class NodeAliasDetectionTest {
         createSourceFile(
             inputFs.getPath("/modules/two.js"),
             "var a = require('./one');",
-            "var b = require('./one').One;",
             "var {One, Two, Three} = require('./one');"));
 
     setContext(typeRegistry.getType("module$exports$module$modules$one"));
@@ -123,8 +117,6 @@ public class NodeAliasDetectionTest {
     setContext(typeRegistry.getType("module$exports$module$modules$two"));
     assertThat("module$contents$module$modules$two_a")
         .isAliasFor("module$exports$module$modules$one");
-    assertThat("module$contents$module$modules$two_b")
-        .isAliasFor("module$exports$module$modules$one.One");
     assertThat("module$contents$module$modules$two_One")
         .isAliasFor("module$exports$module$modules$one.One");
     assertThat("module$contents$module$modules$two_Two")
@@ -168,7 +160,7 @@ public class NodeAliasDetectionTest {
     util.compile(
         createSourceFile(
             inputFs.getPath("/modules/one.js"), "class One {}", "module.exports = {One};"),
-        createSourceFile(inputFs.getPath("/modules/two.js"), "var One = require('./one').One;"));
+        createSourceFile(inputFs.getPath("/modules/two.js"), "var {One} = require('./one');"));
 
     NominalType one = typeRegistry.getType("module$exports$module$modules$one");
     setContext(one);
@@ -189,7 +181,7 @@ public class NodeAliasDetectionTest {
     return new AliasTester(alias);
   }
 
-  private class AliasTester {
+  private final class AliasTester {
     private final String alias;
 
     private AliasTester(String alias) {

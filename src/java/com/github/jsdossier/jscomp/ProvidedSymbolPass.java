@@ -16,12 +16,10 @@ limitations under the License.
 
 package com.github.jsdossier.jscomp;
 
-import static com.github.jsdossier.jscomp.Nodes.isCall;
-import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
+import static com.github.jsdossier.jscomp.Nodes.isGoogProvideCall;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.javascript.jscomp.CompilerPass;
-import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.rhino.Node;
 import javax.inject.Inject;
 
@@ -49,19 +47,30 @@ public final class ProvidedSymbolPass implements CompilerPass {
 
   @Override
   public void process(Node ignored, Node root) {
-    traverseEs6(
-        compiler,
-        root,
-        new NodeTraversal.AbstractShallowCallback() {
-          @Override
-          public void visit(NodeTraversal t, Node n, Node parent) {
-            if (isCall(n, "goog.provide")
-                && n.getSecondChild() != null
-                && n.getSecondChild().isString()
-                && n.getSecondChild().getNext() == null) {
-              typeRegistry.recordProvide(n.getSecondChild().getString());
-            }
-          }
-        });
+    if (!root.isFromExterns()) {
+      scan(root);
+    }
+  }
+
+  private void scan(Node root) {
+    switch (root.getToken()) {
+      case ROOT:
+      case SCRIPT:
+        for (Node child = root.getFirstChild(); child != null; child = child.getNext()) {
+          scan(child);
+        }
+        break;
+
+      case EXPR_RESULT:
+        if (isGoogProvideCall(root.getFirstChild())) {
+          Node call = root.getFirstChild();
+          assert call.getSecondChild() != null;
+          typeRegistry.recordProvide(call.getSecondChild().getString());
+        }
+        break;
+
+      default:
+        break; // Do nothing.
+    }
   }
 }

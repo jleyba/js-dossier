@@ -63,6 +63,7 @@ public abstract class AbstractTypeInspectorTest {
       GuiceRule.builder(this)
           .setModulePrefix("/src/modules")
           .setModules("foo/bar.js", "foo/baz.js")
+          .setUseNodeLibrary(false)
           .setSourcePrefix("/src")
           .setOutputDir("/out")
           .build();

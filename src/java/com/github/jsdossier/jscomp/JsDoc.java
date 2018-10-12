@@ -65,7 +65,7 @@ public class JsDoc {
   private JsDoc(JSDocInfo info) {
     this.info = info;
   }
-  
+
   public static JsDoc from(@Nullable Node node) {
     return node == null ? DEFAULT : from(node.getJSDocInfo());
   }

@@ -1382,7 +1382,7 @@ public class LinkFactoryTest {
     NominalType ref = typeRegistry.getType("module$source$modules$two");
     LinkFactory factory = createFactory(ref).withTypeContext(ref);
 
-    checkLink(factory.resolveTypeReference("One"), "One", "one.One", "one_exports_One.html");
+    checkLink(factory.resolveTypeReference("One"), "One", "");
     checkLink(factory.resolveTypeReference("Two"), "One", "one.One", "one_exports_One.html");
     checkLink(
         factory.resolveTypeReference("module$source$modules$two.Two"),

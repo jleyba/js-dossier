@@ -23,6 +23,7 @@ import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.Iterables.getFirst;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
 import com.github.jsdossier.annotations.TypeFilter;
@@ -30,6 +31,7 @@ import com.github.jsdossier.jscomp.JsDoc;
 import com.github.jsdossier.jscomp.JsDoc.Annotation;
 import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NominalType;
+import com.github.jsdossier.jscomp.Symbol;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.jscomp.Types;
 import com.github.jsdossier.proto.BaseProperty;
@@ -70,7 +72,6 @@ import com.google.javascript.rhino.jstype.TemplatizedType;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
@@ -182,7 +183,10 @@ final class TypeInspector {
       String exportedName = type.getName().substring(module.getId().toString().length() + 1);
       String internalName = module.getExportedNames().get(exportedName);
       if (!isNullOrEmpty(internalName)) {
-        JSDocInfo info = module.getInternalVarDocs().get(internalName);
+        JSDocInfo info =
+            Optional.ofNullable(module.getInternalSymbolTable().getOwnSlot(internalName))
+                .map(Symbol::getJSDocInfo)
+                .orElse(null);
         blockComment = JsDoc.from(info).getBlockComment();
 
         if (isNullOrEmpty(blockComment)) {
@@ -367,7 +371,7 @@ final class TypeInspector {
       return Report.empty();
     }
 
-    Collections.sort(properties, new PropertyNameComparator());
+    properties.sort(comparing(Property::getName));
     Report.Builder report = Report.builder();
 
     for (Property property : properties) {
@@ -421,6 +425,7 @@ final class TypeInspector {
     // The property does not have any docs, but is part of a module's exported API,
     // so we can see if the property is just a symbol defined in the module whose docs we can
     // use.
+    @SuppressWarnings("ConstantConditions") // Module presence implied by isModuleExports above.
     Module module = ownerType.getModule().get();
 
     String internalName = module.getExportedNames().get(property.getName());
@@ -433,9 +438,12 @@ final class TypeInspector {
     //    /** hi */
     //    let someSymbol = function() {};
     //    export {someSymbol as publicName};
-    jsdoc = JsDoc.from(module.getInternalVarDocs().get(internalName));
-    if (!isEmptyComment(jsdoc)) {
-      return PropertyDocs.create(ownerType, jsdoc);
+    Symbol symbol = module.getInternalSymbolTable().getOwnSlot(internalName);
+    if (symbol != null) {
+      jsdoc = JsDoc.from(symbol.getJSDocInfo());
+      if (!isEmptyComment(jsdoc)) {
+        return PropertyDocs.create(ownerType, jsdoc);
+      }
     }
 
     // The internal name is an alias for a symbol renamed during compilation, so we should use the
@@ -1248,7 +1256,7 @@ final class TypeInspector {
     TypeExpression expression = parser.parse(type);
     NamedType namedType = expression.getNamedType();
     verify(
-        namedType != NamedType.getDefaultInstance(),
+        !NamedType.getDefaultInstance().equals(namedType),
         "Expected a named type expression: %s",
         expression);
     return namedType;
@@ -1274,7 +1282,7 @@ final class TypeInspector {
           String referenceName = jsType.toMaybeObjectType().getReferenceName();
           if (!name.equals(referenceName)
               && !isNullOrEmpty(referenceName)
-              && !jsRegistry.getType(referenceName).isNamedType()) {
+              && !jsRegistry.getGlobalType(referenceName).isNamedType()) {
             node.setString(referenceName);
           }
         }

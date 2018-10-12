@@ -16,8 +16,6 @@ limitations under the License.
 
 package com.github.jsdossier.jscomp;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import com.google.javascript.jscomp.deps.ModuleNames;
 import com.google.javascript.rhino.JSDocInfo.Marker;
 import com.google.javascript.rhino.JSTypeExpression;
@@ -70,11 +68,11 @@ public final class Types {
   public static boolean isConstructorTypeDefinition(JSType type, JsDoc jsdoc) {
     return type.isConstructor()
         && (jsdoc.isConstructor()
-            || jsdoc.isConst()
-                && !hasTypeExpression(jsdoc.getMarker(JsDoc.Annotation.TYPE))
+            || ( //jsdoc.isConst() &&
+            !hasTypeExpression(jsdoc.getMarker(JsDoc.Annotation.TYPE))
                 && !hasTypeExpression(jsdoc.getMarker(JsDoc.Annotation.PUBLIC))
                 && !hasTypeExpression(jsdoc.getMarker(JsDoc.Annotation.PROTECTED))
-                && !hasTypeExpression(jsdoc.getMarker(JsDoc.Annotation.PRIVATE)));
+                && !hasTypeExpression(jsdoc.getMarker(JsDoc.Annotation.PRIVATE))));
   }
 
   private static boolean hasTypeExpression(Optional<Marker> marker) {
@@ -100,21 +98,6 @@ public final class Types {
   /** Prepends a name to create a new variable name for internal dossier use. */
   static String toInternalVar(String name) {
     return DOSSIER_INTERNAL_VAR_PREFIX + name;
-  }
-
-  /** Returns whether the name is for an internal variable created by dossier. */
-  static boolean isInternalVar(String name) {
-    return name.startsWith(DOSSIER_INTERNAL_VAR_PREFIX);
-  }
-
-  static String extractOriginalModuleName(String name) {
-    checkArgument(isInternalVar(name), "not an internal module variable: %s", name);
-    name = name.substring(DOSSIER_INTERNAL_VAR_PREFIX.length());
-    int index = name.indexOf('.');
-    if (index != -1) {
-      name = name.substring(0, index);
-    }
-    return name;
   }
 
   /**

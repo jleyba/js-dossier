@@ -17,11 +17,13 @@ limitations under the License.
 package com.github.jsdossier.jscomp;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.javascript.jscomp.deps.ModuleNames.fileToModuleName;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
 import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.Node;
 import java.nio.file.Path;
 
 /** Describes a JavaScript module. */
@@ -95,9 +97,6 @@ public abstract class Module {
    */
   public abstract ImmutableMap<String, String> getExportedNames();
 
-  /** Returns the JSDoc for symbols defined within this module. */
-  public abstract ImmutableMap<String, JSDocInfo> getInternalVarDocs();
-
   /** Returns the alias region encompassing this module. */
   public abstract AliasRegion getAliases();
 
@@ -106,6 +105,12 @@ public abstract class Module {
    * original name}. This will always return false for non-closure modules.
    */
   public abstract boolean getHasLegacyNamespace();
+
+  /** Returns the root node in the AST for this module. */
+  public abstract Node getRoot();
+
+  /** Returns the internal symbol table for this module. */
+  public abstract SymbolTable getInternalSymbolTable();
 
   /** The recognized module types. */
   public enum Type {
@@ -214,6 +219,14 @@ public abstract class Module {
     }
 
     String getContentsVar(String name) {
+      if (Type.ES6.equals(getType())) {
+        int index = name.indexOf('.');
+        if (index > 0) {
+          return name.substring(0, index) + "$$" + getCompiledName() + name.substring(index);
+        }
+        return name + "$$" + getCompiledName();
+      }
+
       String base = getCompiledName();
       if (base.startsWith(MODULE_EXPORTS_PREFIX)) {
         base = base.substring(MODULE_EXPORTS_PREFIX.length());
@@ -224,7 +237,7 @@ public abstract class Module {
     }
 
     Id toLegacyId() {
-      checkArgument(
+      checkState(
           getType() == Type.CLOSURE,
           "A legacy ID may only be created for a closure module: %s",
           getOriginalName());
@@ -250,11 +263,29 @@ public abstract class Module {
 
   @AutoValue.Builder
   public abstract static class Builder {
+    Builder() {}
+
     public abstract Builder setId(Id id);
 
     public abstract Id getId();
 
-    public Type getType() {
+    final Path getPath() {
+      return getId().getPath();
+    }
+
+    final boolean isClosure() {
+      return Type.CLOSURE.equals(getType());
+    }
+
+    final boolean isNode() {
+      return Type.NODE.equals(getType());
+    }
+
+    final boolean isEs6() {
+      return Type.ES6.equals(getType());
+    }
+
+    final Type getType() {
       return getId().getType();
     }
 
@@ -264,13 +295,17 @@ public abstract class Module {
 
     public abstract ImmutableMap.Builder<String, JSDocInfo> exportedDocsBuilder();
 
-    public abstract ImmutableMap.Builder<String, JSDocInfo> internalVarDocsBuilder();
-
     public abstract Builder setAliases(AliasRegion region);
 
     public abstract AliasRegion getAliases();
 
     public abstract Builder setHasLegacyNamespace(boolean legacy);
+
+    public abstract Builder setRoot(Node node);
+
+    public abstract Builder setInternalSymbolTable(SymbolTable symbolTable);
+
+    public abstract SymbolTable getInternalSymbolTable();
 
     abstract Module autoBuild();
 

@@ -363,6 +363,14 @@ final class LinkFactory {
    * does not resolve to a type, this method will return a link with no path.
    */
   public NamedType resolveTypeReference(String symbol) {
+    NamedType type = resolveTypeReferenceInteranl(symbol);
+    if (typeNameFilter.test(type.getQualifiedName()) || typeNameFilter.test(type.getName())) {
+      type = type.toBuilder().clearLink().build();
+    }
+    return type;
+  }
+
+  private NamedType resolveTypeReferenceInteranl(String symbol) {
     // Trim down the target symbol to something that may be indexed.
     int index = symbol.indexOf('(');
     if (index != -1) {
@@ -451,6 +459,7 @@ final class LinkFactory {
     if (type.getType().toObjectType().hasOwnProperty(property)) {
       return createTypeReference(type, property);
     }
+    @SuppressWarnings("ConstantConditions") // type.isModuleExports() implies module is present.
     Module module = type.getModule().get();
     String exportedName =
         Iterables.getFirst(module.getExportedNames().asMultimap().inverse().get(property), null);

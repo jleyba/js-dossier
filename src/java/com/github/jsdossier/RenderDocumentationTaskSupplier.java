@@ -25,6 +25,7 @@ import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Iterables.skip;
 import static com.google.common.collect.Lists.transform;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
 import com.github.jsdossier.jscomp.JsDoc;
@@ -54,7 +55,6 @@ import com.google.javascript.rhino.jstype.Property;
 import com.google.javascript.rhino.jstype.StaticTypedScope;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
@@ -470,7 +470,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
       // Type may be documented as an enum without an associated object literal for us to analyze:
       //     /** @enum {string} */ namespace.foo;
       List<Property> properties = typeInspector.getProperties(type);
-      Collections.sort(properties, new PropertyNameComparator());
+      properties.sort(comparing(Property::getName));
       for (Property property : properties) {
         if (!property.getType().isEnumElementType()) {
           continue;

@@ -16,6 +16,7 @@ limitations under the License.
 
 package com.github.jsdossier.jscomp;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.nullToEmpty;
 
 import com.google.javascript.rhino.Node;
@@ -36,9 +37,16 @@ final class Nodes {
       e.printStackTrace();
     }
   }
-  
+
   public static String getQualifiedName(@Nullable Node n) {
     return n == null ? "" : nullToEmpty(n.getQualifiedName());
+  }
+
+  public static String getStringParam(Node n) {
+    checkArgument(n != null && n.isCall(), "not a call node: %s", n);
+    Node child = n.getSecondChild();
+    checkArgument(isString(child), "second child is not a string: %s", child);
+    return child.getString();
   }
 
   public static boolean isCall(@Nullable Node n, String name) {
@@ -47,7 +55,7 @@ final class Nodes {
         && n.getFirstChild() != null
         && n.getFirstChild().matchesQualifiedName(name);
   }
-  
+
   public static boolean isDestructuringLhs(@Nullable Node n) {
     return n != null && n.isDestructuringLhs();
   }
@@ -58,6 +66,33 @@ final class Nodes {
 
   public static boolean isGetProp(@Nullable Node n) {
     return n != null && n.isGetProp();
+  }
+
+  public static boolean isGoogProvideCall(@Nullable Node n) {
+    return n != null && isExprResult(n.getParent()) && isCall(n, "goog.provide");
+  }
+
+  public static boolean isGoogRequireCall(@Nullable Node n) {
+    return n != null && isCall(n, "goog.require");
+  }
+
+  public static boolean isGoogScopeCall(@Nullable Node n) {
+    return n != null
+        && isCall(n, "goog.scope")
+        && n.getSecondChild() != null
+        && n.getSecondChild().isFunction();
+  }
+
+  public static Node getGoogScopeBlock(Node n) {
+    checkArgument(isGoogScopeCall(n));
+    return n.getSecondChild().getLastChild();
+  }
+
+  public static boolean isRequireCall(Node n) {
+    return n != null
+        && isCall(n, "require")
+        && n.getSecondChild() != null
+        && n.getSecondChild().isString();
   }
 
   public static boolean isModuleBody(@Nullable Node n) {
@@ -71,16 +106,45 @@ final class Nodes {
   public static boolean isObjectLit(@Nullable Node n) {
     return n != null && n.isObjectLit();
   }
-  
+
   public static boolean isObjectPattern(@Nullable Node n) {
-    return n!= null && n.isObjectPattern();
+    return n != null && n.isObjectPattern();
   }
-  
+
+  public static boolean isScript(@Nullable Node n) {
+    return n != null && n.isScript();
+  }
+
   public static boolean isString(@Nullable Node n) {
     return n != null && n.isString();
   }
 
   public static boolean isTopLevelAssign(Node n) {
-    return n.isAssign() && isExprResult(n.getParent()) && isModuleBody(n.getGrandparent());
+    if (n.isAssign() && n.getParent() != null) {
+      if (n.getParent().isComma()) {
+        return isExprResult(n.getGrandparent())
+            && (isScript(greatGrandparent(n)) || isModuleBody(greatGrandparent(n)));
+      }
+      return isExprResult(n.getParent())
+          && (isScript(n.getGrandparent()) || isModuleBody(n.getGrandparent()));
+    }
+    return false;
+  }
+
+  public static boolean isUnnamedClass(Node n) {
+    return n != null && n.isClass() && n.getFirstChild() != null && n.getFirstChild().isEmpty();
+  }
+
+  public static boolean isUnnamedFunction(Node n) {
+    return n != null
+        && n.isFunction()
+        && n.getFirstChild() != null
+        && getQualifiedName(n.getFirstChild()).isEmpty();
+  }
+
+  @Nullable
+  private static Node greatGrandparent(Node n) {
+    Node gp = n.getGrandparent();
+    return gp == null ? null : gp.getParent();
   }
 }

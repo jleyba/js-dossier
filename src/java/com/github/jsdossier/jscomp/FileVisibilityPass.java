@@ -16,8 +16,6 @@ limitations under the License.
 
 package com.github.jsdossier.jscomp;
 
-import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
-
 import com.github.jsdossier.annotations.Input;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.rhino.JSDocInfo.Visibility;
@@ -40,7 +38,7 @@ final class FileVisibilityPass implements DossierCompilerPass {
 
   @Override
   public void process(DossierCompiler compiler, Node root) {
-    traverseEs6(
+    NodeTraversal.traverse(
         compiler,
         root,
         new NodeTraversal.AbstractShallowCallback() {

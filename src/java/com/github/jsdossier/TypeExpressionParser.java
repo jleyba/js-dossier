@@ -123,7 +123,7 @@ final class TypeExpressionParser {
         return createNamedType(nominalType);
       }
 
-      JSType jsType = jsTypeRegistry.getType(name);
+      JSType jsType = jsTypeRegistry.getGlobalType(name);
       if (jsType != null) {
         nominalType = resolve(jsType);
         if (nominalType != null) {
@@ -409,6 +409,11 @@ final class TypeExpressionParser {
     @Override
     public Void caseStringType() {
       appendNativeType("string");
+      return null;
+    }
+
+    @Override
+    public Void caseSymbolType() {
       return null;
     }
 

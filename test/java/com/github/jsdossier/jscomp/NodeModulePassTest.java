@@ -36,9 +36,9 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.jimfs.Jimfs;
 import com.google.inject.Injector;
-import com.google.javascript.jscomp.Scope;
 import com.google.javascript.jscomp.SourceFile;
-import com.google.javascript.jscomp.Var;
+import com.google.javascript.jscomp.TypedScope;
+import com.google.javascript.jscomp.TypedVar;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.Token;
@@ -661,8 +661,8 @@ public class NodeModulePassTest {
             "Builder.prototype.returnThis = function() { return this; };",
             "exports.Builder = Builder"));
 
-    Scope scope = compiler.getCompiler().getTopScope();
-    Var var = scope.getVar("module$exports$module$foo");
+    TypedScope scope = compiler.getCompiler().getTopScope();
+    TypedVar var = scope.getVar("module$exports$module$foo");
     JSType type = var.getInitialValue().getJSType().findPropertyType("Builder");
     assertTrue(type.isConstructor());
 
@@ -696,8 +696,8 @@ public class NodeModulePassTest {
             "/** @type {function(new: foo.Foo)} */",
             "exports.Foo = foo.Foo;"));
 
-    Scope scope = compiler.getCompiler().getTopScope();
-    Var var = scope.getVar("module$exports$module$x$bar");
+    TypedScope scope = compiler.getCompiler().getTopScope();
+    TypedVar var = scope.getVar("module$exports$module$x$bar");
 
     JSType type = var.getInitialValue().getJSType().findPropertyType("Foo");
     assertTrue(type.isConstructor());
@@ -715,8 +715,8 @@ public class NodeModulePassTest {
         createSourceFile(
             path("x/bar.js"), "/** @type {function(new: Foo)} */", "exports.Foo = Foo;"));
 
-    Scope scope = compiler.getCompiler().getTopScope();
-    Var var = scope.getVar("module$exports$module$x$bar");
+    TypedScope scope = compiler.getCompiler().getTopScope();
+    TypedVar var = scope.getVar("module$exports$module$x$bar");
 
     JSType type = var.getInitialValue().getJSType().findPropertyType("Foo");
     assertTrue(type.isConstructor());
@@ -744,8 +744,8 @@ public class NodeModulePassTest {
             "  return {x: a.x + b.x};",
             "};"));
 
-    Scope scope = compiler.getCompiler().getTopScope();
-    Var var = scope.getVar("module$exports$module$foo");
+    TypedScope scope = compiler.getCompiler().getTopScope();
+    TypedVar var = scope.getVar("module$exports$module$foo");
     JSType type = var.getInitialValue().getJSType().toObjectType().getPropertyType("add");
     assertTrue(type.isFunctionType());
 
@@ -912,8 +912,8 @@ public class NodeModulePassTest {
 
     util.compile(path("module.js"), "module.exports = {};", "module.exports.x = function() {};");
 
-    assertThat(util.toSource())
-        .contains(
+    assertThat(util.toSource().trim())
+        .isEqualTo(
             lines(
                 "var module$exports$module$module = {};",
                 "module$exports$module$module.x = function() {",
@@ -1032,7 +1032,7 @@ public class NodeModulePassTest {
   }
 
   @Test
-  public void testResolveModuleTypeReference_pathDoesNotREsolve() throws IOException {
+  public void testResolveModuleTypeReference_pathDoesNotREsolve() {
     Path ref = path("a/b/c.js");
     assertThat(resolveModuleTypeReference(ref, "./d/e")).isEqualTo("./d/e");
   }
@@ -1202,14 +1202,14 @@ public class NodeModulePassTest {
             "exports.createBar = function() { return new Bar; };"),
         createSourceFile(bar, "/** @constructor */", "exports.Bar = function() {}"));
 
-    assertThat(util.toSource())
-        .contains(
+    assertThat(util.toSource().trim())
+        .isEqualTo(
             lines(
                 "var module$exports$module$src$modules$foo$bar = {};",
                 "module$exports$module$src$modules$foo$bar.Bar = function() {",
                 "};",
                 "var module$exports$module$src$modules$foo$index = {};",
-                "var module$contents$module$src$modules$foo$index_Bar = "
+                "let module$contents$module$src$modules$foo$index_Bar = "
                     + "module$exports$module$src$modules$foo$bar.Bar;",
                 "module$exports$module$src$modules$foo$index.createBar = function() {",
                 "  return new module$contents$module$src$modules$foo$index_Bar;",
@@ -1235,14 +1235,14 @@ public class NodeModulePassTest {
             "exports.createBar = function() { return new Bar; };"),
         createSourceFile(bar, "/** @constructor */", "exports.Bar = function() {}"));
 
-    assertThat(util.toSource())
-        .contains(
+    assertThat(util.toSource().trim())
+        .isEqualTo(
             lines(
                 "var module$exports$module$src$modules$foo$bar = {};",
                 "module$exports$module$src$modules$foo$bar.Bar = function() {",
                 "};",
                 "var module$exports$module$src$modules$foo$index = {};",
-                "var module$contents$module$src$modules$foo$index_Bar = "
+                "let module$contents$module$src$modules$foo$index_Bar = "
                     + "module$exports$module$src$modules$foo$bar.Bar;",
                 "module$exports$module$src$modules$foo$index.newBar = function() {",
                 "  return new module$exports$module$src$modules$foo$bar.Bar;",

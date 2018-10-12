@@ -17,7 +17,7 @@ limitations under the License.
 package com.github.jsdossier;
 
 import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 
 import com.github.jsdossier.jscomp.NominalType;
@@ -92,8 +92,6 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
 
     compile(
         "goog.provide('foo');", "goog.provide('foo.bar');", "", "foo.x = 123;", "foo.bar.y = 456;");
-
-    assertThat(typeRegistry.isType("foo.bar")).isFalse();
 
     NominalType type = typeRegistry.getType("foo");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
@@ -303,8 +301,8 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
     NominalType type = typeRegistry.getType("module$src$modules$foo$baz");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
-    assertThat(report.getProperties())
-        .containsExactly(
+    assertThat(getOnlyElement(report.getProperties()))
+        .isEqualTo(
             Property.newBuilder()
                 .setBase(
                     BaseProperty.newBuilder()

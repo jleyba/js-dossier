@@ -20,10 +20,10 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Verify.verify;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Multimaps.filterKeys;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.FluentIterable;
+import com.github.jsdossier.annotations.Global;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
@@ -53,6 +53,7 @@ import java.util.Optional;
 import java.util.Set;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /** Dossier's internal type registry. */
@@ -88,6 +89,13 @@ public final class TypeRegistry {
   private final ListMultimap<FunctionType, JSType> typeHierarchy =
       MultimapBuilder.hashKeys().arrayListValues().build();
 
+  private final SymbolTable symbolTable;
+
+  @Inject
+  TypeRegistry(@Global SymbolTable symbolTable) {
+    this.symbolTable = symbolTable;
+  }
+
   /** Records a region of a file that defines variable aliases. */
   public void addAliasRegion(AliasRegion region) {
     aliasRegions.put(region.getPath(), region);
@@ -118,7 +126,7 @@ public final class TypeRegistry {
           if (isType(name)) {
             resolvedModuleContentAliases.put(alias, getType(name));
           } else {
-            JSType type = jsRegistry.getType(name);
+            JSType type = jsRegistry.getGlobalType(name);
             if (type != null) {
               Iterator<NominalType> types = getTypes(type).iterator();
               if (types.hasNext()) {
@@ -141,44 +149,58 @@ public final class TypeRegistry {
   @Nullable
   @CheckReturnValue
   public String resolveAlias(NominalType type, String key) {
-    if (!aliasRegions.containsKey(type.getSourceFile())) {
-      return null;
-    }
+    SymbolTable table = symbolTable.findTableFor(type.getNode());
+    return resolveAlias(table, key);
+  }
 
-    for (AliasRegion region : aliasRegions.get(type.getSourceFile())) {
-      if (region.getRange().contains(type.getSourcePosition())) {
-        String def = tryResolve(region, key);
-        if (def != null) {
-          return def;
-        }
-      }
+  @Nullable
+  @CheckReturnValue
+  String resolveAlias(SymbolTable table, String name) {
+    String resolved = resolveAlias(table, name, new HashSet<>());
+    if (resolved != null && !name.equals(resolved)) {
+      return resolved;
     }
-
-    if (resolvedModuleContentAliases.containsKey(key)) {
-      return resolvedModuleContentAliases.get(key).getName();
-    }
-
     return null;
   }
 
-  @CheckReturnValue
   @Nullable
-  private String tryResolve(AliasRegion region, String alias) {
-    String definition = region.resolveAlias(alias);
-    if (definition == null) {
+  @CheckReturnValue
+  private String resolveAlias(SymbolTable table, String name, Set<String> seen) {
+    if (!seen.add(name)) {
       return null;
     }
 
-    int index = definition.indexOf('.');
-    if (index != -1) {
-      String firstPart = definition.substring(0, index);
-      String firstPartDefinition = tryResolve(region, firstPart);
-      if (firstPartDefinition != null) {
-        return firstPartDefinition + definition.substring(index);
+    Symbol symbol = table.getSlot(name);
+    if (symbol == null) {
+      int index = name.indexOf('.');
+      if (index > 0) {
+        String base = name.substring(0, index);
+        String resolvedBase = resolveAlias(table, base, seen);
+        if (resolvedBase != null) {
+          return resolvedBase + "." + name.substring(index + 1);
+        }
+      }
+      return null;
+    }
+
+    String reference = symbol.getReferencedSymbol();
+    if (reference == null) {
+      return symbol.getName();
+    }
+
+    // If the name is an exported property from a module, it may reference a value
+    // that's internal to the module. If this is the case, we stop and use the
+    // qualified name of the export.
+    // If the reference is exported by a module, we can resolve directly.
+    int index = name.indexOf('.');
+    if (index > 0) {
+      String base = name.substring(0, index);
+      if (symbolTable.getModuleById(base) != null) {
+        return name;
       }
     }
 
-    return definition;
+    return resolveAlias(table, symbol.getReferencedSymbol(), seen);
   }
 
   /** Registers a new module. */
@@ -257,16 +279,6 @@ public final class TypeRegistry {
       symbol = symbol.substring(0, i);
       implicitNamespaces.add(symbol);
     }
-  }
-
-  @VisibleForTesting
-  Set<String> getProvidedSymbols() {
-    return Collections.unmodifiableSet(providedSymbols);
-  }
-
-  @VisibleForTesting
-  Set<String> getImplicitNamespaces() {
-    return Collections.unmodifiableSet(implicitNamespaces);
   }
 
   /** Returns whether the provided symbol was declared with a "goog.provide" statement. */
@@ -361,7 +373,9 @@ public final class TypeRegistry {
       // identical, then the type member must be different.
       if (a.isFunctionType()) {
         verify(b.isFunctionType());
-        return a == b;
+        @SuppressWarnings("ReferenceEquality") // Yes, we want to check for reference equality.
+        final boolean tmp = a == b;
+        return tmp;
       }
       return true;
     }
@@ -533,9 +547,11 @@ public final class TypeRegistry {
     ObjectType instance = ctor.getInstanceType();
     if (ctor.getJSDocInfo() != null && !ctor.getJSDocInfo().getTemplateTypeNames().isEmpty()) {
       ImmutableList<JSType> templateTypes =
-          FluentIterable.from(ctor.getJSDocInfo().getTemplateTypeNames())
-              .transform(input -> (JSType) jsRegistry.createTemplateType(input))
-              .toList();
+          ctor.getJSDocInfo()
+              .getTemplateTypeNames()
+              .stream()
+              .map(jsRegistry::createTemplateType)
+              .collect(toImmutableList());
       instance = jsRegistry.createTemplatizedType(instance, templateTypes);
     }
     return instance;

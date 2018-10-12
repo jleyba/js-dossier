@@ -516,7 +516,7 @@ public class JsDocTest {
   }
 
   @Test
-  public void blockCommentsFromGoogDefinedClass_usesCtorCommentIfProvided() {
+  public void blockCommentsFromGoogDefinedClass_doesNotUseCtorCommentIfProvided() {
     JsDoc docs =
         getClassJsDoc(
             "/**",
@@ -536,9 +536,9 @@ public class JsDocTest {
             "  constructor: function(a) {}",
             "});");
     assertEquals(
-        "This is a comment on the constructor and should be used as the class comment.\n"
+        "This is the class level description.\n"
             + " <pre>\n"
-            + "    This is a pre-formatted block.\n"
+            + "   it contains a pre block\n"
             + " </pre>",
         docs.getBlockComment());
   }
