@@ -39,6 +39,7 @@ import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.StaticTypedScope;
+import com.google.javascript.rhino.jstype.TemplateType;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -564,11 +565,12 @@ public final class TypeRegistry {
       JSTypeRegistry jsRegistry) {
     JSType superInstance;
     if (ctor.getJSDocInfo() != null && ctor.getJSDocInfo().getBaseType() != null) {
-      jsRegistry.setTemplateTypeNames(instance.getTemplateTypeMap().getTemplateKeys());
+      List<TemplateType> templateTypes = instance.getTemplateTypeMap().getTemplateKeys();
+      StaticTypedScope scope =
+          templateTypes.isEmpty() ? globalScope : jsRegistry.createScopeWithTemplates(globalScope, templateTypes);
 
       JSTypeExpression baseTypeExpression = ctor.getJSDocInfo().getBaseType();
-      superInstance = Types.evaluate(baseTypeExpression, globalScope, jsRegistry);
-      jsRegistry.clearTemplateTypeNames();
+      superInstance = Types.evaluate(baseTypeExpression, scope, jsRegistry);
 
       // The type expression will resolve to a named type if it is an aliased reference to
       // a module's exported type. Compensate by checking dossier's type registry, which
