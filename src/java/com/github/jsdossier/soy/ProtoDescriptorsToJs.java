@@ -36,10 +36,13 @@ import com.google.template.soy.shared.restricted.SoyFunction;
 import com.google.template.soy.tofu.SoyTofu;
 import com.google.template.soy.types.SoyTypeProvider;
 import com.google.template.soy.types.SoyTypeRegistry;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -69,7 +72,10 @@ final class ProtoDescriptorsToJs {
       collectMessageData(file.getMessageTypes(), data);
     }
 
-    try (PrintWriter writer = new PrintWriter(Files.newOutputStream(output))) {
+    try (PrintWriter writer =
+        new PrintWriter(
+            new BufferedWriter(
+                new OutputStreamWriter(Files.newOutputStream(output), StandardCharsets.UTF_8)))) {
       tofu.newRenderer("dossier.soy.proto.render")
           .setData(ImmutableMap.of("data", data))
           .setContentKind(ContentKind.JS)
