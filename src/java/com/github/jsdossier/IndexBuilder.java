@@ -17,6 +17,7 @@ limitations under the License.
 package com.github.jsdossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -58,9 +59,6 @@ final class IndexBuilder {
         return name1.compareTo(name2);
       };
 
-  private static final Comparator<Link> LINK_HREF_COMPARATOR =
-      (o1, o2) -> o1.getHref().compareTo(o2.getHref());
-
   private final DossierFileSystem dfs;
   private final LinkFactory linkFactory;
   private final TypeRegistry typeRegistry;
@@ -86,7 +84,11 @@ final class IndexBuilder {
         .addAllModule(sortEntries(index.getModuleList()))
         .addAllType(sortEntries(index.getTypeList()))
         .addAllPage(sortPages(userPages))
-        .addAllSourceFile(Ordering.from(LINK_HREF_COMPARATOR).sortedCopy(index.getSourceFileList()))
+        .addAllSourceFile(
+            index.getSourceFileList()
+            .stream()
+            .sorted(comparing(Link::getHref))
+            .collect(toList()))
         .build();
   }
 
@@ -103,7 +105,7 @@ final class IndexBuilder {
                   .setJson(toUriPath(dfs.getRelativePath(jsonPath)))
                   .build();
             })
-        .sorted((o1, o2) -> o1.getText().compareTo(o2.getText()))
+        .sorted(comparing(Link::getText))
         .collect(toSet());
   }
 
