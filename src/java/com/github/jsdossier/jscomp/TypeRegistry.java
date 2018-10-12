@@ -484,8 +484,7 @@ public final class TypeRegistry {
    * Recomputes the type hierarchy relationships for all nominal types in this registry using the
    * given global scope and JS registry.
    */
-  public void computeTypeRelationships(
-      StaticTypedScope globalScope, JSTypeRegistry jsRegistry) {
+  public void computeTypeRelationships(StaticTypedScope globalScope, JSTypeRegistry jsRegistry) {
     checkArgument(globalScope.getParentScope() == null, "not a global scope");
 
     knownImplementations.clear();
@@ -567,7 +566,9 @@ public final class TypeRegistry {
     if (ctor.getJSDocInfo() != null && ctor.getJSDocInfo().getBaseType() != null) {
       List<TemplateType> templateTypes = instance.getTemplateTypeMap().getTemplateKeys();
       StaticTypedScope scope =
-          templateTypes.isEmpty() ? globalScope : jsRegistry.createScopeWithTemplates(globalScope, templateTypes);
+          templateTypes.isEmpty()
+              ? globalScope
+              : jsRegistry.createScopeWithTemplates(globalScope, templateTypes);
 
       JSTypeExpression baseTypeExpression = ctor.getJSDocInfo().getBaseType();
       superInstance = Types.evaluate(baseTypeExpression, scope, jsRegistry);

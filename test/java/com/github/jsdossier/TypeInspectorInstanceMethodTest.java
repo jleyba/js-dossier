@@ -1971,8 +1971,9 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
             "}"),
         createSourceFile(
             fs.getPath("/src/modules/two.js"),
+            "import {Greeter} from './one';",
             "",
-            "/** @implements {./one.Greeter} */",
+            "/** @implements {Greeter} */",
             "export class CustomGreeter {",
             "  /** @override */",
             "  greet() {}",
@@ -1982,13 +1983,13 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions())
-        .containsExactly(
+    assertThat(getOnlyElement(report.getFunctions()))
+        .isEqualTo(
             Function.newBuilder()
                 .setBase(
                     BaseProperty.newBuilder()
                         .setName("greet")
-                        .setSource(sourceFile("../source/modules/two.js.src.html", 5))
+                        .setSource(sourceFile("../source/modules/two.js.src.html", 6))
                         .setDescription(htmlComment("<p>Returns a greeting.</p>\n"))
                         .addSpecifiedBy(
                             namedType("Greeter", "one.Greeter", "one_exports_Greeter.html#greet")))
@@ -2330,8 +2331,8 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
 
     // Check the constructor too.
     function = inspector.getFunctionData("constructor", mainFn, fakeNode, type, type.getJsDoc());
-    assertThat(function.getParameterList())
-        .containsExactly(
+    assertThat(getOnlyElement(function.getParameterList()))
+        .isEqualTo(
             Detail.newBuilder()
                 .setName("input")
                 .setType(namedTypeExpression("Foo", "foo.Foo", "foo_exports_Foo.html"))

@@ -1305,8 +1305,8 @@ final class TypeInspector {
           }
 
           @Override
-          public boolean isExtern() {
-            return false;
+          public SourceKind getKind() {
+            return SourceKind.STRONG;
           }
 
           @Override

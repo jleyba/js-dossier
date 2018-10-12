@@ -39,7 +39,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.DiagnosticType;
 import com.google.javascript.jscomp.DossierSnooper;
-import com.google.javascript.jscomp.Es6RewriteDestructuring;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.jscomp.NodeUtil;
 import com.google.javascript.jscomp.deps.DependencyInfo;
@@ -173,8 +172,8 @@ final class NodeModulePass implements DossierCompilerPass {
         }
 
         traverse(t.getCompiler(), n, new SplitRequireDeclarations());
-        traverse(t.getCompiler(), n,
-            DossierSnooper.createEs6RewriteDestructuring((t.getCompiler())));
+        traverse(
+            t.getCompiler(), n, DossierSnooper.createEs6RewriteDestructuring((t.getCompiler())));
       }
       return true;
     }

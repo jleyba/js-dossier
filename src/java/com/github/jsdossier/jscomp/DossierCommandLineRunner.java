@@ -107,7 +107,6 @@ public final class DossierCommandLineRunner extends CommandLineRunner implements
                             strictMode ? CheckLevel.ERROR : CheckLevel.WARNING, c))
                 .collect(toList()))
         .setCodingConvention(new ClosureCodingConvention())
-        .setJs(sources.stream().map(Path::toString).collect(toList()))
         .setMixedJsSources(
             sources
                 .stream()

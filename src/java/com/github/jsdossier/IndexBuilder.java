@@ -85,10 +85,7 @@ final class IndexBuilder {
         .addAllType(sortEntries(index.getTypeList()))
         .addAllPage(sortPages(userPages))
         .addAllSourceFile(
-            index.getSourceFileList()
-            .stream()
-            .sorted(comparing(Link::getHref))
-            .collect(toList()))
+            index.getSourceFileList().stream().sorted(comparing(Link::getHref)).collect(toList()))
         .build();
   }
 

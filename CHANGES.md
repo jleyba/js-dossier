@@ -6,8 +6,8 @@
    script environment (`BROWSER` or `NODE`). Previously, the `NODE` environment
    was automatically selected by specifying any CommonJS input files.
 -  Upgraded dependencies:
-   +  com.google.javascript:closure-compiler-unshaded:v20180716
-   +  com.google.javascript:closure-compiler-externs:v20180716
+   +  com.google.javascript:closure-compiler-unshaded:v20180910
+   +  com.google.javascript:closure-compiler-externs:v20180910
    +  com.google.template:soy:2018-01-03
    +  com.google.protobuf:protobuf-java:3.5.0
 

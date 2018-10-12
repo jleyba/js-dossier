@@ -870,10 +870,10 @@ public final class BuildSymbolTablePassTest {
       try {
         scenario.compile();
         fail("test needs to be updated!");
-      } catch (CompilerUtil.CompileFailureException expected) {
-        assertThat(expected)
-            .hasMessageThat()
-            .contains("ES6 transpilation of 'Wildcard export' is not yet implemented.");
+      } catch (RuntimeException expected) {
+        assertThat(expected).hasMessageThat().contains("INTERNAL COMPILER ERROR");
+        assertThat(expected).hasMessageThat()
+            .contains("Type inference doesn't know to handle token EXPORT");
       }
     }
 

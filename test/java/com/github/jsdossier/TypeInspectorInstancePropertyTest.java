@@ -17,6 +17,7 @@ limitations under the License.
 package com.github.jsdossier;
 
 import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
+import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 
 import com.github.jsdossier.jscomp.NominalType;
@@ -328,8 +329,8 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getCompilerConstants()).isEmpty();
     assertThat(report.getFunctions()).isEmpty();
-    assertThat(report.getProperties())
-        .containsExactly(
+    assertThat(getOnlyElement(report.getProperties()))
+        .isEqualTo(
             Property.newBuilder()
                 .setBase(
                     BaseProperty.newBuilder()

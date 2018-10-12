@@ -52,8 +52,10 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.javascript.jscomp.ErrorFormat;
 import com.google.javascript.jscomp.ErrorManager;
-import com.google.javascript.jscomp.PrintStreamErrorManager;
+import com.google.javascript.jscomp.PrintStreamErrorReportGenerator;
+import com.google.javascript.jscomp.SortingErrorManager;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.deps.DependencyInfo;
 import com.google.javascript.jscomp.deps.DepsFileParser;
@@ -642,7 +644,11 @@ abstract class Config {
     Collection<SourceFile> depsFiles = deps.stream().map(toSourceFile()).collect(toList());
     Collection<SourceFile> sourceFiles = sources.stream().map(toSourceFile()).collect(toList());
 
-    ErrorManager errorManager = new PrintStreamErrorManager(System.err);
+    ErrorManager errorManager =
+        new SortingErrorManager(
+            ImmutableSet.of(
+                new PrintStreamErrorReportGenerator(
+                    ErrorFormat.SOURCELESS.toFormatter(null, false), System.err, 1)));
 
     DepsGenerator generator =
         new DepsGenerator(

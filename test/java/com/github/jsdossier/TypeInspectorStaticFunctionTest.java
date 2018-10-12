@@ -31,6 +31,7 @@ import com.github.jsdossier.proto.TypeExpression;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -799,6 +800,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
   }
 
   @Test
+  @Ignore("No longer possible; see https://github.com/google/closure-compiler/issues/3041")
   public void typeExpressionsCanReferToAnotherModuleByRelativePath_es6Modules() {
     util.compile(
         createSourceFile(fs.getPath("/src/modules/foo/bar.js"), "export class X {}"),
