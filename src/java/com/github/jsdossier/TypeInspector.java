@@ -18,6 +18,7 @@ package com.github.jsdossier;
 
 import static com.github.jsdossier.jscomp.Types.isBuiltInFunctionProperty;
 import static com.github.jsdossier.jscomp.Types.isConstructorTypeDefinition;
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.ImmutableList.toImmutableList;
@@ -31,6 +32,7 @@ import com.github.jsdossier.jscomp.JsDoc;
 import com.github.jsdossier.jscomp.JsDoc.Annotation;
 import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NominalType;
+import com.github.jsdossier.jscomp.Parameter;
 import com.github.jsdossier.jscomp.Symbol;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.jscomp.Types;
@@ -819,7 +821,7 @@ final class TypeInspector {
 
     builder
         .addAllTemplateName(docs.getJsDoc().getTemplateTypeNames())
-        .addAllThrown(buildThrowsData(docs.getContextType(), docs.getJsDoc()))
+        .addAllThrown(buildThrowsData(docs.getContextType(), node, docs.getJsDoc()))
         .addAllParameter(getParameters(function, node, docs, overrides));
 
     return builder.build();
@@ -827,8 +829,40 @@ final class TypeInspector {
 
   private Iterable<Function.Detail> getParameters(
       FunctionType type, Node node, PropertyDocs docs, Iterable<InstanceProperty> overrides) {
-    PropertyDocs foundDocs =
-        findPropertyDocs(docs, overrides, input -> !input.getParameters().isEmpty());
+    NominalType contextType = docs.getContextType();
+    Collection<Parameter> parameters = docs.getJsDoc().getParameters();
+
+    if (node.isClass()) {
+      JSDocInfo info = findClassConstructorDocs(node);
+      if (info != null) {
+        parameters = extractParameters(info);
+      }
+    } else {
+      PropertyDocs foundDocs =
+          findPropertyDocs(docs, overrides, input -> !input.getParameters().isEmpty());
+
+      // This is a horrible hack. If we failed to find documentation for the function's parameters,
+      // see if we can work back to the original declaration in source. If that declaration is a
+      // class, extract the JSDoc from the constructor.
+      if (foundDocs == null && type.isConstructor()) {
+        String typeName = type.getInstanceType().getDisplayName();
+        Symbol symbol = registry.getGlobalSymbolTable().getSlot(typeName);
+        if (symbol != null && symbol.getReferencedSymbol() != null) {
+          symbol = registry.getGlobalSymbolTable().getSlot(symbol.getReferencedSymbol());
+          if (symbol != null && symbol.getNode() != null && symbol.getNode().isClass()) {
+            JSDocInfo info = findClassConstructorDocs(symbol.getNode());
+            if (info != null) {
+              parameters = extractParameters(info);
+            }
+          }
+        }
+      }
+      
+      if (foundDocs != null) {
+        contextType = foundDocs.getContextType();
+        parameters = foundDocs.getJsDoc().getParameters();
+      }
+    }
 
     // Even though we found docs with @param annotations, they may have been
     // meaningless docs with a type, no name, and no description:
@@ -837,15 +871,10 @@ final class TypeInspector {
     //    * @param {number}
     //    *\
     //   Clazz.prototype.add = function(x, y) { return x + y; };
-    if (foundDocs != null && !foundDocs.getJsDoc().getParameters().isEmpty()) {
-      final LinkFactory contextualLinkFactory =
-          linkFactory.withTypeContext(foundDocs.getContextType());
-      final TypeExpressionParser expressionParser =
-          expressionParserFactory.create(contextualLinkFactory);
-      return foundDocs
-          .getJsDoc()
-          .getParameters()
-          .stream()
+    if (node.isClass() || !parameters.isEmpty()) {
+      LinkFactory contextualLinkFactory = linkFactory.withTypeContext(contextType);
+      TypeExpressionParser expressionParser = expressionParserFactory.create(contextualLinkFactory);
+      return parameters.stream()
           .map(
               input -> {
                 Detail.Builder detail = Detail.newBuilder().setName(input.getName());
@@ -885,9 +914,7 @@ final class TypeInspector {
     List<Detail> details = new ArrayList<>(parameterNodes.size());
     @Nullable Node paramList = findParamList(node);
 
-    LinkFactory factory =
-        linkFactory.withTypeContext(
-            foundDocs == null ? docs.getContextType() : foundDocs.getContextType());
+    LinkFactory factory = linkFactory.withTypeContext(contextType);
     TypeExpressionParser parser = expressionParserFactory.create(factory);
     for (int i = 0; i < parameterNodes.size(); i++) {
       Detail.Builder detail = Detail.newBuilder().setName("arg" + i);
@@ -907,6 +934,31 @@ final class TypeInspector {
       details.add(detail.build());
     }
     return details;
+  }
+
+  @Nullable
+  private JSDocInfo findClassConstructorDocs(Node classNode) {
+    checkArgument(classNode.isClass(), "not a class node: %s", classNode);
+    Node members = classNode.getLastChild();
+    if (members != null && members.isClassMembers()) {
+      for (Node def = members.getFirstChild(); def != null; def = def.getNext()) {
+        if (def.isMemberFunctionDef() && "constructor".equals(def.getString())) {
+          return def.getJSDocInfo();
+        }
+      }
+    }
+    return null;
+  }
+
+  private List<Parameter> extractParameters(JSDocInfo info) {
+    List<Parameter> parameters = Lists.newArrayListWithExpectedSize(info.getParameterCount());
+    for (int i = 0; i < info.getParameterCount(); i++) {
+      String name = info.getParameterNameAt(i);
+      JSTypeExpression expression = info.getParameterType(name);
+      String description = info.getDescriptionForParameter(name);
+      parameters.add(new Parameter(name, expression, description));
+    }
+    return parameters;
   }
 
   private static void removeNull(TypeExpression.Builder expression) {
@@ -989,7 +1041,14 @@ final class TypeInspector {
     return list;
   }
 
-  private Iterable<Function.Detail> buildThrowsData(final NominalType context, JsDoc jsDoc) {
+  private Iterable<Function.Detail> buildThrowsData(
+      final NominalType context, Node node, JsDoc jsDoc) {
+    if (node.isClass()) {
+      final JSDocInfo info = findClassConstructorDocs(node);
+      if (info != null) {
+        jsDoc = JsDoc.from(info);
+      }
+    }
     final LinkFactory contextLinkFactory = linkFactory.withTypeContext(context);
     final TypeExpressionParser typeParser = expressionParserFactory.create(contextLinkFactory);
     return jsDoc

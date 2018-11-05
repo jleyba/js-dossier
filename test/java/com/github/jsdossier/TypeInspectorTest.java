@@ -547,10 +547,9 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
     NominalType type = typeRegistry.getType("Person");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
 
-    Node fakeNode = fakeNodeForType(type);
     Function data =
         typeInspector.getFunctionData(
-            type.getName(), type.getType().toMaybeFunctionType(), fakeNode, type, type.getJsDoc());
+            type.getName(), type.getType().toMaybeFunctionType(), type.getNode(), type, type.getJsDoc());
 
     assertThat(data)
         .isEqualTo(

@@ -77,6 +77,11 @@ public class JsDoc {
   public JSDocInfo getInfo() {
     return info;
   }
+  
+  @SuppressWarnings("ReferenceEquality")  // Intentional.
+  public boolean isDefaultEmptyDocs() {
+    return this == DEFAULT;
+  }
 
   public String getOriginalCommentString() {
     return info.getOriginalCommentString();

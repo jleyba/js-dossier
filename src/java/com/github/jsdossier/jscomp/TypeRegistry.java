@@ -97,6 +97,10 @@ public final class TypeRegistry {
     this.symbolTable = symbolTable;
   }
 
+  public SymbolTable getGlobalSymbolTable() {
+    return symbolTable;
+  }
+
   /** Records a region of a file that defines variable aliases. */
   public void addAliasRegion(AliasRegion region) {
     aliasRegions.put(region.getPath(), region);

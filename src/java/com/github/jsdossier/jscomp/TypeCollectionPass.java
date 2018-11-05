@@ -19,6 +19,7 @@ package com.github.jsdossier.jscomp;
 import static com.github.jsdossier.jscomp.Types.isBuiltInFunctionProperty;
 import static com.github.jsdossier.jscomp.Types.isConstructorTypeDefinition;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
 import static java.util.Comparator.comparing;
@@ -31,6 +32,7 @@ import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.TypedScope;
 import com.google.javascript.jscomp.TypedVar;
 import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.JSDocInfoBuilder;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.EnumElementType;
@@ -328,13 +330,12 @@ public final class TypeCollectionPass implements CompilerPass {
       final JSType globalThis =
           compiler.getTypeRegistry().getNativeObjectType(JSTypeNative.GLOBAL_THIS);
 
-      //      logfmt("symbol := %s [file = %s]", symbol, symbol.getFile());
       if (typeRegistry.isType(symbol.getName())) {
-        //        logfmt("... already found %s as a child of a previous pass", symbol);
         return;
       }
 
       JSType type = null;
+      boolean isFromCompilerRegistry = false;
 
       if (symbol.getReferencedSymbol() != null
           && typeRegistry.isType(symbol.getReferencedSymbol())) {
@@ -343,6 +344,7 @@ public final class TypeCollectionPass implements CompilerPass {
 
       if (type == null) {
         type = compiler.getTypeRegistry().getGlobalType(symbol.getName());
+        isFromCompilerRegistry = type != null;
       }
 
       if (type == null) {
@@ -357,7 +359,7 @@ public final class TypeCollectionPass implements CompilerPass {
 
       if (type != null) {
         if (type.isInstanceType()
-            && (shouldConvertToConstructor(type) || shouldConvertToConstructor(symbol))) {
+            && (isFromCompilerRegistry || shouldConvertToConstructor(type) || shouldConvertToConstructor(symbol))) {
           type = type.toObjectType().getConstructor();
         } else if (type.isEnumElementType()) {
           type = type.toMaybeEnumElementType().getEnumType();

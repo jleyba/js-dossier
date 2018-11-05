@@ -38,7 +38,7 @@ public final class JSTypeSubject extends Subject<JSTypeSubject, JSType> {
 
   public void isConstructor() {
     if (!actual().isConstructor()) {
-      fail("is a constructor");
+      fail("is a constructor; it is " + actual().getClass().getName());
     }
   }
 
