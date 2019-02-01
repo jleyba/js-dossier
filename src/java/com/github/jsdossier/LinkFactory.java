@@ -295,10 +295,14 @@ final class LinkFactory {
       return typeRef;
     }
 
-    if (checkPrototype && (type.getType().isInstanceType() || type.getType().isConstructor() || type.getType().isInterface())) {
-      ObjectType instanceType = type.getType().isInstanceType()
-          ? type.getType().toObjectType()
-          : ((FunctionType) type.getType()).getInstanceType();
+    if (checkPrototype
+        && (type.getType().isInstanceType()
+            || type.getType().isConstructor()
+            || type.getType().isInterface())) {
+      ObjectType instanceType =
+          type.getType().isInstanceType()
+              ? type.getType().toObjectType()
+              : ((FunctionType) type.getType()).getInstanceType();
       if (instanceType.getPropertyNames().contains(property)) {
         return typeRef
             .toBuilder()

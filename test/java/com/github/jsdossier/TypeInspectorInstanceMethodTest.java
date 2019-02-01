@@ -2327,7 +2327,8 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .build());
 
     // Check the constructor too.
-    function = inspector.getFunctionData("constructor", mainFn, type.getNode(), type, type.getJsDoc());
+    function =
+        inspector.getFunctionData("constructor", mainFn, type.getNode(), type, type.getJsDoc());
     assertThat(getOnlyElement(function.getParameterList()))
         .isEqualTo(
             Detail.newBuilder()

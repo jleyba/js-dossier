@@ -872,7 +872,8 @@ public final class BuildSymbolTablePassTest {
         fail("test needs to be updated!");
       } catch (RuntimeException expected) {
         assertThat(expected).hasMessageThat().contains("INTERNAL COMPILER ERROR");
-        assertThat(expected).hasMessageThat()
+        assertThat(expected)
+            .hasMessageThat()
             .contains("Type inference doesn't know to handle token EXPORT");
       }
     }

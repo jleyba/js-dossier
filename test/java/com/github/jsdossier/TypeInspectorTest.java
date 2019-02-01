@@ -16,7 +16,6 @@ limitations under the License.
 
 package com.github.jsdossier;
 
-import static com.github.jsdossier.TypeInspector.fakeNodeForType;
 import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
@@ -29,7 +28,6 @@ import com.github.jsdossier.proto.Function;
 import com.github.jsdossier.proto.Property;
 import com.github.jsdossier.proto.Visibility;
 import com.github.jsdossier.testing.Bug;
-import com.google.javascript.rhino.Node;
 import java.util.Map;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -549,7 +547,11 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
 
     Function data =
         typeInspector.getFunctionData(
-            type.getName(), type.getType().toMaybeFunctionType(), type.getNode(), type, type.getJsDoc());
+            type.getName(),
+            type.getType().toMaybeFunctionType(),
+            type.getNode(),
+            type,
+            type.getJsDoc());
 
     assertThat(data)
         .isEqualTo(

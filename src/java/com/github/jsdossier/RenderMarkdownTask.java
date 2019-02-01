@@ -20,12 +20,10 @@ import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.PageData;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
-import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
 /** Renders a single markdown file. */
 @AutoFactory

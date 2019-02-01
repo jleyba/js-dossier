@@ -103,9 +103,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
     private final Supplier<List<JsType>> types;
 
     RenderDocumentationTask(
-        @Provided PageRenderer renderer,
-        Path output,
-        Supplier<List<JsType>> types) {
+        @Provided PageRenderer renderer, Path output, Supplier<List<JsType>> types) {
       this.renderer = renderer;
       this.output = output;
       this.types = types;

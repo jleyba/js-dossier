@@ -857,7 +857,7 @@ final class TypeInspector {
           }
         }
       }
-      
+
       if (foundDocs != null) {
         contextType = foundDocs.getContextType();
         parameters = foundDocs.getJsDoc().getParameters();
@@ -874,7 +874,8 @@ final class TypeInspector {
     if (node.isClass() || !parameters.isEmpty()) {
       LinkFactory contextualLinkFactory = linkFactory.withTypeContext(contextType);
       TypeExpressionParser expressionParser = expressionParserFactory.create(contextualLinkFactory);
-      return parameters.stream()
+      return parameters
+          .stream()
           .map(
               input -> {
                 Detail.Builder detail = Detail.newBuilder().setName(input.getName());

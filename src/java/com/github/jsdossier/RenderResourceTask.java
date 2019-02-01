@@ -20,12 +20,10 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
-import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
 /** Task copies a resource file to the output directory. */
 @AutoFactory

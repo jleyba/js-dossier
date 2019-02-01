@@ -115,8 +115,8 @@ public class Renderer {
   }
 
   private SoyValue renderScripts(List<SafeUrlProto> urls) {
-    StringBuilder template = new StringBuilder(
-        "{namespace dossier.soy.dynamic}{template .scripts}");
+    StringBuilder template =
+        new StringBuilder("{namespace dossier.soy.dynamic}{template .scripts}");
     for (SafeUrlProto proto : urls) {
       String url = SafeUrls.fromProto(proto).getSafeUrlString();
       template.append("<script src=\"").append(url).append("\" defer></script>");

@@ -77,8 +77,8 @@ public class JsDoc {
   public JSDocInfo getInfo() {
     return info;
   }
-  
-  @SuppressWarnings("ReferenceEquality")  // Intentional.
+
+  @SuppressWarnings("ReferenceEquality") // Intentional.
   public boolean isDefaultEmptyDocs() {
     return this == DEFAULT;
   }

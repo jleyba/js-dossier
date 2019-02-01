@@ -28,7 +28,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.escape.CharEscaperBuilder;
 import com.google.common.escape.Escaper;
 import com.google.common.html.types.SafeUrls;
-import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
