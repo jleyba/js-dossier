@@ -315,26 +315,28 @@ final class LinkFactory {
       }
     }
 
-    if (type.getType().toObjectType().getPropertyType(property).isEnumElementType()) {
-      return typeRef
-          .toBuilder()
-          .setName(typeRef.getName() + "." + property)
-          .setLink(appendFragment(typeRef.getLink(), property))
-          .build();
-    }
+    if (type.getType().toObjectType() != null) {
+      if (type.getType().toObjectType().getPropertyType(property).isEnumElementType()) {
+        return typeRef
+            .toBuilder()
+            .setName(typeRef.getName() + "." + property)
+            .setLink(appendFragment(typeRef.getLink(), property))
+            .build();
+      }
 
-    JSDocInfo propertyDocs = type.getType().toObjectType().getOwnPropertyJSDocInfo(property);
-    if (propertyDocs != null && propertyDocs.isDefine()) {
-      String name = dfs.getQualifiedDisplayName(type) + "." + property;
-      return typeRef
-          .toBuilder()
-          .setName(name)
-          .setLink(appendFragment(typeRef.getLink(), name))
-          .build();
-    }
+      JSDocInfo propertyDocs = type.getType().toObjectType().getOwnPropertyJSDocInfo(property);
+      if (propertyDocs != null && propertyDocs.isDefine()) {
+        String name = dfs.getQualifiedDisplayName(type) + "." + property;
+        return typeRef
+            .toBuilder()
+            .setName(name)
+            .setLink(appendFragment(typeRef.getLink(), name))
+            .build();
+      }
 
-    if (!type.getType().toObjectType().getPropertyNames().contains(property)) {
-      return typeRef.toBuilder().setName(typeRef.getName() + "." + property).build();
+      if (!type.getType().toObjectType().getPropertyNames().contains(property)) {
+        return typeRef.toBuilder().setName(typeRef.getName() + "." + property).build();
+      }
     }
 
     String id = property;

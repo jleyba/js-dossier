@@ -626,10 +626,11 @@ public final class TypeRegistry {
     checkArgument(type.isInterface());
 
     for (ObjectType iface : type.getExtendedInterfaces()) {
-      if (iface.isUnknownType()) {
+      if (iface.isUnknownType() || iface.isNoResolvedType()) {
         continue;
       }
 
+      checkState(iface.getConstructor() != null, "no constructor for %s", iface);
       checkState(
           iface.getConstructor().isInterface(), "unexpected type: %s", iface.getConstructor());
 
