@@ -4,7 +4,8 @@
 
 -  Dossier will now automatically ignore any file that contains a
    `goog.setTestOnly()` statement. This behavior can be disabled using the
-   `includeTestOnly` option.
+   `includeTestOnly` option. You may include specific test-only files using
+   the `includeTestOnlyPaths` option.
 -  Added the `environment` configuration option to allow specifying the target
    script environment (`BROWSER` or `NODE`). Previously, the `NODE` environment
    was automatically selected by specifying any CommonJS input files.

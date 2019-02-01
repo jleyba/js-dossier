@@ -88,7 +88,11 @@ __Configuration Options__
     but are excluded when generating  API documentation.
 
  * `includeTestOnly` Whether to include files that include a
-    `goog.setTestOnly()` declaration. These files are ignored by default.
+    `goog.setTestOnly()` statement. These files are ignored by default.
+
+ * `includeTestOnlyPaths` Files to include even if they have
+    `goog.setTestOnly()` statements. This option only refines the behavior of
+    `includeTestOnly`; files must still be included via `sources`.
 
  * `moduleFilters` List of regular expressions for modules that should be
     excluded from generated documentation, even if found in the type graph. The

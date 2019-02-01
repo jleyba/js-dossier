@@ -60,6 +60,7 @@ final class BuildSymbolTablePass implements DossierCompilerPass {
   private final NodeLibrary nodeLibrary;
   private final TypeRegistry typeRegistry;
   private final boolean includeTestOnly;
+  private final ImmutableSet<Path> includeTestOnlyPaths;
 
   @Nullable private Node export;
 
@@ -70,13 +71,15 @@ final class BuildSymbolTablePass implements DossierCompilerPass {
       @Global SymbolTable globalSymbolTable,
       TypeRegistry typeRegistry,
       NodeLibrary nodeLibrary,
-      @IncludeTestOnly boolean includeTestOnly) {
+      @IncludeTestOnly boolean includeTestOnly,
+      @IncludeTestOnly ImmutableSet<Path> includeTestOnlyPaths) {
     this.fs = fs;
     this.modulePaths = modulePaths;
     this.globalSymbolTable = globalSymbolTable;
     this.nodeLibrary = nodeLibrary;
     this.typeRegistry = typeRegistry;
     this.includeTestOnly = includeTestOnly;
+    this.includeTestOnlyPaths = includeTestOnlyPaths;
   }
 
   @Override
@@ -87,8 +90,12 @@ final class BuildSymbolTablePass implements DossierCompilerPass {
     checkArgument(root.isScript(), "process called with non-script node: %s", root);
 
     if (!includeTestOnly && scanForTestOnly(root)) {
-      log.fine("Skipping test only file: " + root.getSourceFileName());
-      return;
+      Path path = fs.getPath(root.getSourceFileName());
+      if (!includeTestOnlyPaths.contains(path)) {
+        log.fine("Skipping test only file: " + root.getSourceFileName());
+        return;
+
+      }
     }
 
     Module.Builder module = scanModule(root);

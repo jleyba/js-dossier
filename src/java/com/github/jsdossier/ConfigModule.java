@@ -138,4 +138,10 @@ final class ConfigModule extends AbstractModule {
   boolean provideIncludeTestOnly() {
     return config.getIncludeTestOnly();
   }
+
+  @Provides
+  @IncludeTestOnly
+  ImmutableSet<Path> provideIncludeTestOnlyPaths() {
+    return config.getIncludeTestOnlyPaths();
+  }
 }

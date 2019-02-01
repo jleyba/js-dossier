@@ -115,6 +115,8 @@ public abstract class GuiceRule implements TestRule {
 
   abstract boolean getIncludeTestOnly();
 
+  abstract ImmutableSet<Path> getIncludeTestOnlyPaths();
+
   public abstract Builder toBuilder();
 
   @Override
@@ -156,6 +158,10 @@ public abstract class GuiceRule implements TestRule {
                   boolean provideIncludeTestOnly() {
                     return getIncludeTestOnly();
                   }
+
+                  @Provides
+                  @IncludeTestOnly
+                  ImmutableSet<Path> provideIncludeTestOnlyPaths() { return getIncludeTestOnlyPaths(); }
 
                   @Provides
                   @Stderr
@@ -305,6 +311,13 @@ public abstract class GuiceRule implements TestRule {
     public abstract Builder setNodeLibrary(@Nullable Class<? extends NodeLibrary> library);
 
     public abstract Builder setIncludeTestOnly(boolean b);
+
+    public abstract ImmutableSet.Builder<Path> includeTestOnlyPathsBuilder();
+
+    public Builder addIncludeTestOnlyPaths(Iterable<Path> paths) {
+      includeTestOnlyPathsBuilder().addAll(paths);
+      return this;
+    }
 
     public abstract GuiceRule build();
   }

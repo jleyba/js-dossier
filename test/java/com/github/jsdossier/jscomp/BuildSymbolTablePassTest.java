@@ -1707,6 +1707,21 @@ public final class BuildSymbolTablePassTest {
     }
 
     @Test
+    public void canIncludeSpecificTestOnlyFiles() {
+      Path a = fs.getPath("a.js");
+      Path b = fs.getPath("b.js");
+      Path c = fs.getPath("c.js");
+
+      SymbolTable table = new Scenario()
+          .addIncludeTestOnlyPaths(c)
+          .addFile(a, "var goog = goog || {}; goog.setTestOnly = function() {};")
+          .addFile(b, "goog.provide('foo');goog.setTestOnly();")
+          .addFile(c, "goog.provide('bar');goog.setTestOnly();")
+          .compile();
+      assertThat(table).containsExactly("goog", "goog.setTestOnly", "bar");
+    }
+
+    @Test
     public void googScope() {
       Scenario scenario = new Scenario();
       SymbolTable table =
@@ -1797,6 +1812,7 @@ public final class BuildSymbolTablePassTest {
     private CompilerUtil util;
     private boolean useNodeLibrary;
     private boolean includeTestOnly;
+    private List<Path> includeTestOnlyPaths = new ArrayList<>();
     private FileSystem fs;
 
     public Scenario addFile(Path path, String... lines) {
@@ -1824,6 +1840,11 @@ public final class BuildSymbolTablePassTest {
       return this;
     }
 
+    public Scenario addIncludeTestOnlyPaths(Path... paths) {
+      this.includeTestOnlyPaths.addAll(Arrays.asList(paths));
+      return this;
+    }
+
     public DossierCompiler getCompiler() {
       checkState(util != null, "have not compiled in this test yet");
       return util.getCompiler();
@@ -1838,6 +1859,7 @@ public final class BuildSymbolTablePassTest {
               .setUseNodeLibrary(useNodeLibrary)
               .setModules(ImmutableSet.copyOf(modules))
               .setIncludeTestOnly(includeTestOnly)
+              .addIncludeTestOnlyPaths(includeTestOnlyPaths)
               .build()
               .createInjector();
       util = injector.getInstance(CompilerUtil.class);
