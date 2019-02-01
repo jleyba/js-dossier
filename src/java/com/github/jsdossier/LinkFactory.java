@@ -68,7 +68,6 @@ final class LinkFactory {
   private final TypeContext typeContext;
   private final Optional<String> urlTemplate;
   private final Predicate<String> typeNameFilter;
-  private final boolean jsonPaths;
 
   /**
    * Creates a new link factory.
@@ -91,30 +90,6 @@ final class LinkFactory {
       @Provided @SourceUrlTemplate Optional<String> urlTemplate,
       @Provided @TypeFilter Predicate<String> typeNameFilter,
       @Nullable NominalType pathContext) {
-    this(
-        dfs,
-        typeRegistry,
-        jsTypeRegistry,
-        nodeLibrary,
-        namingConvention,
-        typeContext,
-        urlTemplate,
-        typeNameFilter,
-        pathContext,
-        false);
-  }
-
-  LinkFactory(
-      @Provided DossierFileSystem dfs,
-      @Provided TypeRegistry typeRegistry,
-      @Provided JSTypeRegistry jsTypeRegistry,
-      @Provided NodeLibrary nodeLibrary,
-      @Provided ModuleNamingConvention namingConvention,
-      @Provided TypeContext typeContext,
-      @Provided @SourceUrlTemplate Optional<String> urlTemplate,
-      @Provided @TypeFilter Predicate<String> typeNameFilter,
-      @Nullable NominalType pathContext,
-      boolean jsonPaths) {
     this.dfs = dfs;
     this.typeRegistry = typeRegistry;
     this.jsTypeRegistry = jsTypeRegistry;
@@ -124,7 +99,6 @@ final class LinkFactory {
     this.typeContext = typeContext;
     this.urlTemplate = urlTemplate;
     this.typeNameFilter = typeNameFilter;
-    this.jsonPaths = jsonPaths;
   }
 
   public TypeContext getTypeContext() {
@@ -147,25 +121,7 @@ final class LinkFactory {
         typeContext.changeContext(context),
         urlTemplate,
         typeNameFilter,
-        pathContext.orElse(null),
-        jsonPaths);
-  }
-
-  /**
-   * Creates a new link factory that includes links to the JSON data file for all type references.
-   */
-  public LinkFactory withJsonPaths() {
-    return new LinkFactory(
-        dfs,
-        typeRegistry,
-        jsTypeRegistry,
-        nodeLibrary,
-        namingConvention,
-        typeContext,
-        urlTemplate,
-        typeNameFilter,
-        pathContext.orElse(null),
-        true);
+        pathContext.orElse(null));
   }
 
   /** Creates a link to a specific line in a rendered source file. */
@@ -221,14 +177,12 @@ final class LinkFactory {
    */
   public NamedType createTypeReference(final NominalType type) {
     Path path;
-    Path jsonPath;
     String symbol = null;
 
     if (type.getJsDoc().isTypedef() || type.getJsDoc().isDefine()) {
       int index = type.getName().lastIndexOf('.');
       if (index == -1) {
         path = dfs.getGlobalsPath();
-        jsonPath = dfs.getGlobalsJson();
         symbol = type.getName();
       } else {
         String parentName = type.getName().substring(0, index);
@@ -243,19 +197,12 @@ final class LinkFactory {
 
     } else {
       path = dfs.getPath(type);
-      jsonPath = dfs.getJsonPath(type);
     }
 
     if (pathContext.isPresent()) {
       path = dfs.getRelativePath(pathContext.get(), path);
-      if (jsonPath != null) {
-        jsonPath = dfs.getRelativePath(pathContext.get(), jsonPath);
-      }
     } else {
       path = dfs.getRelativePath(path);
-      if (jsonPath != null) {
-        jsonPath = dfs.getRelativePath(jsonPath);
-      }
     }
 
     String href = getUriPath(path);
@@ -271,9 +218,6 @@ final class LinkFactory {
       builder.setQualifiedName(qualifiedName);
     }
     builder.getLinkBuilder().setHref(SafeUrls.toProto(sanitize(href)));
-    if (jsonPath != null && jsonPaths) {
-      builder.getLinkBuilder().setJson(getUriPath(jsonPath));
-    }
     return builder.build();
   }
 

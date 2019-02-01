@@ -85,9 +85,6 @@ public class DossierFileSystemTest {
 
     Path path = sut.getPath(page);
     assertThat(path.toString()).isEqualTo("/out/page/Readme.html");
-
-    path = sut.getJsonPath(page);
-    assertThat(path.toString()).isEqualTo("/out/data/page/Readme.json");
   }
 
   @Test

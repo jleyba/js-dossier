@@ -31,9 +31,7 @@ message FunctionType {
 
 
 message TypeLink {
-  reserved 1;
-
-  string json = 2;
+  reserved 1, 2;
   webutil.html.types.SafeUrlProto href = 3;
 }
 

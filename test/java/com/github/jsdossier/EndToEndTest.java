@@ -500,13 +500,15 @@ public class EndToEndTest {
       lines =
           StreamSupport.stream(lines.spliterator(), false)
               .filter(Objects::nonNull)
-              .map(input -> {
-                int end = input.length();
-                while (end > 0 && input.charAt(end - 1) <= ' ') {
-                  end -= 1;
-                }
-                return input.substring(0, end);
-              }).collect(Collectors.toList());
+              .map(
+                  input -> {
+                    int end = input.length();
+                    while (end > 0 && input.charAt(end - 1) <= ' ') {
+                      end -= 1;
+                    }
+                    return input.substring(0, end);
+                  })
+              .collect(Collectors.toList());
       return Joiner.on('\n').join(lines).trim();
     }
 
@@ -871,11 +873,7 @@ public class EndToEndTest {
           URI uri = URI.create("jar:file:" + output.toAbsolutePath());
           fs = FileSystems.newFileSystem(uri, ImmutableMap.of());
         } else {
-          fs =
-              output
-                  .getFileSystem()
-                  .provider()
-                  .newFileSystem(output, ImmutableMap.of());
+          fs = output.getFileSystem().provider().newFileSystem(output, ImmutableMap.of());
         }
         return fs.getPath("/");
       }

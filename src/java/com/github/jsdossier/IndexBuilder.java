@@ -44,19 +44,11 @@ import javax.inject.Inject;
 final class IndexBuilder {
 
   private static final Comparator<Index.Entry> ENTRY_COMPARATOR =
-      (o1, o2) -> {
-        String name1 =
-            o1.getType().getQualifiedName().isEmpty()
-                ? o1.getType().getName()
-                : o1.getType().getQualifiedName();
-
-        String name2 =
-            o2.getType().getQualifiedName().isEmpty()
-                ? o2.getType().getName()
-                : o2.getType().getQualifiedName();
-
-        return name1.compareTo(name2);
-      };
+      Comparator.comparing(
+          e ->
+              e.getType().getQualifiedName().isEmpty()
+                  ? e.getType().getName()
+                  : e.getType().getQualifiedName());
 
   private final DossierFileSystem dfs;
   private final LinkFactory linkFactory;
@@ -75,7 +67,7 @@ final class IndexBuilder {
     this.dfs = dfs;
     this.typeRegistry = typeRegistry;
     this.userPages = userPages;
-    this.linkFactory = linkFactoryBuilder.create(null).withJsonPaths();
+    this.linkFactory = linkFactoryBuilder.create(null);
   }
 
   Index toNormalizedProto() {
