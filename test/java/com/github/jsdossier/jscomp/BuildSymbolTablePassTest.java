@@ -1210,6 +1210,46 @@ public final class BuildSymbolTablePassTest {
       table = assertThat(table).hasGoogModule(stdInput).getInternalSymbolTable();
       assertThat(table).hasOwnSymbol("Name").that().isAReferenceTo("module$contents$foo_Name");
     }
+
+    @Test
+    public void ignoresTestOnlyFiles() {
+      Path one = fs.getPath("one.js");
+      Path two = fs.getPath("two.js");
+
+      Scenario scenario = new Scenario();
+      SymbolTable table =
+          scenario
+              .addFile(one, "var goog = goog || {}; goog.setTestOnly = function() {};")
+              .addFile(
+                  two,
+                  "goog.module('foo.bar');",
+                  "goog.setTestOnly();",
+                  "exports.baz = function() {};")
+              .compile();
+      assertThat(table).containsExactly("goog", "goog.setTestOnly");
+    }
+
+    @Test
+    public void canIncludeTestOnlyFiles() {
+      Path one = fs.getPath("one.js");
+      Path two = fs.getPath("two.js");
+
+      Scenario scenario = new Scenario();
+      SymbolTable table =
+          scenario
+              .addFile(one, "var goog = goog || {}; goog.setTestOnly = function() {};")
+              .addFile(
+                  two,
+                  "goog.module('foo.bar');",
+                  "goog.setTestOnly();",
+                  "exports.baz = function() {};")
+              .setIncludeTestOnly(true)
+              .compile();
+      assertThat(table)
+          .containsExactly(
+              "goog", "goog.setTestOnly",
+              "module$exports$foo$bar", "module$exports$foo$bar.baz");
+    }
   }
 
   @RunWith(JUnit4.class)
@@ -1620,6 +1660,53 @@ public final class BuildSymbolTablePassTest {
     }
 
     @Test
+    public void ignoresTestOnlyFiles() {
+      Scenario scenario = new Scenario();
+      SymbolTable table =
+          scenario
+              .addFile(
+                  stdInput,
+                  "goog.provide('foo.bar');",
+                  "var goog = goog || {};",
+                  "goog.setTestOnly = function() {};",
+                  "goog.setTestOnly();",
+                  "foo.bar = function() {};")
+              .compile();
+      assertThat(table).isEmpty();
+    }
+
+    @Test
+    public void setTestOnlyDeclarationDoesNotTriggerExclusion() {
+      Scenario scenario = new Scenario();
+      SymbolTable table =
+          scenario
+              .addFile(
+                  stdInput,
+                  "goog.provide('foo.bar');",
+                  "var goog = goog || {};",
+                  "goog.setTestOnly = function() {};",
+                  "foo.bar = function() {};")
+              .compile();
+      assertThat(table).containsExactly("goog", "goog.setTestOnly", "foo.bar");
+    }
+
+    @Test
+    public void canIncludeTestOnlyFiles() {
+      Scenario scenario = new Scenario().setIncludeTestOnly(true);
+      SymbolTable table =
+          scenario
+              .addFile(
+                  stdInput,
+                  "goog.provide('foo.bar');",
+                  "var goog = goog || {};",
+                  "goog.setTestOnly = function() {};",
+                  "goog.setTestOnly();",
+                  "foo.bar = function() {};")
+              .compile();
+      assertThat(table).containsExactly("goog", "goog.setTestOnly", "foo.bar");
+    }
+
+    @Test
     public void googScope() {
       Scenario scenario = new Scenario();
       SymbolTable table =
@@ -1709,6 +1796,7 @@ public final class BuildSymbolTablePassTest {
     private final List<Path> modules = new ArrayList<>();
     private CompilerUtil util;
     private boolean useNodeLibrary;
+    private boolean includeTestOnly;
     private FileSystem fs;
 
     public Scenario addFile(Path path, String... lines) {
@@ -1731,6 +1819,11 @@ public final class BuildSymbolTablePassTest {
       return this;
     }
 
+    public Scenario setIncludeTestOnly(boolean testOnly) {
+      this.includeTestOnly = testOnly;
+      return this;
+    }
+
     public DossierCompiler getCompiler() {
       checkState(util != null, "have not compiled in this test yet");
       return util.getCompiler();
@@ -1744,6 +1837,7 @@ public final class BuildSymbolTablePassTest {
               .setInputFs(fs)
               .setUseNodeLibrary(useNodeLibrary)
               .setModules(ImmutableSet.copyOf(modules))
+              .setIncludeTestOnly(includeTestOnly)
               .build()
               .createInjector();
       util = injector.getInstance(CompilerUtil.class);
