@@ -54,24 +54,6 @@
                 null,
                 "nested_exports_IncrementingIdGenerator.html"
               ]
-            ],
-            [
-              "Person",
-              null,
-              [
-                [
-                  [
-                    null,
-                    "\u003cp\u003eBasic description of a person.\u003c/p\u003e\n"
-                  ]
-                ]
-              ],
-              null,
-              [
-                null,
-                null,
-                "nested_exports_Person.html"
-              ]
             ]
           ],
           [],
@@ -117,6 +99,30 @@
                 null,
                 null,
                 "nested_exports_IncreasingIdGenerator.html"
+              ]
+            ],
+            [
+              "Person",
+              null,
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eBasic description of a person.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                1
+              ],
+              [
+                null,
+                null,
+                "nested_exports_Person.html"
               ]
             ]
           ]

@@ -9,7 +9,7 @@
         null,
         [
           null,
-          9,
+          69,
           null,
           [
             null,
@@ -26,7 +26,17 @@
             ]
           ]
         ],
-        [],
+        [
+          null,
+          null,
+          null,
+          null,
+          1,
+          null,
+          null,
+          null,
+          1
+        ],
         null,
         [],
         null,
@@ -37,7 +47,7 @@
             "Person",
             [
               null,
-              9,
+              69,
               null,
               [
                 null,
@@ -46,12 +56,7 @@
               ]
             ],
             [
-              [
-                [
-                  null,
-                  "\u003cp\u003eBasic description of a person.\u003c/p\u003e\n"
-                ]
-              ]
+              []
             ],
             null,
             null,
@@ -62,55 +67,8 @@
             []
           ],
           [],
-          1,
-          [
-            [
-              "name",
-              [
-                null,
-                null,
-                null,
-                [
-                  "string",
-                  null,
-                  null,
-                  1,
-                  []
-                ]
-              ],
-              [
-                [
-                  [
-                    null,
-                    "\u003cp\u003ethe person\u0026#39;s name.\u003c/p\u003e\n"
-                  ]
-                ]
-              ]
-            ],
-            [
-              "age",
-              [
-                null,
-                null,
-                null,
-                [
-                  "number",
-                  null,
-                  null,
-                  1,
-                  []
-                ]
-              ],
-              [
-                [
-                  [
-                    null,
-                    "\u003cp\u003ethe person\u0026#39;s age.\u003c/p\u003e\n"
-                  ]
-                ]
-              ]
-            ]
-          ],
+          null,
+          [],
           null,
           []
         ],
@@ -121,12 +79,12 @@
               "age",
               [
                 null,
-                16,
+                412,
                 null,
                 [
                   null,
                   null,
-                  "../../source/example/nested.js.src.html"
+                  "../../source/globals.js.src.html"
                 ]
               ],
               [
@@ -158,12 +116,12 @@
               "name",
               [
                 null,
-                15,
+                411,
                 null,
                 [
                   null,
                   null,
-                  "../../source/example/nested.js.src.html"
+                  "../../source/globals.js.src.html"
                 ]
               ],
               [
@@ -216,7 +174,21 @@
           null,
           1
         ],
-        null,
+        [
+          "Person",
+          null,
+          [
+            null,
+            null,
+            [
+              null,
+              null,
+              "../../Person.html"
+            ]
+          ],
+          null,
+          []
+        ],
         "nested_exports_Person.html",
         "example/nested.Person",
         [],

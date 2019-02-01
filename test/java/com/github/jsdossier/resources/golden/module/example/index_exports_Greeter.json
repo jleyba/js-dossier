@@ -108,14 +108,14 @@
                   null,
                   [
                     "Person",
-                    "example/nested.Person",
+                    null,
                     [
                       null,
                       null,
                       [
                         null,
                         null,
-                        "nested_exports_Person.html"
+                        "../../Person.html"
                       ]
                     ],
                     null,
@@ -184,27 +184,29 @@
           null,
           1
         ],
-        [
-          "Greeter",
-          "example/nested.Greeter",
-          [
-            null,
-            null,
-            [
-              null,
-              null,
-              "nested_exports_Greeter.html"
-            ]
-          ],
-          null,
-          []
-        ],
+        null,
         "index_exports_Greeter.html",
         "example.Greeter",
         [],
         [],
         [],
-        []
+        [
+          [
+            "Greeter",
+            "example/nested.Greeter",
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "nested_exports_Greeter.html"
+              ]
+            ],
+            null,
+            []
+          ]
+        ]
       ]
     ]
   ]

@@ -6,7 +6,7 @@
         null,
         [
           null,
-          "data/module/example/index.json",
+          null,
           [
             null,
             null,
@@ -18,10 +18,7 @@
       ],
       null,
       1,
-      [
-        "max",
-        "min"
-      ],
+      [],
       [],
       [
         [
@@ -30,7 +27,7 @@
             "example.GlobalCtor",
             [
               null,
-              "data/module/example/index_exports_GlobalCtor.json",
+              null,
               [
                 null,
                 null,
@@ -43,12 +40,7 @@
           null,
           null,
           [],
-          [
-            "deprecatedMethod",
-            "deprecatedMethod2",
-            "instanceMethod",
-            "protoMethod"
-          ],
+          [],
           []
         ],
         [
@@ -57,7 +49,7 @@
             "example.Greeter",
             [
               null,
-              "data/module/example/index_exports_Greeter.json",
+              null,
               [
                 null,
                 null,
@@ -70,7 +62,9 @@
           null,
           null,
           [],
-          [],
+          [
+            "greet"
+          ],
           []
         ]
       ]
@@ -81,7 +75,7 @@
         null,
         [
           null,
-          "data/module/example/empty.json",
+          null,
           [
             null,
             null,
@@ -103,7 +97,7 @@
         null,
         [
           null,
-          "data/module/example/nested.json",
+          null,
           [
             null,
             null,
@@ -124,7 +118,7 @@
             "example/nested.Greeter",
             [
               null,
-              "data/module/example/nested_exports_Greeter.json",
+              null,
               [
                 null,
                 null,
@@ -137,9 +131,7 @@
           null,
           null,
           [],
-          [
-            "greet"
-          ],
+          [],
           []
         ],
         [
@@ -148,7 +140,7 @@
             "example/nested.IdGenerator",
             [
               null,
-              "data/module/example/nested_exports_IdGenerator.json",
+              null,
               [
                 null,
                 null,
@@ -172,7 +164,7 @@
             "example/nested.IncreasingIdGenerator",
             [
               null,
-              "data/module/example/nested_exports_IncreasingIdGenerator.json",
+              null,
               [
                 null,
                 null,
@@ -196,7 +188,7 @@
             "example/nested.IncrementingIdGenerator",
             [
               null,
-              "data/module/example/nested_exports_IncrementingIdGenerator.json",
+              null,
               [
                 null,
                 null,
@@ -220,7 +212,7 @@
             "example/nested.Person",
             [
               null,
-              "data/module/example/nested_exports_Person.json",
+              null,
               [
                 null,
                 null,
@@ -230,13 +222,10 @@
             null,
             []
           ],
-          null,
+          1,
           null,
           [],
-          [
-            "age",
-            "name"
-          ],
+          [],
           []
         ]
       ]
@@ -247,7 +236,7 @@
         null,
         [
           null,
-          "data/module/example/net.json",
+          null,
           [
             null,
             null,
@@ -271,7 +260,7 @@
             "example/net.HttpClient",
             [
               null,
-              "data/module/example/net_exports_HttpClient.json",
+              null,
               [
                 null,
                 null,
@@ -298,7 +287,7 @@
         null,
         [
           null,
-          "data/module/example/worker.json",
+          null,
           [
             null,
             null,
@@ -322,7 +311,7 @@
         null,
         [
           null,
-          "data/Calculator.json",
+          null,
           [
             null,
             null,
@@ -351,7 +340,7 @@
         null,
         [
           null,
-          "data/Color.json",
+          null,
           [
             null,
             null,
@@ -373,7 +362,7 @@
         null,
         [
           null,
-          "data/DeprecatedFoo.json",
+          null,
           [
             null,
             null,
@@ -395,7 +384,7 @@
         null,
         [
           null,
-          "data/EmptyEnum.json",
+          null,
           [
             null,
             null,
@@ -417,7 +406,7 @@
         null,
         [
           null,
-          "data/Formatter.json",
+          null,
           [
             null,
             null,
@@ -442,7 +431,7 @@
         null,
         [
           null,
-          "data/GlobalCtor.json",
+          null,
           [
             null,
             null,
@@ -456,8 +445,7 @@
       null,
       [
         "GlobalCtor.dateCtor",
-        "GlobalCtor.staticFunc",
-        "GlobalCtor.staticProp"
+        "GlobalCtor.staticFunc"
       ],
       [
         "deprecatedMethod",
@@ -473,7 +461,7 @@
         null,
         [
           null,
-          "data/GlobalCtor.Other.json",
+          null,
           [
             null,
             null,
@@ -495,7 +483,7 @@
         null,
         [
           null,
-          "data/GlobalEnum.json",
+          null,
           [
             null,
             null,
@@ -519,7 +507,7 @@
         null,
         [
           null,
-          "data/GlobalPrivateCtor.json",
+          null,
           [
             null,
             null,
@@ -541,7 +529,7 @@
         null,
         [
           null,
-          "data/Person.json",
+          null,
           [
             null,
             null,
@@ -566,7 +554,7 @@
         null,
         [
           null,
-          "data/PrivateColor_.json",
+          null,
           [
             null,
             null,
@@ -588,7 +576,7 @@
         null,
         [
           null,
-          "data/SomeCtor.json",
+          null,
           [
             null,
             null,
@@ -610,7 +598,7 @@
         null,
         [
           null,
-          "data/UndefinedEnum.json",
+          null,
           [
             null,
             null,
@@ -632,7 +620,7 @@
         null,
         [
           null,
-          "data/closure.module.json",
+          null,
           [
             null,
             null,
@@ -656,7 +644,7 @@
         "closure.module.Clazz",
         [
           null,
-          "data/closure.module.Clazz.json",
+          null,
           [
             null,
             null,
@@ -680,7 +668,7 @@
         "closure.module.HardWorker",
         [
           null,
-          "data/closure.module.HardWorker.json",
+          null,
           [
             null,
             null,
@@ -704,7 +692,7 @@
         "closure.module.PubClass",
         [
           null,
-          "data/closure.module.PubClass.json",
+          null,
           [
             null,
             null,
@@ -728,7 +716,7 @@
         "closure.module.Worker",
         [
           null,
-          "data/closure.module.Worker.json",
+          null,
           [
             null,
             null,
@@ -753,7 +741,7 @@
         null,
         [
           null,
-          "data/foo.json",
+          null,
           [
             null,
             null,
@@ -773,11 +761,33 @@
     ],
     [
       [
+        "foo.FilteredClass",
+        null,
+        [
+          null,
+          null,
+          [
+            null,
+            null,
+            "foo.FilteredClass.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
         "foo.One",
         null,
         [
           null,
-          "data/foo.One.json",
+          null,
           [
             null,
             null,
@@ -795,11 +805,124 @@
     ],
     [
       [
+        "foo.One_bar",
+        null,
+        [
+          null,
+          null,
+          [
+            null,
+            null,
+            "foo.One_bar.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [
+        "equals",
+        "run"
+      ],
+      []
+    ],
+    [
+      [
+        "foo.bar",
+        null,
+        [
+          null,
+          null,
+          [
+            null,
+            null,
+            "foo.bar.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      1,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "foo.bar.Two",
+        null,
+        [
+          null,
+          null,
+          [
+            null,
+            null,
+            "foo.bar.Two.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "foo.bar.baz",
+        null,
+        [
+          null,
+          null,
+          [
+            null,
+            null,
+            "foo.bar.baz.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      1,
+      [],
+      [],
+      []
+    ],
+    [
+      [
+        "foo.bar.baz.Three",
+        null,
+        [
+          null,
+          null,
+          [
+            null,
+            null,
+            "foo.bar.baz.Three.html"
+          ]
+        ],
+        null,
+        []
+      ],
+      null,
+      null,
+      [],
+      [],
+      []
+    ],
+    [
+      [
         "foo.quot",
         null,
         [
           null,
-          "data/foo.quot.json",
+          null,
           [
             null,
             null,
@@ -821,7 +944,7 @@
         null,
         [
           null,
-          "data/foo.quot.OneBarAlias.json",
+          null,
           [
             null,
             null,
@@ -834,10 +957,7 @@
       null,
       null,
       [],
-      [
-        "equals",
-        "run"
-      ],
+      [],
       []
     ],
     [
@@ -846,7 +966,7 @@
         null,
         [
           null,
-          "data/namespace.json",
+          null,
           [
             null,
             null,
@@ -858,7 +978,9 @@
       ],
       null,
       1,
-      [],
+      [
+        "nested"
+      ],
       [],
       []
     ],
@@ -868,7 +990,7 @@
         null,
         [
           null,
-          "data/namespace.Widget.json",
+          null,
           [
             null,
             null,
@@ -890,7 +1012,7 @@
         null,
         [
           null,
-          "data/namespace.nested.internal.json",
+          null,
           [
             null,
             null,
@@ -902,7 +1024,9 @@
       ],
       null,
       1,
-      [],
+      [
+        "implicit"
+      ],
       [],
       []
     ],
@@ -912,7 +1036,7 @@
         null,
         [
           null,
-          "data/namespace.nested.internal.Component.json",
+          null,
           [
             null,
             null,
@@ -934,7 +1058,7 @@
         null,
         [
           null,
-          "data/namespace.nested.internal.implicit.Foo.json",
+          null,
           [
             null,
             null,
@@ -952,35 +1076,11 @@
     ],
     [
       [
-        "namespace.nested.logging",
-        null,
-        [
-          null,
-          "data/namespace.nested.logging.json",
-          [
-            null,
-            null,
-            "namespace.nested.logging.html"
-          ]
-        ],
-        null,
-        []
-      ],
-      null,
-      1,
-      [
-        "log"
-      ],
-      [],
-      []
-    ],
-    [
-      [
         "namespace.nested.logging.Console",
         null,
         [
           null,
-          "data/namespace.nested.logging.Console.json",
+          null,
           [
             null,
             null,
@@ -1002,7 +1102,7 @@
         null,
         [
           null,
-          "data/sample.inheritance.json",
+          null,
           [
             null,
             null,
@@ -1024,7 +1124,7 @@
         null,
         [
           null,
-          "data/sample.inheritance.BaseClass.json",
+          null,
           [
             null,
             null,
@@ -1048,7 +1148,7 @@
         null,
         [
           null,
-          "data/sample.inheritance.BaseInterface.json",
+          null,
           [
             null,
             null,
@@ -1070,7 +1170,7 @@
         null,
         [
           null,
-          "data/sample.inheritance.DeprecatedFinalClass.json",
+          null,
           [
             null,
             null,
@@ -1094,7 +1194,7 @@
         null,
         [
           null,
-          "data/sample.inheritance.FinalClass.json",
+          null,
           [
             null,
             null,
@@ -1118,7 +1218,7 @@
         null,
         [
           null,
-          "data/sample.inheritance.LeafInterface.json",
+          null,
           [
             null,
             null,
@@ -1140,7 +1240,7 @@
         null,
         [
           null,
-          "data/sample.inheritance.NumberClass.json",
+          null,
           [
             null,
             null,
@@ -1166,7 +1266,7 @@
         null,
         [
           null,
-          "data/sample.inheritance.OtherInterface.json",
+          null,
           [
             null,
             null,
@@ -1188,7 +1288,7 @@
         null,
         [
           null,
-          "data/sample.inheritance.Runnable.json",
+          null,
           [
             null,
             null,
@@ -1212,7 +1312,7 @@
         null,
         [
           null,
-          "data/sample.inheritance.RunnableError.json",
+          null,
           [
             null,
             null,
@@ -1236,7 +1336,7 @@
         null,
         [
           null,
-          "data/sample.inheritance.SecondClass.json",
+          null,
           [
             null,
             null,
@@ -1260,7 +1360,7 @@
         null,
         [
           null,
-          "data/sample.inheritance.SecondInterface.json",
+          null,
           [
             null,
             null,
@@ -1282,7 +1382,7 @@
         null,
         [
           null,
-          "data/sample.inheritance.StringClass.json",
+          null,
           [
             null,
             null,
@@ -1309,7 +1409,7 @@
         null,
         [
           null,
-          "data/sample.inheritance.TemplateClass.json",
+          null,
           [
             null,
             null,
@@ -1324,6 +1424,7 @@
       [],
       [
         "add",
+        "getValue",
         "name",
         "value"
       ],
@@ -1335,7 +1436,7 @@
         null,
         [
           null,
-          "data/sample.inheritance.ThirdClass.json",
+          null,
           [
             null,
             null,
@@ -1357,7 +1458,7 @@
         null,
         [
           null,
-          "data/sample.json.json",
+          null,
           [
             null,
             null,
@@ -1383,7 +1484,7 @@
         null,
         [
           null,
-          "data/test.json",
+          null,
           [
             null,
             null,
@@ -1405,7 +1506,7 @@
         null,
         [
           null,
-          "data/test.Registry.json",
+          null,
           [
             null,
             null,
@@ -1427,7 +1528,7 @@
         null,
         [
           null,
-          "data/test.registry.json",
+          null,
           [
             null,
             null,
@@ -1451,7 +1552,7 @@
         null,
         [
           null,
-          "data/vis.json",
+          null,
           [
             null,
             null,
@@ -1465,6 +1566,8 @@
       1,
       [
         "DeprecatedTypeDef",
+        "DeprecatedTypeDef",
+        "DeprecatedTypeDef2",
         "DeprecatedTypeDef2",
         "PrivateTypeDef_",
         "deprecated",
@@ -1480,7 +1583,7 @@
         null,
         [
           null,
-          "data/vis.InheritsVis.json",
+          null,
           [
             null,
             null,
@@ -1502,7 +1605,7 @@
         null,
         [
           null,
-          "data/vis.Private.json",
+          null,
           [
             null,
             null,
@@ -1524,7 +1627,7 @@
         null,
         [
           null,
-          "data/vis.Public.json",
+          null,
           [
             null,
             null,
@@ -1544,95 +1647,77 @@
   [
     [
       "Custom Page",
-      "page/Custom_Page.html",
-      "data/page/Custom_Page.json"
+      "page/Custom_Page.html"
     ]
   ],
   [
     [
       null,
-      "index.html",
-      "data/index.json"
+      "index.html"
     ],
     [
       null,
-      "source/closure_module.js.src.html",
-      "data/source/closure_module.js.src.json"
+      "source/closure_module.js.src.html"
     ],
     [
       null,
-      "source/es2015.js.src.html",
-      "data/source/es2015.js.src.json"
+      "source/es2015.js.src.html"
     ],
     [
       null,
-      "source/example/empty.js.src.html",
-      "data/source/example/empty.js.src.json"
+      "source/example/empty.js.src.html"
     ],
     [
       null,
-      "source/example/filter.js.src.html",
-      "data/source/example/filter.js.src.json"
+      "source/example/filter.js.src.html"
     ],
     [
       null,
-      "source/example/index.js.src.html",
-      "data/source/example/index.js.src.json"
+      "source/example/index.js.src.html"
     ],
     [
       null,
-      "source/example/nested.js.src.html",
-      "data/source/example/nested.js.src.json"
+      "source/example/nested.js.src.html"
     ],
     [
       null,
-      "source/example/net.js.src.html",
-      "data/source/example/net.js.src.json"
+      "source/example/net.js.src.html"
     ],
     [
       null,
-      "source/example/worker.js.src.html",
-      "data/source/example/worker.js.src.json"
+      "source/example/worker.js.src.html"
     ],
     [
       null,
-      "source/filter.js.src.html",
-      "data/source/filter.js.src.json"
+      "source/filter.js.src.html"
     ],
     [
       null,
-      "source/globals.js.src.html",
-      "data/source/globals.js.src.json"
+      "source/globals.js.src.html"
     ],
     [
       null,
-      "source/inheritance.js.src.html",
-      "data/source/inheritance.js.src.json"
+      "source/inheritance.js.src.html"
     ],
     [
       null,
-      "source/json.js.src.html",
-      "data/source/json.js.src.json"
+      "source/json.js.src.html"
     ],
     [
       null,
-      "source/namespace.js.src.html",
-      "data/source/namespace.js.src.json"
+      "source/namespace.js.src.html"
     ],
     [
       null,
-      "source/registry.js.src.html",
-      "data/source/registry.js.src.json"
+      "source/registry.js.src.html"
     ],
     [
       null,
-      "source/subdir/emptyenum.js.src.html",
-      "data/source/subdir/emptyenum.js.src.json"
+      "source/subdir/emptyenum.js.src.html"
     ],
     [
       null,
-      "source/visibility.js.src.html",
-      "data/source/visibility.js.src.json"
+      "source/visibility.js.src.html"
     ]
   ]
 ]

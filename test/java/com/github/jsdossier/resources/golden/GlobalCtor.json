@@ -136,50 +136,7 @@
             []
           ]
         ],
-        [
-          [
-            [
-              "GlobalCtor.staticProp",
-              [
-                null,
-                23,
-                null,
-                [
-                  null,
-                  null,
-                  "source/globals.js.src.html"
-                ]
-              ],
-              [
-                [
-                  [
-                    null,
-                    "\u003cp\u003eA static property.\u003c/p\u003e\n"
-                  ]
-                ]
-              ],
-              null,
-              null,
-              null,
-              null,
-              null,
-              [],
-              []
-            ],
-            [
-              null,
-              null,
-              null,
-              [
-                "string",
-                null,
-                null,
-                1,
-                []
-              ]
-            ]
-          ]
-        ],
+        [],
         [
           [
             "GlobalCtor",
@@ -457,7 +414,23 @@
         [],
         [],
         [],
-        []
+        [
+          [
+            "GlobalCtor",
+            "example.GlobalCtor",
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "module/example/index_exports_GlobalCtor.html"
+              ]
+            ],
+            null,
+            []
+          ]
+        ]
       ]
     ]
   ]

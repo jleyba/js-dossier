@@ -155,7 +155,23 @@
         [],
         [],
         [],
-        []
+        [
+          [
+            "Person",
+            "example/nested.Person",
+            [
+              null,
+              null,
+              [
+                null,
+                null,
+                "module/example/nested_exports_Person.html"
+              ]
+            ],
+            null,
+            []
+          ]
+        ]
       ]
     ]
   ]

@@ -46,7 +46,12 @@
               ]
             ],
             [
-              []
+              [
+                [
+                  null,
+                  "\u003cp\u003eA simple HTTP client.\u003c/p\u003e\n"
+                ]
+              ]
             ],
             null,
             null,

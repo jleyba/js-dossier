@@ -144,7 +144,7 @@
           1,
           [
             [
-              "value",
+              "arg0",
               [
                 null,
                 null,
@@ -155,14 +155,6 @@
                   null,
                   1,
                   []
-                ]
-              ],
-              [
-                [
-                  [
-                    null,
-                    "\u003cp\u003eThe initial value.\u003c/p\u003e\n"
-                  ]
                 ]
               ]
             ]

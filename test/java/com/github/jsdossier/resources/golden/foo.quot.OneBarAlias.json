@@ -19,7 +19,12 @@
         ],
         null,
         [
-          []
+          [
+            [
+              null,
+              "\u003cp\u003eThis class should be filtered out, but its alias below should be included\n(with this comment).\u003c/p\u003e\n"
+            ]
+          ]
         ],
         [],
         null,
@@ -92,7 +97,7 @@
                   null,
                   null,
                   [
-                    "foo.quot.OneBarAlias",
+                    "foo.One_bar",
                     null,
                     [
                       null,
@@ -100,7 +105,7 @@
                       [
                         null,
                         null,
-                        "foo.quot.OneBarAlias.html"
+                        "foo.One_bar.html"
                       ]
                     ],
                     null,
@@ -181,7 +186,21 @@
           null,
           1
         ],
-        null,
+        [
+          "foo.One_bar",
+          null,
+          [
+            null,
+            null,
+            [
+              null,
+              null,
+              "foo.One_bar.html"
+            ]
+          ],
+          null,
+          []
+        ],
         "foo.quot.OneBarAlias.html",
         "foo.quot.OneBarAlias",
         [],

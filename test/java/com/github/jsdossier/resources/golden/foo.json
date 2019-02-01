@@ -20,6 +20,24 @@
         [
           [
             [
+              "FilteredClass",
+              null,
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eThis class should be excluded from generated documentation based on\non the e2e configuration.\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              [
+                null,
+                null,
+                "foo.FilteredClass.html"
+              ]
+            ],
+            [
               "One",
               null,
               [
@@ -35,6 +53,24 @@
                 null,
                 null,
                 "foo.One.html"
+              ]
+            ],
+            [
+              "One_bar",
+              null,
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003eThis class should be filtered out, but its alias below should be included\n(with this comment).\u003c/p\u003e\n"
+                  ]
+                ]
+              ],
+              null,
+              [
+                null,
+                null,
+                "foo.One_bar.html"
               ]
             ]
           ],
@@ -85,7 +121,15 @@
                 [
                   "foo.FilteredClass",
                   null,
-                  null,
+                  [
+                    null,
+                    null,
+                    [
+                      null,
+                      null,
+                      "foo.FilteredClass.html"
+                    ]
+                  ],
                   null,
                   []
                 ]
