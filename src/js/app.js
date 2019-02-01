@@ -130,15 +130,12 @@ class DataService {
       if (json) {
         return parsePageData(json);
       }
-      console.info('fetching ' + uri);
       return xhr.get(uri).then(responseText => {
-        console.info('loaded ' + uri);
         let div = document.createElement('div');
         div.innerHTML = responseText;
 
         let main = div.querySelector('main');
         if (main) {
-          console.info(main.outerHTML);
           let data = extractPageData(/** @type {!HTMLElement} */(main));
           if (data) {
             window.sessionStorage.setItem(uri, JSON.stringify(data.toArray()));
