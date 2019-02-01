@@ -53,7 +53,17 @@ try {
 
 var app = express();
 
-var staticDir = path.join(__dirname, process.argv[2] || 'out');
+
+var staticDir = process.argv[2] || 'out';
+if (!path.isAbsolute(staticDir)) {
+  staticDir = path.join(__dirname, staticDir);
+}
+
+if (!fs.statSync(staticDir).isDirectory()) {
+  throw Error('Not a directory: ' + staticDir);
+}
+
+
 console.log('Serving static content from: ' + staticDir);
 app.use('/', serveIndex(staticDir));
 app.use('/', express.static(staticDir, {
