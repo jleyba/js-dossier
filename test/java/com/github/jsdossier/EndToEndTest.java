@@ -52,7 +52,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -494,15 +498,15 @@ public class EndToEndTest {
     private static String normalizeLines(String in) {
       Iterable<String> lines = Splitter.on('\n').split(in);
       lines =
-          Iterables.transform(
-              lines,
-              input -> {
+          StreamSupport.stream(lines.spliterator(), false)
+              .filter(Objects::nonNull)
+              .map(input -> {
                 int end = input.length();
                 while (end > 0 && input.charAt(end - 1) <= ' ') {
                   end -= 1;
                 }
                 return input.substring(0, end);
-              });
+              }).collect(Collectors.toList());
       return Joiner.on('\n').join(lines).trim();
     }
 
@@ -742,11 +746,7 @@ public class EndToEndTest {
     }
 
     private void addAll(List<String> list, String... items) {
-      // TODO: switch to Collections.addAll when we support java 8.
-      //noinspection ManualArrayToCollectionCopy
-      for (String item : items) {
-        list.add(item);
-      }
+      list.addAll(Arrays.asList(items));
     }
 
     String[] buildCommandLine() throws IOException {
@@ -869,13 +869,13 @@ public class EndToEndTest {
         FileSystem fs;
         if (output.getFileSystem() == FileSystems.getDefault()) {
           URI uri = URI.create("jar:file:" + output.toAbsolutePath());
-          fs = FileSystems.newFileSystem(uri, ImmutableMap.<String, Object>of());
+          fs = FileSystems.newFileSystem(uri, ImmutableMap.of());
         } else {
           fs =
               output
                   .getFileSystem()
                   .provider()
-                  .newFileSystem(output, ImmutableMap.<String, Object>of());
+                  .newFileSystem(output, ImmutableMap.of());
         }
         return fs.getPath("/");
       }
