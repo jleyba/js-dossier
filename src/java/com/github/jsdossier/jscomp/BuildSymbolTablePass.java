@@ -22,6 +22,7 @@ import static com.github.jsdossier.jscomp.Nodes.isExprResult;
 import static com.github.jsdossier.jscomp.Nodes.isGoogProvideCall;
 import static com.github.jsdossier.jscomp.Nodes.isGoogRequireCall;
 import static com.github.jsdossier.jscomp.Nodes.isGoogScopeCall;
+import static com.github.jsdossier.jscomp.Nodes.isGoogSetTestOnly;
 import static com.github.jsdossier.jscomp.Nodes.isModuleBody;
 import static com.github.jsdossier.jscomp.Nodes.isName;
 import static com.github.jsdossier.jscomp.Nodes.isObjectLit;
@@ -36,6 +37,7 @@ import static com.google.common.base.Strings.nullToEmpty;
 import static java.nio.file.Files.isDirectory;
 
 import com.github.jsdossier.annotations.Global;
+import com.github.jsdossier.annotations.IncludeTestOnly;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.Modules;
 import com.google.common.collect.ImmutableSet;
@@ -43,17 +45,21 @@ import com.google.javascript.rhino.Node;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.logging.Logger;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 final class BuildSymbolTablePass implements DossierCompilerPass {
 
+  private static final Logger log = Logger.getLogger(BuildSymbolTablePass.class.getName());
+
   private final FileSystem fs;
   private final SymbolTable globalSymbolTable;
   private final ImmutableSet<Path> modulePaths;
   private final NodeLibrary nodeLibrary;
   private final TypeRegistry typeRegistry;
+  private final boolean includeTestOnly;
 
   @Nullable private Node export;
 
@@ -63,12 +69,14 @@ final class BuildSymbolTablePass implements DossierCompilerPass {
       @Modules ImmutableSet<Path> modulePaths,
       @Global SymbolTable globalSymbolTable,
       TypeRegistry typeRegistry,
-      NodeLibrary nodeLibrary) {
+      NodeLibrary nodeLibrary,
+      @IncludeTestOnly boolean includeTestOnly) {
     this.fs = fs;
     this.modulePaths = modulePaths;
     this.globalSymbolTable = globalSymbolTable;
     this.nodeLibrary = nodeLibrary;
     this.typeRegistry = typeRegistry;
+    this.includeTestOnly = includeTestOnly;
   }
 
   @Override
@@ -78,6 +86,11 @@ final class BuildSymbolTablePass implements DossierCompilerPass {
     }
     checkArgument(root.isScript(), "process called with non-script node: %s", root);
 
+    if (!includeTestOnly && scanForTestOnly(root)) {
+      log.fine("Skipping test only file: " + root.getSourceFileName());
+      return;
+    }
+
     Module.Builder module = scanModule(root);
     SymbolTable table = module == null ? globalSymbolTable : module.getInternalSymbolTable();
     scan(module, table, root);
@@ -86,6 +99,25 @@ final class BuildSymbolTablePass implements DossierCompilerPass {
       Module m = module.build();
       globalSymbolTable.add(m);
       typeRegistry.addModule(m);
+    }
+  }
+
+  private boolean scanForTestOnly(Node n) {
+    switch (n.getToken()) {
+      case SCRIPT:
+      case MODULE_BODY:
+        for (Node child = n.getFirstChild(); child != null; child = child.getNext()) {
+          if (scanForTestOnly(child)) {
+            return true;
+          }
+        }
+        return false;
+
+      case EXPR_RESULT:
+        return isGoogSetTestOnly(n.getFirstChild());
+
+      default:
+        return false;
     }
   }
 
@@ -155,7 +187,12 @@ final class BuildSymbolTablePass implements DossierCompilerPass {
           Node child = n.getFirstChild();
           if (isGoogProvideCall(child)) {
             String name = checkNotNull(child.getSecondChild()).getString();
-            table.add(Symbol.builder(fs, n).setName(name).setGoogProvide(true).build());
+            table.add(
+                Symbol.builder(fs, n)
+                    .setName(name)
+                    .setGoogProvide(true)
+                    .setGoogProvideOnly(true)
+                    .build());
 
           } else if (isGoogScopeCall(child)) {
             checkState(module == null, "goog.scope encountered in a module: %s", child);

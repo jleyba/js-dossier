@@ -87,6 +87,9 @@ __Configuration Options__
     compiler. These  files are used to satisfy references to external types,
     but are excluded when generating  API documentation.
 
+ * `includeTestOnly` Whether to include files that include a
+    `goog.setTestOnly()` declaration. These files are ignored by default.
+
  * `moduleFilters` List of regular expressions for modules that should be
     excluded from generated documentation, even if found in the type graph. The
     provided expressions will be to the _absolute_ path of the source file for

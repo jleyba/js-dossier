@@ -18,6 +18,7 @@ package com.github.jsdossier;
 
 import com.github.jsdossier.annotations.DocumentationScoped;
 import com.github.jsdossier.annotations.Externs;
+import com.github.jsdossier.annotations.IncludeTestOnly;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.ModuleExterns;
 import com.github.jsdossier.annotations.ModuleFilter;
@@ -130,5 +131,11 @@ final class ConfigModule extends AbstractModule {
   @StrictMode
   boolean provideStrictMode() {
     return config.isStrict();
+  }
+
+  @Provides
+  @IncludeTestOnly
+  boolean provideIncludeTestOnly() {
+    return config.getIncludeTestOnly();
   }
 }

@@ -316,6 +316,14 @@ abstract class Config {
   )
   abstract Environment getEnvironment();
 
+  @Description(
+    name = "includeTestOnly",
+    desc =
+        "Whether to include files that include a `goog.setTestOnly()` declaration."
+            + " These files are ignored by default."
+  )
+  abstract boolean getIncludeTestOnly();
+
   abstract FileSystem getFileSystem();
 
   abstract Builder toBuilder();
@@ -353,6 +361,7 @@ abstract class Config {
 
   public static Builder builder() {
     return new AutoValue_Config.Builder()
+        .setIncludeTestOnly(false)
         .setClosureDepFiles(ImmutableSet.of())
         .setSources(ImmutableSet.of())
         .setModules(ImmutableSet.of())
@@ -435,6 +444,8 @@ abstract class Config {
 
     public abstract Builder setEnvironment(Environment env);
 
+    public abstract Builder setIncludeTestOnly(boolean b);
+
     abstract Config autoBuild();
 
     private Builder duplicate() {
@@ -445,7 +456,6 @@ abstract class Config {
       ImmutableSet<Path> excludes = getExcludes();
 
       if (!excludes.isEmpty()) {
-        @SuppressWarnings("unchecked")
         Predicate<Path> filter = path -> notIn(excludes).test(path) && notHidden().test(path);
 
         setSources(getSources().stream().filter(filter).collect(toImmutableSet()));

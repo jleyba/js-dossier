@@ -83,6 +83,10 @@ final class Nodes {
         && n.getSecondChild().isFunction();
   }
 
+  public static boolean isGoogSetTestOnly(@Nullable Node n) {
+    return isCall(n, "goog.setTestOnly");
+  }
+
   public static Node getGoogScopeBlock(Node n) {
     checkArgument(isGoogScopeCall(n));
     return n.getSecondChild().getLastChild();
