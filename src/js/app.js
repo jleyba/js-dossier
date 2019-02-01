@@ -90,18 +90,29 @@ function parsePageData(data) {
 }
 
 
+/**
+ * @param {!HTMLElement} el
+ * @return {?PageData}
+ */
+function extractPageData(el) {
+  if (el.dataset['pageData']) {
+    let jsonData = JSON.parse(el.dataset['pageData']);
+    if (goog.isArray(jsonData)) {
+      let data = new PageData(jsonData);
+      delete el.dataset['pageData'];
+      return data;
+    }
+  }
+  return null;
+}
+
+
 /** @final */
 class DataService {
-  /**
-   * @param {!Map<string, string>} uriDataMap Maps URIs for HTML pages to their
-   *     corresponding JSON data file.
-   */
-  constructor(uriDataMap) {
-    /** @private @const {!Map<string, string>} */
-    this.uriDataMap_ = uriDataMap;
-
-    /** @private @const {!Set<string>} */
-    this.dataUris_ = new Set(uriDataMap.values());
+  /** @param {!Set<string>} uris URIs to track. */
+  constructor(uris) {
+    /** @private @const */
+    this.uris_ = uris;
   }
 
   /**
@@ -109,32 +120,42 @@ class DataService {
    * @return {!Promise<!PageData>} The loaded page data.
    */
   load(uri) {
-    let dataUri = this.resolveDataUri(uri);
-    if (!dataUri) {
+    uri = this.resolveDataUri(uri);
+    if (!uri) {
       return Promise.reject(Error('failed to resolve URL'));
     }
 
     return Promise.resolve().then(() => {
-      // Force the compiler to recognize this value as non-null.
-      let jsonUrl = /** @type {string} */(dataUri);
-      let json = window.sessionStorage.getItem(jsonUrl);
+      let json = window.sessionStorage.getItem(uri);
       if (json) {
         return parsePageData(json);
       }
-      return xhr.get(jsonUrl).then(responseText => {
-        let data = parsePageData(responseText);
-        window.sessionStorage.setItem(jsonUrl, responseText);
-        return data;
+      console.info('fetching ' + uri);
+      return xhr.get(uri).then(responseText => {
+        console.info('loaded ' + uri);
+        let div = document.createElement('div');
+        div.innerHTML = responseText;
+
+        let main = div.querySelector('main');
+        if (main) {
+          console.info(main.outerHTML);
+          let data = extractPageData(/** @type {!HTMLElement} */(main));
+          if (data) {
+            window.sessionStorage.setItem(uri, JSON.stringify(data.toArray()));
+            return data;
+          }
+        }
+        throw Error('failed to fetch page data');
       });
     });
   }
 
   /**
    * @param {string} uri
-   * @return {?string}
+   * @return {string}
    */
   resolveDataUri(uri) {
-    if (this.dataUris_.has(uri)) {
+    if (this.uris_.has(uri)) {
       return uri;
     }
     if (!uri.startsWith('http://') && !uri.startsWith('https://')) {
@@ -152,7 +173,7 @@ class DataService {
     } else if ((index = uri.indexOf('#')) != -1) {
       uri = uri.slice(0, index);
     }
-    return this.uriDataMap_.get(uri) || null;
+    return uri;
   }
 }
 
@@ -665,16 +686,15 @@ class Application {
  * @throws {Error} if the application has already been started.
  */
 exports.run = function(typeIndex, searchBox, navDrawer) {
-  let uriMap = /** !Map<string, string> */new Map;
+  let uris = /** !Set<string> */new Set;
 
   function processLink(/** (!Link|!proto.dossier.expression.TypeLink) */link) {
     let /** string */hrefStr = link instanceof Link
         ? link.getHref()
         : link.getHref().getPrivateDoNotAccessOrElseSafeUrlWrappedValue();
-    if (hrefStr && !hrefStr.startsWith('http') && link.getJson()) {
+    if (hrefStr && !hrefStr.startsWith('http')) {
       let href = resolveUri(page.getBasePath() + hrefStr);
-      let json = resolveUri(page.getBasePath() + link.getJson());
-      uriMap.set(href, json);
+      uris.add(href);
     }
   }
 
@@ -693,18 +713,12 @@ exports.run = function(typeIndex, searchBox, navDrawer) {
   typeIndex.getSourceFileList().forEach(processLink);
 
   let mainEl = /** @type {!HTMLElement} */(document.querySelector('main'));
-  if (mainEl.dataset['pageData']) {
-    let jsonData = JSON.parse(mainEl.dataset['pageData']);
-    if (goog.isArray(jsonData)) {
-      let data = new PageData(jsonData);
-      soy.renderElement(mainEl, mainPageContent, {data});
-      delete mainEl.dataset['pageData'];
-    }
+  let data = extractPageData(mainEl);
+  if (data) {
+    soy.renderElement(mainEl, mainPageContent, {data});
   }
 
-  let dataService = new DataService(uriMap);
-
-  new Application(dataService, searchBox, navDrawer, mainEl).init();
+  new Application(new DataService(uris), searchBox, navDrawer, mainEl).init();
 
   document.documentElement.classList.remove('loading');
 };

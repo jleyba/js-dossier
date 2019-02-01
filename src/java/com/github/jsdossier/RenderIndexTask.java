@@ -19,12 +19,10 @@ package com.github.jsdossier;
 import com.github.jsdossier.annotations.Readme;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.PageData;
-import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
 
@@ -55,7 +53,7 @@ final class RenderIndexTask implements RenderTask {
   }
 
   @Override
-  public List<Path> call() throws IOException {
+  public Path call() throws IOException {
     // TODO: render an index of all the types.
     Comment content = Comment.getDefaultInstance();
 
@@ -70,9 +68,8 @@ final class RenderIndexTask implements RenderTask {
             .build();
 
     Path htmlPath = dfs.getPath("index.html");
-    Path jsonPath = dfs.getJsonPath(htmlPath);
-    renderer.render(htmlPath, jsonPath, data);
-    index.addSourceFile(htmlPath, jsonPath);
-    return ImmutableList.of(htmlPath, jsonPath);
+    renderer.render(htmlPath, data);
+    index.addSourceFile(htmlPath);
+    return htmlPath;
   }
 }

@@ -100,31 +100,6 @@ final class DossierFileSystem {
   }
 
   /**
-   * Returns the request path resolved against the output data directory.
-   *
-   * @throws IllegalArgumentException if the requested path is not under the output data root.
-   */
-  public Path getJsonPath(Path path) {
-    checkArgument(path.toString().endsWith(".html"), "not a HTML file: %s", path);
-
-    String name = path.getFileName().toString();
-    name = name.substring(0, name.length() - ".html".length()) + ".json";
-
-    Path jsonPath = path.resolveSibling(name);
-    if (jsonPath.startsWith(dataRoot)) {
-      jsonPath = jsonPath.normalize();
-    } else if (jsonPath.startsWith(outputRoot)) {
-      jsonPath = dataRoot.resolve(outputRoot.relativize(jsonPath)).normalize();
-    } else {
-      jsonPath = dataRoot.resolve(jsonPath).normalize();
-    }
-
-    checkArgument(
-        jsonPath.startsWith(dataRoot), "The requested path is not under the data root: %s", path);
-    return jsonPath;
-  }
-
-  /**
    * Returns the path for the given markdown page relative to the output directory.
    *
    * @throws IllegalArgumentException if the page name generates a path that is not under the ouput

@@ -35,7 +35,7 @@ final class PageRenderer {
     this.renderer = renderer;
   }
 
-  void render(Path htmlOut, Path jsonOut, PageData data) throws IOException {
-    renderer.render(htmlOut, jsonOut, dfs.getResources(htmlOut, template), data);
+  void render(Path htmlOut, PageData data) throws IOException {
+    renderer.render(htmlOut, dfs.getResources(htmlOut, template), data);
   }
 }

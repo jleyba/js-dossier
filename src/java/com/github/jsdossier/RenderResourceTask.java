@@ -40,11 +40,11 @@ final class RenderResourceTask implements RenderTask {
   }
 
   @Override
-  public List<Path> call() throws IOException {
+  public Path call() throws IOException {
     Path output = dfs.getPath(file);
     try (InputStream input = file.getSource().openStream()) {
       Files.copy(input, output, REPLACE_EXISTING);
     }
-    return ImmutableList.of(output);
+    return output;
   }
 }

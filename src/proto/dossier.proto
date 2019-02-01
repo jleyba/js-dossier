@@ -57,9 +57,6 @@ message Link {
   // The link href.
   // This will always be a path relative to the root of the output directory.
   string href = 2;
-  // The JSON data associated with this link, if any.
-  // This will always be a path relative to the root of the output directory.
-  string json = 3;
 }
 
 

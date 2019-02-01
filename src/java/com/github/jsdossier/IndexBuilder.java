@@ -19,7 +19,6 @@ package com.github.jsdossier;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 import com.github.jsdossier.annotations.DocumentationScoped;
 import com.github.jsdossier.jscomp.NominalType;
@@ -95,15 +94,13 @@ final class IndexBuilder {
         .map(
             input -> {
               final Path htmlPath = dfs.getPath(input);
-              final Path jsonPath = dfs.getJsonPath(input);
               return Link.newBuilder()
                   .setText(input.getName())
                   .setHref(toUriPath(dfs.getRelativePath(htmlPath)))
-                  .setJson(toUriPath(dfs.getRelativePath(jsonPath)))
                   .build();
             })
         .sorted(comparing(Link::getText))
-        .collect(toSet());
+        .collect(toList());
   }
 
   private static String toUriPath(Path path) {
@@ -135,11 +132,8 @@ final class IndexBuilder {
         .collect(toList());
   }
 
-  synchronized void addSourceFile(Path html, Path json) {
-    index
-        .addSourceFileBuilder()
-        .setHref(toUri(dfs.getRelativePath(html)))
-        .setJson(toUri(dfs.getRelativePath(json)));
+  synchronized void addSourceFile(Path html) {
+    index.addSourceFileBuilder().setHref(toUri(dfs.getRelativePath(html)));
   }
 
   private static String toUri(Path path) {

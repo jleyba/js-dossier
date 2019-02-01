@@ -51,7 +51,7 @@ final class RenderMarkdownTask implements RenderTask {
   }
 
   @Override
-  public List<Path> call() throws IOException {
+  public Path call() throws IOException {
     String text = new String(Files.readAllBytes(page.getPath()), StandardCharsets.UTF_8);
     Comment content = parser.parseComment(text, linkFactory);
 
@@ -61,10 +61,8 @@ final class RenderMarkdownTask implements RenderTask {
                 PageData.Markdown.newBuilder().setTitle(page.getName()).setContent(content))
             .build();
 
-    // TODO: account for this render result.
-    Path jsonPath = dfs.getJsonPath(page);
     Path output = dfs.getPath(page);
-    renderer.render(output, jsonPath, data);
-    return ImmutableList.of(output, jsonPath);
+    renderer.render(output, data);
+    return output;
   }
 }

@@ -48,15 +48,16 @@ final class RenderTypeIndexTask implements RenderTask {
   }
 
   @Override
-  public List<Path> call() throws IOException {
+  public Path call() throws IOException {
     Index message = index.toNormalizedProto();
 
     StringWriter sw = new StringWriter();
+    sw.append("var TYPES = ");
     jsonRenderer.render(sw, message);
+    sw.append(";");
 
-    String content = "var TYPES = " + sw + ";";
     Path path = dfs.getPath("types.js");
-    Files.write(path, content.getBytes(UTF_8), CREATE, WRITE, TRUNCATE_EXISTING);
-    return ImmutableList.of(path);
+    Files.write(path, sw.toString().getBytes(UTF_8), CREATE, WRITE, TRUNCATE_EXISTING);
+    return path;
   }
 }

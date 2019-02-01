@@ -80,16 +80,12 @@ public class Renderer {
     this.jsonRenderer = jsonRenderer;
   }
 
-  public void render(Path htmlOut, Path jsonOut, Resources resources, PageData data)
-      throws IOException {
+  public void render(Path htmlOut, Resources resources, PageData data) throws IOException {
     StringWriter sw = new StringWriter();
     jsonRenderer.render(sw, data);
     String jsonData = sw.toString();
 
     Files.createDirectories(htmlOut.getParent());
-    Files.createDirectories(jsonOut.getParent());
-
-    Files.write(jsonOut, jsonData.getBytes(UTF_8), CREATE, WRITE, TRUNCATE_EXISTING);
 
     try (Writer writer = newBufferedWriter(htmlOut, UTF_8, CREATE, WRITE, TRUNCATE_EXISTING)) {
       tofu.newRenderer("dossier.soy.page")
@@ -119,16 +115,17 @@ public class Renderer {
   }
 
   private SoyValue renderScripts(List<SafeUrlProto> urls) {
-    String template = "{namespace dossier.soy.dynamic}{template .scripts}";
+    StringBuilder template = new StringBuilder(
+        "{namespace dossier.soy.dynamic}{template .scripts}");
     for (SafeUrlProto proto : urls) {
       String url = SafeUrls.fromProto(proto).getSafeUrlString();
-      template += "<script src=\"" + url + "\" defer></script>";
+      template.append("<script src=\"").append(url).append("\" defer></script>");
     }
-    template += "{/template}";
+    template.append("{/template}");
 
     return filesetBuilderProvider
         .get()
-        .add(template, "<dynamic>")
+        .add(template.toString(), "<dynamic>")
         .build()
         .compileToTofu()
         .newRenderer("dossier.soy.dynamic.scripts")
@@ -136,8 +133,7 @@ public class Renderer {
         .renderStrict();
   }
 
-  public void render(Appendable appendable, String text, TypeLink link, boolean codeLink)
-      throws IOException {
+  public void render(Appendable appendable, String text, TypeLink link, boolean codeLink) {
     tofu.newRenderer("dossier.soy.type.typeLink")
         .setData(
             ImmutableMap.of(
@@ -147,7 +143,7 @@ public class Renderer {
         .render(appendable);
   }
 
-  public static void main(String args[]) throws IOException {
+  public static void main(String[] args) throws IOException {
     checkArgument(args.length > 0, "no output directory specified");
 
     Path outputDir = FileSystems.getDefault().getPath(args[0]);

@@ -92,7 +92,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
 
     return processors
         .stream()
-        .map(p -> renderTaskFactory.create(p.getHtmlOutput(), p.getJsonOutput(), typeSupplier))
+        .map(p -> renderTaskFactory.create(p.getHtmlOutput(), typeSupplier))
         .collect(toImmutableList());
   }
 
@@ -100,29 +100,26 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
   static final class RenderDocumentationTask implements RenderTask {
     private final PageRenderer renderer;
     private final Path output;
-    private final Path jsonOutput;
     private final Supplier<List<JsType>> types;
 
     RenderDocumentationTask(
         @Provided PageRenderer renderer,
         Path output,
-        Path jsonOutput,
         Supplier<List<JsType>> types) {
       this.renderer = renderer;
       this.output = output;
-      this.jsonOutput = jsonOutput;
       this.types = types;
     }
 
     @Override
-    public List<Path> call() throws Exception {
+    public Path call() throws Exception {
       PageData page =
           PageData.newBuilder()
               .setTypes(PageData.TypeCollection.newBuilder().addAllType(types.get()))
               .build();
 
-      renderer.render(output, jsonOutput, page);
-      return ImmutableList.of(output, jsonOutput);
+      renderer.render(output, page);
+      return output;
     }
   }
 
@@ -179,10 +176,6 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
 
     Path getHtmlOutput() {
       return dfs.getPath(type);
-    }
-
-    Path getJsonOutput() {
-      return dfs.getJsonPath(type);
     }
 
     JsType buildJsType() {

@@ -24,10 +24,8 @@ import com.github.jsdossier.proto.SourceFile;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 import com.google.common.base.Charsets;
-import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 
 /** Renders a single source file in the output tree. */
 @AutoFactory
@@ -55,7 +53,7 @@ final class RenderSourceFileTask implements RenderTask {
   }
 
   @Override
-  public List<Path> call() throws IOException {
+  public Path call() throws IOException {
     String displayPath =
         prefix
             .relativize(path)
@@ -72,11 +70,8 @@ final class RenderSourceFileTask implements RenderTask {
     PageData page = PageData.newBuilder().setFile(file).build();
 
     Path htmlPath = dfs.getPath(path);
-    Path jsonPath = dfs.getJsonPath(htmlPath);
-    renderer.render(htmlPath, jsonPath, page);
-
-    index.addSourceFile(htmlPath, jsonPath);
-
-    return ImmutableList.of(htmlPath, jsonPath);
+    renderer.render(htmlPath, page);
+    index.addSourceFile(htmlPath);
+    return htmlPath;
   }
 }

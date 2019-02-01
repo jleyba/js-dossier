@@ -17,8 +17,7 @@ limitations under the License.
 package com.github.jsdossier;
 
 import java.nio.file.Path;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 /** Defines a task for rendering one or more files. */
-interface RenderTask extends Callable<List<Path>> {}
+interface RenderTask extends Callable<Path> {}

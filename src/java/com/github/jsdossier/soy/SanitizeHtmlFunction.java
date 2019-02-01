@@ -1,31 +1,25 @@
 package com.github.jsdossier.soy;
 
-import static com.google.common.base.CaseFormat.LOWER_CAMEL;
-import static com.google.common.base.CaseFormat.UPPER_CAMEL;
-import static com.google.common.base.Preconditions.checkState;
-
 import com.google.common.collect.ImmutableSet;
+import com.google.template.soy.SoyFileSet;
+import com.google.template.soy.data.SanitizedContent.ContentKind;
+import com.google.template.soy.data.SoyValue;
 import com.google.template.soy.jssrc.restricted.JsExpr;
 import com.google.template.soy.jssrc.restricted.SoyJsSrcFunction;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 
 /** Function for sanitize a relative URL. */
 @Singleton
-final class SanitizeHtmlFunction implements SoyJsSrcFunction {
+final class SanitizeHtmlFunction extends AbstractSoyJavaFunction implements SoyJsSrcFunction {
+  private final Provider<SoyFileSet.Builder> sfsBuilder;
+
   @Inject
-  SanitizeHtmlFunction() {}
-
-  @Override
-  public final String getName() {
-    String name = getClass().getSimpleName();
-    checkState(name.endsWith("Function"), "%s must end with 'Function'", name);
-
-    name = name.substring(0, name.length() - "Function".length());
-    name = UPPER_CAMEL.to(LOWER_CAMEL, name);
-    return name;
+  SanitizeHtmlFunction(Provider<SoyFileSet.Builder> sfsBuilder) {
+    this.sfsBuilder = sfsBuilder;
   }
 
   @Override
@@ -37,5 +31,23 @@ final class SanitizeHtmlFunction implements SoyJsSrcFunction {
   @Override
   public Set<Integer> getValidArgsSizes() {
     return ImmutableSet.of(1);
+  }
+
+  @Override
+  public SoyValue computeForJava(List<SoyValue> args) {
+    // Yes, this is a gross hack to generate HTML content that will not be HTML-escaped by
+    // strict soy templates.
+    return sfsBuilder
+        .get()
+        .add(
+            "{namespace dossier.generate}{template .html}{literal}"
+                + getStringArgument(args, 0)
+                + "{/literal}{/template}",
+            "<synthetic>")
+        .build()
+        .compileToTofu()
+        .newRenderer("dossier.generate.html")
+        .setContentKind(ContentKind.HTML)
+        .renderStrict();
   }
 }

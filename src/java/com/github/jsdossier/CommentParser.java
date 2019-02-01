@@ -247,11 +247,7 @@ public class CommentParser {
             }
             builder.append(linkText);
           } else {
-            try {
-              soyRenderer.render(builder, linkText, type.getLink(), codeLink);
-            } catch (IOException e) {
-              throw new AssertionError("should never happen", e);
-            }
+            soyRenderer.render(builder, linkText, type.getLink(), codeLink);
           }
           break;
 
