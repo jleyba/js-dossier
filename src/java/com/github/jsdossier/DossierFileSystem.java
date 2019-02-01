@@ -38,7 +38,6 @@ import javax.inject.Inject;
 @DocumentationScoped
 final class DossierFileSystem {
 
-  private static final String DATA_DIR = "data";
   private static final String MODULE_DIR = "module";
   private static final String PAGE_DIR = "page";
   private static final String SOURCE_DIR = "source";
@@ -170,14 +169,6 @@ final class DossierFileSystem {
     String name = getDisplayName(type);
     String exports = stripExtension(path).getFileName().toString() + "_exports_" + name + ".html";
     return path.resolveSibling(exports);
-  }
-
-  /** Returns the path to the generated JSON data file for the given type. */
-  public Path getJsonPath(NominalType type) {
-    Path path = getPath(type);
-    String name = path.getFileName().toString().replaceAll("\\.html$", ".json");
-    path = outputRoot.relativize(path.resolveSibling(name));
-    return outputRoot.resolve(DATA_DIR).resolve(path);
   }
 
   /** Returns the path to the generated documentation for the given {@code module}. */
