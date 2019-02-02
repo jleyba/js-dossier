@@ -97,7 +97,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import jdk.nashorn.internal.ir.annotations.Immutable;
 
 /** Describes the runtime configuration for the app. */
 @AutoValue
@@ -317,23 +316,6 @@ abstract class Config {
   )
   abstract Environment getEnvironment();
 
-  @Description(
-    name = "includeTestOnly",
-    desc =
-        "Whether to include files that include a `goog.setTestOnly()` statement."
-            + " These files are ignored by default."
-  )
-  abstract boolean getIncludeTestOnly();
-
-  @Description(
-      name = "includeTestOnlyPaths",
-      desc =
-          "Files to include even if they have `goog.setTestOnly()` statements."
-              + " This option only refines the behavior of `includeTestOnly`; files must still be"
-              + " included via `sources`."
-  )
-  abstract ImmutableSet<Path> getIncludeTestOnlyPaths();
-
   abstract FileSystem getFileSystem();
 
   abstract Builder toBuilder();
@@ -371,8 +353,6 @@ abstract class Config {
 
   public static Builder builder() {
     return new AutoValue_Config.Builder()
-        .setIncludeTestOnly(false)
-        .setIncludeTestOnlyPaths(ImmutableSet.of())
         .setClosureDepFiles(ImmutableSet.of())
         .setSources(ImmutableSet.of())
         .setModules(ImmutableSet.of())
@@ -455,10 +435,6 @@ abstract class Config {
 
     public abstract Builder setEnvironment(Environment env);
 
-    public abstract Builder setIncludeTestOnly(boolean b);
-
-    public abstract Builder setIncludeTestOnlyPaths(ImmutableSet<Path> s);
-
     abstract Config autoBuild();
 
     private Builder duplicate() {
@@ -469,6 +445,7 @@ abstract class Config {
       ImmutableSet<Path> excludes = getExcludes();
 
       if (!excludes.isEmpty()) {
+        @SuppressWarnings("unchecked")
         Predicate<Path> filter = path -> notIn(excludes).test(path) && notHidden().test(path);
 
         setSources(getSources().stream().filter(filter).collect(toImmutableSet()));

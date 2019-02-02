@@ -42,7 +42,6 @@ public abstract class Symbol implements StaticSlot, StaticRef {
         .setPosition(Position.of(module.getRoot()))
         .setFile(module.getPath())
         .setNode(module.getRoot())
-        .setModuleExports(true)
         .build();
   }
 
@@ -134,16 +133,11 @@ public abstract class Symbol implements StaticSlot, StaticRef {
   @CheckReturnValue
   public abstract String getReferencedSymbol();
 
-  /** Whether this symbol was seen in a goog.provide statement. */
-  abstract boolean isGoogProvide();
-
   /**
-   * Whether symbol was only seen in a goog.provide statement or if it was actually seen in code.
+   * Whether this symbol was only seen in a goog.provide statement, or if it was actually found in
+   * code.
    */
-  abstract boolean isGoogProvideOnly();
-
-  /** Whether this is the symbol for a module's main exports object. */
-  abstract boolean isModuleExports();
+  abstract boolean isGoogProvide();
 
   /** Converts this symbol back to a builder. */
   abstract Builder toBuilder();
@@ -153,8 +147,6 @@ public abstract class Symbol implements StaticSlot, StaticRef {
   public abstract static class Builder {
     Builder() {
       setGoogProvide(false);
-      setGoogProvideOnly(false);
-      setModuleExports(false);
     }
 
     public abstract String getName();
@@ -175,10 +167,6 @@ public abstract class Symbol implements StaticSlot, StaticRef {
     public abstract Builder setNode(Node n);
 
     public abstract Builder setGoogProvide(boolean provide);
-
-    public abstract Builder setGoogProvideOnly(boolean provide);
-
-    public abstract Builder setModuleExports(boolean exports);
 
     public abstract Symbol build();
   }

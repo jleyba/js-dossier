@@ -21,7 +21,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import com.github.jsdossier.MarkdownPage;
 import com.github.jsdossier.ModuleNamingConvention;
 import com.github.jsdossier.annotations.DocumentationScoped;
-import com.github.jsdossier.annotations.IncludeTestOnly;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.ModuleExterns;
 import com.github.jsdossier.annotations.ModuleFilter;
@@ -65,7 +64,6 @@ public abstract class GuiceRule implements TestRule {
   public static Builder builder(Object target, Module... modules) {
     Builder builder = new AutoValue_GuiceRule.Builder();
     return builder
-        .setIncludeTestOnly(false)
         .setTarget(target)
         .setModuleNamingConvention(ModuleNamingConvention.ES6)
         .setNewTypeInference(false)
@@ -113,10 +111,6 @@ public abstract class GuiceRule implements TestRule {
   @Nullable
   abstract Class<? extends NodeLibrary> getNodeLibrary();
 
-  abstract boolean getIncludeTestOnly();
-
-  abstract ImmutableSet<Path> getIncludeTestOnlyPaths();
-
   public abstract Builder toBuilder();
 
   @Override
@@ -152,16 +146,6 @@ public abstract class GuiceRule implements TestRule {
                       bind(NodeLibrary.class).to(getNodeLibrary());
                     }
                   }
-
-                  @Provides
-                  @IncludeTestOnly
-                  boolean provideIncludeTestOnly() {
-                    return getIncludeTestOnly();
-                  }
-
-                  @Provides
-                  @IncludeTestOnly
-                  ImmutableSet<Path> provideIncludeTestOnlyPaths() { return getIncludeTestOnlyPaths(); }
 
                   @Provides
                   @Stderr
@@ -309,15 +293,6 @@ public abstract class GuiceRule implements TestRule {
     }
 
     public abstract Builder setNodeLibrary(@Nullable Class<? extends NodeLibrary> library);
-
-    public abstract Builder setIncludeTestOnly(boolean b);
-
-    public abstract ImmutableSet.Builder<Path> includeTestOnlyPathsBuilder();
-
-    public Builder addIncludeTestOnlyPaths(Iterable<Path> paths) {
-      includeTestOnlyPathsBuilder().addAll(paths);
-      return this;
-    }
 
     public abstract GuiceRule build();
   }
