@@ -10,7 +10,7 @@
    +  com.google.guava:guava:27.0.1-jre
    +  com.google.javascript:closure-compiler-unshaded:v20190121
    +  com.google.javascript:closure-compiler-externs:v20190121
-   +  com.google.template:soy:2018-01-03
+   +  com.google.template:soy:2018-03-14
    +  com.google.protobuf:protobuf-java:3.5.0
 -  Removed unused dependencies:
    +  joda-time:joda-time:2.3

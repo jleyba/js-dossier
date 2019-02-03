@@ -15,7 +15,7 @@
     {if $renderParagraph}
       <p>
     {/if}
-    {foreach $token in $comment.tokenList}
+    {for $token in $comment.tokenList}
       {if $token.link and $token.link.href}
         {call dossier.soy.type.typeLink}
           {param href: $token.link.href /}
@@ -28,7 +28,7 @@
         {if $token.text}{$token.text}{/if}
         {if $token.html}{sanitizeHtml($token.html)}{/if}
       {/if}
-    {/foreach}
+    {/for}
     {if $renderParagraph}
       </p>
     {/if}
@@ -103,13 +103,13 @@
       {param block: true /}
       {param cell1 kind="html"}
         <ul class="type-list">
-        {foreach $type in $types}
+        {for $type in $types}
           <li {if $typeClass}{sp}class="{$typeClass}"{/if}>
             {call dossier.soy.type.typeReference}
               {param type: $type /}
               {param useQualifiedName: true /}
             {/call}
-        {/foreach}
+        {/for}
         </ul>
       {/param}
     {/call}
@@ -149,7 +149,7 @@
       <h2>Values</h2>
       <section class="property">
         <table class="info">
-          {foreach $value in $enumeration.valueList}
+          {for $value in $enumeration.valueList}
             {call .infoRow}
               {param id: $value.name /}
               {param block: true /}
@@ -166,7 +166,7 @@
                 {/if}
               {/param}
             {/call}
-          {/foreach}
+          {/for}
         </table>
       </section>
     </section>
@@ -187,7 +187,7 @@
       <h2>{$title}</h2>
       <div class="type-summary">
         <dl>
-          {foreach $type in $types}
+          {for $type in $types}
             <dt><a href="{$type.href}">{$type.name}</a>
             <dd>
               {if $type.summary and length($type.summary.tokenList)}
@@ -197,7 +197,7 @@
               {else}
                 No description.
               {/if}
-          {/foreach}
+          {/for}
         </dl>
       </div>
     </section>
@@ -223,12 +223,11 @@
       {param cell1 kind="html"}
         {if $details and length($details) > 0}
           <table class="info detail">
-            {foreach $detail in $details}
+            {for $detail in $details}
               {let $type kind="html"}
                 {if $detail.type}
                   {call dossier.soy.type.expression}
                     {param expression: $detail.type /}
-                    {param strict: true /}
                     {param undefinedAsVoid: $undefinedAsVoid /}
                   {/call}
                 {/if}
@@ -267,7 +266,7 @@
                   {/call}
                 {/if}
               {/if}
-            {/foreach}
+            {/for}
           </table>
         {else}
           <p>None.</p>
@@ -325,10 +324,10 @@
  */
 {template .printTemplateNames}
   <var class="template">&lt;
-  {foreach $name in $names}
+  {for $name in $names}
     {$name}
     {if not isLast($name)},{sp}{/if}
-  {/foreach}
+  {/for}
   &gt;</var>
 {/template}
 
@@ -352,13 +351,13 @@
   (
   {if length($fn.parameterList)}
     {sp}
-    {foreach $parameter in $fn.parameterList}
+    {for $parameter in $fn.parameterList}
       <var>
         {if $parameter.type and $parameter.type.isVarargs}...{/if}
         {$parameter.name}
       </var>
       {if not isLast($parameter)},{sp}{/if}
-    {/foreach}
+    {/for}
     {sp}
   {/if}
   )
@@ -458,19 +457,19 @@
     <section class="instance-methods">  // TODO: rename.
       <h2>{$title}</h2>
       {if $functions and length($functions)}
-        {foreach $fn in $functions}
+        {for $fn in $functions}
           {call .renderProperty}
             {param fn: $fn /}
             {param instanceProperty: $instanceProperties /}
           {/call}
-        {/foreach}
+        {/for}
       {elseif $properties and length($properties)}
-        {foreach $property in $properties}
+        {for $property in $properties}
           {call .renderProperty}
             {param property: $property /}
             {param instanceProperty: $instanceProperties /}
           {/call}
-        {/foreach}
+        {/for}
       {/if}
     </section>
   {/if}
@@ -514,7 +513,6 @@
             {if $property.type}
               {call dossier.soy.type.yields}
                 {param expression: $property.type /}
-                {param strict: true /}
               {/call}
             {/if}
           {/if}
@@ -571,11 +569,11 @@
 {template .printFunctions}
   {@param functions: list<dossier.Function>}
 
-  {foreach $fn in $functions}
+  {for $fn in $functions}
     {call .renderProperty}
       {param fn: $fn /}
     {/call}
-  {/foreach}
+  {/for}
 {/template}
 
 /**
@@ -584,7 +582,7 @@
 {template .printReexportedModules}
   {@param properties: list<dossier.Property>}
   <ul>
-    {foreach $property in $properties}
+    {for $property in $properties}
       <li id="{$property.base.name}">
         {let $link: $property.base.source
                     and ($property.base.source.path or $property.base.source.url) /}
@@ -603,10 +601,9 @@
         {if $property.type}
           {call dossier.soy.type.yields}
             {param expression: $property.type /}
-            {param strict: true /}
           {/call}
         {/if}
-    {/foreach}
+    {/for}
   </ul>
 {/template}
 
@@ -622,12 +619,12 @@
       {param block: true /}
       {param title kind="html"}See Also{/param}
       {param cell1 kind="html"}
-        {foreach $ref in $base.seeAlsoList}
+        {for $ref in $base.seeAlsoList}
           {call .comment}
             {param comment: $ref /}
             {param ensureParagraph: true /}
           {/call}
-        {/foreach}
+        {/for}
       {/param}
     {/call}
   {/if}
@@ -723,13 +720,13 @@
     <section class="types">
       <h2>{if $isModule}Exported{sp}{/if}{$title}</h2>
       <ul>
-        {foreach $type in $types}
+        {for $type in $types}
           <li class="summary">
             {call .tags}
               {param tags: $type.tags /}
             {/call}
             <div><a href="{$type.href}">{$type.name}</a></div>
-        {/foreach}
+        {/for}
       </ul>
     </section>
   {/if}
@@ -746,13 +743,13 @@
     <article>
       <h2>Did you mean?</h2>
       <ul>
-        {foreach $type in $types}
+        {for $type in $types}
           <li><a href="{$type.filename}">{$type.qualifiedName}</a>
-        {/foreach}
+        {/for}
       </ul>
     </article>
   {/if}
-  {foreach $type in $types}
+  {for $type in $types}
     {if length($types) > 1}
       <article
           style="display:none"
@@ -833,7 +830,6 @@
                   {param cell1 kind="html"}
                     {call dossier.soy.type.expression}
                       {param expression: $type.enumeration.type /}
-                      {param strict: true /}
                     {/call}
                   {/param}
                 {/call}
@@ -944,7 +940,7 @@
       {/if}
 
     </article>
-  {/foreach}
+  {/for}
 {/template}
 
 
@@ -972,11 +968,11 @@
     <h1 class="title">{$file.path}</h1>
     <div>
       <table>
-        {foreach $line in $file.linesList}
+        {for $line in $file.linesList}
           <tr id="l{index($line) + 1}">
             <td><a href="#l{index($line) + 1}">{index($line) + 1}</a>
             <td>{if $line}{$line}{/if}
-        {/foreach}
+        {/for}
       </table>
     </div>
   </article>
@@ -1002,9 +998,9 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   {call .pageTitle data="all" /}
   {if $resources}
-    {foreach $styleSheet in $resources.cssList}
+    {for $styleSheet in $resources.cssList}
       <link href="{$styleSheet}" rel="stylesheet" type="text/css">
-    {/foreach}
+    {/for}
   {/if}
   {if $headContent}{$headContent}{/if}
   <header>

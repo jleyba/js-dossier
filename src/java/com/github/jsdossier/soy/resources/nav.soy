@@ -32,7 +32,7 @@
       {call .typeTree_ data="all" /}
     </section>
   {/if}
-  {foreach $link in $links}
+  {for $link in $links}
     {if $link.href and $link.text}
       <section>
         <h3 class="dossier-nav-title">
@@ -40,7 +40,7 @@
         </h3>
       </section>
     {/if}
-  {/foreach}
+  {/for}
 {/template}
 
 
@@ -51,12 +51,12 @@
   {@param modules: list<dossier.Index.Entry>}
   {if length($modules)}
     <ul class="tree">
-      {foreach $module in $modules}
+      {for $module in $modules}
         {call .treeItem_}
           {param type: $module /}
           {param subTypes: $module.childList /}
         {/call}
-      {/foreach}
+      {/for}
     </ul>
   {/if}
 {/template}
@@ -69,12 +69,12 @@
   {@param types: list<dossier.Index.Entry>}
   {if length($types)}
     <ul class="tree">
-      {foreach $type in $types}
+      {for $type in $types}
         {call .treeItem_}
           {param type: $type /}
           {param subTypes: $type.childList /}
         {/call}
-      {/foreach}
+      {/for}
     </ul>
   {/if}
 {/template}

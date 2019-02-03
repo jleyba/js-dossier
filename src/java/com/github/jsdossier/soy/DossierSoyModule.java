@@ -18,21 +18,15 @@ package com.github.jsdossier.soy;
 
 import com.github.jsdossier.proto.Dossier;
 import com.github.jsdossier.proto.Expression;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.multibindings.Multibinder;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.Descriptors;
 import com.google.template.soy.SoyModule;
-import com.google.template.soy.data.SoyCustomValueConverter;
 import com.google.template.soy.shared.restricted.SoyFunction;
-import com.google.template.soy.types.SoyTypeProvider;
-import com.google.template.soy.types.proto.SoyProtoTypeProvider;
-import com.google.template.soy.types.proto.SoyProtoValueConverter;
-import java.io.IOException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import javax.inject.Singleton;
 
@@ -52,26 +46,11 @@ public final class DossierSoyModule extends AbstractModule {
   }
 
   @Provides
-  List<SoyCustomValueConverter> provideConverters(SoyProtoValueConverter protoConverter) {
-    return ImmutableList.of(protoConverter);
-  }
-
-  @Provides
-  SoyTypeProvider provideTypeProvider(SoyProtoTypeProvider provider) {
-    return provider;
-  }
-
-  @Provides
   @Singleton
-  SoyProtoTypeProvider provideSoyTypeProvider()
-      throws IOException, Descriptors.DescriptorValidationException {
-    return new SoyProtoTypeProvider.Builder()
-        .addDescriptors(
-            collectDescriptors(
-                DescriptorProtos.getDescriptor(),
-                Dossier.getDescriptor(),
-                Expression.getDescriptor()))
-        .build();
+  ImmutableSet<Descriptors.GenericDescriptor> provideProtoDescriptors() {
+    return ImmutableSet.copyOf(
+        collectDescriptors(
+            DescriptorProtos.getDescriptor(), Dossier.getDescriptor(), Expression.getDescriptor()));
   }
 
   private static Set<Descriptors.GenericDescriptor> collectDescriptors(

@@ -129,12 +129,12 @@
     {/call}
     {if length($fn.parameterList)},{sp}{/if}
   {/if}
-  {foreach $param in $fn.parameterList}
+  {for $param in $fn.parameterList}
     {call .expression_}
       {param expression: $param /}
     {/call}
     {if not isLast($param)},{sp}{/if}
-  {/foreach}
+  {/for}
   )
   {if $fn.returnType}
     :{sp}
@@ -192,12 +192,12 @@
 
   {if length($type.templateTypeList)}
     &lt;
-    {foreach $template in $type.templateTypeList}
+    {for $template in $type.templateTypeList}
       {call .expression_}
         {param expression: $template /}
       {/call}
       {if not isLast($template)},{sp}{/if}
-    {/foreach}
+    {/for}
     &gt;
   {/if}
 {/template}
@@ -221,13 +221,13 @@
   {@param expression: dossier.expression.TypeExpression}
 
   {lb}
-  {foreach $entry in $expression.recordType.entryList}
+  {for $entry in $expression.recordType.entryList}
     {$entry.key}:{sp}
     {call .expression_}
       {param expression: $entry.value /}
     {/call}
     {if not isLast($entry)},{sp}{/if}
-  {/foreach}
+  {/for}
   {rb}
 {/template}
 
@@ -239,11 +239,11 @@
   {@param expression: dossier.expression.TypeExpression}
 
   (
-  {foreach $alternate in $expression.unionType.typeList}
+  {for $alternate in $expression.unionType.typeList}
     {call .expression_}
       {param expression: $alternate /}
     {/call}
     {if not isLast($alternate)}|{/if}
-  {/foreach}
+  {/for}
   )
 {/template}

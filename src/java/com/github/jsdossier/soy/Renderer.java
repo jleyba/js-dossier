@@ -33,15 +33,15 @@ import com.google.common.html.types.SafeUrlProto;
 import com.google.common.html.types.SafeUrls;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
+import com.google.protobuf.Descriptors;
 import com.google.template.soy.SoyFileSet;
 import com.google.template.soy.data.SanitizedContent;
 import com.google.template.soy.data.SoyValue;
 import com.google.template.soy.data.restricted.NullData;
 import com.google.template.soy.jssrc.SoyJsSrcOptions;
 import com.google.template.soy.tofu.SoyTofu;
-import com.google.template.soy.types.SoyTypeProvider;
-import com.google.template.soy.types.SoyTypeRegistry;
-import com.google.template.soy.types.proto.SoyProtoTypeProvider;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -66,7 +66,7 @@ public class Renderer {
   @Inject
   Renderer(
       Provider<SoyFileSet.Builder> filesetBuilderProvider,
-      SoyTypeProvider typeProvider,
+      ImmutableSet<Descriptors.GenericDescriptor> descriptors,
       JsonRenderer jsonRenderer) {
     this.filesetBuilderProvider = filesetBuilderProvider;
     this.tofu =
@@ -74,7 +74,7 @@ public class Renderer {
             .get()
             .add(Renderer.class.getResource("resources/types.soy"))
             .add(Renderer.class.getResource("resources/dossier.soy"))
-            .setLocalTypeRegistry(new SoyTypeRegistry(ImmutableSet.of(typeProvider)))
+            .addProtoDescriptors(descriptors)
             .build()
             .compileToTofu();
     this.jsonRenderer = jsonRenderer;
@@ -151,14 +151,16 @@ public class Renderer {
 
     Injector injector = Guice.createInjector(new DossierSoyModule());
 
-    SoyTypeProvider typeProvider = injector.getInstance(SoyProtoTypeProvider.class);
+    ImmutableSet<Descriptors.GenericDescriptor> descriptors =
+        injector.getInstance(
+            Key.get(new TypeLiteral<ImmutableSet<Descriptors.GenericDescriptor>>() {}));
     SoyFileSet fileSet =
         injector
             .getInstance(SoyFileSet.Builder.class)
             .add(Renderer.class.getResource("resources/dossier.soy"))
             .add(Renderer.class.getResource("resources/nav.soy"))
             .add(Renderer.class.getResource("resources/types.soy"))
-            .setLocalTypeRegistry(new SoyTypeRegistry(ImmutableSet.of(typeProvider)))
+            .addProtoDescriptors(descriptors)
             .build();
 
     SoyJsSrcOptions options = new SoyJsSrcOptions();

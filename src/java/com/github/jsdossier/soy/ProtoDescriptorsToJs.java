@@ -34,8 +34,6 @@ import com.google.template.soy.SoyFileSet;
 import com.google.template.soy.data.SanitizedContent.ContentKind;
 import com.google.template.soy.shared.restricted.SoyFunction;
 import com.google.template.soy.tofu.SoyTofu;
-import com.google.template.soy.types.SoyTypeProvider;
-import com.google.template.soy.types.SoyTypeRegistry;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -142,10 +140,12 @@ final class ProtoDescriptorsToJs {
 
               @Provides
               @Internal
-              SoyTofu provideTofu(SoyFileSet.Builder builder, SoyTypeProvider typeProvider) {
+              SoyTofu provideTofu(
+                  SoyFileSet.Builder builder,
+                  ImmutableSet<Descriptors.GenericDescriptor> descriptors) {
                 return builder
                     .add(ProtoDescriptorsToJs.class.getResource("resources/proto.soy"))
-                    .setLocalTypeRegistry(new SoyTypeRegistry(ImmutableSet.of(typeProvider)))
+                    .addProtoDescriptors(descriptors)
                     .build()
                     .compileToTofu();
               }

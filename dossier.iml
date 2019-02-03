@@ -46,7 +46,7 @@
     <orderEntry type="library" name="com.google.javascript:closure-compiler-unshaded:v20190121" level="project" />
     <orderEntry type="library" name="com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:r239" level="project" />
     <orderEntry type="library" name="com.google.protobuf:protobuf-java:3.5.0" level="project" />
-    <orderEntry type="library" name="com.google.template:soy:2018-01-03" level="project" />
+    <orderEntry type="library" name="com.google.template:soy:2018-03-14" level="project" />
     <orderEntry type="library" name="com.squareup:javawriter:2.5.1" level="project" />
     <orderEntry type="library" name="javax.inject:javax.inject:1" level="project" />
     <orderEntry type="library" name="libjava_proto" level="project" />
