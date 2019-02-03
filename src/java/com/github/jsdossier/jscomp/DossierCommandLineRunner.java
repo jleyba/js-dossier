@@ -34,6 +34,7 @@ import com.google.javascript.jscomp.CheckLevel;
 import com.google.javascript.jscomp.ClosureCodingConvention;
 import com.google.javascript.jscomp.CommandLineRunner;
 import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.FlagUsageException;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.WhitelistWarningsGuard;
 import java.io.File;
@@ -117,7 +118,7 @@ public final class DossierCommandLineRunner extends CommandLineRunner implements
 
   /** Hack to break encapsulation. */
   private static final class HiddenFlagEntry<T> extends AbstractCommandLineRunner.FlagEntry<T> {
-    protected HiddenFlagEntry(T flag, String value) {
+    private HiddenFlagEntry(T flag, String value) {
       super(flag, value);
     }
   }

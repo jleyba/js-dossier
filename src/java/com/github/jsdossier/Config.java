@@ -673,7 +673,7 @@ abstract class Config {
 
     List<Path> sortedDeps =
         new Es6SortedDependencies<>(allDeps)
-            .getSortedDependenciesOf(sourceDeps)
+            .getSortedStrongDependenciesOf(sourceDeps)
             .stream()
             .map(toPath(closureBase))
             .collect(toList());
