@@ -6,6 +6,8 @@
    script environment (`BROWSER` or `NODE`). Previously, the `NODE` environment
    was automatically selected by specifying any CommonJS input files.
 -  Upgraded dependencies:
+   +  com.google.guava:failureaccess:jar:1.0.1
+   +  com.google.guava:guava:27.0.1-jre
    +  com.google.javascript:closure-compiler-unshaded:v20190121
    +  com.google.javascript:closure-compiler-externs:v20190121
    +  com.google.template:soy:2018-01-03

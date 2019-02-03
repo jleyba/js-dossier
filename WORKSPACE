@@ -117,8 +117,14 @@ maven_jar(
 
 maven_jar(
     name = "dossier_guava",
-    artifact = "com.google.guava:guava:22.0",
-    sha1 = "3564ef3803de51fb0530a8377ec6100b33b0d073",
+    artifact = "com.google.guava:guava:27.0.1-jre",
+    sha1 = "bd41a290787b5301e63929676d792c507bbc00ae",
+)
+
+maven_jar(
+    name = "dossier_com_google_guava_failureaccess",
+    artifact = "com.google.guava:failureaccess:jar:1.0.1",
+    sha1 = "1dcf1de382a0bf95a3d8b0849546c88bac1292c9",
 )
 
 maven_jar(

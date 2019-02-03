@@ -100,7 +100,10 @@ java_library(
 
 java_library(
     name = "guava",
-    exports = ["@dossier_guava//jar"],
+    exports = [
+      "@dossier_com_google_guava_failureaccess//jar",
+      "@dossier_guava//jar",
+    ],
 )
 
 java_library(
