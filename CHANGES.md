@@ -12,6 +12,8 @@
    +  com.google.javascript:closure-compiler-externs:v20190121
    +  com.google.template:soy:2018-01-03
    +  com.google.protobuf:protobuf-java:3.5.0
+-  Removed unused dependencies:
+   +  joda-time:joda-time:2.3
 
 
 # v0.12.1

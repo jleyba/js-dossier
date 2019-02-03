@@ -46,15 +46,14 @@ import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-import org.joda.time.Instant;
-import org.joda.time.Period;
-import org.joda.time.format.PeriodFormatterBuilder;
 
 final class Main {
   private Main() {}
@@ -194,21 +193,22 @@ final class Main {
     }
 
     Instant stop = Instant.now();
-    String output =
-        new PeriodFormatterBuilder()
-            .appendHours()
-            .appendSuffix("h") // I hope not...
-            .appendSeparator(" ")
-            .appendMinutes()
-            .appendSuffix("m")
-            .appendSeparator(" ")
-            .appendSecondsWithOptionalMillis()
-            .appendSuffix("s")
-            .toFormatter()
-            .print(new Period(start, stop));
-
-    System.out.println("Finished in " + output);
+    System.out.println("Finished in " + formatDuration(Duration.between(start, stop)));
     return 0;
+  }
+
+  private static String formatDuration(Duration d) {
+    StringBuilder b = new StringBuilder(24);
+    final long secondsPerMinute = 60;
+    final long secondsPerHour = secondsPerMinute * 60;
+    long hours = d.getSeconds() / secondsPerHour;
+    if (hours != 0) {
+      b.append(hours).append('h');
+    }
+    long minutes = (d.getSeconds() % secondsPerHour) / secondsPerMinute;
+    b.append(minutes).append('m');
+    b.append(d.getSeconds() % secondsPerMinute).append('s');
+    return b.toString();
   }
 
   public static void main(String[] args) {

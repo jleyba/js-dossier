@@ -49,7 +49,6 @@
     <orderEntry type="library" name="com.google.template:soy:2018-01-03" level="project" />
     <orderEntry type="library" name="com.squareup:javawriter:2.5.1" level="project" />
     <orderEntry type="library" name="javax.inject:javax.inject:1" level="project" />
-    <orderEntry type="library" name="joda-time:joda-time:2.3" level="project" />
     <orderEntry type="library" name="libjava_proto" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="aopalliance:aopalliance:1.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="com.ibm.icu:icu4j:51.1" level="project" />

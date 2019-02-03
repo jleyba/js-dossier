@@ -15,7 +15,6 @@ java_library(
         "//lib/maven:guava",
         "//lib/maven:guice",
         "//lib/maven:inject",
-        "//lib/maven:joda_time",
         "//lib/maven:jsr305",
         "//lib/maven:owasp_html_sanitizer",
         "//lib/maven:safe_types",

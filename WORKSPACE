@@ -176,12 +176,6 @@ maven_jar(
 )
 
 maven_jar(
-    name = "dossier_joda_time",
-    artifact = "joda-time:joda-time:2.3",
-    sha1 = "56498efd17752898cfcc3868c1b6211a07b12b8f",
-)
-
-maven_jar(
     name = "dossier_jsoup",
     artifact = "org.jsoup:jsoup:1.8.3",
     sha1 = "65fd012581ded67bc20945d85c32b4598c3a9cf1",

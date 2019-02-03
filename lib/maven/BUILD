@@ -143,11 +143,6 @@ java_library(
 )
 
 java_library(
-    name = "joda_time",
-    exports = ["@dossier_joda_time//jar"],
-)
-
-java_library(
     name = "jsoup",
     testonly = 1,
     exports = ["@dossier_jsoup//jar"],
