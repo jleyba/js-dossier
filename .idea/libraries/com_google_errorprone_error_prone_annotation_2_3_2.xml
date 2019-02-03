@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="com.google.errorprone:error_prone_annotation:2.3.2" type="repository">
+    <properties maven-id="com.google.errorprone:error_prone_annotation:2.3.2" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/errorprone/error_prone_annotation/2.3.2/error_prone_annotation-2.3.2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/errorprone/error_prone_annotations/2.0.18/error_prone_annotations-2.0.18.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/errorprone/error_prone_annotation/2.3.2/error_prone_annotation-2.3.2-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/errorprone/error_prone_annotations/2.0.18/error_prone_annotations-2.0.18-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
