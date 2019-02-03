@@ -7,6 +7,7 @@
    was automatically selected by specifying any CommonJS input files.
 -  Upgraded dependencies:
    +  com.google.code.gson:gson:2.8.5
+   +  com.google.common.html.types:types:1.0.8
    +  com.google.guava:failureaccess:jar:1.0.1
    +  com.google.guava:guava:27.0.1-jre
    +  com.google.javascript:closure-compiler-unshaded:v20190121

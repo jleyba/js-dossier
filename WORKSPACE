@@ -213,8 +213,8 @@ maven_jar(
 
 maven_jar(
     name = "dossier_safe_types",
-    artifact = "com.google.common.html.types:types:1.0.5",
-    sha1 = "cbf72feac4a1599add33222a876e24ab31a3f387",
+    artifact = "com.google.common.html.types:types:1.0.8",
+    sha1 = "9e9cf7bc4b2a60efeb5f5581fe46d17c068e0777",
 )
 
 maven_jar(
