@@ -111,8 +111,8 @@ maven_jar(
 
 maven_jar(
     name = "dossier_gson",
-    artifact = "com.google.code.gson:gson:2.6.2",
-    sha1 = "f1bc476cc167b18e66c297df599b2377131a8947",
+    artifact = "com.google.code.gson:gson:2.8.5",
+    sha1 = "f645ed69d595b24d4cf8b3fbb64cc505bede8829",
 )
 
 maven_jar(
