@@ -6,6 +6,9 @@
    script environment (`BROWSER` or `NODE`). Previously, the `NODE` environment
    was automatically selected by specifying any CommonJS input files.
 -  Upgraded dependencies:
+   +  com.google.auto:auto-common:0.10
+   +  com.google.auto.value:auto-value:1.6.3
+   +  com.google.auto.value:auto-value-annotations:1.6.3
    +  com.google.code.gson:gson:2.8.5
    +  com.google.common.html.types:types:1.0.8
    +  com.google.guava:failureaccess:jar:1.0.1
