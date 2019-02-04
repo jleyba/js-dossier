@@ -373,7 +373,7 @@ public final class TypeCollectionPass implements CompilerPass {
         log.warning("skipping " + symbol.getName() + "; references global this");
         return;
       } else if (type.isOrdinaryFunction() && !typeRegistry.isProvided(symbol.getName())) {
-        log.warning("skipping " + symbol.getName() + "; is ordinary function");
+        log.info("skipping " + symbol.getName() + "; is ordinary function");
         return;
       }
       collectTypes(symbol.getName(), type, symbol.getNode(), symbol.getJSDocInfo());
