@@ -1,6 +1,7 @@
-.idea/workspace.xml
+.idea/codeStyles/
 .idea/dictionaries
 .idea/inspectionProfiles
+.idea/workspace.xml
 bazel-bin
 bazel-genfiles
 bazel-js-dossier
@@ -12,6 +13,7 @@ generated/
 generated_tests/
 key.pem
 node_modules/
-out/
 out.zip
+out/
+package-lock.json
 target/
