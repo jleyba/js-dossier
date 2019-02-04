@@ -21,9 +21,9 @@ import static com.google.common.truth.Truth.assertThat;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import org.commonmark.Extension;
-import org.commonmark.html.HtmlRenderer;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -34,8 +34,10 @@ public class MarkdownTableExtensionTest {
   private static final ImmutableList<? extends Extension> EXTENSIONS =
       ImmutableList.of(new MarkdownTableExtension());
   private static final Parser PARSER = Parser.builder().extensions(EXTENSIONS).build();
-  private static final HtmlRenderer RENDERER =
-      HtmlRenderer.builder().escapeHtml(false).extensions(EXTENSIONS).build();
+  private static final HtmlRenderer RENDERER = HtmlRenderer.builder()
+      .escapeHtml(false)
+      .extensions(EXTENSIONS)
+      .build();
 
   @Test
   public void requiresASeparatorLine() {
@@ -332,7 +334,7 @@ public class MarkdownTableExtensionTest {
         "<tr><th><em>A</em></th><th><code>B</code></th></tr>",
         "</thead>",
         "<tbody>",
-        "<tr><td><strong>c</strong></td><td><strong><em>d</em></strong></td></tr>",
+        "<tr><td><strong>c</strong></td><td><em><strong>d</strong></em></td></tr>",
         "</tbody>",
         "</table>");
   }

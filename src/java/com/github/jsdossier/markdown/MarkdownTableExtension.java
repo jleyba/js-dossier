@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.github.jsdossier.markdown;
 
-import org.commonmark.html.HtmlRenderer;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.commonmark.parser.Parser;
 
 /** Extension for MultiMarkdown/GitHub Flavored Markdown tables. */

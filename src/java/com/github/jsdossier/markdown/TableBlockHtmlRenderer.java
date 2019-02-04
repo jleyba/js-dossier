@@ -20,17 +20,17 @@ import com.google.common.collect.ImmutableSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.commonmark.html.HtmlWriter;
-import org.commonmark.html.renderer.NodeRenderer;
-import org.commonmark.html.renderer.NodeRendererContext;
+import org.commonmark.renderer.NodeRenderer;
+import org.commonmark.renderer.html.HtmlWriter;
+import org.commonmark.renderer.html.HtmlNodeRendererContext;
 import org.commonmark.node.Node;
 
 /** Renders a {@link TableBlock} to HTML. */
 final class TableBlockHtmlRenderer implements NodeRenderer {
 
-  private final NodeRendererContext context;
+  private final HtmlNodeRendererContext context;
 
-  TableBlockHtmlRenderer(NodeRendererContext context) {
+  TableBlockHtmlRenderer(HtmlNodeRendererContext context) {
     this.context = context;
   }
 
@@ -68,7 +68,7 @@ final class TableBlockHtmlRenderer implements NodeRenderer {
   }
 
   private void renderBlock(Node node, String tagName) {
-    HtmlWriter writer = context.getHtmlWriter();
+    HtmlWriter writer = context.getWriter();
     writer.line();
     writer.tag(tagName);
     renderChildren(node);
@@ -88,9 +88,9 @@ final class TableBlockHtmlRenderer implements NodeRenderer {
     Node parent = cell.getParent();
     boolean isHead = parent != null && parent.getParent() instanceof TableHeadNode;
     String tag = isHead ? "th" : "td";
-    context.getHtmlWriter().tag(tag, attributes);
+    context.getWriter().tag(tag, attributes);
     renderChildren(cell);
-    context.getHtmlWriter().tag("/" + tag);
+    context.getWriter().tag("/" + tag);
   }
 
   private void renderChildren(Node node) {

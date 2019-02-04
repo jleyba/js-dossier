@@ -1,3 +1,11 @@
+# v.next
+
+## Changes
+
+-  Upgraded dependencies:
+   +  com.atlassian.commonmark:commonmark:0.12.1
+
+
 # v0.13.1
 
 ## Bug Fixes

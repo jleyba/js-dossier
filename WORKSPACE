@@ -2,53 +2,52 @@ workspace(name = "dossier")
 
 http_archive(
     name = "io_bazel_rules_closure",
-    strip_prefix = "rules_closure-0.4.2",
     sha256 = "25f5399f18d8bf9ce435f85c6bbf671ec4820bc4396b3022cc5dc4bc66303609",
+    strip_prefix = "rules_closure-0.4.2",
     url = "http://bazel-mirror.storage.googleapis.com/github.com/bazelbuild/rules_closure/archive/0.4.2.tar.gz",
 )
 
 http_archive(
-  name = "com_google_protobuf",
-  strip_prefix = "protobuf-3.5.0",
-  sha256 = "0cc6607e2daa675101e9b7398a436f09167dffb8ca0489b0307ff7260498c13c",
-  urls = [
-      "https://mirror.bazel.build/github.com/google/protobuf/archive/v3.5.0.tar.gz",
-      "https://github.com/google/protobuf/archive/v3.5.0.tar.gz",
-  ],
+    name = "com_google_protobuf",
+    sha256 = "0cc6607e2daa675101e9b7398a436f09167dffb8ca0489b0307ff7260498c13c",
+    strip_prefix = "protobuf-3.5.0",
+    urls = [
+        "https://mirror.bazel.build/github.com/google/protobuf/archive/v3.5.0.tar.gz",
+        "https://github.com/google/protobuf/archive/v3.5.0.tar.gz",
+    ],
 )
 
 new_http_archive(
-  name = "dossier_closure_library",
-  urls = [
-      "https://mirror.bazel.build/github.com/google/closure-library/archive/v20171203.tar.gz",
-      "https://github.com/google/closure-library/archive/v20171203.tar.gz",
-  ],
-  sha256 = "5320f10c53a7dc47fbb863a2d7f9344245889afe9fd4e8ff5e44bd89aabcefc7",
-  strip_prefix = "closure-library-20171203",
-  build_file = "third_party/BUILD.closure_library",
+    name = "dossier_closure_library",
+    build_file = "third_party/BUILD.closure_library",
+    sha256 = "5320f10c53a7dc47fbb863a2d7f9344245889afe9fd4e8ff5e44bd89aabcefc7",
+    strip_prefix = "closure-library-20171203",
+    urls = [
+        "https://mirror.bazel.build/github.com/google/closure-library/archive/v20171203.tar.gz",
+        "https://github.com/google/closure-library/archive/v20171203.tar.gz",
+    ],
 )
 
 new_http_archive(
-  name = "dossier_closure_templates_library",
-  urls = [
-      "https://mirror.bazel.build/github.com/google/closure-templates/archive/release-2017-08-08.tar.gz",
-      "https://github.com/google/closure-templates/archive/release-2017-08-08.tar.gz",
-  ],
-  sha256 = "06c12a8ddb5206deac1a9d323afbf4d6bca1b9ca5ed3ca1dca76bb96fb503e46",
-  strip_prefix = "closure-templates-release-2017-08-08",
-  build_file = "third_party/BUILD.closure_templates_library",
+    name = "dossier_closure_templates_library",
+    build_file = "third_party/BUILD.closure_templates_library",
+    sha256 = "06c12a8ddb5206deac1a9d323afbf4d6bca1b9ca5ed3ca1dca76bb96fb503e46",
+    strip_prefix = "closure-templates-release-2017-08-08",
+    urls = [
+        "https://mirror.bazel.build/github.com/google/closure-templates/archive/release-2017-08-08.tar.gz",
+        "https://github.com/google/closure-templates/archive/release-2017-08-08.tar.gz",
+    ],
 )
 
-
 new_http_archive(
-  name = "dossier_jspb_library",
-  urls = [
-      "https://mirror.bazel.build/github.com/google/protobuf/archive/v3.5.0.tar.gz",
-      "https://github.com/google/protobuf/archive/v3.5.0.tar.gz",
-  ],
-  sha256 = "0cc6607e2daa675101e9b7398a436f09167dffb8ca0489b0307ff7260498c13c",
-  strip_prefix = "protobuf-3.5.0/js",
-  build_file = "third_party/BUILD.jspb_library",
+    name = "dossier_jspb_library",
+    build_file = "third_party/BUILD.jspb_library",
+    sha256 = "0cc6607e2daa675101e9b7398a436f09167dffb8ca0489b0307ff7260498c13c",
+    strip_prefix = "protobuf-3.5.0/js",
+    urls = [
+        "https://mirror.bazel.build/github.com/google/protobuf/archive/v3.5.0.tar.gz",
+        "https://github.com/google/protobuf/archive/v3.5.0.tar.gz",
+    ],
 )
 
 load("@io_bazel_rules_closure//closure:defs.bzl", "closure_repositories")
@@ -111,8 +110,8 @@ maven_jar(
 
 maven_jar(
     name = "dossier_commonmark",
-    artifact = "com.atlassian.commonmark:commonmark:0.5.1",
-    sha1 = "b35ae2353871955674bbfa1a92394272b1dada45",
+    artifact = "com.atlassian.commonmark:commonmark:0.12.1",
+    sha1 = "9e0657f89ab2731f8a7235d926fdae7febf104cb",
 )
 
 maven_jar(
