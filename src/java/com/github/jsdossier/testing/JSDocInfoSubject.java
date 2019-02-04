@@ -18,29 +18,19 @@ package com.github.jsdossier.testing;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.common.truth.FailureStrategy;
+import com.google.common.truth.FailureMetadata;
 import com.google.common.truth.Subject;
-import com.google.common.truth.SubjectFactory;
 import com.google.javascript.rhino.JSDocInfo;
 import javax.annotation.Nullable;
 
 public final class JSDocInfoSubject extends Subject<JSDocInfoSubject, JSDocInfo> {
 
-  static final SubjectFactory<JSDocInfoSubject, JSDocInfo> FACTORY = new Factory();
-
-  public JSDocInfoSubject(FailureStrategy failureStrategy, @Nullable JSDocInfo actual) {
-    super(failureStrategy, actual);
+  public JSDocInfoSubject(FailureMetadata md, @Nullable JSDocInfo actual) {
+    super(md, actual);
   }
 
   public void hasOriginalCommentString(String comment) {
     JSDocInfo info = actual();
     assertThat(info.getOriginalCommentString()).isEqualTo(comment);
-  }
-
-  public static final class Factory extends SubjectFactory<JSDocInfoSubject, JSDocInfo> {
-    @Override
-    public JSDocInfoSubject getSubject(FailureStrategy fs, JSDocInfo that) {
-      return new JSDocInfoSubject(fs, that);
-    }
   }
 }

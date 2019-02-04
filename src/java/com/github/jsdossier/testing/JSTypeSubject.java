@@ -16,24 +16,15 @@ limitations under the License.
 
 package com.github.jsdossier.testing;
 
-import com.google.common.truth.FailureStrategy;
+import com.google.common.truth.FailureMetadata;
 import com.google.common.truth.Subject;
-import com.google.common.truth.SubjectFactory;
 import com.google.javascript.rhino.jstype.JSType;
 import javax.annotation.Nullable;
 
 public final class JSTypeSubject extends Subject<JSTypeSubject, JSType> {
 
-  static final SubjectFactory<JSTypeSubject, JSType> FACTORY =
-      new SubjectFactory<JSTypeSubject, JSType>() {
-        @Override
-        public JSTypeSubject getSubject(FailureStrategy fs, JSType that) {
-          return new JSTypeSubject(fs, that);
-        }
-      };
-
-  JSTypeSubject(FailureStrategy failureStrategy, @Nullable JSType actual) {
-    super(failureStrategy, actual);
+  JSTypeSubject(FailureMetadata md, @Nullable JSType actual) {
+    super(md, actual);
   }
 
   public void isConstructor() {

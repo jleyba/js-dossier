@@ -34,9 +34,8 @@ import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.html.types.testing.HtmlConversions;
 import com.google.common.jimfs.Jimfs;
-import com.google.common.truth.FailureStrategy;
+import com.google.common.truth.FailureMetadata;
 import com.google.common.truth.Subject;
-import com.google.common.truth.SubjectFactory;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
@@ -176,21 +175,13 @@ public abstract class AbstractTypeInspectorTest {
   }
 
   protected static InstancePropertySubject assertInstanceProperty(final InstanceProperty property) {
-    return assertAbout(
-            new SubjectFactory<InstancePropertySubject, InstanceProperty>() {
-              @Override
-              public InstancePropertySubject getSubject(
-                  FailureStrategy failureStrategy, InstanceProperty property) {
-                return new InstancePropertySubject(failureStrategy, property);
-              }
-            })
-        .that(property);
+    return assertAbout(InstancePropertySubject::new).that(property);
   }
 
   protected static final class InstancePropertySubject
       extends Subject<InstancePropertySubject, InstanceProperty> {
-    public InstancePropertySubject(FailureStrategy failureStrategy, InstanceProperty subject) {
-      super(failureStrategy, subject);
+    public InstancePropertySubject(FailureMetadata failureMetadata, InstanceProperty subject) {
+      super(failureMetadata, subject);
     }
 
     public void isNamed(String name) {

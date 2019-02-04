@@ -16,23 +16,14 @@ limitations under the License.
 
 package com.github.jsdossier.testing;
 
-import com.google.common.truth.FailureStrategy;
+import com.google.common.truth.FailureMetadata;
 import com.google.common.truth.Subject;
-import com.google.common.truth.SubjectFactory;
 import com.google.javascript.jscomp.SymbolTable.Symbol;
 import javax.annotation.Nullable;
 
 public final class JSCompSymbolSubject extends Subject<JSCompSymbolSubject, Symbol> {
 
-  static final SubjectFactory<JSCompSymbolSubject, Symbol> FACTORY =
-      new SubjectFactory<JSCompSymbolSubject, Symbol>() {
-        @Override
-        public JSCompSymbolSubject getSubject(FailureStrategy fs, Symbol that) {
-          return new JSCompSymbolSubject(fs, that);
-        }
-      };
-
-  public JSCompSymbolSubject(FailureStrategy failureStrategy, @Nullable Symbol actual) {
-    super(failureStrategy, actual);
+  public JSCompSymbolSubject(FailureMetadata md, @Nullable Symbol actual) {
+    super(md, actual);
   }
 }

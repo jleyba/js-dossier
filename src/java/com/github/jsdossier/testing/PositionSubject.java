@@ -17,22 +17,13 @@ limitations under the License.
 package com.github.jsdossier.testing;
 
 import com.github.jsdossier.jscomp.Position;
-import com.google.common.truth.FailureStrategy;
+import com.google.common.truth.FailureMetadata;
 import com.google.common.truth.Subject;
-import com.google.common.truth.SubjectFactory;
 import javax.annotation.Nullable;
 
 public final class PositionSubject extends Subject<PositionSubject, Position> {
-  static final SubjectFactory<PositionSubject, Position> FACTORY =
-      new SubjectFactory<PositionSubject, Position>() {
-        @Override
-        public PositionSubject getSubject(FailureStrategy fs, Position that) {
-          return new PositionSubject(fs, that);
-        }
-      };
-
-  PositionSubject(FailureStrategy failureStrategy, @Nullable Position actual) {
-    super(failureStrategy, actual);
+  PositionSubject(FailureMetadata md, @Nullable Position actual) {
+    super(md, actual);
   }
 
   public void isEqualTo(int line, int col) {

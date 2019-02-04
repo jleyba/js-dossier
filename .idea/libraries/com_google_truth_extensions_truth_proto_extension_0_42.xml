@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="com.google.truth.extensions:truth-proto-extension:0.42" type="repository">
+    <properties maven-id="com.google.truth.extensions:truth-proto-extension:0.42" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/truth/extensions/truth-proto-extension/0.42/truth-proto-extension-0.42.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/truth/extensions/truth-liteproto-extension/0.42/truth-liteproto-extension-0.42.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/truth/extensions/truth-proto-extension/0.42/truth-proto-extension-0.42-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/truth/extensions/truth-liteproto-extension/0.42/truth-liteproto-extension-0.42-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

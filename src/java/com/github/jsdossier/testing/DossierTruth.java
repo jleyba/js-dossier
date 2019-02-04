@@ -29,31 +29,31 @@ public final class DossierTruth {
   private DossierTruth() {}
 
   public static JSTypeSubject assertThat(JSType type) {
-    return assertAbout(JSTypeSubject.FACTORY).that(type);
+    return assertAbout(JSTypeSubject::new).that(type);
   }
 
   public static JSDocInfoSubject assertThat(JSDocInfo info) {
-    return assertAbout(JSDocInfoSubject.FACTORY).that(info);
+    return assertAbout(JSDocInfoSubject::new).that(info);
   }
 
   public static ModuleSubject assertThat(Module module) {
-    return assertAbout(ModuleSubject.FACTORY).that(module);
+    return assertAbout(ModuleSubject::new).that(module);
   }
 
   public PositionSubject assertThat(Position position) {
-    return assertAbout(PositionSubject.FACTORY).that(position);
+    return assertAbout(PositionSubject::new).that(position);
   }
 
   public static JSCompSymbolSubject assertThat(
       com.google.javascript.jscomp.SymbolTable.Symbol symbol) {
-    return assertAbout(JSCompSymbolSubject.FACTORY).that(symbol);
+    return assertAbout(JSCompSymbolSubject::new).that(symbol);
   }
 
   public static SymbolSubject assertThat(Symbol symbol) {
-    return assertAbout(SymbolSubject.FACTORY).that(symbol);
+    return assertAbout(SymbolSubject::new).that(symbol);
   }
 
   public static SymbolTableSubject assertThat(SymbolTable table) {
-    return assertAbout(SymbolTableSubject.FACTORY).that(table);
+    return assertAbout(SymbolTableSubject::new).that(table);
   }
 }

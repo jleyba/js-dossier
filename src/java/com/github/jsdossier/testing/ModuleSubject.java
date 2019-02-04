@@ -17,26 +17,17 @@ limitations under the License.
 package com.github.jsdossier.testing;
 
 import com.github.jsdossier.jscomp.Module;
-import com.google.common.truth.FailureStrategy;
+import com.google.common.truth.FailureMetadata;
 import com.google.common.truth.StringSubject;
 import com.google.common.truth.Subject;
-import com.google.common.truth.SubjectFactory;
 import com.google.common.truth.Truth;
 import com.google.javascript.rhino.JSDocInfo;
 import javax.annotation.Nullable;
 
 public final class ModuleSubject extends Subject<ModuleSubject, Module> {
 
-  static final SubjectFactory<ModuleSubject, Module> FACTORY =
-      new SubjectFactory<ModuleSubject, Module>() {
-        @Override
-        public ModuleSubject getSubject(FailureStrategy fs, Module that) {
-          return new ModuleSubject(fs, that);
-        }
-      };
-
-  public ModuleSubject(FailureStrategy failureStrategy, @Nullable Module actual) {
-    super(failureStrategy, actual);
+  public ModuleSubject(FailureMetadata md, @Nullable Module actual) {
+    super(md, actual);
     if (actual != null) {
       named("Module<%s>", actual.getId().getCompiledName());
     }

@@ -29,6 +29,6 @@ public final class LinkedSymbolSubject {
   }
 
   public SymbolSubject that() {
-    return assertAbout(SymbolSubject.FACTORY).that(symbol);
+    return assertAbout(SymbolSubject::new).that(symbol);
   }
 }

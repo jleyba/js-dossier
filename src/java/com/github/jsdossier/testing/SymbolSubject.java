@@ -19,23 +19,14 @@ package com.github.jsdossier.testing;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.github.jsdossier.jscomp.Symbol;
-import com.google.common.truth.FailureStrategy;
+import com.google.common.truth.FailureMetadata;
 import com.google.common.truth.Subject;
-import com.google.common.truth.SubjectFactory;
 import com.google.javascript.rhino.JSDocInfo;
 
 public final class SymbolSubject extends Subject<SymbolSubject, Symbol> {
 
-  static final SubjectFactory<SymbolSubject, Symbol> FACTORY =
-      new SubjectFactory<SymbolSubject, Symbol>() {
-        @Override
-        public SymbolSubject getSubject(FailureStrategy fs, Symbol that) {
-          return new SymbolSubject(fs, that);
-        }
-      };
-
-  public SymbolSubject(FailureStrategy failureStrategy, Symbol actual) {
-    super(failureStrategy, actual);
+  public SymbolSubject(FailureMetadata md, Symbol actual) {
+    super(md, actual);
   }
 
   public void isNotAReference() {
@@ -54,7 +45,7 @@ public final class SymbolSubject extends Subject<SymbolSubject, Symbol> {
   public void hasNoJsDoc() {
     JSDocInfo info = actual().getJSDocInfo();
     if (info != null && !info.getOriginalCommentString().isEmpty()) {
-      failWithRawMessage("%s has unexpected jsdoc: %s", actual(), info.getOriginalCommentString());
+      failWithoutActual(actual() + " has unexpected jsdoc: " + info.getOriginalCommentString());
     }
   }
 

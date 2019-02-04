@@ -25,9 +25,8 @@ import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.Symbol;
 import com.github.jsdossier.jscomp.SymbolTable;
 import com.google.common.collect.Iterables;
-import com.google.common.truth.FailureStrategy;
+import com.google.common.truth.FailureMetadata;
 import com.google.common.truth.Subject;
-import com.google.common.truth.SubjectFactory;
 import com.google.common.truth.Truth;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -35,16 +34,8 @@ import java.util.List;
 
 public final class SymbolTableSubject extends Subject<SymbolTableSubject, SymbolTable> {
 
-  static final SubjectFactory<SymbolTableSubject, SymbolTable> FACTORY =
-      new SubjectFactory<SymbolTableSubject, SymbolTable>() {
-        @Override
-        public SymbolTableSubject getSubject(FailureStrategy fs, SymbolTable that) {
-          return new SymbolTableSubject(fs, that);
-        }
-      };
-
-  public SymbolTableSubject(FailureStrategy failureStrategy, SymbolTable actual) {
-    super(failureStrategy, actual);
+  public SymbolTableSubject(FailureMetadata md, SymbolTable actual) {
+    super(md, actual);
 
     if (actual.getParentScope() == null) {
       named("global symbol table");
@@ -130,7 +121,7 @@ public final class SymbolTableSubject extends Subject<SymbolTableSubject, Symbol
   public Module hasGoogModule(String id) {
     Module module = actual().getModuleById(id);
     if (module == null) {
-      failWithRawMessage("%s does not have a module with ID %s", internalCustomName(), id);
+      failWithoutActual(internalCustomName() + " does not have a module with ID " + id);
     }
     assert module != null;
     Truth.assertWithMessage("%s is not a CLOSURE module", id)
@@ -152,7 +143,7 @@ public final class SymbolTableSubject extends Subject<SymbolTableSubject, Symbol
   private Module getModuleByPath(Path path) {
     Module module = actual().getModule(path);
     if (module == null) {
-      failWithRawMessage("%s does not have a module from path %s", internalCustomName(), path);
+      failWithoutActual(internalCustomName() + " does not have a module from path " + path);
       throw new AssertionError("unreachable statement");
     }
     return module;
