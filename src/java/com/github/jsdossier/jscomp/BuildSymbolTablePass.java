@@ -155,7 +155,12 @@ final class BuildSymbolTablePass implements DossierCompilerPass {
           Node child = n.getFirstChild();
           if (isGoogProvideCall(child)) {
             String name = checkNotNull(child.getSecondChild()).getString();
-            table.add(Symbol.builder(fs, n).setName(name).setGoogProvide(true).build());
+            table.add(
+                Symbol.builder(fs, n)
+                    .setName(name)
+                    .setGoogProvide(true)
+                    .setGoogProvideOnly(true)
+                    .build());
 
           } else if (isGoogScopeCall(child)) {
             checkState(module == null, "goog.scope encountered in a module: %s", child);
@@ -328,6 +333,7 @@ final class BuildSymbolTablePass implements DossierCompilerPass {
             "exports".equals(name)
                 ? module.getId().toString()
                 : module.getId() + name.substring("exports".length());
+        Symbol.Builder sb = Symbol.builder(fs, n).setName(globalName);
 
         if (name.startsWith("exports.") && referencedName != null) {
           String exportedName = name.substring("exports.".length());

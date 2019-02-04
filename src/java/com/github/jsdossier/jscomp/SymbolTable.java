@@ -31,6 +31,8 @@ import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Range;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.StaticScope;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
@@ -172,8 +174,48 @@ public final class SymbolTable implements StaticScope {
       log.info("recording " + symbol);
       symbol.setScope(this);
       symbols.put(symbol.getName(), symbol);
+
+    } else if (prev.isGoogProvideOnly()
+        && !symbol.isGoogProvide()
+        && prev.getFile().equals(symbol.getFile())) {
+      log.info("updating " + symbol + " for non-provide");
+      symbol =
+          prev.toBuilder()
+              .setGoogProvideOnly(false)
+              .setFile(symbol.getFile())
+              .setPosition(symbol.getPosition())
+              .build();
+      symbol.setScope(this);
+      symbols.put(symbol.getName(), symbol);
+
     } else {
-      log.severe("not recording duplicate symbol: " + symbol);
+      // Don't log an error for stuff like:
+      //     goog.module('Foo');
+      //     class Foo {}
+      //     exports = Foo;
+      if (symbol.isModuleExports() != prev.isModuleExports()
+          && prev.getFile().equals(symbol.getFile())) {
+        return;
+      }
+
+      // Special case goog.module from the closure library (only impacts logging, not behavior).
+      if ("goog.module".equals(symbol.getName())
+          && prev.getFile().endsWith("goog/module/module.js")
+          && symbol.getFile().endsWith("goog/base.js")) {
+        return;
+      }
+
+      log.severe(
+          "not recording duplicate symbol: "
+              + symbol
+              + ";\nPreviously recorded at "
+              + prev.getFile()
+              + "@"
+              + prev.getPosition()
+              + ";\nNew record at          "
+              + symbol.getFile()
+              + "@"
+              + symbol.getPosition());
     }
   }
 

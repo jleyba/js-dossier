@@ -1,3 +1,13 @@
+# v.next
+
+## Bug Fixes
+
+-  Do not log an error message when a duplicate type is encountered due to
+   module exports:
+   `goog.mdoule('foo'); const foo = class {}; exports = foo;`.
+   This only logging; no changes in functionality.
+
+
 # v0.13.0
 
 ## Changes
