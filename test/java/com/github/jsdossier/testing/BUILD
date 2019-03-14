@@ -1,16 +1,16 @@
 java_library(
     name = "testing",
-    srcs = glob(["*.java"]),
     testonly = 1,
-    deps = [
-        "//lib/maven:closure_compiler",
-        "//lib/maven:guava",
-        "//lib/maven:guice",
-        "//lib/maven:inject",
-        "//lib/maven:junit",
-        "//src/java/com/github/jsdossier/jscomp",
-    ],
+    srcs = glob(["*.java"]),
     visibility = [
         "//test/java/com/github/jsdossier:__subpackages__",
+    ],
+    deps = [
+        "//src/java/com/github/jsdossier/jscomp",
+        "//third_party/java/closure_compiler",
+        "//third_party/java/guava",
+        "//third_party/java/guice",
+        "//third_party/java/jsr330_inject",
+        "//third_party/java/junit",
     ],
 )

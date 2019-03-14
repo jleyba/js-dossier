@@ -4,10 +4,10 @@ java_test_suite(
     name = "AllTests",
     srcs = glob(["*.java"]),
     deps = [
-        "//lib/maven:commonmark",
-        "//lib/maven:guava",
-        "//lib/maven:junit",
-        "//lib/maven:truth",
         "//src/java/com/github/jsdossier/markdown",
+        "//third_party/java/commonmark",
+        "//third_party/java/guava",
+        "//third_party/java/junit",
+        "//third_party/java/truth",
     ],
 )

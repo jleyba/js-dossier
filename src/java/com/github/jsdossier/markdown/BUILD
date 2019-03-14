@@ -1,12 +1,12 @@
 java_library(
     name = "markdown",
     srcs = glob(["*.java"]),
-    deps = [
-        "//lib/maven:commonmark",
-        "//lib/maven:guava",
-    ],
     visibility = [
         "//src/java/com/github/jsdossier:__subpackages__",
         "//test/java/com/github/jsdossier:__subpackages__",
+    ],
+    deps = [
+        "//third_party/java/commonmark",
+        "//third_party/java/guava",
     ],
 )

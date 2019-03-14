@@ -9,15 +9,15 @@ java_library(
     ],
     deps = [
         "//lib/maven:closure_templates",
-        "//lib/maven:gson",
-        "//lib/maven:guava",
-        "//lib/maven:guice",
-        "//lib/maven:guice_multibindings",
-        "//lib/maven:inject",
-        "//lib/maven:jsr305",
-        "//lib/maven:protobuf",
         "//lib/maven:safe_types",
         "//src/proto:java_proto",
+        "//third_party/java/gson",
+        "//third_party/java/guava",
+        "//third_party/java/guice",
+        "//third_party/java/guice:multibindings",
+        "//third_party/java/jsr305_annotations",
+        "//third_party/java/jsr330_inject",
+        "//third_party/java/protobuf",
     ],
 )
 
