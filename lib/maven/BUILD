@@ -16,11 +16,11 @@ java_library(
         "//third_party/java/icu4j",
         "//third_party/java/jsr305_annotations",
         "//third_party/java/jsr330_inject",
-        "@dossier_safe_types//jar",
+        "@com_google_common_html_types_types//jar",
     ],
 )
 
 java_library(
     name = "safe_types",
-    exports = ["@dossier_safe_types//jar"],
+    exports = ["@com_google_common_html_types_types//jar"],
 )

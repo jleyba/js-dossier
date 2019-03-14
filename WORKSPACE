@@ -233,7 +233,7 @@ maven_jar(
 )
 
 maven_jar(
-    name = "dossier_safe_types",
+    name = "com_google_common_html_types_types",
     artifact = "com.google.common.html.types:types:1.0.8",
     sha1 = "9e9cf7bc4b2a60efeb5f5581fe46d17c068e0777",
 )
