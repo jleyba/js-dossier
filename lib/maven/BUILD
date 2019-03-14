@@ -6,7 +6,7 @@ package(default_visibility = ["//visibility:public"])
 
 java_library(
     name = "closure_templates",
-    exports = ["@dossier_closure_templates//jar"],
+    exports = ["@com_google_template_soy//jar"],
     runtime_deps = [
         "//third_party/java/args4j",
         "//third_party/java/guava",
