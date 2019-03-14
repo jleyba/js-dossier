@@ -4,6 +4,7 @@
 
 -  Upgraded dependencies:
    +  com.atlassian.commonmark:commonmark:0.12.1
+   +  com.google.auto.factory:auto-factory:1.0-beta6
 
 
 # v0.13.1

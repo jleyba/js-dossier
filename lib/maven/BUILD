@@ -10,44 +10,13 @@ java_library(
 )
 
 java_library(
-    name = "auto_common",
-    exports = ["@dossier_auto_common//jar"],
-    runtime_deps = [
-        ":guava",
-        ":inject",
-    ],
-)
-
-java_library(
     name = "auto_factory",
-    exported_plugins = [":auto_factory_plugin"],
-    exports = ["@dossier_auto_factory//jar"],
-)
-
-java_plugin(
-    name = "auto_factory_plugin",
-    generates_api = 1,
-    processor_class = "com.google.auto.factory.processor.AutoFactoryProcessor",
-    visibility = ["//visibility:private"],
-    deps = [
-        ":auto_common",
-        ":guava",
-        "@dossier_auto_factory//jar",
-        "@dossier_javawriter//jar",
-    ],
+    exports = ["//third_party/java/auto:factory"],
 )
 
 java_library(
     name = "auto_value",
-    exported_plugins = [":auto_value_plugin"],
-    exports = ["@com_google_auto_value_auto_value_annotations//jar"],
-)
-
-java_plugin(
-    name = "auto_value_plugin",
-    processor_class = "com.google.auto.value.processor.AutoValueProcessor",
-    visibility = ["//visibility:private"],
-    deps = ["@dossier_auto_value//jar"],
+    exports = ["//third_party/java/auto:value"],
 )
 
 java_library(
@@ -100,10 +69,7 @@ java_library(
 
 java_library(
     name = "guava",
-    exports = [
-      "@dossier_com_google_guava_failureaccess//jar",
-      "@dossier_guava//jar",
-    ],
+    exports = ["//third_party/java/guava"],
 )
 
 java_library(
@@ -129,7 +95,7 @@ java_library(
 
 java_library(
     name = "inject",
-    exports = ["@dossier_inject//jar"],
+    exports = ["//third_party/java/jsr330_inject"],
 )
 
 java_library(

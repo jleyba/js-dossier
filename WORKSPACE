@@ -67,19 +67,25 @@ maven_jar(
 )
 
 maven_jar(
-    name = "dossier_auto_common",
+    name = "com_google_auto_auto_common",
     artifact = "com.google.auto:auto-common:0.10",
     sha1 = "c8f153ebe04a17183480ab4016098055fb474364",
 )
 
 maven_jar(
-    name = "dossier_auto_factory",
-    artifact = "com.google.auto.factory:auto-factory:1.0-beta3",
-    sha1 = "99b2ffe0e41abbd4cc42bf3836276e7174c4929d",
+    name = "com_google_auto_factory_auto_factory",
+    artifact = "com.google.auto.factory:auto-factory:1.0-beta6",
+    sha1 = "58c804763a4d80c0884ac8a740fcff4d61da72bc",
 )
 
 maven_jar(
-    name = "dossier_auto_value",
+    name = "com_google_auto_service_auto_service",
+    artifact = "com.google.auto.service:auto-service:1.0-rc4",
+    sha1 = "44954d465f3b9065388bbd2fc08a3eb8fd07917c",
+)
+
+maven_jar(
+    name = "com_google_auto_value_auto_value",
     artifact = "com.google.auto.value:auto-value:1.6.3",
     sha1 = "8edb6675b9c09ffdcc19937428e7ef1e3d066e12",
 )
@@ -88,6 +94,18 @@ maven_jar(
     name = "com_google_auto_value_auto_value_annotations",
     artifact = "com.google.auto.value:auto-value-annotations:1.6.3",
     sha1 = "b88c1bb7f149f6d2cc03898359283e57b08f39cc",
+)
+
+maven_jar(
+    name = "com_google_googlejavaformat_google_java_format",
+    artifact = "com.google.googlejavaformat:google-java-format:1.7",
+    sha1 = "97cb6afc835d65682edc248e19170a8e4ecfe4c4",
+)
+
+maven_jar(
+    name = "com_squareup_javapoet",
+    artifact = "com.squareup:javapoet:1.11.1",
+    sha1 = "210e69f58dfa76c5529a303913b4a30c2bfeb76b",
 )
 
 maven_jar(
@@ -121,13 +139,19 @@ maven_jar(
 )
 
 maven_jar(
-    name = "dossier_guava",
+    name = "com_google_errorprone_javac_shaded",
+    artifact = "com.google.errorprone:javac-shaded:9-dev-r4023-3",
+    sha1 = "72b688efd290280a0afde5f9892b0fde6f362d1d",
+)
+
+maven_jar(
+    name = "com_google_guava_guava",
     artifact = "com.google.guava:guava:27.0.1-jre",
     sha1 = "bd41a290787b5301e63929676d792c507bbc00ae",
 )
 
 maven_jar(
-    name = "dossier_com_google_guava_failureaccess",
+    name = "com_google_guava_failureaccess_jar",
     artifact = "com.google.guava:failureaccess:jar:1.0.1",
     sha1 = "1dcf1de382a0bf95a3d8b0849546c88bac1292c9",
 )
@@ -163,7 +187,7 @@ maven_jar(
 )
 
 maven_jar(
-    name = "dossier_inject",
+    name = "javax_inject_javax_inject",
     artifact = "javax.inject:javax.inject:1",
     sha1 = "6975da39a7040257bd51d21a231b76c915872d38",
 )
