@@ -256,4 +256,7 @@ maven_jar(
     sha1 = "c231e6735aa6c133c7e411ae1c1c90b124900a8b",
 )
 
-closure_repositories()
+closure_repositories(
+    omit_com_google_template_soy = True,
+    omit_com_google_template_soy_jssrc = True,
+)
