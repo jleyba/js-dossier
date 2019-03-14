@@ -9,7 +9,6 @@ java_library(
     ],
     deps = [
         "//lib/maven:closure_templates",
-        "//lib/maven:safe_types",
         "//src/proto:java_proto",
         "//third_party/java/gson",
         "//third_party/java/guava",
@@ -18,6 +17,7 @@ java_library(
         "//third_party/java/jsr305_annotations",
         "//third_party/java/jsr330_inject",
         "//third_party/java/protobuf",
+        "//third_party/java/safe_types",
     ],
 )
 

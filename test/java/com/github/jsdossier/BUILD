@@ -9,7 +9,6 @@ java_library(
     testonly = 1,
     srcs = LIB_SRCS,
     deps = [
-        "//lib/maven:safe_types",
         "//src/java/com/github/jsdossier",
         "//src/java/com/github/jsdossier/annotations",
         "//src/java/com/github/jsdossier/jscomp",
@@ -24,6 +23,7 @@ java_library(
         "//third_party/java/jsr330_inject",
         "//third_party/java/junit",
         "//third_party/java/protobuf",
+        "//third_party/java/safe_types",
         "//third_party/java/truth",
     ],
 )
@@ -37,7 +37,6 @@ java_test_suite(
     resources = glob(["resources/**"]),
     deps = [
         ":lib",
-        "//lib/maven:safe_types",
         "//src/java/com/github/jsdossier",
         "//src/java/com/github/jsdossier/annotations",
         "//src/java/com/github/jsdossier/jscomp",
@@ -54,6 +53,7 @@ java_test_suite(
         "//third_party/java/jsr330_inject",
         "//third_party/java/junit",
         "//third_party/java/mockito",
+        "//third_party/java/safe_types",
         "//third_party/java/truth",
     ],
 )

@@ -10,7 +10,6 @@ java_library(
         "//test/java/com/github/jsdossier:__subpackages__",
     ],
     deps = [
-        "//lib/maven:safe_types",
         "//src/java/com/github/jsdossier/annotations",
         "//src/java/com/github/jsdossier/jscomp",
         "//src/java/com/github/jsdossier/markdown",
@@ -27,6 +26,7 @@ java_library(
         "//third_party/java/jsr305_annotations",
         "//third_party/java/jsr330_inject",
         "//third_party/java/owasp_html_sanitizer",
+        "//third_party/java/safe_types",
     ],
 )
 
