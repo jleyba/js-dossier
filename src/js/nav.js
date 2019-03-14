@@ -222,14 +222,14 @@ function updateControl(el, opt_value) {
  */
 class NavDrawer {
   /**
-   * @param {!Element} navButton The button that opens the nav drawer.
+   * @param {!HTMLButtonElement} navButton The button that opens the nav drawer.
    * @param {!Element} navEl The main element for the nav drawer.
    */
   constructor(navButton, navEl) {
-    /** @private {!Element} */
+    /** @private @const {!HTMLButtonElement} */
     this.navButton_ = navButton;
 
-    /** @private {!Element} */
+    /** @private @const {!Element} */
     this.navEl_ = navEl;
 
     /**
@@ -237,9 +237,9 @@ class NavDrawer {
      * This ensures tab stop will select the first item in the navigation tree
      * instead of going back to the input box (which would cause the drawer to
      * close).
-     * @private {!Element}
+     * @private @const {!HTMLElement}
      */
-    this.focusSink_ = navEl.ownerDocument.createElement('div');
+    this.focusSink_ = /** @type {!HTMLElement} */(navEl.ownerDocument.createElement('div'));
     this.focusSink_.tabIndex = -1;
 
     events.listen(this.focusSink_, 'blur', () => this.focusSink_.tabIndex = -1);
@@ -391,7 +391,9 @@ const NAV_ITEM_HEIGHT = 40;
  * @return {!NavDrawer} The created nav drawer widget.
  */
 exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
-  const navButton = document.querySelector('button.dossier-menu');
+  const navButton =
+      /** @type {!HTMLButtonElement} */(
+          document.querySelector('button.dossier-menu'));
   navButton.setAttribute('title', 'Show Navigation (n)');
 
   const navEl =

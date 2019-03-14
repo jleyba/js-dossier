@@ -132,9 +132,12 @@ class AutoCompleteMatcher {
       let distance = this.damerauLevenshteinDistance_(token, term);
       if (heap.size() < max) {
         heap.insert(distance, term);
-      } else if (distance < heap.peekKey()) {
-        heap.remove();
-        heap.insert(distance, term);
+      } else {
+        let key = heap.peekKey();
+        if (typeof key === 'number' && distance < key) {
+          heap.remove();
+          heap.insert(distance, term);
+        }
       }
     }
 
@@ -246,10 +249,10 @@ class SearchBox extends EventTarget {
 
     let inputEl = /** @type {!HTMLInputElement} */(formEl.querySelector('input'));
 
-    /** @private {!Map<string, string>} */
+    /** @private @const {!Map<string, string>} */
     this.nameToUri_ = nameToUri;
 
-    /** @private {!HTMLInputElement} */
+    /** @private @const {!HTMLInputElement} */
     this.inputEl_ = inputEl;
 
     events.listen(formEl, 'submit', this.onUpdate_, false, this);
@@ -260,7 +263,7 @@ class SearchBox extends EventTarget {
       events.listen(icon, 'click', () => this.inputEl_.focus());
     }
 
-    /** @private {!AutoComplete} */
+    /** @private @const {!AutoComplete} */
     this.ac_ = createAutoComplete(Array.from(nameToUri.keys()), inputEl);
     this.ac_.listen(AutoComplete.EventType.UPDATE, this.onUpdate_, false, this);
   }

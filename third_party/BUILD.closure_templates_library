@@ -11,6 +11,8 @@ closure_js_library(
     ],
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_PREFER_BACKTICKS_TO_AT_SIGN_CODE",
+        "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
     ],
     deps = [

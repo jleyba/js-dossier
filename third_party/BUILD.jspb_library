@@ -16,8 +16,11 @@ closure_js_library(
     ],
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_MISSING_CONST_PROPERTY",
         "JSC_NULLABLE_RETURN_WITH_NAME",
         "JSC_OPTIONAL_PARAM_NOT_MARKED_OPTIONAL",
+        "JSC_PREFER_BACKTICKS_TO_AT_SIGN_CODE",
+        "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
     ],
     visibility = ["//visibility:public"],
