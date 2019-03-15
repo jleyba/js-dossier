@@ -820,10 +820,7 @@ public final class BuildSymbolTablePassTest {
 
       SymbolTable table =
           new Scenario()
-              .addFile(one,
-                  "export class Foo {}",
-                  "export class Bar {}",
-                  "export default class {}")
+              .addFile(one, "export class Foo {}", "export class Bar {}", "export default class {}")
               .addFile(two, "import one, {Foo, Bar as Baz} from './one.js'")
               .compile();
 
@@ -1486,6 +1483,42 @@ public final class BuildSymbolTablePassTest {
     }
 
     @Test
+    public void importMultipleSymbolsFromAnotherModuleWithDestructuring() {
+      SymbolTable table =
+          scenario
+              .addFile(one, "exports.Foo = class {}; exports.Bar = class {};")
+              .addFile(
+                  two,
+                  "const {Foo, Bar} = require('./one');",
+                  "exports.foo = Foo;",
+                  "exports.bar = Bar;")
+              .compile();
+
+      assertThat(table).hasOwnSymbol("module$exports$module$one.Foo").that().isNotAReference();
+      assertThat(table).hasOwnSymbol("module$exports$module$one.Bar").that().isNotAReference();
+      assertThat(table).hasOwnSymbol("module$exports$module$two.foo").that().isAReferenceTo("Foo");
+      assertThat(table).hasOwnSymbol("module$exports$module$two.bar").that().isAReferenceTo("Bar");
+      assertThat(table)
+          .hasOwnSymbol("module$contents$module$two_Foo")
+          .that()
+          .isAReferenceTo("module$exports$module$one.Foo");
+      assertThat(table)
+          .hasOwnSymbol("module$contents$module$two_Bar")
+          .that()
+          .isAReferenceTo("module$exports$module$one.Bar");
+
+      Module m2 = assertThat(table).hasNodeModule(two);
+      assertThat(m2.getInternalSymbolTable())
+          .hasOwnSymbol("Foo")
+          .that()
+          .isAReferenceTo("module$contents$module$two_Foo");
+      assertThat(m2.getInternalSymbolTable())
+          .hasOwnSymbol("Bar")
+          .that()
+          .isAReferenceTo("module$contents$module$two_Bar");
+    }
+
+    @Test
     public void exportsAnotherModule() {
       SymbolTable table =
           scenario
@@ -1709,14 +1742,15 @@ public final class BuildSymbolTablePassTest {
 
     @Test
     public void recordsGoogDefines() {
-      SymbolTable table = compile(
-          "goog.provide('foo');",
-          "/** @define {boolean} */",
-          "foo.BAR = goog.define('foo.BAR', true);",
-          "",
-          "// Missing LHS assigment, so should not be recorded as a symbol.",
-          "/** @define {boolean} */",
-          "goog.define('foo.BAZ', false);");
+      SymbolTable table =
+          compile(
+              "goog.provide('foo');",
+              "/** @define {boolean} */",
+              "foo.BAR = goog.define('foo.BAR', true);",
+              "",
+              "// Missing LHS assigment, so should not be recorded as a symbol.",
+              "/** @define {boolean} */",
+              "goog.define('foo.BAZ', false);");
       assertThat(table).containsExactly("foo", "foo.BAR");
     }
   }

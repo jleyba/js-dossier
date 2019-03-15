@@ -31,8 +31,6 @@ import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Range;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.StaticScope;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;

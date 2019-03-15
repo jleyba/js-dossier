@@ -1033,6 +1033,31 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
                 .build());
   }
 
+  @Test
+  public void handlesTypeReferenceFromADestructuredNodeImport() {
+    util.compile(
+        createSourceFile(fs.getPath("/src/modules/foo/bar.js"), "exports.Person = class {};"),
+        createSourceFile(
+            fs.getPath("/src/modules/foo/baz.js"),
+            "const {Person} = require('./bar');",
+            "exports.Student = class extends Person {};"));
+
+    typeRegistry.getAllTypes().stream().map(NominalType::getName).forEach(System.err::println);
+
+    NominalType person = typeRegistry.getType("module$exports$module$src$modules$foo$bar.Person");
+    assertTypeHierarchy(person)
+        .containsExactly(namedType("Person", "foo/bar.Person", "bar_exports_Person.html"));
+    assertSubtypes(person)
+        .containsExactly(namedType("Student", "foo/baz.Student", "baz_exports_Student.html"));
+
+    NominalType student = typeRegistry.getType("module$exports$module$src$modules$foo$baz.Student");
+    assertTypeHierarchy(student)
+        .containsExactly(
+            namedType("Student", "foo/baz.Student", "baz_exports_Student.html"),
+            namedType("Person", "foo/bar.Person", "bar_exports_Person.html"));
+    assertSubtypes(student).isEmpty();
+  }
+
   private IterableOfProtosSubject<?, NamedType, Iterable<NamedType>> assertImplementedTypes(
       NominalType type) {
     return assertThat(typeInspectorFactory.create(type).getImplementedTypes());

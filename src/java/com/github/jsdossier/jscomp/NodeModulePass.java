@@ -38,7 +38,6 @@ import com.github.jsdossier.annotations.Modules;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.DiagnosticType;
-import com.google.javascript.jscomp.DossierSnooper;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.jscomp.NodeUtil;
 import com.google.javascript.jscomp.deps.DependencyInfo;
@@ -110,7 +109,6 @@ final class NodeModulePass implements DossierCompilerPass {
       DiagnosticType.error(
           "DOSSIER_REQUIRE_INVALID_MODULE_ID", "Invalid module ID passed to require()");
 
-  private final TypeRegistry typeRegistry;
   private final FileSystem inputFs;
   private final ImmutableSet<Path> modulePaths;
   private final NodeLibrary nodeLibrary;
@@ -121,12 +119,10 @@ final class NodeModulePass implements DossierCompilerPass {
 
   @Inject
   NodeModulePass(
-      TypeRegistry typeRegistry,
       @Input FileSystem inputFs,
       @Modules ImmutableSet<Path> modulePaths,
       @Global SymbolTable globalSymbolTable,
       NodeLibrary nodeLibrary) {
-    this.typeRegistry = typeRegistry;
     this.inputFs = inputFs;
     this.modulePaths = modulePaths;
     this.globalSymbolTable = globalSymbolTable;
@@ -172,8 +168,6 @@ final class NodeModulePass implements DossierCompilerPass {
         }
 
         traverse(t.getCompiler(), n, new SplitRequireDeclarations());
-        traverse(
-            t.getCompiler(), n, DossierSnooper.createEs6RewriteDestructuring((t.getCompiler())));
       }
       return true;
     }

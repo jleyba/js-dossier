@@ -8,7 +8,6 @@ java_library(
     ],
     deps = [
         "//src/java/com/github/jsdossier/annotations",
-        "//src/java/com/google/javascript/jscomp",
         "//third_party/java/auto:factory",
         "//third_party/java/auto:value",
         "//third_party/java/closure_compiler",

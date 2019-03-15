@@ -20,10 +20,10 @@ import com.google.common.collect.ImmutableSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.commonmark.renderer.NodeRenderer;
-import org.commonmark.renderer.html.HtmlWriter;
-import org.commonmark.renderer.html.HtmlNodeRendererContext;
 import org.commonmark.node.Node;
+import org.commonmark.renderer.NodeRenderer;
+import org.commonmark.renderer.html.HtmlNodeRendererContext;
+import org.commonmark.renderer.html.HtmlWriter;
 
 /** Renders a {@link TableBlock} to HTML. */
 final class TableBlockHtmlRenderer implements NodeRenderer {

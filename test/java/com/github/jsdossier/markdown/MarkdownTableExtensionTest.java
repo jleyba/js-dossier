@@ -34,10 +34,8 @@ public class MarkdownTableExtensionTest {
   private static final ImmutableList<? extends Extension> EXTENSIONS =
       ImmutableList.of(new MarkdownTableExtension());
   private static final Parser PARSER = Parser.builder().extensions(EXTENSIONS).build();
-  private static final HtmlRenderer RENDERER = HtmlRenderer.builder()
-      .escapeHtml(false)
-      .extensions(EXTENSIONS)
-      .build();
+  private static final HtmlRenderer RENDERER =
+      HtmlRenderer.builder().escapeHtml(false).extensions(EXTENSIONS).build();
 
   @Test
   public void requiresASeparatorLine() {

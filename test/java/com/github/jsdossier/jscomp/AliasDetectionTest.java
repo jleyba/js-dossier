@@ -267,9 +267,7 @@ public class AliasDetectionTest {
   public void es6Module_importDefaultAndOthers() {
     util.compile(
         createSourceFile(
-            inputFs.getPath("module/a/foo.js"),
-            "export class B {}",
-            "export default class {}"),
+            inputFs.getPath("module/a/foo.js"), "export class B {}", "export default class {}"),
         createSourceFile(
             inputFs.getPath("module/a/bar.js"),
             "import A, {B as C} from './foo.js';",
