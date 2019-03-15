@@ -14,5 +14,6 @@ java_library(
         "//third_party/java/guava",
         "//third_party/java/jsr305_annotations",
         "//third_party/java/junit",
+        "@com_googlecode_java_diff_utils_diffutils//jar",
     ],
 )

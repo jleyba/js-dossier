@@ -239,21 +239,12 @@ public class AliasDetectionTest {
 
   @Test
   public void es6Module_importedDefault() {
-    try {
-      util.compile(
-          createSourceFile(inputFs.getPath("module/a/foo.js"), "export default class {}"),
-          createSourceFile(
-              inputFs.getPath("module/a/bar.js"),
-              "import A from './foo.js';",
-              "export class Y extends A {}"));
-    } catch (CompilerUtil.CompileFailureException e) {
-      if (e.getMessage()
-          .contains(
-              "Bad type annotation. Unknown type module$module$a$foo.default module/a/bar.js:-1")) {
-        assumeNoException("The compiler no longer properly parses default exports :(", e);
-      }
-      throw e;
-    }
+    util.compile(
+        createSourceFile(inputFs.getPath("module/a/foo.js"), "export default class {}"),
+        createSourceFile(
+            inputFs.getPath("module/a/bar.js"),
+            "import A from './foo.js';",
+            "export class Y extends A {}"));
 
     NominalType type = typeRegistry.getType("module$module$a$bar.Y");
     assertThat(typeRegistry.resolveAlias(type, "A")).isEqualTo("module$module$a$foo.default");
@@ -261,21 +252,12 @@ public class AliasDetectionTest {
 
   @Test
   public void es6Module_aliasForImportedDefault() {
-    try {
-      util.compile(
-          createSourceFile(inputFs.getPath("module/a/foo.js"), "export default class {}"),
-          createSourceFile(
-              inputFs.getPath("module/a/bar.js"),
-              "import {default as A} from './foo.js';",
-              "export class Y extends A {}"));
-    } catch (CompilerUtil.CompileFailureException e) {
-      if (e.getMessage()
-          .contains(
-              "Bad type annotation. Unknown type module$module$a$foo.default module/a/bar.js:-1")) {
-        assumeNoException("The compiler no longer properly parses default exports :(", e);
-      }
-      throw e;
-    }
+    util.compile(
+        createSourceFile(inputFs.getPath("module/a/foo.js"), "export default class {}"),
+        createSourceFile(
+            inputFs.getPath("module/a/bar.js"),
+            "import {default as A} from './foo.js';",
+            "export class Y extends A {}"));
 
     NominalType type = typeRegistry.getType("module$module$a$bar.Y");
     assertThat(typeRegistry.resolveAlias(type, "A")).isEqualTo("module$module$a$foo.default");
@@ -283,21 +265,15 @@ public class AliasDetectionTest {
 
   @Test
   public void es6Module_importDefaultAndOthers() {
-    try {
-      util.compile(
-          createSourceFile(inputFs.getPath("module/a/foo.js"), "export default class {}"),
-          createSourceFile(
-              inputFs.getPath("module/a/bar.js"),
-              "import A, {B as C} from './foo.js';",
-              "export class Y extends A {}"));
-    } catch (CompilerUtil.CompileFailureException e) {
-      if (e.getMessage()
-          .contains(
-              "Bad type annotation. Unknown type module$module$a$foo.default module/a/bar.js:-1")) {
-        assumeNoException("The compiler no longer properly parses default exports :(", e);
-      }
-      throw e;
-    }
+    util.compile(
+        createSourceFile(
+            inputFs.getPath("module/a/foo.js"),
+            "export class B {}",
+            "export default class {}"),
+        createSourceFile(
+            inputFs.getPath("module/a/bar.js"),
+            "import A, {B as C} from './foo.js';",
+            "export class Y extends A {}"));
 
     NominalType type = typeRegistry.getType("module$module$a$bar.Y");
     assertThat(typeRegistry.resolveAlias(type, "A")).isEqualTo("module$module$a$foo.default");

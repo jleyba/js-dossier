@@ -820,7 +820,10 @@ public final class BuildSymbolTablePassTest {
 
       SymbolTable table =
           new Scenario()
-              .addFile(one, "export class Foo {}", "export class Bar {}")
+              .addFile(one,
+                  "export class Foo {}",
+                  "export class Bar {}",
+                  "export default class {}")
               .addFile(two, "import one, {Foo, Bar as Baz} from './one.js'")
               .compile();
 
@@ -831,7 +834,8 @@ public final class BuildSymbolTablePassTest {
               "Foo$$module$one",
               "Bar$$module$one",
               "module$one.Foo",
-              "module$one.Bar");
+              "module$one.Bar",
+              "module$one.default");
       assertThat(table).hasEs6Module(one);
 
       Module m2 = assertThat(table).hasEs6Module(two);
@@ -1701,6 +1705,19 @@ public final class BuildSymbolTablePassTest {
     public void recordsTypedefs() {
       SymbolTable table = compile("goog.provide('foo'); /** @typedef {string} */ foo.Name;");
       assertThat(table).containsExactly("foo", "foo.Name");
+    }
+
+    @Test
+    public void recordsGoogDefines() {
+      SymbolTable table = compile(
+          "goog.provide('foo');",
+          "/** @define {boolean} */",
+          "foo.BAR = goog.define('foo.BAR', true);",
+          "",
+          "// Missing LHS assigment, so should not be recorded as a symbol.",
+          "/** @define {boolean} */",
+          "goog.define('foo.BAZ', false);");
+      assertThat(table).containsExactly("foo", "foo.BAR");
     }
   }
 

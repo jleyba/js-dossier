@@ -117,24 +117,25 @@ public class CompilerUtil {
   }
 
   private void assertCompiled(Result result) {
-    if (result.errors.length > 0 || result.warnings.length > 0) {
-      List<String> errors = Lists.newLinkedList();
-      errors.add("Failed to compile!");
-      errors.add("Compiler errors:");
-      appendErrors(errors, result.errors);
-
-      errors.add("Compiler warnings");
-      appendErrors(errors, result.warnings);
-
-      if (result.errors.length == 0) {
-        System.out.println(toSource());
-      }
-
-      throw new CompileFailureException(Joiner.on("\n").join(errors));
+    if (result.errors.isEmpty() && result.warnings.isEmpty()) {
+      return;
     }
+    List<String> errors = Lists.newLinkedList();
+    errors.add("Failed to compile!");
+    errors.add("Compiler errors:");
+    appendErrors(errors, result.errors.asList());
+
+    errors.add("Compiler warnings");
+    appendErrors(errors, result.warnings.asList());
+
+    if (result.errors.isEmpty()) {
+      System.out.println(toSource());
+    }
+
+    throw new CompileFailureException(Joiner.on("\n").join(errors));
   }
 
-  private static void appendErrors(List<String> list, JSError[] errors) {
+  private static void appendErrors(List<String> list, List<JSError> errors) {
     for (JSError error : errors) {
       list.add(String.format("%s %s:%d", error.description, error.sourceName, error.lineNumber));
     }

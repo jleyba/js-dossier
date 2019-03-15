@@ -5,6 +5,9 @@
 -  Upgraded dependencies:
    +  com.atlassian.commonmark:commonmark:0.12.1
    +  com.google.auto.factory:auto-factory:1.0-beta6
+   +  com.google.javascript:closure-compiler-unshaded:v20190301
+   +  com.google.javascript:closure-compiler-externs:v20190301
+-  Various internal changes to support building with the latest bazel (0.23.x)
 
 
 # v0.13.1

@@ -113,14 +113,14 @@ maven_jar(
 
 maven_jar(
     name = "com_google_javascript_closure_compiler_unshaded",
-    artifact = "com.google.javascript:closure-compiler-unshaded:v20190121",
-    sha1 = "8b2b86d73d102b28fd14b6311704e8b9294d370a",
+    artifact = "com.google.javascript:closure-compiler-unshaded:v20190301",
+    sha1 = "692c7c5bfb18004e1ab5e96cbc2c610738a37f11",
 )
 
 maven_jar(
     name = "com_google_javascript_closure_compiler_externs",
-    artifact = "com.google.javascript:closure-compiler-externs:v20190121",
-    sha1 = "1558f377bed236fa9ffabe72aec4809d1434645f",
+    artifact = "com.google.javascript:closure-compiler-externs:v20190301",
+    sha1 = "eef54be850b36645d773ea785a52454f2d805485",
 )
 
 maven_jar(
@@ -259,6 +259,12 @@ maven_jar(
     name = "com_google_truth_extensions_truth_liteproto_extension",
     artifact = "com.google.truth.extensions:truth-liteproto-extension:0.42",
     sha1 = "c231e6735aa6c133c7e411ae1c1c90b124900a8b",
+)
+
+maven_jar(
+    name = "com_googlecode_java_diff_utils_diffutils",
+    artifact = "com.googlecode.java-diff-utils:diffutils:1.3.0",
+    sha1 = "7e060dd5b19431e6d198e91ff670644372f60fbd",
 )
 
 closure_repositories(
