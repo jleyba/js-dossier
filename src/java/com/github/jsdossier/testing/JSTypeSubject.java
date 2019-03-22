@@ -16,9 +16,12 @@ limitations under the License.
 
 package com.github.jsdossier.testing;
 
+import static com.google.common.truth.Truth.assertWithMessage;
+
 import com.google.common.truth.FailureMetadata;
 import com.google.common.truth.Subject;
 import com.google.javascript.rhino.jstype.JSType;
+import java.util.function.Predicate;
 import javax.annotation.Nullable;
 
 public final class JSTypeSubject extends Subject<JSTypeSubject, JSType> {
@@ -27,51 +30,41 @@ public final class JSTypeSubject extends Subject<JSTypeSubject, JSType> {
     super(md, actual);
   }
 
+  private void check(Predicate<JSType> check) {
+    assertWithMessage("%s is a %s", actual(), actual().getClass().getName())
+        .that(check.test(actual()))
+        .isTrue();
+  }
+
   public void isConstructor() {
-    if (!actual().isConstructor()) {
-      fail("is a constructor; it is " + actual().getClass().getName());
-    }
+    check(JSType::isConstructor);
   }
 
   public void isInterface() {
-    if (!actual().isInterface()) {
-      fail("is an interface");
-    }
+    check(JSType::isInterface);
   }
 
   public void isEnumType() {
-    if (!actual().isEnumType()) {
-      fail("is an enum type");
-    }
+    check(JSType::isEnumType);
   }
 
   public void isFunction() {
-    if (!actual().isFunctionType()) {
-      fail("is a function");
-    }
+    check(JSType::isFunctionType);
   }
 
   public void isNumber() {
-    if (!actual().isNumber()) {
-      fail("is a number");
-    }
+    check(JSType::isNumber);
   }
 
   public void isString() {
-    if (!actual().isString()) {
-      fail("is a string");
-    }
+    check(JSType::isString);
   }
 
   public void isBoolean() {
-    if (!actual().isBooleanValueType()) {
-      fail("is a boolean");
-    }
+    check(JSType::isBooleanValueType);
   }
 
   public void isObject() {
-    if (!actual().isObjectType()) {
-      fail("is an object");
-    }
+    check(JSType::isObjectType);
   }
 }

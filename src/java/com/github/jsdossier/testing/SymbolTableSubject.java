@@ -25,9 +25,12 @@ import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.Symbol;
 import com.github.jsdossier.jscomp.SymbolTable;
 import com.google.common.collect.Iterables;
+import com.google.common.truth.Fact;
 import com.google.common.truth.FailureMetadata;
 import com.google.common.truth.Subject;
 import com.google.common.truth.Truth;
+import com.google.errorprone.annotations.FormatMethod;
+import com.google.errorprone.annotations.FormatString;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
@@ -48,16 +51,23 @@ public final class SymbolTableSubject extends Subject<SymbolTableSubject, Symbol
     return actual().getAllSymbols().stream().map(Symbol::getName).collect(toList());
   }
 
+  @FormatMethod
+  protected void failWithMessage(@FormatString String message, Object... args) {
+    failWithoutActual(
+        Fact.simpleFact(
+            "Not true that " + internalCustomName() + " " + String.format(message, args)));
+  }
+
   public void isEmpty() {
     if (actual().getAllSymbols().iterator().hasNext()) {
-      failWithoutActual("is empty; it has " + getSymbolNames());
+      failWithMessage("is empty; it has %s", getSymbolNames());
     }
   }
 
   public LinkedSymbolSubject hasOwnSymbol(String name) {
     Symbol symbol = actual().getOwnSlot(name);
     if (symbol == null) {
-      failWithoutActual("has own symbol \"" + name + "\"; has " + getSymbolNames());
+      failWithMessage("has own symbol \"%s\"; it has %s", getSymbolNames());
     }
     return new LinkedSymbolSubject(symbol);
   }
@@ -90,7 +100,7 @@ public final class SymbolTableSubject extends Subject<SymbolTableSubject, Symbol
   public void doesNotHaveModule(Path path) {
     Module module = actual().getModule(path);
     if (module != null) {
-      failWithoutActual("does not have module with path = " + path);
+      failWithMessage("does not have module with path = %s", path);
     }
   }
 
@@ -121,7 +131,7 @@ public final class SymbolTableSubject extends Subject<SymbolTableSubject, Symbol
   public Module hasGoogModule(String id) {
     Module module = actual().getModuleById(id);
     if (module == null) {
-      failWithoutActual(internalCustomName() + " does not have a module with ID " + id);
+      failWithMessage("does not have a module with ID %s", id);
     }
     assert module != null;
     Truth.assertWithMessage("%s is not a CLOSURE module", id)
@@ -143,7 +153,7 @@ public final class SymbolTableSubject extends Subject<SymbolTableSubject, Symbol
   private Module getModuleByPath(Path path) {
     Module module = actual().getModule(path);
     if (module == null) {
-      failWithoutActual(internalCustomName() + " does not have a module from path " + path);
+      failWithMessage("does not have a module from path %s", path);
       throw new AssertionError("unreachable statement");
     }
     return module;

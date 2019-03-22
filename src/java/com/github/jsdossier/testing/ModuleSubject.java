@@ -16,6 +16,8 @@ limitations under the License.
 
 package com.github.jsdossier.testing;
 
+import static com.google.common.truth.Truth.assertWithMessage;
+
 import com.github.jsdossier.jscomp.Module;
 import com.google.common.truth.FailureMetadata;
 import com.google.common.truth.StringSubject;
@@ -36,10 +38,7 @@ public final class ModuleSubject extends Subject<ModuleSubject, Module> {
   public StringSubject hasJsdocCommentThat() {
     Truth.assertThat(actual()).isNotNull();
     JSDocInfo info = actual().getJsDoc().getInfo();
-    if (info == null) {
-      failWithoutActual("has attached jsdoc");
-      throw new AssertionError(); // This line will never execute, just here for the IDE.
-    }
+    assertWithMessage("%s does not have jsdoc", actual()).that(info).isNotNull();
     return Truth.assertThat(info.getOriginalCommentString())
         .named("%s jsdoc comment", internalCustomName());
   }

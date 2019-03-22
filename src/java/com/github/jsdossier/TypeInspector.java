@@ -1088,7 +1088,7 @@ final class TypeInspector {
 
     if (isUnknownType || isEmptyTemplatizedType || isUnresolvedTemplateInstance) {
       if (returnDocs != null && isKnownType(returnDocs.getJsDoc().getReturnClause())) {
-        @SuppressWarnings("OptionalGetWithoutIsPresent")  // Implied by isKnownType check above.
+        @SuppressWarnings("OptionalGetWithoutIsPresent") // Implied by isKnownType check above.
         JSTypeExpression expression = returnDocs.getJsDoc().getReturnClause().getType().get();
         returnType = evaluate(expression);
       } else {

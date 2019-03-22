@@ -19,6 +19,7 @@ package com.github.jsdossier.testing;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.github.jsdossier.jscomp.Symbol;
+import com.google.common.truth.Fact;
 import com.google.common.truth.FailureMetadata;
 import com.google.common.truth.Subject;
 import com.google.javascript.rhino.JSDocInfo;
@@ -45,7 +46,8 @@ public final class SymbolSubject extends Subject<SymbolSubject, Symbol> {
   public void hasNoJsDoc() {
     JSDocInfo info = actual().getJSDocInfo();
     if (info != null && !info.getOriginalCommentString().isEmpty()) {
-      failWithoutActual(actual() + " has unexpected jsdoc: " + info.getOriginalCommentString());
+      failWithoutActual(
+          Fact.simpleFact(actual() + " has unexpected jsdoc: " + info.getOriginalCommentString()));
     }
   }
 
