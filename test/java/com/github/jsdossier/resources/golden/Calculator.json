@@ -245,7 +245,7 @@
           1,
           [
             [
-              "arg0",
+              "radix",
               [
                 null,
                 null,
@@ -256,6 +256,14 @@
                   null,
                   1,
                   []
+                ]
+              ],
+              [
+                [
+                  [
+                    null,
+                    "\u003cp\u003ethe radix to use.\u003c/p\u003e\n"
+                  ]
                 ]
               ]
             ]

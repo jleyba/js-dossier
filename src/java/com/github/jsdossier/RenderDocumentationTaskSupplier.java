@@ -16,7 +16,6 @@ limitations under the License.
 
 package com.github.jsdossier;
 
-import static com.github.jsdossier.TypeInspector.fakeNodeForType;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -414,8 +413,6 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
         }
       }
 
-      // TODO: should not be using Node here.
-      Node fakeNode = fakeNodeForType(type);
       FunctionType mainFn =
           checkNotNull(
               type.getType().toMaybeFunctionType(),
@@ -423,7 +420,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Re
               type.getName(),
               type.getType());
       spec.setMainFunction(
-          typeInspector.getFunctionData(getBasename(type), mainFn, fakeNode, context, docs));
+          typeInspector.getFunctionData(getBasename(type), mainFn, type.getNode(), context, docs));
     }
 
     private void addTypeInheritanceInfo(JsType.Builder spec) {

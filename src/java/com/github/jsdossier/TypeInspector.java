@@ -56,11 +56,9 @@ import com.google.common.collect.Sets;
 import com.google.common.html.types.SafeUrl;
 import com.google.common.html.types.SafeUrlProto;
 import com.google.common.html.types.SafeUrls;
-import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
-import com.google.javascript.rhino.StaticSourceFile;
 import com.google.javascript.rhino.Token;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
@@ -825,10 +823,23 @@ final class TypeInspector {
     return builder.build();
   }
 
+  // TODO(jleyba): this method is crazy and full of a bunch hacks. Need to refactor.
   private Iterable<Function.Detail> getParameters(
       FunctionType type, Node node, PropertyDocs docs, Iterable<InstanceProperty> overrides) {
     NominalType contextType = docs.getContextType();
     Collection<Parameter> parameters = docs.getJsDoc().getParameters();
+
+    if (parameters.isEmpty()
+        && type.isConstructor()
+        && !type.getTypeOfThis().isUnknownType() // Short-circuit for the global Function type.
+        && type.getJSDocInfo() != null
+        && type.getJSDocInfo().getParameterCount() > 0) {
+      parameters = extractParameters(type.getJSDocInfo());
+    }
+
+    if (node.isAssign() && node.getFirstChild() != null && node.getSecondChild() != null) {
+      node = node.getSecondChild();
+    }
 
     if (node.isClass()) {
       JSDocInfo info = findClassConstructorDocs(node);
@@ -1345,40 +1356,6 @@ final class TypeInspector {
     for (Node child = node.getFirstChild(); child != null; child = child.getNext()) {
       resolveNames(child);
     }
-  }
-
-  static Node fakeNodeForType(final NominalType type) {
-    Node fakeNode = IR.script();
-    fakeNode.getSourceFileName();
-    fakeNode.setStaticSourceFile(
-        new StaticSourceFile() {
-          @Override
-          public String getName() {
-            return type.getSourceFile().toString();
-          }
-
-          @Override
-          public SourceKind getKind() {
-            return SourceKind.STRONG;
-          }
-
-          @Override
-          public int getLineOffset(int lineNumber) {
-            return 0;
-          }
-
-          @Override
-          public int getLineOfOffset(int offset) {
-            return 0;
-          }
-
-          @Override
-          public int getColumnOfOffset(int offset) {
-            return 0;
-          }
-        });
-    fakeNode.setLineno(type.getSourcePosition().getLine());
-    return fakeNode;
   }
 
   private static JSType stripTemplateTypeInformation(JSType type) {
