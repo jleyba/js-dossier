@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="com.google.googlejavaformat:google-java-format:1.7" type="repository">
+    <properties include-transitive-deps="false" maven-id="com.google.googlejavaformat:google-java-format:1.7" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/googlejavaformat/google-java-format/1.7/google-java-format-1.7.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
