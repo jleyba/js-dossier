@@ -67,7 +67,7 @@ public final class SymbolTableSubject extends Subject<SymbolTableSubject, Symbol
   public LinkedSymbolSubject hasOwnSymbol(String name) {
     Symbol symbol = actual().getOwnSlot(name);
     if (symbol == null) {
-      failWithMessage("has own symbol \"%s\"; it has %s", getSymbolNames());
+      failWithMessage("has own symbol \"%s\"; it has %s", name, getSymbolNames());
     }
     return new LinkedSymbolSubject(symbol);
   }

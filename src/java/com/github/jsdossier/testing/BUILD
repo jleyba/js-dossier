@@ -13,6 +13,7 @@ java_library(
         "//src/java/com/github/jsdossier/soy",
         "//third_party/java/auto:value",
         "//third_party/java/closure_compiler",
+        "//third_party/java/error_prone:annotations",
         "//third_party/java/guava",
         "//third_party/java/guice",
         "//third_party/java/jimfs",

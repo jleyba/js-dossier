@@ -142,6 +142,12 @@ maven_jar(
 )
 
 maven_jar(
+    name = "com_google_errorprone_error_prone_annotations",
+    artifact = "com.google.errorprone:error_prone_annotations:2.3.3",
+    sha1 = "42aa5155a54a87d70af32d4b0d06bf43779de0e2",
+)
+
+maven_jar(
     name = "com_google_errorprone_javac_shaded",
     artifact = "com.google.errorprone:javac-shaded:9-dev-r4023-3",
     sha1 = "72b688efd290280a0afde5f9892b0fde6f362d1d",
