@@ -427,7 +427,7 @@ final class TypeInspector {
     // The property does not have any docs, but is part of a module's exported API,
     // so we can see if the property is just a symbol defined in the module whose docs we can
     // use.
-    @SuppressWarnings("ConstantConditions") // Module presence implied by isModuleExports above.
+    @SuppressWarnings("OptionalGetWithoutIsPresent") // Presence implied by isModuleExports above.
     Module module = ownerType.getModule().get();
 
     String internalName = module.getExportedNames().get(property.getName());
@@ -762,9 +762,7 @@ final class TypeInspector {
                 if (definedOn.isInstanceType()) {
                   ctor = definedOn.toObjectType().getConstructor();
                 }
-                if (ctor == null || !ctor.isInterface()) {
-                  return false;
-                }
+                return ctor != null && ctor.isInterface();
               }
               return true;
             })
@@ -1006,6 +1004,7 @@ final class TypeInspector {
     }
 
     if (src.isGetProp()
+        && src.getParent() != null
         && src.getParent().isAssign()
         && src.getParent().getSecondChild() != null
         && src.getParent().getSecondChild().isFunction()) {
@@ -1089,6 +1088,7 @@ final class TypeInspector {
 
     if (isUnknownType || isEmptyTemplatizedType || isUnresolvedTemplateInstance) {
       if (returnDocs != null && isKnownType(returnDocs.getJsDoc().getReturnClause())) {
+        @SuppressWarnings("OptionalGetWithoutIsPresent")  // Implied by isKnownType check above.
         JSTypeExpression expression = returnDocs.getJsDoc().getReturnClause().getType().get();
         returnType = evaluate(expression);
       } else {
@@ -1108,10 +1108,10 @@ final class TypeInspector {
       return null;
     }
 
-    NominalType context = null;
+    NominalType context;
     if (returnDocs != null) {
       context = returnDocs.getContextType();
-    } else if (docs != null) {
+    } else {
       context = docs.getContextType();
     }
 
@@ -1180,7 +1180,7 @@ final class TypeInspector {
     if ("default".equals(name)
         && docs.getContextType() == inspectedType
         && inspectedType.isModuleExports()
-        && inspectedType.getModule().get().isEs6()) {
+        && inspectedType.getModule().map(Module::isEs6).orElse(false)) {
       builder.getTagsBuilder().setIsDefault(true);
     }
 
@@ -1390,7 +1390,7 @@ final class TypeInspector {
 
   private static JSType getType(ObjectType object, Property property) {
     JSType type = object.findPropertyType(property.getName());
-    if (type.isUnknownType()) {
+    if (type != null && type.isUnknownType()) {
       type = property.getType();
     }
     return type;
@@ -1459,11 +1459,7 @@ final class TypeInspector {
 
     @AutoValue.Builder
     abstract static class Builder {
-      final Builder setOwnerType(@Nullable NominalType type) {
-        return setOwnerType(Optional.ofNullable(type));
-      }
-
-      abstract Builder setOwnerType(Optional<NominalType> type);
+      abstract Builder setOwnerType(@Nullable NominalType type);
 
       abstract Builder setDefinedByType(JSType type);
 
