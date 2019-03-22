@@ -1,5 +1,9 @@
 # v.next
 
+## Bug Fixes
+
+-  Fixed a rendering issue with arguments that do not have a doc comment
+
 ## Changes
 
 -  Upgraded dependencies:

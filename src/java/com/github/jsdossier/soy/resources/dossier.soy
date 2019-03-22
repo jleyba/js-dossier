@@ -248,12 +248,13 @@
                   {/param}
                   {param cell2 kind="html"}{$type}{/param}
                 {/call}
-                {if $content}
-                  {call .infoRow}
-                    {param cell1 kind="html"}{/param}
-                    {param cell2 kind="html"}{$content}{/param}
-                  {/call}
-                {/if}
+                {call .infoRow}
+                  {param cell1 kind="html"}{/param}
+                  {param cell1Attributes kind="attributes"}
+                    {if not $content}colspan="2"{/if}
+                  {/param}
+                  {param cell2 kind="html"}{$content}{/param}
+                {/call}
               {else}
                 {if $type}
                   {call .infoRow}
