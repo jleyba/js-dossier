@@ -49,6 +49,7 @@ import com.google.javascript.rhino.jstype.UnionType;
 import com.google.javascript.rhino.jstype.Visitor;
 import java.util.ArrayDeque;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -241,10 +242,12 @@ final class TypeExpressionParser {
           parameterType.setIsVarargs(true);
         }
 
-        if (node.getJSType().isUnionType()) {
-          caseUnionType((UnionType) node.getJSType(), node.isVarArgs() || node.isOptionalArg());
-        } else {
-          node.getJSType().visit(this);
+        if (node.getJSType() != null) {
+          if (node.getJSType().isUnionType()) {
+            caseUnionType((UnionType) node.getJSType(), node.isOptionalArg());
+          } else {
+            node.getJSType().visit(this);
+          }
         }
 
         if (node.isOptionalArg()) {
@@ -352,7 +355,7 @@ final class TypeExpressionParser {
               .stream()
               .map(type::getOwnSlot)
               .filter(input -> input != null && !input.getType().isNoType())
-              .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
+              .sorted(Comparator.comparing(Property::getName))
               .collect(toList());
 
       RecordType.Builder recordType = currentExpression().getRecordTypeBuilder();
@@ -450,10 +453,6 @@ final class TypeExpressionParser {
 
       if (filterVoid) {
         alternateTypes.remove(VOID_TYPE);
-        if (alternateTypes.size() == 1) {
-          currentExpression().mergeFrom(alternateTypes.iterator().next());
-        }
-        return;
       }
 
       unionType.addAllType(UNION_ORDERING.sortedCopy(alternateTypes));

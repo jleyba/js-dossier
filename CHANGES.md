@@ -2,7 +2,9 @@
 
 ## Bug Fixes
 
--  Fixed a rendering issue with arguments that do not have a doc comment
+-  Fixed a rendering issue with arguments that do not have a doc comment.
+-  Fixed a bug that caused optional parameters in function type expressions to
+   be discarded.
 
 ## Changes
 

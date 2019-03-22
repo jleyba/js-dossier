@@ -397,6 +397,96 @@ public class TypeExpressionParserTest {
   }
 
   @Test
+  public void parseExpression_optionalPrimitive() {
+    TypeExpression expression = compileExpression("number=");
+    assertThat(expression).isEqualTo(unionType(numberType(), VOID_TYPE));
+  }
+
+  @Test
+  public void parseExpression_nullableOptionalPrimitive() {
+    TypeExpression expression = compileExpression("?number=");
+    assertThat(expression).isEqualTo(unionType(numberType(), NULL_TYPE, VOID_TYPE));
+  }
+
+  @Test
+  public void parseExpression_nullableOptionalUnion() {
+    TypeExpression expression = compileExpression("?(number|string)=");
+    assertThat(expression).isEqualTo(unionType(numberType(), stringType(), NULL_TYPE, VOID_TYPE));
+  }
+
+  @Test
+  public void parseExpression_optionalInFunctionParameterList() {
+    TypeExpression expression = compileExpression("function(number=)");
+    assertThat(expression)
+        .isEqualTo(
+            TypeExpression.newBuilder()
+                .setFunctionType(
+                    FunctionType.newBuilder()
+                        .addParameter(numberType().toBuilder().setIsOptional(true))
+                        .setReturnType(UNKNOWN_TYPE))
+                .build());
+  }
+
+  @Test
+  public void parseExpression_optionalUnionInFunctionParameterList() {
+    TypeExpression expression = compileExpression("function((number|string)=)");
+    assertThat(expression)
+        .isEqualTo(
+            TypeExpression.newBuilder()
+                .setFunctionType(
+                    FunctionType.newBuilder()
+                        .addParameter(
+                            unionType(numberType(), stringType()).toBuilder().setIsOptional(true))
+                        .setReturnType(UNKNOWN_TYPE))
+                .build());
+  }
+
+  @Test
+  public void parseExpression_multipleOptionalsInFunctionParameterList() {
+    TypeExpression expression = compileExpression("function(number=, string=)");
+    assertThat(expression)
+        .isEqualTo(
+            TypeExpression.newBuilder()
+                .setFunctionType(
+                    FunctionType.newBuilder()
+                        .addParameter(numberType().toBuilder().setIsOptional(true))
+                        .addParameter(stringType().toBuilder().setIsOptional(true))
+                        .setReturnType(UNKNOWN_TYPE))
+                .build());
+  }
+
+  @Test
+  public void parseExpression_multipleOptionalsInFunctionParameterList_withRequiredArg() {
+    TypeExpression expression = compileExpression("function(string, number=, string=)");
+    assertThat(expression)
+        .isEqualTo(
+            TypeExpression.newBuilder()
+                .setFunctionType(
+                    FunctionType.newBuilder()
+                        .addParameter(stringType())
+                        .addParameter(numberType().toBuilder().setIsOptional(true))
+                        .addParameter(stringType().toBuilder().setIsOptional(true))
+                        .setReturnType(UNKNOWN_TYPE))
+                .build());
+  }
+
+  @Test
+  public void parseExpression_nullableOptionalInParameterList() {
+    TypeExpression expression = compileExpression("function(?(number|string)=)");
+    assertThat(expression)
+        .isEqualTo(
+            TypeExpression.newBuilder()
+                .setFunctionType(
+                    FunctionType.newBuilder()
+                        .addParameter(
+                            unionType(numberType(), stringType(), NULL_TYPE)
+                                .toBuilder()
+                                .setIsOptional(true))
+                        .setReturnType(UNKNOWN_TYPE))
+                .build());
+  }
+
+  @Test
   public void parseExpression_recordTypeWithNullablePrimitive() {
     TypeExpression expression = compileExpression("{age: ?number}");
     assertThat(expression)
@@ -479,6 +569,10 @@ public class TypeExpressionParserTest {
     return TypeExpression.newBuilder()
         .setNamedType(NamedType.newBuilder().setExtern(true).setName("number"))
         .build();
+  }
+
+  private static TypeExpression nullType() {
+    return TypeExpression.newBuilder().setNullType(true).build();
   }
 
   private static TypeExpression stringType() {

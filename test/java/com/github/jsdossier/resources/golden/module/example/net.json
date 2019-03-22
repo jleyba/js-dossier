@@ -216,57 +216,35 @@
                   1,
                   null,
                   null,
-                  null,
-                  null,
                   [
+                    "Map",
+                    null,
+                    null,
+                    1,
                     [
                       [
                         null,
                         null,
                         null,
                         [
-                          "Map",
+                          "string",
                           null,
                           null,
                           1,
-                          [
-                            [
-                              null,
-                              null,
-                              null,
-                              [
-                                "string",
-                                null,
-                                null,
-                                1,
-                                []
-                              ]
-                            ],
-                            [
-                              null,
-                              null,
-                              null,
-                              [
-                                "string",
-                                null,
-                                null,
-                                1,
-                                []
-                              ]
-                            ]
-                          ]
+                          []
                         ]
                       ],
                       [
                         null,
                         null,
                         null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        1
+                        [
+                          "string",
+                          null,
+                          null,
+                          1,
+                          []
+                        ]
                       ]
                     ]
                   ]

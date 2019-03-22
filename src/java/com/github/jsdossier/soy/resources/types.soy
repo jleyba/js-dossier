@@ -110,6 +110,8 @@
   {elseif $expression.voidType}{if $undefinedAsVoid}void{else}undefined{/if}
   {elseif $expression.nullType}null
   {/if}
+
+  {if $expression.isOptional}={/if}
 {/template}
 
 

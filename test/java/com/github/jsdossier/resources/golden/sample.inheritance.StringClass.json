@@ -450,34 +450,12 @@
                   1,
                   null,
                   null,
-                  null,
-                  null,
                   [
-                    [
-                      [
-                        null,
-                        null,
-                        null,
-                        [
-                          "number",
-                          null,
-                          null,
-                          1,
-                          []
-                        ]
-                      ],
-                      [
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        1
-                      ]
-                    ]
+                    "number",
+                    null,
+                    null,
+                    1,
+                    []
                   ]
                 ],
                 [

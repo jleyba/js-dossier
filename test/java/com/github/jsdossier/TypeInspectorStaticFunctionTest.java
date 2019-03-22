@@ -25,6 +25,7 @@ import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Function;
 import com.github.jsdossier.proto.Function.Detail;
+import com.github.jsdossier.proto.FunctionType;
 import com.github.jsdossier.proto.Tags;
 import com.github.jsdossier.proto.TypeExpression;
 import java.util.Comparator;
@@ -1115,6 +1116,72 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
   }
 
   @Test
+  public void varargsParameter_argsMayBeNull() {
+    compile(
+        "class Worker {",
+        "  /** @param {...(number|null)} numbers The numbers to add. */",
+        "  static add(...numbers) {",
+        "  }",
+        "}");
+
+    NominalType type = typeRegistry.getType("Worker");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("Worker.add")
+                        .setSource(sourceFile("source/foo.js.src.html", 3))
+                        .setDescription(Comment.getDefaultInstance()))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("numbers")
+                        .setType(
+                            unionType(
+                                    numberTypeExpression(),
+                                    TypeExpression.newBuilder().setNullType(true).build())
+                                .toBuilder()
+                                .setIsVarargs(true))
+                        .setDescription(htmlComment("<p>The numbers to add.</p>\n")))
+                .build());
+  }
+
+  @Test
+  public void varargsParameter_argsMayBeUndefined() {
+    compile(
+        "class Worker {",
+        "  /** @param {...(number|undefined)} numbers The numbers to add. */",
+        "  static add(...numbers) {",
+        "  }",
+        "}");
+
+    NominalType type = typeRegistry.getType("Worker");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("Worker.add")
+                        .setSource(sourceFile("source/foo.js.src.html", 3))
+                        .setDescription(Comment.getDefaultInstance()))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("numbers")
+                        .setType(
+                            unionType(
+                                    numberTypeExpression(),
+                                    TypeExpression.newBuilder().setVoidType(true).build())
+                                .toBuilder()
+                                .setIsVarargs(true))
+                        .setDescription(htmlComment("<p>The numbers to add.</p>\n")))
+                .build());
+  }
+
+  @Test
   public void asyncStaticFunction_withReturnJsDoc() {
     compile(
         "class Worker {",
@@ -1188,6 +1255,161 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                                         .setExtern(true)
                                         .addTemplateType(
                                             TypeExpression.newBuilder().setVoidType(true)))))
+                .build());
+  }
+
+  @Test
+  public void functionParameterType() {
+    compile(
+        "class Worker {",
+        "  /** @param {function()} cb callback to run. */",
+        "  static run(cb) {",
+        "  }",
+        "}");
+
+    NominalType type = typeRegistry.getType("Worker");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("Worker.run")
+                        .setSource(sourceFile("source/foo.js.src.html", 3))
+                        .setDescription(Comment.getDefaultInstance()))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("cb")
+                        .setType(
+                            TypeExpression.newBuilder()
+                                .setFunctionType(
+                                    FunctionType.newBuilder()
+                                        .setReturnType(
+                                            TypeExpression.newBuilder().setUnknownType(true))))
+                        .setDescription(htmlComment("<p>callback to run.</p>\n")))
+                .build());
+  }
+
+  @Test
+  public void functionParameterType_withOptionalArg() {
+    compile(
+        "class Worker {",
+        "  /** @param {function(number=)} cb callback to run. */",
+        "  static run(cb) {",
+        "  }",
+        "}");
+
+    NominalType type = typeRegistry.getType("Worker");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("Worker.run")
+                        .setSource(sourceFile("source/foo.js.src.html", 3))
+                        .setDescription(Comment.getDefaultInstance()))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("cb")
+                        .setType(
+                            TypeExpression.newBuilder()
+                                .setFunctionType(
+                                    FunctionType.newBuilder()
+                                        .addParameter(
+                                            numberTypeExpression().toBuilder().setIsOptional(true))
+                                        .setReturnType(
+                                            TypeExpression.newBuilder().setUnknownType(true))))
+                        .setDescription(htmlComment("<p>callback to run.</p>\n")))
+                .build());
+  }
+
+  @Test
+  public void functionParameterType_withUnionedVarArg() {
+    compile(
+        "class Worker {",
+        "  /** @param {function(...(number|string|null|undefined))} cb callback to run. */",
+        "  static run(cb) {",
+        "  }",
+        "}");
+
+    NominalType type = typeRegistry.getType("Worker");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("Worker.run")
+                        .setSource(sourceFile("source/foo.js.src.html", 3))
+                        .setDescription(Comment.getDefaultInstance()))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("cb")
+                        .setType(
+                            TypeExpression.newBuilder()
+                                .setFunctionType(
+                                    FunctionType.newBuilder()
+                                        .addParameter(
+                                            unionType(
+                                                    numberTypeExpression(),
+                                                    stringTypeExpression(),
+                                                    TypeExpression.newBuilder()
+                                                        .setNullType(true)
+                                                        .build(),
+                                                    TypeExpression.newBuilder()
+                                                        .setVoidType(true)
+                                                        .build())
+                                                .toBuilder()
+                                                .setIsVarargs(true))
+                                        .setReturnType(
+                                            TypeExpression.newBuilder().setUnknownType(true))))
+                        .setDescription(htmlComment("<p>callback to run.</p>\n")))
+                .build());
+  }
+
+  @Test
+  public void functionParameterType_withUnionedOptional() {
+    compile(
+        "class Worker {",
+        "  /** @param {function((number|string|null|undefined)=)} cb callback to run. */",
+        "  static run(cb) {",
+        "  }",
+        "}");
+
+    NominalType type = typeRegistry.getType("Worker");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("Worker.run")
+                        .setSource(sourceFile("source/foo.js.src.html", 3))
+                        .setDescription(Comment.getDefaultInstance()))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("cb")
+                        .setType(
+                            TypeExpression.newBuilder()
+                                .setFunctionType(
+                                    FunctionType.newBuilder()
+                                        .addParameter(
+                                            unionType(
+                                                    numberTypeExpression(),
+                                                    stringTypeExpression(),
+                                                    TypeExpression.newBuilder()
+                                                        .setNullType(true)
+                                                        .build())
+                                                .toBuilder()
+                                                .setIsOptional(true))
+                                        .setReturnType(
+                                            TypeExpression.newBuilder().setUnknownType(true))))
+                        .setDescription(htmlComment("<p>callback to run.</p>\n")))
                 .build());
   }
 }

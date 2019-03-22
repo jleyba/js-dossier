@@ -891,9 +891,9 @@ final class TypeInspector {
 
                   if (paramTypeExpression.isVarArgs()) {
                     expression.setIsVarargs(true);
-                    removeVoid(expression);
                   } else if (paramTypeExpression.isOptionalArg()) {
                     expression.setIsOptional(true);
+                    removeVoid(expression);
                   }
 
                   if (paramTypeExpression.getRoot().getToken() == Token.BANG) {
@@ -964,37 +964,30 @@ final class TypeInspector {
 
   private static void removeNull(TypeExpression.Builder expression) {
     expression.clearNullType();
-    if (!TypeExpression.NodeTypeCase.UNION_TYPE.equals(expression.getNodeTypeCase())) {
-      return;
-    }
-    UnionType.Builder union = expression.getUnionTypeBuilder();
-    for (int i = union.getTypeCount() - 1; i >= 0; i -= 1) {
-      if (union.getType(i).getNullType()) {
-        union.removeType(i);
-        if (union.getTypeCount() == 1) {
-          expression.clearUnionType();
-          expression.mergeFrom(union.getType(0));
-          return;
-        }
-      }
-    }
+    simplifyUnion(expression, TypeExpression::getNullType);
   }
 
   private static void removeVoid(TypeExpression.Builder expression) {
-    expression.clearNullType();
+    expression.clearVoidType();
+    simplifyUnion(expression, TypeExpression::getVoidType);
+  }
+
+  private static void simplifyUnion(
+      TypeExpression.Builder expression, Predicate<TypeExpression> filter) {
     if (!TypeExpression.NodeTypeCase.UNION_TYPE.equals(expression.getNodeTypeCase())) {
       return;
     }
     UnionType.Builder union = expression.getUnionTypeBuilder();
     for (int i = union.getTypeCount() - 1; i >= 0; i -= 1) {
-      if (union.getType(i).getVoidType()) {
+      if (filter.test(union.getType(i))) {
         union.removeType(i);
-        if (union.getTypeCount() == 1) {
-          expression.clearUnionType();
-          expression.mergeFrom(union.getType(0));
-          return;
-        }
       }
+    }
+    if (union.getTypeCount() == 0) {
+      expression.setUnknownType(true);
+    } else if (union.getTypeCount() == 1) {
+      expression.clearUnionType();
+      expression.mergeFrom(union.getType(0));
     }
   }
 
