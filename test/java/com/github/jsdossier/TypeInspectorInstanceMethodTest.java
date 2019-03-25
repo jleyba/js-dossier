@@ -2336,4 +2336,70 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setType(namedTypeExpression("Foo", "foo.Foo", "foo_exports_Foo.html"))
                 .build());
   }
+
+  @Test
+  @Bug(110)
+  public void classTemplateTypeAsMethodParameter() {
+    util.compile(
+        fs.getPath("/src/foo.js"),
+        "goog.provide('my.provide.Provide');",
+        "/**",
+        " * Lorem ipsum",
+        " * @template T",
+        " * @param {!T} t constructor param",
+        " * @constructor",
+        " */",
+        "my.provide.Provide = function(t) {};",
+        "",
+        "/**",
+        " * dolor sit amet",
+        " * @param {!T} t method param",
+        " */",
+        "my.provide.Provide.prototype.aMethod = function(t) {};");
+
+    NominalType type = typeRegistry.getType("my.provide.Provide");
+    assertThat(type.getType().isConstructor()).isTrue();
+
+    TypeInspector inspector = typeInspectorFactory.create(type);
+
+    Function fn =
+        inspector.getFunctionData(
+            type.getName(),
+            type.getType().toMaybeFunctionType(),
+            type.getNode(),
+            type,
+            type.getJsDoc());
+    assertThat(fn)
+        .isEqualTo(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName(type.getName())
+                        .setDescription(htmlComment("<p>Lorem ipsum</p>\n"))
+                        .setSource(sourceFile("source/foo.js.src.html", 8)))
+                .setIsConstructor(true)
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("t")
+                        .setDescription(htmlComment("<p>constructor param</p>\n"))
+                        .setType(namedTypeExpression("T")))
+                .addTemplateName("T")
+                .build());
+
+    TypeInspector.Report report = inspector.inspectInstanceType();
+    assertThat(report.getFunctions())
+        .containsExactly(
+            Function.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("aMethod")
+                        .setDescription(htmlComment("<p>dolor sit amet</p>\n"))
+                        .setSource(sourceFile("source/foo.js.src.html", 14)))
+                .addParameter(
+                    Detail.newBuilder()
+                        .setName("t")
+                        .setDescription(htmlComment("<p>method param</p>\n"))
+                        .setType(namedTypeExpression("T")))
+                .build());
+  }
 }
