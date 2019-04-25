@@ -39,7 +39,7 @@ message Resources {
   reserved 1, 2, 3;
 
   // Paths to stylesheets to link to in the generated page.
-  repeated webutil.html.types.SafeUrlProto css = 4;
+  repeated webutil.html.types.TrustedResourceUrlProto css = 4;
 
   // Paths to JavaScript files to include in the generated page's head.
   repeated webutil.html.types.SafeUrlProto head_script = 5;

@@ -268,12 +268,22 @@ final class DossierFileSystem {
           return SafeUrls.toProto(url);
         };
 
+    java.util.function.Function<Path, TrustedResourceUrlProto> pathToTrustedUrl =
+        path ->
+            TrustedResourceUrls.toProto(
+                LegacyConversions.riskilyAssumeTrustedResourceUrl(
+                    Paths.getRelativePath(outputPath, path).toString()));
+
     java.util.function.Function<List<TemplateFile>, List<SafeUrlProto>> toSafeUrls =
         files -> files.stream().map(this::getPath).map(pathToUrl).collect(Collectors.toList());
 
+    java.util.function.Function<List<TemplateFile>, List<TrustedResourceUrlProto>> toTrustedUrls =
+        files ->
+            files.stream().map(this::getPath).map(pathToTrustedUrl).collect(Collectors.toList());
+
     Path typesJs = outputRoot.resolve("types.js");
     return Resources.newBuilder()
-        .addAllCss(toSafeUrls.apply(template.getCss()))
+        .addAllCss(toTrustedUrls.apply(template.getCss()))
         .addAllHeadScript(toSafeUrls.apply(template.getHeadJs()))
         .addHeadScript(pathToUrl.apply(typesJs))
         .addAllTailScript(toSafeUrls.apply(template.getTailJs()))
