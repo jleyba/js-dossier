@@ -1,1 +1,1 @@
-build --strategy=Javac=worker --strategy=Closure=worker --incompatible_disallow_data_transition=false
+build --strategy=Javac=worker --strategy=Closure=worker --incompatible_disallow_data_transition=false --incompatible_disallow_filetype=false
