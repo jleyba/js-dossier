@@ -320,10 +320,10 @@
 
 /**
  * Prints a list of template type names: {@literal <A, B, C>}.
- *
- * @param names The list of template type names.
  */
 {template .printTemplateNames}
+  {@param names: list<string>}
+
   <var class="template">&lt;
   {for $name in $names}
     {$name}

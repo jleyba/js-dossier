@@ -165,13 +165,6 @@ public class Renderer {
 
     SoyJsSrcOptions options = new SoyJsSrcOptions();
 
-    // These options must be disabled before enabling goog modules below.
-    options.setShouldDeclareTopLevelNamespaces(false);
-    options.setShouldProvideRequireSoyNamespaces(false);
-    options.setShouldProvideRequireJsFunctions(false);
-    options.setShouldProvideBothSoyNamespacesAndJsFunctions(false);
-    options.setShouldAllowDeprecatedSyntax(false);
-
     options.setShouldGenerateGoogModules(true);
 
     Pattern googModulePattern = Pattern.compile("(goog\\.module\\('.*'\\);)");
@@ -179,33 +172,18 @@ public class Renderer {
         "\n/** @suppress {extraRequire} */\n"
             + "goog.require('dossier.soyplugins');\n"
             + "/** @suppress {extraRequire} */\n"
-            + "goog.require('goog.soy.data.SanitizedContent');\n"
-            + "/** @suppress {extraRequire} */\n"
-            + "goog.require('goog.soy.data.SanitizedHtml');\n"
-            + "/** @suppress {extraRequire} */\n"
-            + "goog.require('goog.soy.data.SanitizedHtmlAttribute');"
-            + "/** @suppress {extraRequire} */\n"
-            + "goog.require('goog.soy.data.UnsanitizedText');"
-            + "\n";
-
-    Pattern htmlAttributePattern =
-        Pattern.compile("soydata\\.((?:UnsanitizedText|SanitizedHtml(?:Attribute)?))");
+            + "goog.require('goog.soy.data.SanitizedContent');\n";
 
     Iterator<Path> files =
         ImmutableList.of(
-                outputDir.resolve("dossier.soy.js"),
-                outputDir.resolve("nav.soy.js"),
-                outputDir.resolve("types.soy.js"))
+            outputDir.resolve("dossier.soy.js"),
+            outputDir.resolve("nav.soy.js"),
+            outputDir.resolve("types.soy.js"))
             .iterator();
     for (String string : fileSet.compileToJsSrc(options, null)) {
       Matcher matcher = googModulePattern.matcher(string);
       if (matcher.find()) {
         string = matcher.replaceFirst("$1\n" + missingContent);
-      }
-
-      matcher = htmlAttributePattern.matcher(string);
-      if (matcher.find()) {
-        string = matcher.replaceAll("goog.soy.data.$1");
       }
 
       Path file = files.next();

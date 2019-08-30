@@ -81,8 +81,8 @@ maven_jar(
 
 maven_jar(
     name = "com_google_template_soy",
-    artifact = "com.google.template:soy:2018-03-14",
-    sha1 = "76a1322705ba5a6d6329ee26e7387417725ce4b3",
+    artifact = "com.google.template:soy:2019-08-22",
+    sha1 = "d4bf390caf7aa448108a5b9ec1b51f46820438f3",
 )
 
 maven_jar(

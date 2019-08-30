@@ -15,6 +15,7 @@ genrule(
 closure_js_library(
     name = "soy",
     srcs = [
+        "soyijdata.js",
         "soyplugins.js",
         ":gen_soy_js",
     ],
