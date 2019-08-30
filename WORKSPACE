@@ -11,16 +11,6 @@ http_archive(
     ],
 )
 
-http_archive(
-    name = "com_google_protobuf",
-    sha256 = "73fdad358857e120fd0fa19e071a96e15c0f23bb25f85d3f7009abfd4f264a2a",
-    strip_prefix = "protobuf-3.6.1.3",
-    urls = [
-        "https://mirror.bazel.build/github.com/google/protobuf/archive/v3.6.1.3.tar.gz",
-        "https://github.com/protocolbuffers/protobuf/archive/v3.6.1.3.tar.gz",
-    ],
-)
-
 load("@io_bazel_rules_closure//closure:defs.bzl", "closure_repositories")
 
 maven_jar(
@@ -204,12 +194,6 @@ maven_jar(
 )
 
 maven_jar(
-    name = "com_google_protobuf_protobuf_java",
-    artifact = "com.google.protobuf:protobuf-java:3.5.0",
-    sha1 = "200fb936907fbab5e521d148026f6033d4aa539e",
-)
-
-maven_jar(
     name = "com_google_common_html_types_types",
     artifact = "com.google.common.html.types:types:1.0.8",
     sha1 = "9e9cf7bc4b2a60efeb5f5581fe46d17c068e0777",
@@ -240,6 +224,5 @@ maven_jar(
 )
 
 closure_repositories(
-    omit_com_google_protobuf = True,
     omit_com_google_template_soy = True,
 )
