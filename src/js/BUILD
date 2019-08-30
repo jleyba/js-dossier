@@ -20,14 +20,16 @@ closure_js_library(
     ],
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_JSDOC_REFERENCE_TO_FULLY_QUALIFIED_IMPORT_NAME",
+        "JSC_REFERENCE_TO_FULLY_QUALIFIED_IMPORT_NAME",
         "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_UNUSED_LOCAL_ASSIGNMENT",
     ],
     visibility = ["//visibility:private"],
     deps = [
         "//src/proto:jslib",
-        "@dossier_closure_library//:closure",
-        "@dossier_closure_templates_library//:soy",
+        "@io_bazel_rules_closure//closure/library",
+        "@io_bazel_rules_closure//closure/templates:soy_jssrc",
     ],
 )
 
@@ -46,9 +48,14 @@ closure_js_library(
     deps = [
         ":soy",
         "//src/proto:jslib",
-        "@dossier_closure_library//:closure",
-        "@dossier_closure_templates_library//:soy",
-        "@dossier_jspb_library//:jspb",
+        "@io_bazel_rules_closure//closure/library",
+        "@io_bazel_rules_closure//closure/library/labs/useragent:browser",
+        "@io_bazel_rules_closure//closure/library/labs/useragent:engine",
+        "@io_bazel_rules_closure//closure/library/ui/ac:autocomplete",
+        "@io_bazel_rules_closure//closure/library/ui/ac:inputhandler",
+        "@io_bazel_rules_closure//closure/library/ui/ac:renderer",
+        "@io_bazel_rules_closure//closure/protobuf:jspb",
+        "@io_bazel_rules_closure//closure/templates:soy_jssrc",
     ],
 )
 
@@ -92,6 +99,10 @@ closure_js_binary_set(
 closure_js_library(
     name = "serviceworker_lib",
     srcs = ["serviceworker/main.js"],
+    suppress = [
+        "JSC_STRICT_INEXISTENT_PROPERTY",
+        "JSC_UNKNOWN_EXPR_TYPE",
+    ],
     visibility = ["//visibility:private"],
 )
 

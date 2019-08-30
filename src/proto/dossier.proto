@@ -15,7 +15,7 @@
 syntax = "proto3";
 
 import "src/proto/expression.proto";
-import "third_party/webutil/html/types/proto/html.proto";
+import "webutil/html/types/proto/html.proto";
 
 option java_package = "com.github.jsdossier.proto";
 option java_multiple_files = true;

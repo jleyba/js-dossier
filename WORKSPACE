@@ -4,11 +4,10 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "io_bazel_rules_closure",
-    sha256 = "b29a8bc2cb10513c864cb1084d6f38613ef14a143797cea0af0f91cd385f5e8c",
-    strip_prefix = "rules_closure-0.8.0",
+    sha256 = "f2badc609a80a234bb51d1855281dd46cac90eadc57545880a3b5c38be0960e7",
+    strip_prefix = "rules_closure-b2a6fb762a2a655d9970d88a9218b7a1cf098ffa",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_closure/archive/0.8.0.tar.gz",
-        "https://github.com/bazelbuild/rules_closure/archive/0.8.0.tar.gz",
+        "https://github.com/bazelbuild/rules_closure/archive/b2a6fb762a2a655d9970d88a9218b7a1cf098ffa.tar.gz",  # 2019-08-05
     ],
 )
 
@@ -19,39 +18,6 @@ http_archive(
     urls = [
         "https://mirror.bazel.build/github.com/google/protobuf/archive/v3.6.1.3.tar.gz",
         "https://github.com/protocolbuffers/protobuf/archive/v3.6.1.3.tar.gz",
-    ],
-)
-
-http_archive(
-    name = "dossier_closure_library",
-    build_file = "//:BUILD.closure_library",
-    sha256 = "5320f10c53a7dc47fbb863a2d7f9344245889afe9fd4e8ff5e44bd89aabcefc7",
-    strip_prefix = "closure-library-20171203",
-    urls = [
-        "https://mirror.bazel.build/github.com/google/closure-library/archive/v20171203.tar.gz",
-        "https://github.com/google/closure-library/archive/v20171203.tar.gz",
-    ],
-)
-
-http_archive(
-    name = "dossier_closure_templates_library",
-    build_file = "//:BUILD.closure_templates_library",
-    sha256 = "06c12a8ddb5206deac1a9d323afbf4d6bca1b9ca5ed3ca1dca76bb96fb503e46",
-    strip_prefix = "closure-templates-release-2017-08-08",
-    urls = [
-        "https://mirror.bazel.build/github.com/google/closure-templates/archive/release-2017-08-08.tar.gz",
-        "https://github.com/google/closure-templates/archive/release-2017-08-08.tar.gz",
-    ],
-)
-
-http_archive(
-    name = "dossier_jspb_library",
-    build_file = "//:BUILD.jspb_library",
-    sha256 = "0cc6607e2daa675101e9b7398a436f09167dffb8ca0489b0307ff7260498c13c",
-    strip_prefix = "protobuf-3.5.0/js",
-    urls = [
-        "https://mirror.bazel.build/github.com/google/protobuf/archive/v3.5.0.tar.gz",
-        "https://github.com/google/protobuf/archive/v3.5.0.tar.gz",
     ],
 )
 
@@ -276,5 +242,4 @@ maven_jar(
 closure_repositories(
     omit_com_google_protobuf = True,
     omit_com_google_template_soy = True,
-    omit_com_google_template_soy_jssrc = True,
 )
