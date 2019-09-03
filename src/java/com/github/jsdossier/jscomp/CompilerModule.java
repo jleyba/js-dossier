@@ -106,8 +106,8 @@ public final class CompilerModule extends AbstractModule {
 
     options.setModuleRoots(ImmutableList.of());
 
-    options.setLanguageIn(LanguageMode.ECMASCRIPT_2017);
-    options.setLanguageOut(LanguageMode.ECMASCRIPT5);
+    options.setLanguageIn(LanguageMode.STABLE_IN);
+    options.setLanguageOut(LanguageMode.STABLE_OUT);
 
     options.setCodingConvention(new ClosureCodingConvention());
     CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
