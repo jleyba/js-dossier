@@ -706,7 +706,8 @@ final class TypeInspector {
     }
 
     NamedType type = buildPropertyLink(parser, definedByType, property.getName());
-    return DefinedByType.create(type, ObjectType.cast(definedByType).getConstructor().isInterface());
+    return DefinedByType.create(
+        type, ObjectType.cast(definedByType).getConstructor().isInterface());
   }
 
   private NamedType buildPropertyLink(
@@ -1424,6 +1425,7 @@ final class TypeInspector {
     }
 
     abstract NamedType getType();
+
     abstract boolean isInterface();
   }
 

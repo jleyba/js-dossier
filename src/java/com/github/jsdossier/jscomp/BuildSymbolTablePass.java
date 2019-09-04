@@ -188,25 +188,26 @@ final class BuildSymbolTablePass implements DossierCompilerPass {
         }
         break;
 
-      case EXPORT: {
-        checkState(export == null);
-        export = n;
-        final boolean exportAll = n.getBooleanProp(Node.EXPORT_ALL_FROM);
-        if (exportAll) {
-          checkState(module != null && module.isEs6());
-          checkState(n.getLastChild() != null);
-          Module.Id id = getExportFromModuleId(n.getLastChild());
-          if (id != null) {
-            module.exportedModulesBuilder().add(id);
+      case EXPORT:
+        {
+          checkState(export == null);
+          export = n;
+          final boolean exportAll = n.getBooleanProp(Node.EXPORT_ALL_FROM);
+          if (exportAll) {
+            checkState(module != null && module.isEs6());
+            checkState(n.getLastChild() != null);
+            Module.Id id = getExportFromModuleId(n.getLastChild());
+            if (id != null) {
+              module.exportedModulesBuilder().add(id);
+            }
+          } else {
+            for (Node child = n.getFirstChild(); child != null; child = child.getNext()) {
+              scan(module, table, child);
+            }
           }
-        } else {
-          for (Node child = n.getFirstChild(); child != null; child = child.getNext()) {
-            scan(module, table, child);
-          }
+          export = null;
+          break;
         }
-        export = null;
-        break;
-      }
 
       case EXPORT_SPECS:
         checkState(export != null);
@@ -546,9 +547,10 @@ final class BuildSymbolTablePass implements DossierCompilerPass {
     String referenceName;
     if (fromModuleId == null) {
       module.exportedNamesBuilder().put(exportedName, internalName);
-      referenceName = Optional.ofNullable(module.getInternalSymbolTable().getOwnSlot(internalName))
-          .map(Symbol::getReferencedSymbol)
-          .orElseGet(() -> module.getId().getContentsVar(internalName));
+      referenceName =
+          Optional.ofNullable(module.getInternalSymbolTable().getOwnSlot(internalName))
+              .map(Symbol::getReferencedSymbol)
+              .orElseGet(() -> module.getId().getContentsVar(internalName));
     } else {
       referenceName = fromModuleId + "." + internalName;
       module.exportedNamesBuilder().put(exportedName, referenceName);

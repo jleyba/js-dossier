@@ -885,10 +885,11 @@ public final class BuildSymbolTablePassTest {
       SymbolTable table =
           new Scenario()
               .addFile(one, "export default class {}")
-              .addFile(two,"import * as one from './one.js'; export {one};")
+              .addFile(two, "import * as one from './one.js'; export {one};")
               .compile();
 
-      assertThat(table).containsExactly("module$one", "module$one.default", "module$two", "module$two.one");
+      assertThat(table)
+          .containsExactly("module$one", "module$one.default", "module$two", "module$two.one");
       assertThat(table).hasEs6Module(one);
 
       Module m2 = assertThat(table).hasEs6Module(two);

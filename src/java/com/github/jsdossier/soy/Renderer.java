@@ -176,9 +176,9 @@ public class Renderer {
 
     Iterator<Path> files =
         ImmutableList.of(
-            outputDir.resolve("dossier.soy.js"),
-            outputDir.resolve("nav.soy.js"),
-            outputDir.resolve("types.soy.js"))
+                outputDir.resolve("dossier.soy.js"),
+                outputDir.resolve("nav.soy.js"),
+                outputDir.resolve("types.soy.js"))
             .iterator();
     for (String string : fileSet.compileToJsSrc(options, null)) {
       Matcher matcher = googModulePattern.matcher(string);
