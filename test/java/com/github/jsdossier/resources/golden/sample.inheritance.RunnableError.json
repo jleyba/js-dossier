@@ -357,18 +357,13 @@
               "name",
               [
                 null,
-                167,
                 null,
-                [
-                  null,
-                  null,
-                  "source/inheritance.js.src.html"
-                ]
+                null,
+                []
               ],
               [
                 []
               ],
-              null,
               null,
               null,
               null,
@@ -379,8 +374,18 @@
                 1,
                 []
               ],
+              null,
               [],
-              []
+              [
+                [
+                  [
+                    [
+                      null,
+                      "\u003cp\u003e\u003ca href\u003d\"http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/name\"\u003ehttp://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/name\u003c/a\u003e\u003c/p\u003e\n"
+                    ]
+                  ]
+                ]
+              ]
             ],
             [
               null,

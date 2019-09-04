@@ -22,6 +22,7 @@ import static com.google.javascript.jscomp.deps.ModuleNames.fileToModuleName;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import java.nio.file.Path;
@@ -96,6 +97,15 @@ public abstract class Module {
    * </code></pre>
    */
   public abstract ImmutableMap<String, String> getExportedNames();
+
+  /**
+   * Returns the IDs for modules that are exported in full form this module:
+   *
+   * <pre><code>
+   *   export * from './foo.js';
+   * </code></pre>
+   */
+  public abstract ImmutableSet<Id> getExportedModules();
 
   /** Returns the alias region encompassing this module. */
   public abstract AliasRegion getAliases();
@@ -294,6 +304,8 @@ public abstract class Module {
     public abstract ImmutableMap.Builder<String, String> exportedNamesBuilder();
 
     public abstract ImmutableMap.Builder<String, JSDocInfo> exportedDocsBuilder();
+
+    public abstract ImmutableSet.Builder<Id> exportedModulesBuilder();
 
     public abstract Builder setAliases(AliasRegion region);
 

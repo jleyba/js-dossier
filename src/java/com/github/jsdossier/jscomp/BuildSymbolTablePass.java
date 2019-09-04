@@ -43,6 +43,7 @@ import com.google.javascript.rhino.Node;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -187,26 +188,31 @@ final class BuildSymbolTablePass implements DossierCompilerPass {
         }
         break;
 
-      case EXPORT:
+      case EXPORT: {
         checkState(export == null);
         export = n;
-        for (Node child = n.getFirstChild(); child != null; child = child.getNext()) {
-          scan(module, table, child);
+        final boolean exportAll = n.getBooleanProp(Node.EXPORT_ALL_FROM);
+        if (exportAll) {
+          checkState(module != null && module.isEs6());
+          checkState(n.getLastChild() != null);
+          Module.Id id = getExportFromModuleId(n.getLastChild());
+          if (id != null) {
+            module.exportedModulesBuilder().add(id);
+          }
+        } else {
+          for (Node child = n.getFirstChild(); child != null; child = child.getNext()) {
+            scan(module, table, child);
+          }
         }
         export = null;
         break;
+      }
 
       case EXPORT_SPECS:
         checkState(export != null);
         checkState(module != null, "module should not be null!");
 
-        Module.Id fromModuleId = null;
-        if (n.getParent() != null
-            && n.getParent().isExport() // Expected
-            && isString(n.getParent().getLastChild())) {
-          fromModuleId = es6ModuleId(n.getParent().getLastChild());
-        }
-
+        Module.Id fromModuleId = getExportFromModuleId(n);
         for (Node child = n.getFirstChild(); child != null; child = child.getNext()) {
           checkState(child.isExportSpec(), "expected EXPORT_SPEC: %s", child);
           visitExportSpec(module, table, child, fromModuleId);
@@ -226,6 +232,16 @@ final class BuildSymbolTablePass implements DossierCompilerPass {
       default:
         break;
     }
+  }
+
+  @Nullable
+  private Module.Id getExportFromModuleId(Node n) {
+    if (n.getParent() != null
+        && n.getParent().isExport() // Expected
+        && isString(n.getParent().getLastChild())) {
+      return es6ModuleId(n.getParent().getLastChild());
+    }
+    return null;
   }
 
   private void visitAssignment(
@@ -530,7 +546,9 @@ final class BuildSymbolTablePass implements DossierCompilerPass {
     String referenceName;
     if (fromModuleId == null) {
       module.exportedNamesBuilder().put(exportedName, internalName);
-      referenceName = module.getId().getContentsVar(internalName);
+      referenceName = Optional.ofNullable(module.getInternalSymbolTable().getOwnSlot(internalName))
+          .map(Symbol::getReferencedSymbol)
+          .orElseGet(() -> module.getId().getContentsVar(internalName));
     } else {
       referenceName = fromModuleId + "." + internalName;
       module.exportedNamesBuilder().put(exportedName, referenceName);

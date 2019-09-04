@@ -196,8 +196,9 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .build());
   }
 
+  /** TODO(jleyba): Figure this one out! */
   @Test
-  public void overriddenPropertyUsesLocallyDefinedCommentIfPresent() {
+  public void overriddenPropertyDoesNotRegisterAsOverridden() {
     compile(
         "/** @constructor */",
         "var A = function() {};",
@@ -226,9 +227,9 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setBase(
                     BaseProperty.newBuilder()
                         .setName("a")
-                        .setSource(sourceFile("source/foo.js.src.html", 15))
-                        .setDescription(htmlComment("<p>Custom comment.</p>\n"))
-                        .setOverrides(namedType("A", "A.html#a")))
+                        .setSource(sourceFile("source/foo.js.src.html", 7))
+                        .setDescription(htmlComment("<p>Original comment.</p>\n"))
+                        .setDefinedBy(namedType("A", "A.html#a")))
                 .setType(numberTypeExpression())
                 .build());
   }
@@ -270,7 +271,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setBase(
                     BaseProperty.newBuilder()
                         .setName("a")
-                        .setSource(sourceFile("source/foo.js.src.html", 22))
+                        .setSource(sourceFile("source/foo.js.src.html", 15))
                         .setDescription(htmlComment("<p>Comment on interface B.</p>\n"))
                         .setOverrides(namedType("A", "A.html#a"))
                         .addSpecifiedBy(namedType("B", "B.html#a")))

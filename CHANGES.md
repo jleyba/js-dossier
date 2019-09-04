@@ -3,6 +3,8 @@
 ## Changes
 
 -  Upgraded dependencies:
+   +  com.google.javascript:closure-compiler-externs:v20190819
+   +  com.google.javascript:closure-compiler-unshaded:v20190819
    +  com.google.protobuf:protobuf-java:3.9.0
    +  com.google.template:soy:2019-08-22
 -  Various internal changes to support building with the latest bazel (0.24.1)

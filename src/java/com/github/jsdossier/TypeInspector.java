@@ -67,7 +67,7 @@ import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.Property;
 import com.google.javascript.rhino.jstype.StaticTypedScope;
-import com.google.javascript.rhino.jstype.TemplateTypeMapReplacer;
+import com.google.javascript.rhino.jstype.TemplateTypeReplacer;
 import com.google.javascript.rhino.jstype.TemplatizedType;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -116,7 +116,7 @@ final class TypeInspector {
   private final TypeExpressionParserFactory expressionParserFactory;
   private final LinkFactory linkFactory;
   private final NominalType inspectedType;
-  private final TemplateTypeMapReplacer typeMapReplacer;
+  private final TemplateTypeReplacer typeMapReplacer;
 
   private final Set<JSTypeExpression> resolvedExpressions = Sets.newIdentityHashSet();
 
@@ -146,7 +146,8 @@ final class TypeInspector {
     } else {
       type = jsRegistry.getNativeType(JSTypeNative.UNKNOWN_TYPE);
     }
-    typeMapReplacer = new TemplateTypeMapReplacer(jsRegistry, type.getTemplateTypeMap());
+    typeMapReplacer =
+        TemplateTypeReplacer.forPartialReplacement(jsRegistry, type.getTemplateTypeMap());
   }
 
   /** Returns the top description for the inspected type. */
@@ -261,8 +262,8 @@ final class TypeInspector {
 
     TypeExpressionParser parser =
         expressionParserFactory.create(linkFactory.withTypeContext(inspectedType));
-    TemplateTypeMapReplacer replacer =
-        new TemplateTypeMapReplacer(
+    TemplateTypeReplacer replacer =
+        TemplateTypeReplacer.forPartialReplacement(
             jsRegistry,
             inspectedType.getType().toMaybeFunctionType().getInstanceType().getTemplateTypeMap());
 
@@ -548,8 +549,8 @@ final class TypeInspector {
     }
 
     final JSType currentType = ((FunctionType) inspectedType.getType()).getInstanceType();
-    final TemplateTypeMapReplacer replacer =
-        new TemplateTypeMapReplacer(jsRegistry, currentType.getTemplateTypeMap());
+    final TemplateTypeReplacer replacer =
+        TemplateTypeReplacer.forPartialReplacement(jsRegistry, currentType.getTemplateTypeMap());
 
     for (String key : properties.keySet()) {
       Deque<InstanceProperty> definitions = new ArrayDeque<>(properties.get(key));
@@ -562,7 +563,7 @@ final class TypeInspector {
       }
 
       NominalType ownerType = property.getOwnerType().orElse(inspectedType);
-      NamedType definedBy = getDefinedByComment(linkFactory, ownerType, currentType, property);
+      DefinedByType definedBy = getDefinedByComment(linkFactory, ownerType, currentType, property);
 
       if (!currentType.getTemplateTypeMap().isEmpty()) {
         propertyType = propertyType.visit(replacer);
@@ -636,7 +637,7 @@ final class TypeInspector {
     ObjectType object = type.toObjectType();
     FunctionType ctor = object.getConstructor();
     if (ctor != null) {
-      ObjectType prototype = ObjectType.cast(ctor.getPropertyType("prototype"));
+      ObjectType prototype = ctor.getPrototype();
       verify(prototype != null);
       properties = getOwnProperties(prototype);
     }
@@ -672,18 +673,13 @@ final class TypeInspector {
   }
 
   @Nullable
-  private NamedType getDefinedByComment(
+  private DefinedByType getDefinedByComment(
       final LinkFactory linkFactory,
       final NominalType context,
       JSType currentType,
       InstanceProperty property) {
     JSType propertyDefinedOn = property.getDefinedByType();
-    if (propertyDefinedOn.isInterface()
-        || (propertyDefinedOn.toObjectType() != null
-            && propertyDefinedOn.toObjectType().getConstructor() != null
-            && propertyDefinedOn.toObjectType().getConstructor().isInterface())) {
-      return null;
-    }
+
     if (propertyDefinedOn.isConstructor() || propertyDefinedOn.isInterface()) {
       propertyDefinedOn = propertyDefinedOn.toMaybeFunctionType().getInstanceType();
     }
@@ -709,7 +705,8 @@ final class TypeInspector {
       }
     }
 
-    return buildPropertyLink(parser, definedByType, property.getName());
+    NamedType type = buildPropertyLink(parser, definedByType, property.getName());
+    return DefinedByType.create(type, ObjectType.cast(definedByType).getConstructor().isInterface());
   }
 
   private NamedType buildPropertyLink(
@@ -782,7 +779,7 @@ final class TypeInspector {
       FunctionType function,
       Node node,
       PropertyDocs docs,
-      @Nullable NamedType definedBy,
+      @Nullable DefinedByType definedBy,
       Iterable<InstanceProperty> overrides) {
     boolean isConstructor = function.isConstructor() && !isFunctionTypeConstructor(function);
     boolean isInterface = !isConstructor && function.isInterface();
@@ -1150,7 +1147,7 @@ final class TypeInspector {
       JSType type,
       Node node,
       PropertyDocs docs,
-      @Nullable NamedType definedBy,
+      @Nullable DefinedByType definedBy,
       Iterable<InstanceProperty> overrides) {
     com.github.jsdossier.proto.Property.Builder builder =
         com.github.jsdossier.proto.Property.newBuilder()
@@ -1176,7 +1173,7 @@ final class TypeInspector {
       JSType type,
       Node node,
       PropertyDocs docs,
-      @Nullable NamedType definedBy,
+      @Nullable DefinedByType definedBy,
       Iterable<InstanceProperty> overrides) {
     BaseProperty.Builder builder =
         BaseProperty.newBuilder()
@@ -1196,7 +1193,11 @@ final class TypeInspector {
     }
 
     if (definedBy != null) {
-      builder.setDefinedBy(definedBy);
+      if (definedBy.isInterface()) {
+        builder.addSpecifiedBy(definedBy.getType());
+      } else {
+        builder.setDefinedBy(definedBy.getType());
+      }
     }
 
     InstanceProperty immediateOverride = findFirstClassOverride(overrides);
@@ -1414,6 +1415,16 @@ final class TypeInspector {
     abstract NominalType getContextType();
 
     abstract JsDoc getJsDoc();
+  }
+
+  @AutoValue
+  abstract static class DefinedByType {
+    static DefinedByType create(NamedType type, boolean isInterface) {
+      return new AutoValue_TypeInspector_DefinedByType(type, isInterface);
+    }
+
+    abstract NamedType getType();
+    abstract boolean isInterface();
   }
 
   @AutoValue

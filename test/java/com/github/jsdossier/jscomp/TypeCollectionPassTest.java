@@ -1090,7 +1090,7 @@ public class TypeCollectionPassTest {
   }
 
   @Test
-  public void exportedModuleAliasesAreNotRecordedAsTypes_es6Module() {
+  public void exportedModuleAliasesAreRecordedAsTypes_es6Module() {
     util.compile(
         createSourceFile(fs.getPath("modules/one.js"), "export class One {}"),
         createSourceFile(
@@ -1100,7 +1100,8 @@ public class TypeCollectionPassTest {
         .containsExactly(
             typeRegistry.getType("module$modules$one"),
             typeRegistry.getType("module$modules$one.One"),
-            typeRegistry.getType("module$modules$two"));
+            typeRegistry.getType("module$modules$two"),
+            typeRegistry.getType("module$modules$two.one"));
   }
 
   @Test

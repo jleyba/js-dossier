@@ -20,7 +20,6 @@ import static com.github.jsdossier.testing.DossierTruth.assertThat;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.truth.Truth.assertThat;
 import static java.util.stream.Collectors.joining;
-import static org.junit.Assert.fail;
 
 import com.github.jsdossier.annotations.Global;
 import com.github.jsdossier.testing.CompilerUtil;
@@ -864,19 +863,39 @@ public final class BuildSymbolTablePassTest {
     public void exportWildcardFromAnotherModule() {
       Path pone = fs.getPath("one.js");
       Path ptwo = fs.getPath("two.js");
-      Scenario scenario =
+
+      SymbolTable table =
           new Scenario()
               .addFile(pone, "export class Foo {}")
-              .addFile(ptwo, "export * from './one';");
-      try {
-        scenario.compile();
-        fail("test needs to be updated!");
-      } catch (RuntimeException expected) {
-        assertThat(expected).hasMessageThat().contains("INTERNAL COMPILER ERROR");
-        assertThat(expected)
-            .hasMessageThat()
-            .contains("Type inference doesn't know to handle token EXPORT");
-      }
+              .addFile(ptwo, "export * from './one.js';")
+              .compile();
+
+      Module m1 = assertThat(table).hasEs6Module(pone);
+      Module m2 = assertThat(table).hasEs6Module(ptwo);
+      assertThat(m2.getExportedNames()).isEmpty();
+      assertThat(m2.getInternalSymbolTable()).isEmpty();
+      assertThat(m2.getExportedModules()).containsExactly(m1.getId());
+    }
+
+    @Test
+    public void exportImportedWildcard() {
+      Path one = fs.getPath("one.js");
+      Path two = fs.getPath("two.js");
+
+      SymbolTable table =
+          new Scenario()
+              .addFile(one, "export default class {}")
+              .addFile(two,"import * as one from './one.js'; export {one};")
+              .compile();
+
+      assertThat(table).containsExactly("module$one", "module$one.default", "module$two", "module$two.one");
+      assertThat(table).hasEs6Module(one);
+
+      Module m2 = assertThat(table).hasEs6Module(two);
+      assertThat(m2.getExportedNames().keySet()).containsExactly("one");
+
+      table = m2.getInternalSymbolTable();
+      assertThat(table).hasOwnSymbol("one").that().isAReferenceTo("module$one");
     }
 
     @Test

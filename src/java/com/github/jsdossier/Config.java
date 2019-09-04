@@ -58,7 +58,7 @@ import com.google.javascript.jscomp.PrintStreamErrorReportGenerator;
 import com.google.javascript.jscomp.SortingErrorManager;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.deps.DependencyInfo;
-import com.google.javascript.jscomp.deps.DepsFileParser;
+import com.google.javascript.jscomp.deps.DepsFileRegexParser;
 import com.google.javascript.jscomp.deps.DepsGenerator;
 import com.google.javascript.jscomp.deps.Es6SortedDependencies;
 import com.google.javascript.jscomp.deps.ModuleLoader;
@@ -107,90 +107,90 @@ abstract class Config {
   Config() {}
 
   @Description(
-    name = "closureLibraryDir",
-    expandPaths = true,
-    desc =
-        "Path to the base directory of the Closure library (which must contain base.js"
-            + " and deps.js). When this option is specified, Closure's deps.js and all of the files"
-            + " specified by `closureDepsFile` will be parsed for calls to `goog.addDependency`. The"
-            + " resulting map will be used to automatically expand the set of `sources` any time a"
-            + " symbol is goog.require'd with the ile that goog.provides that symbol, along with all"
-            + " of its transitive dependencies.\n"
-            + "\n"
-            + " For example, suppose you have one source file, `foo.js`:\n"
-            + "\n"
-            + "```js\n"
-            + "goog.require('goog.array');\n"
-            + "// ...\n"
-            + "```\n"
-            + "\n"
-            + " and your configuration includes:\n"
-            + "\n"
-            + "```json\n"
-            + "\"sources\": [\"foo.js\"],\n"
-            + "\"closureLibraryDir\": \"closure/goog\"\n"
-            + "```\n"
-            + "\n"
-            + " due to the dependencies of goog.array declared in closure/goog/deps.js, this is"
-            + " equivalent to the following configuration:\n"
-            + "\n"
-            + "```json\n"
-            + "\"sources\": [\n"
-            + "    \"closure/goog/base.js\",\n"
-            + "    \"closure/goog/debug/error.js\",\n"
-            + "    \"closure/goog/string/string.js\",\n"
-            + "    \"closure/goog/asserts/asserts.js\",\n"
-            + "    \"closure/goog/array/array.js\",\n"
-            + "    \"foo.js\"\n"
-            + "]\n"
-            + "```\n"
-            + "\n"
-            + " Notice specifying `closureLibraryDir` instructs Dossier to sort the input files so a"
-            + " a file that goog.provides symbol X comes before any file that goog.requires X."
+      name = "closureLibraryDir",
+      expandPaths = true,
+      desc =
+          "Path to the base directory of the Closure library (which must contain base.js"
+              + " and deps.js). When this option is specified, Closure's deps.js and all of the files"
+              + " specified by `closureDepsFile` will be parsed for calls to `goog.addDependency`. The"
+              + " resulting map will be used to automatically expand the set of `sources` any time a"
+              + " symbol is goog.require'd with the ile that goog.provides that symbol, along with all"
+              + " of its transitive dependencies.\n"
+              + "\n"
+              + " For example, suppose you have one source file, `foo.js`:\n"
+              + "\n"
+              + "```js\n"
+              + "goog.require('goog.array');\n"
+              + "// ...\n"
+              + "```\n"
+              + "\n"
+              + " and your configuration includes:\n"
+              + "\n"
+              + "```json\n"
+              + "\"sources\": [\"foo.js\"],\n"
+              + "\"closureLibraryDir\": \"closure/goog\"\n"
+              + "```\n"
+              + "\n"
+              + " due to the dependencies of goog.array declared in closure/goog/deps.js, this is"
+              + " equivalent to the following configuration:\n"
+              + "\n"
+              + "```json\n"
+              + "\"sources\": [\n"
+              + "    \"closure/goog/base.js\",\n"
+              + "    \"closure/goog/debug/error.js\",\n"
+              + "    \"closure/goog/string/string.js\",\n"
+              + "    \"closure/goog/asserts/asserts.js\",\n"
+              + "    \"closure/goog/array/array.js\",\n"
+              + "    \"foo.js\"\n"
+              + "]\n"
+              + "```\n"
+              + "\n"
+              + " Notice specifying `closureLibraryDir` instructs Dossier to sort the input files so a"
+              + " a file that goog.provides symbol X comes before any file that goog.requires X."
   )
   abstract Optional<Path> getClosureLibraryDir();
 
   @Description(
-    name = "closureDepFiles",
-    expandPaths = true,
-    desc =
-        "Path to a file to parse for calls to `goog.addDependency`. This option "
-            + "requires also setting `closureLibraryDir`."
+      name = "closureDepFiles",
+      expandPaths = true,
+      desc =
+          "Path to a file to parse for calls to `goog.addDependency`. This option "
+              + "requires also setting `closureLibraryDir`."
   )
   abstract ImmutableSet<Path> getClosureDepFiles();
 
   @Description(
-    name = "sources",
-    expandPaths = true,
-    desc =
-        "A list of .js files to extract API documentation from. If a glob pattern "
-            + "is specified, every .js file under the current working directory matching that pattern"
-            + " will be included. Specifying the path to a directory, `foo`, is the same as using "
-            + "the glob pattern `foo/**.js`. The set of paths specified by this option *must* be "
-            + "disjoint from those specified by `modules`."
+      name = "sources",
+      expandPaths = true,
+      desc =
+          "A list of .js files to extract API documentation from. If a glob pattern "
+              + "is specified, every .js file under the current working directory matching that pattern"
+              + " will be included. Specifying the path to a directory, `foo`, is the same as using "
+              + "the glob pattern `foo/**.js`. The set of paths specified by this option *must* be "
+              + "disjoint from those specified by `modules`."
   )
   abstract ImmutableSet<Path> getSources();
 
   @Description(
-    name = "modules",
-    expandPaths = true,
-    desc =
-        "A list of .js files to extract API documentation from. Each file will be "
-            + "processed as a CommonJS module, with only its exported API included in the generated"
-            + " output. If a glob pattern is specified, every .js file under the current directory "
-            + "matching that pattern will be included. Specifying the path to a directory, `foo`, is"
-            + " the same as the glob pattern `foo/**.js`. The set of paths specified by this option "
-            + "*mut* be disjoint from those specified by `sources`."
+      name = "modules",
+      expandPaths = true,
+      desc =
+          "A list of .js files to extract API documentation from. Each file will be "
+              + "processed as a CommonJS module, with only its exported API included in the generated"
+              + " output. If a glob pattern is specified, every .js file under the current directory "
+              + "matching that pattern will be included. Specifying the path to a directory, `foo`, is"
+              + " the same as the glob pattern `foo/**.js`. The set of paths specified by this option "
+              + "*mut* be disjoint from those specified by `sources`."
   )
   abstract ImmutableSet<Path> getModules();
 
   @Description(
-    name = "sourcePrefix",
-    desc =
-        "A prefix to strip from every input file's path (source & module) when rendering source"
-            + " paths. Notably, paths will be inserted into the source URL template after"
-            + " this prefix has been removed. If this option is omitted, the closest common"
-            + " ancestor for all input files will be used as the default."
+      name = "sourcePrefix",
+      desc =
+          "A prefix to strip from every input file's path (source & module) when rendering source"
+              + " paths. Notably, paths will be inserted into the source URL template after"
+              + " this prefix has been removed. If this option is omitted, the closest common"
+              + " ancestor for all input files will be used as the default."
   )
   abstract Optional<Path> getSourcePrefix();
 
@@ -199,70 +199,70 @@ abstract class Config {
   }
 
   @Description(
-    name = "modulePrefix",
-    desc =
-        "A prefix to strip from every module's path when generating documentation."
-            + " The specified path must be a directory that is an ancestor of every file specified "
-            + "in `modules`. Note: if this option is omitted, the closest common ancestor for all "
-            + "module files will be selected as the default."
+      name = "modulePrefix",
+      desc =
+          "A prefix to strip from every module's path when generating documentation."
+              + " The specified path must be a directory that is an ancestor of every file specified "
+              + "in `modules`. Note: if this option is omitted, the closest common ancestor for all "
+              + "module files will be selected as the default."
   )
   abstract Optional<Path> getModulePrefix();
 
   @Description(
-    name = "externs",
-    expandPaths = true,
-    desc =
-        "A list of .js files to include as an extern file for the Closure compiler. "
-            + "These  files are used to satisfy references to external types, but are excluded when "
-            + "generating  API documentation."
+      name = "externs",
+      expandPaths = true,
+      desc =
+          "A list of .js files to include as an extern file for the Closure compiler. "
+              + "These  files are used to satisfy references to external types, but are excluded when "
+              + "generating  API documentation."
   )
   abstract ImmutableSet<Path> getExterns();
 
   @Description(
-    name = "externModules",
-    expandPaths = true,
-    desc =
-        "A list of .js files to include as CommonJS extern module definitions. Each module may be"
-            + " required in source by the file's base name, excluding the extension. For example,"
-            + " 'extern/libfoo.js' would provide the extern definition for the import"
-            + " `require('libfoo');`"
+      name = "externModules",
+      expandPaths = true,
+      desc =
+          "A list of .js files to include as CommonJS extern module definitions. Each module may be"
+              + " required in source by the file's base name, excluding the extension. For example,"
+              + " 'extern/libfoo.js' would provide the extern definition for the import"
+              + " `require('libfoo');`"
   )
   abstract ImmutableSet<Path> getExternModules();
 
   @Description(
-    name = "excludes",
-    expandPaths = true,
-    desc =
-        "A list of .js files to exclude from processing. If a directory is specified,"
-            + " all of the .js files under that directory will be excluded. A glob pattern may also"
-            + " be specified to exclude all of the paths under the current working directory that "
-            + "match  the provided pattern."
+      name = "excludes",
+      expandPaths = true,
+      desc =
+          "A list of .js files to exclude from processing. If a directory is specified,"
+              + " all of the .js files under that directory will be excluded. A glob pattern may also"
+              + " be specified to exclude all of the paths under the current working directory that "
+              + "match  the provided pattern."
   )
   abstract ImmutableSet<Path> getExcludes();
 
   @Description(
-    name = "output",
-    desc =
-        "Path to the directory to write all generated documentation to. This field is"
-            + " required."
+      name = "output",
+      desc =
+          "Path to the directory to write all generated documentation to. This field is"
+              + " required."
   )
   abstract Path getOutput();
 
   @Description(
-    name = "readme",
-    desc =
-        "Path to a README file to include as the main landing page for the generated "
-            + "documentation. This file should use markdown syntax."
+      name = "readme",
+      desc =
+          "Path to a README file to include as the main landing page for the generated "
+              + "documentation. This file should use markdown syntax."
   )
   abstract Optional<Path> getReadme();
 
   @Description(
-    name = "customPages",
-    desc =
-        "List of additional files to include in the generated documentation. Each page "
-            + "is defined as a {name: string, path: string} object, where the name is what's "
-            + "displayed in the navigation menu, and `path` is the path to the markdown file to use. "
-            + "Files will be included in the order listed, after the standard navigation items."
+      name = "customPages",
+      desc =
+          "List of additional files to include in the generated documentation. Each page "
+              + "is defined as a {name: string, path: string} object, where the name is what's "
+              + "displayed in the navigation menu, and `path` is the path to the markdown file to use. "
+              + "Files will be included in the order listed, after the standard navigation items."
   )
   abstract ImmutableSet<MarkdownPage> getCustomPages();
 
@@ -270,50 +270,49 @@ abstract class Config {
   abstract boolean isStrict();
 
   @Description(
-    name = "moduleNamingConvention",
-    desc =
-        "The module naming convention to use. If set to `NODE`, modules with a basename"
-            + " of index.js will use the name of the parent directory"
-            + " (e.g. \"foo/bar/index.js\" -> \"foo/bar/\"). Must be one of {ES6, NODE}; defaults to ES6"
+      name = "moduleNamingConvention",
+      desc =
+          "The module naming convention to use. If set to `NODE`, modules with a basename"
+              + " of index.js will use the name of the parent directory"
+              + " (e.g. \"foo/bar/index.js\" -> \"foo/bar/\"). Must be one of {ES6, NODE}; defaults to ES6"
   )
   abstract ModuleNamingConvention getModuleNamingConvention();
 
   @Description(
-    name = "sourceUrlTemplate",
-    desc =
-        "Specifies a template from which to generate a HTTP(S) links to source files. Within this"
-            + " template, the `%path%` and `%line%` tokens will be replaced with the linked"
-            + " type's source file path and line number, respectively. Source paths will be"
-            + " relative to the closest common ancestor of all input files.\n"
-            + "\n"
-            + " If this option is not specified, a rendered copy of each input file will be"
-            + " included in the generated output."
+      name = "sourceUrlTemplate",
+      desc =
+          "Specifies a template from which to generate a HTTP(S) links to source files. Within this"
+              + " template, the `%path%` and `%line%` tokens will be replaced with the linked"
+              + " type's source file path and line number, respectively. Source paths will be"
+              + " relative to the closest common ancestor of all input files.\n"
+              + "\n"
+              + " If this option is not specified, a rendered copy of each input file will be"
+              + " included in the generated output."
   )
   abstract Optional<String> getSourceUrlTemplate();
 
   @Description(
-    name = "typeFilters",
-    desc =
-        "List of regular expressions for types that should be excluded from generated "
-            + "documentation, even if found in the type graph."
+      name = "typeFilters",
+      desc =
+          "List of regular expressions for types that should be excluded from generated "
+              + "documentation, even if found in the type graph."
   )
   abstract ImmutableSet<Pattern> getTypeFilters();
 
   @Description(
-    name = "moduleFilters",
-    desc =
-        "List of regular expressions for modules that should be excluded from generated "
-            + "documentation, even if found in the type graph. The provided expressions will be "
-            + "to the _absolute_ path of the source file for each module."
+      name = "moduleFilters",
+      desc =
+          "List of regular expressions for modules that should be excluded from generated "
+              + "documentation, even if found in the type graph. The provided expressions will be "
+              + "to the _absolute_ path of the source file for each module."
   )
   abstract ImmutableSet<Pattern> getModuleFilters();
 
   @Description(
-    name = "environment",
-    desc =
-        "The target environment for the analyzed scripts; dictates the default set of externs "
-            + "and module naming convention. Must be one of {BROWSER, NODE}; defaults to ES6"
-  )
+      name = "environment",
+      desc =
+          "The target environment for the analyzed scripts; dictates the default set of externs "
+              + "and module naming convention. Must be one of {BROWSER, NODE}; defaults to ES6")
   abstract Environment getEnvironment();
 
   abstract FileSystem getFileSystem();
@@ -666,15 +665,14 @@ abstract class Config {
     }
 
     List<DependencyInfo> allDeps =
-        new DepsFileParser(errorManager).parseFile("*generated-deps*", rawDeps);
+        new DepsFileRegexParser(errorManager).parseFile("*generated-deps*", rawDeps);
 
     List<DependencyInfo> sourceDeps =
         allDeps.stream().filter(isInSources(sources, closureBase)).collect(toList());
 
     List<Path> sortedDeps =
         new Es6SortedDependencies<>(allDeps)
-            .getSortedStrongDependenciesOf(sourceDeps)
-            .stream()
+            .getSortedStrongDependenciesOf(sourceDeps).stream()
             .map(toPath(closureBase))
             .collect(toList());
 
