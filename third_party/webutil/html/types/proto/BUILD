@@ -15,9 +15,3 @@ proto_library(
     strip_import_prefix = "/third_party",
     visibility = ["//visibility:public"],
 )
-
-java_proto_library(
-    name = "java_proto",
-    visibility = ["//visibility:public"],
-    deps = [":proto"],
-)
