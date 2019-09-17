@@ -7,6 +7,7 @@ set -e
 readonly ROOT="$(cd $(dirname $0) && pwd)"
 readonly RESOURCES="${ROOT}/src/java/com/github/jsdossier/resources"
 readonly GOOGLE_JAVA_FORMAT="${ROOT}/third_party/java/google_java_format/google-java-format-1.3-all-deps.jar"
+readonly BAZEL="$(which bazelisk)"
 
 usage() {
   cat <<EOF
@@ -29,7 +30,7 @@ EOF
 
 
 run_jsc() {
-  bazel build //src/js:all
+  "${BAZEL}" build //src/js:all
 }
 
 run_lessc() {
@@ -45,25 +46,25 @@ run_lessc() {
 }
 
 run_tests() {
-  bazel test //test/...
+  "${BAZEL}" test //test/...
 }
 
 build_release() {
-  bazel clean && \
-      bazel test //test/... && \
-      bazel build :release && \
+  "${BAZEL}" clean && \
+      "${BAZEL}" test //test/... && \
+      "${BAZEL}" build :release && \
       echo "Release built: bazel-genfiles/js-dossier.tar.gz"
 }
 
 build_sample() {
-  bazel build //src/java/com/github/jsdossier:dossier_deploy.jar
+  "${BAZEL}" build //src/java/com/github/jsdossier:dossier_deploy.jar
   java -agentlib:jdwp=transport=dt_socket,server=y,suspend="${DEBUG:-n}",address=5005 \
       -jar bazel-bin/src/java/com/github/jsdossier/dossier_deploy.jar \
       --config sample_config.json
 }
 
 update_readme() {
-  bazel build :readme && cp bazel-genfiles/README.md README.md
+  "${BAZEL}" build :readme && cp bazel-genfiles/README.md README.md
 }
 
 format_java() {
@@ -72,6 +73,11 @@ format_java() {
 }
 
 main() {
+  if [[ -z "${BAZEL}" ]]; then
+    echo "bazelisk not installed: https://github.com/bazelbuild/bazelisk"
+    exit 1
+  fi
+
   local no_options=1
   local js=0
   local less=0
