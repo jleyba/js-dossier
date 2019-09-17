@@ -19,6 +19,7 @@ OPTIONS:
   -h       Print this help message and exit
   -d       Refresh the project's readme documentation
   -f       Format all java code
+  -b       Format all Bazel/Starlark code
   -j       Run the Closure Compiler on dossier.js
   -l       Run lessc on dossier.less
   -r       Build a release
@@ -71,6 +72,11 @@ format_java() {
   java -jar "${GOOGLE_JAVA_FORMAT}" -i $(find src test -name *.java)
 }
 
+buildifier() {
+  # Note, this relies on buildifier being installed in the $PATH
+  find . -type f \( -name \"*.bzl\" -or -name WORKSPACE -or -name BUILD -or -name BUILD.bazel \) ! -path \"./third_party/*\" | xargs buildifier -v --warnings=attr-cfg,attr-license,attr-non-empty,attr-output-default,attr-single-file,confusing-name,constant-glob,ctx-actions,ctx-args,depset-iteration,depset-union,dict-concatenation,duplicated-name,filetype,function-docstring,git-repository,http-archive,integer-division,load,load-on-top,module-docstring,name-conventions,native-build,native-package,out-of-order-load,output-group,package-name,package-on-top,positional-args,redefined-variable,repository-name,return-value,same-origin-load,string-iteration,unreachable,unsorted-dict-items,unused-variable
+}
+
 main() {
   local no_options=1
   local js=0
@@ -80,7 +86,7 @@ main() {
   local sample=0
   local test=0
 
-  while getopts "dfhjlprst" option
+  while getopts "bdfhjlprst" option
   do
     case $option in
       h)
@@ -92,6 +98,9 @@ main() {
         ;;
       f)
         no_options=0; format=1
+        ;;
+      b)
+        no_options=0; buildifier=1
         ;;
       j)
         no_options=0; js=1
@@ -141,6 +150,10 @@ main() {
 
   if (( $sample )); then
     build_sample
+  fi
+
+  if (( $buildifier )); then
+    buildifier
   fi
 }
 

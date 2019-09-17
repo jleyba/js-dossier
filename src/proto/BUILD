@@ -27,10 +27,33 @@ closure_js_library(
 )
 
 java_proto_library(
+    name = "java_proto_plus_deps",
+    deps = [":proto"],
+)
+
+# The java_proto_library in "java_proto_plus_deps" outputs
+#  bazel-bin/third_party/webutil/html/types/proto/libproto-speed.jar
+#  bazel-bin/src/proto/libproto-speed.jar
+#  bazel-bin/src/proto/proto-speed-src.jar
+# But the first one we don't want because it redefines classes from
+# @maven//:com_google_common_html_types_types
+# and that will cause Java runtime sealing violations when the classloader finds both.
+# So we make labels for the .jar and -src.jar we want
+genrule(
+    name = "cp",
+    srcs = ["java_proto_plus_deps"],
+    outs = ["libproto.jar", "proto-src.jar"],
+    cmd = "cp $(BINDIR)/src/proto/libproto-speed.jar $(location libproto.jar);" +
+        "cp $(BINDIR)/src/proto/proto-speed-src.jar $(location proto-src.jar)",
+)
+
+# Re-import the two jar files from the genrule so it can appear in java_library#deps
+java_import(
     name = "java_proto",
+    jars = ["libproto.jar"],
+    srcjar = "proto-src.jar",
     visibility = [
         "//src/java/com/github/jsdossier:__subpackages__",
         "//test/java/com/github/jsdossier:__subpackages__",
     ],
-    deps = [":proto"],
 )
