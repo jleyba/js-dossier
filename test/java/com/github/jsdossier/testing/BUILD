@@ -8,9 +8,9 @@ java_library(
     deps = [
         "//src/java/com/github/jsdossier/jscomp",
         "//third_party/java/closure_compiler",
-        "//third_party/java/guava",
-        "//third_party/java/guice",
-        "//third_party/java/jsr330_inject",
-        "//third_party/java/junit",
+        "@maven//:com_google_guava_guava",
+        "@maven//:com_google_inject_guice",
+        "@maven//:javax_inject_javax_inject",
+        "@maven//:junit_junit",
     ],
 )

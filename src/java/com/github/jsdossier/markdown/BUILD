@@ -6,7 +6,7 @@ java_library(
         "//test/java/com/github/jsdossier:__subpackages__",
     ],
     deps = [
-        "//third_party/java/commonmark",
-        "//third_party/java/guava",
+        "@maven//:com_atlassian_commonmark_commonmark",
+        "@maven//:com_google_guava_guava",
     ],
 )

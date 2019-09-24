@@ -16,12 +16,7 @@ java_library(
     exports = ["@com_google_javascript_closure_compiler_unshaded//jar"],
     # exports = [":closure_compiler_snapshot"],
     runtime_deps = [
-        "//third_party/java/args4j",
-        "//third_party/java/gson",
-        "//third_party/java/guava",
-        "//third_party/java/jsr305_annotations",
-        "//third_party/java/protobuf",
-        "@com_google_javascript_closure_compiler_externs//jar",
+        "@maven//:com_google_javascript_closure_compiler_externs",
     ],
 )
 

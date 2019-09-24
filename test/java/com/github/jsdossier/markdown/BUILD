@@ -5,9 +5,9 @@ java_test_suite(
     srcs = glob(["*.java"]),
     deps = [
         "//src/java/com/github/jsdossier/markdown",
-        "//third_party/java/commonmark",
-        "//third_party/java/guava",
-        "//third_party/java/junit",
-        "//third_party/java/truth",
+        "@maven//:com_atlassian_commonmark_commonmark",
+        "@maven//:com_google_guava_guava",
+        "@maven//:com_google_truth_truth",
+        "@maven//:junit_junit",
     ],
 )
